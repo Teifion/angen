@@ -14,8 +14,36 @@ config :angen, AngenWeb.Endpoint, cache_static_manifest: "priv/static/cache_mani
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Angen.Finch
 
-# Do not print debug messages in production
-config :logger, level: :info
-
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.
+
+config :logger,
+  format: "$date $time [$level] $metadata $message\n",
+  level: :info
+
+config :logger, :default_formatter,
+  format: "$date $time [$level] $metadata $message\n",
+  # metadata: [:error_code, :file, :request_id, :user_id]
+  metadata: [:error_code, :request_id, :user_id]
+
+config :logger, :default_handler,
+  config: [
+    file: ~c"/var/log/angen/info.log",
+    filesync_repeat_interval: 5000,
+    file_check: 5000,
+    max_no_bytes: 10_000_000,
+    max_no_files: 5,
+    compress_on_rotate: true
+  ]
+
+# config :logger, :error_log,
+#   path: "/var/log/angen/error.log",
+#   format: "$date $time [$level] $metadata $message\n",
+#   # metadata: [:request_id, :user_id],
+#   level: :error
+
+# config :logger, :info_log,
+#   path: "/var/log/angen/info.log",
+#   format: "$date $time [$level] $metadata $message\n",
+#   # metadata: [:request_id, :user_id],
+#   level: :info

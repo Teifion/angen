@@ -1,14 +1,3 @@
 #!/usr/bin/env bash
-
-mix deps.get --only prod
-MIX_ENV=prod mix compile
-
-MIX_ENV=prod mix assets.deploy
-
-# Generate the actual releas
-mix phx.gen.release
-
-# And now cleanup afterwards
-mix phx.digest.clean --all
-
+docker run -v $(pwd):/opt/build --rm -it angen:latest /opt/build/bin/build
 

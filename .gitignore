@@ -48,7 +48,7 @@ angen-*.tar
 /remote
 /zignore
 /hot_reload
-/rel/
+/rel/artifacts
 /source_deploy
 /source_deploy.tar.gz
 /bin

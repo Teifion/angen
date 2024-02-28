@@ -52,7 +52,7 @@ defmodule Angen.Account.AuthPlug do
       end
 
     if user != nil do
-      request_id = ExULID.ULID.generate()
+      request_id = "###"#ExULID.ULID.generate()
       Logger.metadata([request_id: request_id, user_id: user.id] ++ Logger.metadata())
     end
 
