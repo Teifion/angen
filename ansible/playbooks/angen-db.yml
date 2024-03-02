@@ -1,0 +1,6 @@
+- name: "Setup just the database"
+  hosts:
+    - combo
+  roles:
+    - postgres
+  

@@ -1,0 +1,12 @@
+# /apps/angen.vars
+
+ERL_MAX_PORTS=65536
+
+DATABASE_USERNAME="angen_prod"
+DATABASE_PASSWORD="{{ db_password }}"
+DATABASE_HOSTNAME="{{ database_hostname }}"
+DATABASE_DB_NAME="angen_prod"
+SECRET_KEY_BASE="{{ secret_key_base }}"
+GUARDIAN_KEY="{{ guardian_key }}"
+DOMAIN_NAME="{{ ansible_host }}"
+RELEASE_NODE="angen@{{ ansible_host }}"

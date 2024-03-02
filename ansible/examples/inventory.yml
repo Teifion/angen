@@ -1,0 +1,36 @@
+all:
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_become: yes
+    ansible_become_method: sudo
+    ansible_become_pass: "{{ ansible_sudo_password }}"
+    ansible_user: deploy
+    non_sudo_user: deploy
+
+    user_password: "{{ ansible_sudo_password }}"
+    root_password: "{{ root_password }}"
+    ssh_pub_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    database_hostname: "server1.domain.co.uk"
+    certbot_mail_address: "email@domain.co.uk"
+
+  hosts:
+    server1:
+      ansible_host: server1.domain.co.uk
+    server2:
+      ansible_host: server2.domain.co.uk
+    server3:
+      ansible_host: server3.domain.co.uk
+
+combo:
+  hosts:
+    server1:
+
+database:
+  hosts:
+    server1:
+
+web:
+  hosts:
+    server1:
+    server2:
+    server3:

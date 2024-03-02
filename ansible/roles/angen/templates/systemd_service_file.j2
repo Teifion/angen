@@ -1,0 +1,19 @@
+# /etc/systemd/system/angen.service
+[Unit]
+Description=Angen middleware server
+After=network.target
+
+[Service]
+User=deploy
+WorkingDirectory=/etc/angen
+ExecStart=/apps/angen/bin/angen start
+ExecStop=/apps/angen/bin/angen stop
+Restart=on-failure
+LimitNOFILE=65536
+RemainAfterExit=yes
+RestartSec=5
+EnvironmentFile=/apps/angen.vars
+SyslogIdentifier=angen
+
+[Install]
+WantedBy=multi-user.target

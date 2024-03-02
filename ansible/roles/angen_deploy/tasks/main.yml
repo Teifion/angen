@@ -1,0 +1,6 @@
+---
+- name: "Run deploy script"
+  ansible.builtin.script:
+    cmd: "scripts/stable_deploy.sh"
+  become: true
+  become_user: root

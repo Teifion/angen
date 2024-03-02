@@ -53,6 +53,12 @@ angen-*.tar
 /source_deploy.tar.gz
 /bin
 
+# Ansible stuff
+ansible/*vault*
+ansible/host_vars
+ansible/inventory
+ansible/tmp
+
 # In case you use Node.js/npm, you want to ignore these.
 npm-debug.log
 /assets/node_modules/

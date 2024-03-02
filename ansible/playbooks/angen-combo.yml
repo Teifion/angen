@@ -1,0 +1,10 @@
+- name: "Full setup for an Angen instance with database"
+  hosts:
+    - combo
+  roles:
+    - debian
+    - postgres
+    - letsencrypt
+    - nginx
+    - angen
+  

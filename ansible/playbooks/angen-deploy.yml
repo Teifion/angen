@@ -1,0 +1,6 @@
+- name: "Run the Angen deploy scripts"
+  hosts:
+    - web
+  roles:
+    - angen_deploy
+  

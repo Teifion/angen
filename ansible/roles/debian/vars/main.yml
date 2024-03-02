@@ -1,0 +1,5 @@
+user: root
+ssh_port: "22"
+tmzone: Etc/UTC
+sudo_timeout: 20
+ansible_user: root

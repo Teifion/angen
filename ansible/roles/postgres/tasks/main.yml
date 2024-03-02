@@ -1,0 +1,161 @@
+---
+- name: "Find out if PostgreSQL is initialized"
+  ansible.builtin.stat:
+    path: "/usr/bin/psql"
+  register: postgres_data
+  become: true
+  become_user: root
+
+- name: "Check if postgresql.gpg exists"
+  ansible.builtin.stat:
+    path: "/etc/apt/trusted.gpg.d/postgresql.gpg"
+  register: postgres_gpg
+  when: not postgres_data.stat.exists
+  become: true
+  become_user: root
+
+- name: "Install Postgresql - step 1"
+  shell: "curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg"
+  # If it breaks midway through, undo it with:
+  # `rm -rf /etc/apt/trusted.gpg.d/postgresql.gpg`
+  when: not postgres_data.stat.exists and not postgres_gpg.stat.exists
+  become: true
+  become_user: root
+  
+- name: "Install Postgresql - step 2"
+  shell: "sh -c 'echo \"deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main\" > /etc/apt/sources.list.d/pgdg.list'"
+  when: not postgres_data.stat.exists
+  become: true
+  become_user: root
+
+- name: Update apt package cache.
+  apt:
+    update_cache: yes
+    cache_valid_time: 600
+  when: not postgres_data.stat.exists
+
+- name: Install postgres-16
+  apt:
+    pkg:
+      - postgresql-16
+    state: latest
+  when: not postgres_data.stat.exists
+  
+- name: "Start and enable services"
+  service: "name={{ item }} state=started enabled=yes"
+  with_items:
+    - postgresql
+
+- name: Install psycopg2
+  apt:
+    pkg:
+      - python3-psycopg2
+    state: latest
+  when: not postgres_data.stat.exists
+
+- name: "Allow local connections"
+  community.postgresql.postgresql_pg_hba:
+    dest: "/etc/postgresql/16/main/pg_hba.conf"
+    contype: local
+    databases: all
+    method: trust
+    create: true
+  become: true
+  
+- name: "Allow IP4 connections"
+  community.postgresql.postgresql_pg_hba:
+    dest: "/etc/postgresql/16/main/pg_hba.conf"
+    contype: host
+    databases: all
+    source: 0.0.0.0/0
+    method: scram-sha-256
+    create: true
+  become: true
+  
+- name: "Allow IP6 connections"
+  community.postgresql.postgresql_pg_hba:
+    dest: "/etc/postgresql/16/main/pg_hba.conf"
+    contype: host
+    databases: all
+    source: ::/0
+    method: scram-sha-256
+    create: true
+  become: true
+
+- name: "Set listen_addresses"
+  community.postgresql.postgresql_set:
+    name: listen_addresses
+    value: '*'
+  become: true
+  become_user: postgres
+
+- name: "Set shared_preload_libraries"
+  community.postgresql.postgresql_set:
+    name: shared_preload_libraries
+    value: pg_stat_statements
+  become: true
+  become_user: postgres
+
+- name: "Set track_activity_query_size"
+  community.postgresql.postgresql_set:
+    name: track_activity_query_size
+    value: 2048
+  become: true
+  become_user: postgres
+  
+- name: "Set log_min_duration_statement"
+  community.postgresql.postgresql_set:
+    name: log_min_duration_statement
+    value: 2000
+  become: true
+  become_user: postgres
+
+- name: restart postgres
+  service: name=postgresql state=restarted
+
+- name: "Create app database"
+  postgresql_db:
+    state: present
+    name: "{{ db_name }}"
+  become: true
+  become_user: postgres
+
+- name: "Create db user"
+  postgresql_user:
+    state: present
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    role_attr_flags: SUPERUSER
+  become: true
+  become_user: postgres
+
+- name: "Grant db user access to app db"
+  postgresql_privs:
+    type: database
+    database: "{{ db_name }}"
+    roles: "{{ db_user }}"
+    grant_option: no
+    privs: all
+  become: true
+  become_user: postgres
+  
+- name: "Enable extensions"
+  community.postgresql.postgresql_ext:
+    name: pg_stat_statements
+    db: "{{ db_name }}"
+  become: true
+  become_user: postgres
+
+- name: Enabled firewalld port for Postgres
+  firewalld:
+    zone: public
+    port: "5432/tcp"
+    state: enabled
+    permanent: yes
+  notify:
+    - restart firewalld
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted

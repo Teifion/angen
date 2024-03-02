@@ -1,0 +1,6 @@
+- name: "Debian, packages and common applications"
+  hosts:
+    - all
+  roles:
+    - debian
+  

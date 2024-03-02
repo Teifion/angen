@@ -1,0 +1,28 @@
+# Turns the service off and on again (wiping logs in the process)
+# without performing the deployment process
+# I typically used this while testing things
+# vi /scripts/quick_restart.sh
+
+echo "Stopping service"
+/apps/angen/bin/angen stop
+sudo systemctl stop angen.service
+
+echo "Rotate logs"
+rm /var/log/angen/error_old.log
+rm /var/log/angen/info_old.log
+
+cp /var/log/angen/error.log /var/log/angen/error_old.log
+cp /var/log/angen/info.log /var/log/angen/info_old.log
+
+echo "Wipe logs"
+> /var/log/angen/error.log
+> /var/log/angen/info.log
+
+# We found on a faster server if we started up the app really quickly it would generate
+# very high CPU load for no apparent reason, putting this in places solves it
+# if you are using a lower end VPS you can likely remove it
+echo "Sleeping"
+sleep 5
+
+echo "Starting service"
+sudo systemctl start angen.service

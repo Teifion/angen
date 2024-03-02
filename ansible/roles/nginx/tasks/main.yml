@@ -1,0 +1,72 @@
+- name: Create /var/www/tls
+  file:
+    path: /var/www/tls
+    owner: deploy
+    group: deploy
+    mode: 0744
+    state: directory
+
+- name: Stat dh-params.pem
+  stat: path="/var/www/tls/dh-params.pem"
+  register: dh_params_file
+
+- name: "Create dh-params.pem"
+  ansible.builtin.shell:
+    chdir: /var/www/tls/
+    cmd: openssl dhparam -out dh-params.pem 2048
+  when: not dh_params_file.stat.exists
+  
+- name: Chmod /var/www/tls/dh-params.pem
+  file:
+    path: /var/www/tls/dh-params.pem
+    owner: deploy
+    group: deploy
+    mode: 0644
+
+- name: nginx.conf
+  become: true
+  ansible.builtin.template:
+    src: files/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+
+- name: default enabled_site
+  ansible.builtin.template:
+    src: files/enabled_site_default.j2
+    dest: /etc/nginx/sites-enabled/default
+  become: true
+
+- name: angen enabled_site
+  ansible.builtin.template:
+    src: files/enabled_site_angen.j2
+    dest: /etc/nginx/sites-enabled/angen
+  become: true
+
+- name: index.html
+  ansible.builtin.template:
+    src: files/index.html.j2
+    dest: /var/www/html/index.html
+  become: true
+
+- name: Create directory for override
+  file:
+    path: /etc/systemd/system/nginx.service.d
+    state: directory
+
+- name: override.conf
+  ansible.builtin.template:
+    src: files/override.conf.j2
+    dest: /etc/systemd/system/nginx.service.d/override.conf
+  become: true
+
+- name: chown /var/www
+  file:
+    dest: /var/www
+    owner: deploy
+    group: deploy
+
+- name: restart nginx
+  service:
+      name: nginx
+      daemon_reload: true
+      state: restarted
+  become: true

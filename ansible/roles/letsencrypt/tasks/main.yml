@@ -1,0 +1,24 @@
+- name : Install Let's Encrypt Package
+  apt: name={{ certbot_package }} update_cache=yes state=latest
+
+- name: Stat existing cert
+  stat: path="/etc/letsencrypt/archive"
+  register: existing_cert
+
+- name: Create and Install Cert Using {{ certbot_plugin }} Plugin
+  command: "certbot --{{ certbot_plugin }} -d  {{ ansible_host }} -m {{ certbot_mail_address }} --agree-tos --noninteractive --redirect"
+  when: not existing_cert.stat.exists
+
+- name: Set Letsencrypt Cronjob for Certificate Auto Renewal
+  cron: name=letsencrypt_renewal special_time=monthly job="/usr/bin/certbot renew"
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: "Set live folder permissions"
+  ansible.builtin.shell:
+    cmd: chmod -R 0755 /etc/letsencrypt/live
+  become: true
+
+- name: "Set archive folder permissions"
+  ansible.builtin.shell:
+    cmd: chmod -R 0755 /etc/letsencrypt/archive
+  become: true

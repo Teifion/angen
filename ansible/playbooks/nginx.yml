@@ -1,0 +1,6 @@
+- name: "Setup nginx after we have certs sorted"
+  hosts:
+    - web
+  roles:
+    - nginx
+  

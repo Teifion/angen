@@ -1,0 +1,28 @@
+- name: restart cron
+  service:
+    name: cron
+    state: restarted
+  when: reboot_required.stat.exists == false
+
+# - name: restart fail2ban
+#   service:
+#     name: fail2ban
+#     state: restarted
+#   when: reboot_required.stat.exists == false
+
+- name: restart sshd
+  service:
+    name: sshd
+    state: restarted
+  when: reboot_required.stat.exists == false
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted
+
+- name: restart networking
+  service:
+    name: networking
+    state: restarted
+  when: reboot_required.stat.exists == false

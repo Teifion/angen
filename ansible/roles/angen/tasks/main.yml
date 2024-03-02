@@ -1,0 +1,157 @@
+- name : Create /etc/angen
+  become: true
+  file:
+    path: /etc/angen
+    owner: deploy
+    group: deploy
+    state: directory
+    
+- name : Create /apps/angen
+  become: true
+  file:
+    path: /apps/angen
+    owner: deploy
+    group: deploy
+    state: directory
+    
+- name : Create ~/scripts
+  file:
+    path: /home/deploy/scripts
+    owner: deploy
+    group: deploy
+    state: directory
+    
+- name : Create ~/releases
+  file:
+    path: /home/deploy/releases
+    owner: deploy
+    group: deploy
+    state: directory
+    
+- name : Create /var/log/angen
+  become: true
+  file:
+    path: /var/log/angen
+    state: directory
+    owner: deploy
+    group: deploy
+    mode: 755
+
+- name: service file
+  ansible.builtin.template:
+    src: systemd_service_file.j2
+    dest: /etc/systemd/system/angen.service
+  become: true
+
+- name: set /etc/pam.d/common-session-noninteractive
+  ansible.builtin.template:
+    src: common-session-noninteractive.j2
+    dest: /etc/pam.d/common-session-noninteractive
+  become: true
+
+- name: set /etc/pam.d/common-session
+  ansible.builtin.template:
+    src: common-session.j2
+    dest: /etc/pam.d/common-session
+  become: true
+
+- name: set /etc/security/limits.conf
+  ansible.builtin.template:
+    src: limits.conf.j2
+    dest: /etc/security/limits.conf
+  become: true
+
+- name: set /etc/sysctl.conf
+  ansible.builtin.template:
+    src: sysctl.conf.j2
+    dest: /etc/sysctl.conf
+  become: true
+
+- name: set /etc/systemd/user.conf
+  ansible.builtin.template:
+    src: user.conf.j2
+    dest: /etc/systemd/user.conf
+  become: true
+
+- name: set ~/scripts/stable_deploy.sh
+  ansible.builtin.template:
+    src: scripts/stable_deploy.sh.j2
+    dest: /home/deploy/scripts/stable_deploy.sh
+    owner: deploy
+    group: deploy
+
+- name: set ~/scripts/quick_restart.sh
+  ansible.builtin.template:
+    src: scripts/quick_restart.sh.j2
+    dest: /home/deploy/scripts/quick_restart.sh
+    owner: deploy
+    group: deploy
+
+- name: set ~/.bashrc
+  ansible.builtin.template:
+    src: grc_log_colours.j2
+    dest: /usr/share/grc/elixir.log
+    owner: deploy
+    group: deploy
+  become: true
+
+- name: set ~/.bashrc
+  ansible.builtin.template:
+    src: bashrc.j2
+    dest: /home/deploy/.bashrc
+    owner: deploy
+    group: deploy
+
+- name: Stat existing vars
+  stat: path="/apps/angen.vars"
+  register: existing_vars
+
+- name: Enable TLS port
+  firewalld:
+    zone: public
+    port: "8201/tcp"
+    state: enabled
+    permanent: yes
+
+- name: Enable OTP node ports
+  firewalld:
+    zone: public
+    port: "9100-9110/tcp"
+    state: enabled
+    permanent: yes
+
+- name: Enable erlang rpc port
+  firewalld:
+    zone: public
+    port: "9090/tcp"
+    state: enabled
+    permanent: yes
+
+- name: Enable epmd port
+  firewalld:
+    zone: public
+    port: "4369/tcp"
+    state: enabled
+    permanent: yes
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted
+
+- name: Create angen_vars
+  ansible.builtin.template:
+    src: default_angen.vars.j2
+    dest: /apps/angen.vars
+    owner: deploy
+    group: deploy
+  when: not existing_vars.stat.exists
+
+- name: Final reboot of the server
+  reboot:
+    msg: "Rebooting the server having changed a lot of files"
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: whoami

@@ -1,0 +1,334 @@
+# Stop and disable ufw before installing firewalld ...
+- name: Check if ufw is installed.
+  stat: path="/usr/sbin/ufw"
+  register: ufw_installed
+
+- name: Check if ufw status is active.
+  command: ufw status
+  changed_when: False
+  register: ufw_status
+  when: ufw_installed.stat.exists
+
+- name: Disable ufw ruleset if ufw is installed and active.
+  ufw:
+    state: reset
+  when: ufw_installed.stat.exists and 'inactive' not in ufw_status.stdout
+
+- name: Flush any existing (ufw) nftables ruleset.
+  command: nft flush ruleset
+  when: ufw_installed.stat.exists and 'inactive' not in ufw_status.stdout
+
+- name: Stop and disable the ufw service.
+  service:
+    name: ufw
+    state: stopped
+    enabled: no
+  when: ufw_installed.stat.exists
+
+# Update and install the base software
+- name: Update apt package cache.
+  apt:
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Upgrade installed apt packages.
+  apt:
+    upgrade: dist
+  register: upgrade
+
+- name: Ensure that a base set of software packages are installed.
+  apt:
+    pkg:
+      - htop
+      - ca-certificates
+      - vim
+      - vnstat
+      - sysstat
+      - procinfo
+      - geoip-bin
+      - libtinfo-dev
+      - aptitude
+      - lsb-release
+      - grc
+      - neofetch
+      - tcpdump
+      - glances
+      - gnupg2
+      - python3-pip
+      - pipx
+      - ntp
+      - build-essential
+      - git
+      - git-core
+      - curl
+      - fail2ban
+      - firewalld
+      - htop
+      - needrestart
+      - net-tools
+      - pwgen
+      - resolvconf
+      - rsync
+      - sudo
+      - unbound
+      - unzip
+      - nginx
+      - python3
+      - cron
+      - acl
+    state: latest
+
+- name: Check if a reboot is needed for Debian-based systems
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_required
+
+# Host Setup
+- name: Set static hostname
+  hostname:
+    name: "{{ inventory_hostname_short }}"
+
+- name: Add FQDN to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.1\.1'
+    line: "127.0.1.1 {{ inventory_hostname }} {{ inventory_hostname_short }}"
+    state: present
+
+- name: Check if cloud init is installed.
+  stat: path="/etc/cloud/templates/hosts.debian.tmpl"
+  register: cloud_installed
+
+- name: Add FQDN to /etc/cloud/templates/hosts.debian.tmpl
+  lineinfile:
+    dest: /etc/cloud/templates/hosts.debian.tmpl
+    regexp: '^127\.0\.1\.1'
+    line: "127.0.1.1 {{ inventory_hostname }} {{ inventory_hostname_short }}"
+    state: present
+  when: cloud_installed.stat.exists
+
+- name: Set timezone.
+  timezone:
+    name: "{{ tmzone }}"
+
+- name: Set ssh port port number
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: 'Port '
+    line: 'Port {{ ssh_port }}'
+    state: present
+
+# Set sudo password timeout (default is 15 minutes)
+- name: Set sudo password timeout.
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^Defaults\tenv_reset'
+    line: 'Defaults    env_reset, timestamp_timeout={{ sudo_timeout }}'
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: Create/update regular user with sudo privileges.
+  user:
+    name: "{{ non_sudo_user }}"
+    password: "{{ ansible_sudo_password | password_hash('sha512') }}"
+    groups: sudo
+    append: true
+    shell: /bin/bash
+
+- name: Ensure authorized keys for remote user is installed.
+  authorized_key:
+    user: "{{ non_sudo_user }}"
+    key: "{{ ssh_pub_key }}"
+
+- name: Ensure authorized key for root user is installed.
+  authorized_key:
+    user: root
+    key: "{{ ssh_pub_key }}"
+
+- name: Update root user password.
+  user:
+    name: root
+    password: "{{ root_password | password_hash('sha512') }}"
+
+- name: Disable root password login via SSH.
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin prohibit-password'
+  
+- name: Disable tunneled clear-text passwords.
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+  
+# - name: Configure user .vimrc.
+#   copy:
+#     dest: /home/{{ non_sudo_user }}/.vimrc
+#     content: "{{ vimrc }}"
+#     owner: "{{ non_sudo_user }}"
+#     group: "{{ non_sudo_user }}"
+#     mode: 0644
+
+# - name: Configure root .vimrc.
+#   copy:
+#     dest: /root/.vimrc
+#     content: "{{ vimrc }}"
+#     owner: root
+#     group: root
+#     mode: 0644
+
+# - name: Configure user 2-line prompt and .bashrc aliases.
+#   blockinfile:
+#     path: /home/{{ non_sudo_user }}/.bashrc
+#     block: |
+#       PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
+#       alias l='ls -CF'
+#       alias la='ls -AF'
+#       alias ll='ls -alF'
+
+# - name: Configure root 2-line prompt and .bashrc aliases.
+#   blockinfile:
+#     path: /root/.bashrc
+#     block: |
+#       PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\n\$ '
+#       export LS_OPTIONS='--color=auto'
+#       eval "`dircolors`"
+#       alias ls='ls $LS_OPTIONS'
+#       alias l='ls -CF'
+#       alias la='ls -AF'
+#       alias ll='ls -alF'
+
+# Configure a firewall, using firewalld
+- name: "Check if the firewalld public zone is active for interface: {{ ansible_default_ipv4.interface }}."
+  command: firewall-cmd --get-zone-of-interface={{ ansible_default_ipv4.interface }}
+  register: zone_status
+  failed_when: zone_status.rc != 0 and zone_status.rc != 2
+  changed_when: zone_status.rc == 2
+
+- name: Set the default firewalld public zone to active if not already active.
+  command: firewall-cmd --permanent --zone=public --change-interface={{ ansible_default_ipv4.interface }}
+  when: '"public" not in zone_status.stdout'
+  
+- name: Enable the firewalld ssh port (which may be different than port 22).
+  firewalld:
+    zone: public
+    port: "{{ ssh_port }}/tcp"
+    state: enabled
+    permanent: yes
+
+- name: Disable firewalld dhcpv6-client and ssh service.
+  firewalld:
+    zone: public
+    service: "{{ item }}"
+    state: disabled
+    permanent: yes
+  with_items:
+    - dhcpv6-client
+    - ssh
+    
+# - name: Configure fail2ban local jail.
+#   copy:
+#     dest: /etc/fail2ban/jail.local
+#     content: "{{ f2b_jail_local }}"
+#     owner: root
+#     group: root
+#     mode: 0644
+#   notify:
+#     - restart fail2ban
+
+# # simple shell script to display fail2ban-client status info;
+# # example usage:
+# #   f2bst
+# #   f2bst sshd
+# - name: Create f2bst shell script.
+#   copy:
+#     dest: /usr/local/bin/f2bst
+#     content: |
+#       #!/usr/bin/sh
+#       fail2ban-client status $*
+#     owner: root
+#     group: root
+#     mode: 0755
+
+- name: Check if any services needs to be restarted.
+  command: needrestart -r a
+  when: upgrade.changed and reboot_required.stat.exists == false
+
+# - name: Configure static networking
+#   copy:
+#     src: etc/network/interfaces
+#     dest: /etc/network/interfaces
+#     owner: root
+#     group: root
+#     mode: 0644
+#   when: cfg_static_network == true
+#   notify:
+#     - restart networking
+
+- name: Reboot the server if needed.
+  reboot:
+    msg: "Reboot initiated by Ansible because of reboot required file."
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: whoami
+  when: reboot_required.stat.exists
+
+- name: Remove old packages from the cache.
+  apt:
+    autoclean: yes
+
+- name: Remove dependencies that are no longer needed.
+  apt:
+    autoremove: yes
+    purge: yes
+
+# Nginx
+- name: Enable HTTP port
+  firewalld:
+    zone: public
+    port: "80/tcp"
+    state: enabled
+    permanent: yes
+
+- name: Enable HTTP port
+  firewalld:
+    zone: public
+    port: "443/tcp"
+    state: enabled
+    permanent: yes
+
+- name: start nginx
+  service:
+    name: nginx
+    state: started
+
+# Now restart some services we altered
+# - name: restart cron
+#   service:
+#     name: cron
+#     state: restarted
+
+# - name: restart fail2ban
+#   service:
+#     name: fail2ban
+#     state: restarted
+#   when: reboot_required.stat.exists == false
+
+- name: restart sshd
+  service:
+    name: sshd
+    state: restarted
+  when: reboot_required.stat.exists == false
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted
+
+# - name: restart networking
+#   service:
+#     name: networking
+#     state: restarted
+#   when: reboot_required.stat.exists == false

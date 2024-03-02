@@ -1,0 +1,9 @@
+- name: "Full setup for an Angen instance"
+  hosts:
+    - web
+  roles:
+    - debian
+    - letsencrypt
+    - nginx
+    - angen
+  
