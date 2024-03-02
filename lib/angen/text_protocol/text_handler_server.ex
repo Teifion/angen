@@ -8,10 +8,11 @@ defmodule Angen.TextProtocol.TextHandlerServer do
 
   @impl ThousandIsland.Handler
   def handle_connection(socket, _state) do
-    {:continue, %{
-      user_id: nil,
-      socket: socket
-    }}
+    {:continue,
+     %{
+       user_id: nil,
+       socket: socket
+     }}
   end
 
   @impl ThousandIsland.Handler

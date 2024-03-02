@@ -10,7 +10,7 @@ defmodule Angen.TextProtocol.MessageResponse do
     result = %{
       "command" => "message",
       "result" => "failure",
-      "reason" => "no user found by name '#{to_name}'",
+      "reason" => "no user found by name '#{to_name}'"
     }
 
     {result, state}

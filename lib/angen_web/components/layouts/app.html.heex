@@ -1,8 +1,6 @@
 <div>
-  <%
-    view_colour_value = assigns[:view_colour] || :primary
-    {fg, bg, _bsname} = Angen.Helper.StylingHelper.colours(view_colour_value)
-  %>
+  <% view_colour_value = assigns[:view_colour] || :primary
+  {fg, bg, _bsname} = Angen.Helper.StylingHelper.colours(view_colour_value) %>
   <style type="text/css">
     @media print {
       #menu, #header, #navigation {

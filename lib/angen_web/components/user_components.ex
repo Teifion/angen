@@ -25,20 +25,20 @@ defmodule AngenWeb.UserComponents do
     icons =
       [
         if(assigns.user.smurf_of_id != nil,
-          do: {"primary", Angen.Moderation.ActionLib.action_icon("Smurf")}
+          do: {"primary", "fa-smurf"}
         ),
         if(Enum.member?(user.roles, "Smurfer"), do: {"info2", "fa-solid fa-split"}),
         if(ban_status == "banned",
-          do: {"danger2", Angen.Moderation.ActionLib.action_icon("Ban")}
+          do: {"danger2", "fa-ban"}
         ),
         if(ban_status == "suspended",
-          do: {"danger", Angen.Moderation.ActionLib.action_icon("Suspend")}
+          do: {"danger", "fa-suspend"}
         ),
         if(Enum.member?(restrictions, "All chat"),
-          do: {"danger", Angen.Moderation.ActionLib.action_icon("Mute")}
+          do: {"danger", "fa-mute"}
         ),
         if(Enum.member?(restrictions, "Warning reminder"),
-          do: {"warning", Angen.Moderation.ActionLib.action_icon("Warn")}
+          do: {"warning", "fa-warn"}
         ),
         if(Enum.member?(user.roles, "Trusted"), do: {"", "fa-solid fa-check"}),
         if(not Enum.member?(user.roles, "Verified"),
@@ -95,14 +95,10 @@ defmodule AngenWeb.UserComponents do
         </span>
 
         <a :for={r <- @recents} class="dropdown-item" href={r.url}>
-          <Fontawesome.icon icon={r.type_icon} style="regular" css_style={"color: #{r.type_colour}"} />
+          <Fontawesome.icon icon={r.type_icon} style="regular" css={"color: #{r.type_colour}"} />
 
           <%= if r.item_icon do %>
-            <Fontawesome.icon
-              icon={r.item_icon}
-              style="regular"
-              css_style={"color: #{r.item_colour}"}
-            />
+            <Fontawesome.icon icon={r.item_icon} style="regular" css={"color: #{r.item_colour}"} />
           <% else %>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <% end %>
@@ -137,7 +133,7 @@ defmodule AngenWeb.UserComponents do
         style="min-width: 300px; max-width: 500px;"
       >
         <a class="dropdown-item" href={~p"/profile"}>
-          <i class={"fa-fw fa-user fa-solid"}></i> &nbsp;
+          <i class="fa-fw fa-user fa-solid"></i> &nbsp;
           Account
         </a>
 

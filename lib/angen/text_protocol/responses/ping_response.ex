@@ -8,9 +8,7 @@ defmodule Angen.TextProtocol.PingResponse do
   @spec generate(atom, any(), Angen.ConnState.t()) :: Angen.handler_response()
   def generate(_, _, state) do
     result = %{
-      "command" => "ping",
-      "result" => "success",
-      "message" => "pong"
+      "command" => "pong"
     }
 
     {result, state}

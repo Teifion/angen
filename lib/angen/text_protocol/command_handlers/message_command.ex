@@ -9,7 +9,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Message do
 
   @impl true
   @spec command :: String.t()
-  def command, do: "direct_message"
+  def command, do: "message"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
@@ -17,6 +17,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Message do
     case Account.get_user_by_name(to_name) do
       nil ->
         TextProtocol.MessageResponse.generate(:failure, {:no_user_found, to_name}, state)
+
       to_user ->
         Communication.send_direct_message(state.user_id, to_user.id, content)
         TextProtocol.MessageResponse.generate(:success, msg, state)

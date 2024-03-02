@@ -5,7 +5,6 @@ defmodule Angen.TextProtocol.CommandHandlers.Register do
 
   use Angen.TextProtocol.CommandHandlerMacro
 
-
   @impl true
   @spec command :: String.t()
   def command, do: "register"
@@ -22,6 +21,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Register do
     case Teiserver.Account.create_user(params) do
       {:ok, user} ->
         TextProtocol.RegisterResponse.generate(:success, user, state)
+
       {:error, changeset} ->
         TextProtocol.RegisterResponse.generate(:error, changeset, state)
     end

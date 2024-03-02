@@ -5,18 +5,23 @@ defmodule Angen.TextProtocol.ExternalDispatch do
   alias Angen.TextProtocol.CommandHandlers
   alias Angen.TextProtocol.ErrorResponse
 
-  @spec handle(Angen.raw_message(), Angen.ConnState.t()) :: {nil | Angen.raw_message() | [Angen.raw_message()], Angen.ConnState.t()}
+  @spec handle(Angen.raw_message(), Angen.ConnState.t()) ::
+          {nil | Angen.raw_message() | [Angen.raw_message()], Angen.ConnState.t()}
   def handle(message, state) do
     try do
       message
-        |> decode_message()
-        |> do_dispatch(state)
+      |> decode_message()
+      |> do_dispatch(state)
     rescue
       e in FunctionClauseError ->
         handle_error(e, __STACKTRACE__, state)
         send(self(), :disconnect_on_error)
 
-        ErrorResponse.generate(:failure, "Server FunctionClauseError for message #{message}", state)
+        ErrorResponse.generate(
+          :failure,
+          "Server FunctionClauseError for message #{message}",
+          state
+        )
 
       e ->
         handle_error(e, __STACKTRACE__, state)
@@ -30,8 +35,8 @@ defmodule Angen.TextProtocol.ExternalDispatch do
     module = lookup(message["command"])
     {response, state} = module.handle(message, state)
 
-    if message["message-id"] do
-      {Map.put(response, "message-id", message["message-id"]), state}
+    if message["message_id"] do
+      {Map.put(response, "message_id", message["message_id"]), state}
     else
       {response, state}
     end
@@ -45,7 +50,7 @@ defmodule Angen.TextProtocol.ExternalDispatch do
   def lookup("whois"), do: CommandHandlers.Whois
   def lookup("ping"), do: CommandHandlers.Ping
   def lookup("message"), do: CommandHandlers.Message
-  def lookup(cmd), do: raise "No module for command #{cmd}"
+  def lookup(cmd), do: raise("No module for command #{cmd}")
 
   @spec decode_message(Angen.raw_message()) :: Angen.json_message()
   defp decode_message(message) do

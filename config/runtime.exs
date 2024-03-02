@@ -68,8 +68,46 @@ if config_env() == :prod do
       certfile: "/etc/letsencrypt/live/#{domain_name}/cert.pem",
       cacertfile: "/etc/letsencrypt/live/#{domain_name}/fullchain.pem",
       versions: [:"tlsv1.2"],
-      dhfile: '/var/www/tls/dh-params.pem',
-      ciphers: ['ECDHE-ECDSA-AES256-GCM-SHA384','ECDHE-RSA-AES256-GCM-SHA384','ECDHE-ECDSA-AES256-SHA384','ECDHE-RSA-AES256-SHA384','ECDHE-ECDSA-DES-CBC3-SHA','ECDH-ECDSA-AES256-GCM-SHA384','ECDH-RSA-AES256-GCM-SHA384','ECDH-ECDSA-AES256-SHA384','ECDH-RSA-AES256-SHA384','DHE-DSS-AES256-GCM-SHA384','DHE-DSS-AES256-SHA256','AES256-GCM-SHA384','AES256-SHA256','ECDHE-ECDSA-AES128-GCM-SHA256','ECDHE-RSA-AES128-GCM-SHA256','ECDHE-ECDSA-AES128-SHA256','ECDHE-RSA-AES128-SHA256','ECDH-ECDSA-AES128-GCM-SHA256','ECDH-RSA-AES128-GCM-SHA256','ECDH-ECDSA-AES128-SHA256','ECDH-RSA-AES128-SHA256','DHE-DSS-AES128-GCM-SHA256','DHE-DSS-AES128-SHA256','AES128-GCM-SHA256','AES128-SHA256','ECDHE-ECDSA-AES256-SHA','ECDHE-RSA-AES256-SHA','DHE-DSS-AES256-SHA','ECDH-ECDSA-AES256-SHA','ECDH-RSA-AES256-SHA','AES256-SHA','ECDHE-ECDSA-AES128-SHA','ECDHE-RSA-AES128-SHA','DHE-DSS-AES128-SHA','ECDH-ECDSA-AES128-SHA','ECDH-RSA-AES128-SHA','AES128-SHA'],
+      dhfile: ~c"/var/www/tls/dh-params.pem",
+      ciphers: [
+        ~c"ECDHE-ECDSA-AES256-GCM-SHA384",
+        ~c"ECDHE-RSA-AES256-GCM-SHA384",
+        ~c"ECDHE-ECDSA-AES256-SHA384",
+        ~c"ECDHE-RSA-AES256-SHA384",
+        ~c"ECDHE-ECDSA-DES-CBC3-SHA",
+        ~c"ECDH-ECDSA-AES256-GCM-SHA384",
+        ~c"ECDH-RSA-AES256-GCM-SHA384",
+        ~c"ECDH-ECDSA-AES256-SHA384",
+        ~c"ECDH-RSA-AES256-SHA384",
+        ~c"DHE-DSS-AES256-GCM-SHA384",
+        ~c"DHE-DSS-AES256-SHA256",
+        ~c"AES256-GCM-SHA384",
+        ~c"AES256-SHA256",
+        ~c"ECDHE-ECDSA-AES128-GCM-SHA256",
+        ~c"ECDHE-RSA-AES128-GCM-SHA256",
+        ~c"ECDHE-ECDSA-AES128-SHA256",
+        ~c"ECDHE-RSA-AES128-SHA256",
+        ~c"ECDH-ECDSA-AES128-GCM-SHA256",
+        ~c"ECDH-RSA-AES128-GCM-SHA256",
+        ~c"ECDH-ECDSA-AES128-SHA256",
+        ~c"ECDH-RSA-AES128-SHA256",
+        ~c"DHE-DSS-AES128-GCM-SHA256",
+        ~c"DHE-DSS-AES128-SHA256",
+        ~c"AES128-GCM-SHA256",
+        ~c"AES128-SHA256",
+        ~c"ECDHE-ECDSA-AES256-SHA",
+        ~c"ECDHE-RSA-AES256-SHA",
+        ~c"DHE-DSS-AES256-SHA",
+        ~c"ECDH-ECDSA-AES256-SHA",
+        ~c"ECDH-RSA-AES256-SHA",
+        ~c"AES256-SHA",
+        ~c"ECDHE-ECDSA-AES128-SHA",
+        ~c"ECDHE-RSA-AES128-SHA",
+        ~c"DHE-DSS-AES128-SHA",
+        ~c"ECDH-ECDSA-AES128-SHA",
+        ~c"ECDH-RSA-AES128-SHA",
+        ~c"AES128-SHA"
+      ],
       secure_renegotiate: true,
       reuse_sessions: true,
       honor_cipher_order: true
@@ -84,7 +122,7 @@ if config_env() == :prod do
 
   # Guardian
   config :teiserver, Angen.Account.Guardian,
-    secret_key: System.get_env("GUARDIAN_KEY") || raise "No env of GUARDIAN_KEY"
+    secret_key: System.get_env("GUARDIAN_KEY") || raise("No env of GUARDIAN_KEY")
 
   # Teiserver specific to prod
   config :teiserver,
@@ -96,6 +134,6 @@ if config_env() == :prod do
     certs: [
       keyfile: "/etc/letsencrypt/live/#{domain_name}/privkey.pem",
       certfile: "/etc/letsencrypt/live/#{domain_name}/cert.pem",
-      cacertfile: "/etc/letsencrypt/live/#{domain_name}/fullchain.pem",
+      cacertfile: "/etc/letsencrypt/live/#{domain_name}/fullchain.pem"
     ]
 end

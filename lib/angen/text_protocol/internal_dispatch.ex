@@ -5,7 +5,8 @@ defmodule Angen.TextProtocol.InternalDispatch do
   alias Angen.TextProtocol.InfoHandlers
   alias Angen.TextProtocol.ErrorResponse
 
-  @spec handle(map, Angen.ConnState.t()) :: {nil | Angen.raw_message() | [Angen.raw_message()], Angen.ConnState.t()}
+  @spec handle(map, Angen.ConnState.t()) ::
+          {nil | Angen.raw_message() | [Angen.raw_message()], Angen.ConnState.t()}
   def handle(message, state) do
     try do
       do_dispatch(message, state)
@@ -14,13 +15,21 @@ defmodule Angen.TextProtocol.InternalDispatch do
         handle_error(e, __STACKTRACE__, state)
         send(self(), :disconnect_on_error)
 
-        ErrorResponse.generate(:failure, "Server FunctionClauseError for message #{inspect(message)}", state)
+        ErrorResponse.generate(
+          :failure,
+          "Server FunctionClauseError for message #{inspect(message)}",
+          state
+        )
 
       e ->
         handle_error(e, __STACKTRACE__, state)
         send(self(), :disconnect_on_error)
 
-        ErrorResponse.generate(:failure, "Internal server error for message #{inspect(message)}", state)
+        ErrorResponse.generate(
+          :failure,
+          "Internal server error for message #{inspect(message)}",
+          state
+        )
     end
   end
 
@@ -33,7 +42,7 @@ defmodule Angen.TextProtocol.InternalDispatch do
   def lookup("Teiserver.Communication.User:" <> _, :message_received), do: InfoHandlers.Messaged
   def lookup("Teiserver.Communication.User:" <> _, :message_sent), do: InfoHandlers.Noop
   def lookup("Teiserver.Communication.User:" <> _, _), do: InfoHandlers.NoopLog
-  def lookup(topic, event), do: raise "No module for info topic:`#{topic}`, event:`#{event}`"
+  def lookup(topic, event), do: raise("No module for info topic:`#{topic}`, event:`#{event}`")
 
   defp handle_error(error, stacktrace, _state) do
     # This will generate the error and raise it in all the normal ways

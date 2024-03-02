@@ -9,10 +9,9 @@
     <%= if assigns[:rss_feed] do %>
       <link rel="alternate" type="application/rss+xml" title="Blog title" href={@rss_feed} />
     <% end %>
-    
+
     <.live_title>
-      xyz<%#= assigns[:page_title] || Application.get_env(:angen, Angen)[:site_title],
-      suffix: Application.get_env(:angen, Angen)[:site_suffix] %>
+      xyz
     </.live_title>
 
     <% dark_mode = true %>

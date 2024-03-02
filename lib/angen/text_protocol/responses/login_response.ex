@@ -10,22 +10,24 @@ defmodule Angen.TextProtocol.LoginResponse do
     result = %{
       "command" => "login",
       "result" => "success",
-      "message" => "You are now logged in as '#{user.name}'"
+      "message" => "You are now logged in as '#{user.name}'",
+      "user_id" => user.id
     }
 
     {result, %{state | user_id: user.id}}
   end
 
   def generate(:failure, reason, state) do
-    reason_str = case reason do
-      :no_user -> "no user"
-      :bad_password -> "bad password"
-    end
+    reason_str =
+      case reason do
+        :no_user -> "no user"
+        :bad_password -> "bad password"
+      end
 
     result = %{
       "command" => "login",
       "result" => "failure",
-      "reason" => reason_str,
+      "reason" => reason_str
     }
 
     {result, state}

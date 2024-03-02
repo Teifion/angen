@@ -10,9 +10,8 @@ defmodule Angen.Application do
   def start(_type, _args) do
     children = [
       {Ecto.Migrator,
-         repos: Application.fetch_env!(:angen, :ecto_repos),
-         skip: System.get_env("SKIP_MIGRATIONS") == "true"},
-
+       repos: Application.fetch_env!(:angen, :ecto_repos),
+       skip: System.get_env("SKIP_MIGRATIONS") == "true"},
       AngenWeb.Telemetry,
       Angen.Repo,
       {Phoenix.PubSub, name: Angen.PubSub},
@@ -21,15 +20,14 @@ defmodule Angen.Application do
 
       # {Oban, oban_config()},
       {ThousandIsland,
-        port: Application.get_env(:angen, :tls_port),
-        handler_module: Angen.TextProtocol.TextHandlerServer,
-        transport_module: ThousandIsland.Transports.SSL,
-        transport_options: [
-          keyfile: Application.get_env(:angen, :certs)[:keyfile],
-          certfile: Application.get_env(:angen, :certs)[:certfile]
-          # certfile: Application.get_env(:angen, :certs)[:cacertfile]
-        ]
-      }
+       port: Application.get_env(:angen, :tls_port),
+       handler_module: Angen.TextProtocol.TextHandlerServer,
+       transport_module: ThousandIsland.Transports.SSL,
+       transport_options: [
+         keyfile: Application.get_env(:angen, :certs)[:keyfile],
+         certfile: Application.get_env(:angen, :certs)[:certfile]
+         # certfile: Application.get_env(:angen, :certs)[:cacertfile]
+       ]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

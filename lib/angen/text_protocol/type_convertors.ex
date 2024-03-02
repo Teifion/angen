@@ -18,9 +18,11 @@ defmodule Angen.TextProtocol.TypeConvertors do
 
   def convert(object, _) do
     case Jason.encode(object) do
-      {:ok, str} -> str
+      {:ok, str} ->
+        str
+
       {:error, err} ->
-        raise "No handler for object: #{inspect object}, err: #{inspect err}"
+        raise "No handler for object: #{inspect(object)}, err: #{inspect(err)}"
     end
   end
 

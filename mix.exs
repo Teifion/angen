@@ -20,7 +20,6 @@ defmodule Angen.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
-
       description: "Middleware server using Teiserver",
       package: package()
     ]
@@ -78,7 +77,6 @@ defmodule Angen.MixProject do
       {:tzdata, "~> 1.1"},
       {:etop, "~> 0.7.0"},
       {:fontawesome_icons, "~> 0.0.4"},
-
       {:guardian, "~> 2.1"},
       {:bodyguard, "~> 2.4"},
       {:thousand_island, "~> 1.3"},
@@ -87,7 +85,9 @@ defmodule Angen.MixProject do
       # when developing locally we'll want to use a relative
       # reference
       # {:teiserver, git: "https://github.com/teifion/teiserver.git", branch: "0.0.4"}
-      {:teiserver, git: "https://github.com/teifion/teiserver.git", ref: "61aab0482d16c68f6daf6b707558a94dcddedfcf"}
+      {:teiserver,
+       git: "https://github.com/teifion/teiserver.git",
+       ref: "efab3def32096e29abe00d9b5447d5a12677d01e"}
       # {:teiserver, path: "../teiserver"}
     ]
   end

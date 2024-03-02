@@ -1,7 +1,7 @@
 defmodule Angen.TextProtocol.CommandHandlers.Ping do
   @moduledoc """
   Example usage
-  {"command": "ping","message-id":123}
+  {"command": "ping","message_id":123}
   """
 
   use Angen.TextProtocol.CommandHandlerMacro

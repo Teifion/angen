@@ -5,17 +5,20 @@ defmodule Angen.TextProtocol.ExternalDispatchTest do
 
   describe "module lookup" do
     test "lookup" do
-    {:ok, module_list} = :application.get_key(:angen, :modules)
+      {:ok, module_list} = :application.get_key(:angen, :modules)
 
-    command_modules =
       module_list
       |> Enum.filter(fn m ->
         Code.ensure_loaded(m)
 
         # Get all modules implementing the relevant macro
         case m.__info__(:attributes)[:behaviour] do
-          [] -> false
-          nil -> false
+          [] ->
+            false
+
+          nil ->
+            false
+
           b ->
             Enum.member?(b, Angen.TextProtocol.CommandHandlerMacro)
         end

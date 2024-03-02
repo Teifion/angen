@@ -54,7 +54,8 @@ defmodule AngenWeb do
       use Phoenix.LiveView,
         layout: {AngenWeb.Layouts, :app}
 
-      import Angen.Account.AuthLib, only: [allow?: 2, allow_any?: 2, mount_require_all: 2, mount_require_any: 2]
+      import Angen.Account.AuthLib,
+        only: [allow?: 2, allow_any?: 2, mount_require_all: 2, mount_require_any: 2]
 
       unquote(html_helpers())
     end
