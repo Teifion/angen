@@ -75,7 +75,6 @@ defmodule Angen.MixProject do
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev], runtime: false},
       {:dart_sass, "~> 0.6"},
-      {:libcluster, "~> 3.3"},
       {:tzdata, "~> 1.1"},
       {:etop, "~> 0.7.0"},
       {:fontawesome_icons, "~> 0.0.4"},
@@ -87,7 +86,8 @@ defmodule Angen.MixProject do
       # We're pointing it at a specific git branch most of the time but
       # when developing locally we'll want to use a relative
       # reference
-      {:teiserver, git: "https://github.com/teifion/teiserver.git", branch: "0.0.4"}
+      # {:teiserver, git: "https://github.com/teifion/teiserver.git", branch: "0.0.4"}
+      {:teiserver, git: "https://github.com/teifion/teiserver.git", ref: "61aab0482d16c68f6daf6b707558a94dcddedfcf"}
       # {:teiserver, path: "../teiserver"}
     ]
   end

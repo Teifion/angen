@@ -44,6 +44,7 @@ defmodule Angen.TextProtocol.ExternalDispatch do
   def lookup("whoami"), do: CommandHandlers.Whoami
   def lookup("whois"), do: CommandHandlers.Whois
   def lookup("ping"), do: CommandHandlers.Ping
+  def lookup("message"), do: CommandHandlers.Message
   def lookup(cmd), do: raise "No module for command #{cmd}"
 
   @spec decode_message(Angen.raw_message()) :: Angen.json_message()

@@ -4,7 +4,7 @@ defmodule Angen.TextProtocol.TextHandlerServer do
   """
   use ThousandIsland.Handler
 
-  alias Angen.TextProtocol.ExternalDispatch
+  alias Angen.TextProtocol.{ExternalDispatch, InternalDispatch}
 
   @impl ThousandIsland.Handler
   def handle_connection(socket, _state) do
@@ -56,11 +56,25 @@ defmodule Angen.TextProtocol.TextHandlerServer do
     {:noreply, state}
   end
 
-  def handle_info(message, state) do
-    IO.puts ""
-    IO.inspect message, label: "handle_info"
-    IO.puts ""
+  def handle_info(%{} = message, {socket, state}) do
+    # # Sometimes we'll get this as {socket, state} and sometimes just state
+    # # this prevents errors around that
+    # state = case state do
+    #   {_socket, state} -> state
+    #   state -> state
+    # end
 
-    {:noreply, state}
+    # This handles the actual message
+    {response, new_state} = InternalDispatch.handle(message, state)
+
+    # If we get one or more responses, we send them
+    (response || [])
+    |> List.wrap()
+    |> Enum.each(fn r ->
+      msg = encode_message(r)
+      ThousandIsland.Socket.send(state.socket, "#{msg}\n")
+    end)
+
+    {:noreply, {new_state.socket, new_state}}
   end
 end

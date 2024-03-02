@@ -86,6 +86,10 @@ if config_env() == :prod do
   config :teiserver, Angen.Account.Guardian,
     secret_key: System.get_env("GUARDIAN_KEY") || raise "No env of GUARDIAN_KEY"
 
+  # Teiserver specific to prod
+  config :teiserver,
+    node_name: System.get_env("NODE_NAME") || hd(String.split(domain_name, "."))
+
   # Angen itself
   config :angen,
     tls_port: String.to_integer(System.get_env("TLS_PORT") || "8201"),

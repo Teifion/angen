@@ -17,7 +17,7 @@ defmodule Angen.TextProtocol.RegisterResponse do
   end
 
   def generate(:failure, changeset, state) do
-    IO.puts ""
+    IO.puts "Angen.TextProtocol.RegisterResponse"
     IO.inspect changeset
     IO.puts ""
 

@@ -18,7 +18,6 @@ defmodule Angen.Application do
       {Phoenix.PubSub, name: Angen.PubSub},
       {Finch, name: Angen.Finch},
       AngenWeb.Endpoint,
-      {Cluster.Supervisor, [topologies(), [name: Angen.ClusterSupervisor]]},
 
       # {Oban, oban_config()},
       {ThousandIsland,
@@ -41,15 +40,6 @@ defmodule Angen.Application do
     Logger.info("Angen.Supervisor start result: #{Kernel.inspect(start_result)}")
 
     start_result
-  end
-
-  defp topologies do
-    [
-      example: [
-        strategy: Cluster.Strategy.Epmd,
-        config: [hosts: [:"angen@drawbridge1.teifion.co.uk", :"angen@drawbridge2.teifion.co.uk"]],
-      ]
-    ]
   end
 
   # Tell Phoenix to update the endpoint configuration

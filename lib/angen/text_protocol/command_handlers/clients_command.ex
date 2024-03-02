@@ -13,7 +13,8 @@ defmodule Angen.TextProtocol.CommandHandlers.Clients do
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
   def handle(_msg, state) do
-    client_ids = Teiserver.Connections.list_client_ids()
-    TextProtocol.ClientsResponse.generate(:success, client_ids, state)
+    local_client_ids = Teiserver.Connections.list_local_client_ids()
+    global_client_ids = Teiserver.Connections.list_client_ids()
+    TextProtocol.ClientsResponse.generate(:success, {local_client_ids, global_client_ids}, state)
   end
 end
