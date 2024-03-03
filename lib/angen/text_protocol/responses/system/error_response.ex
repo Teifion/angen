@@ -5,11 +5,14 @@ defmodule Angen.TextProtocol.ErrorResponse do
 
   use Angen.TextProtocol.ResponseMacro
 
-  @spec generate(atom, any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def generate(_, message, state) do
+  @impl true
+  @spec name :: String.t()
+  def name, do: "error"
+
+  @impl true
+  @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
+  def do_generate(message, state) do
     result = %{
-      "command" => "n/a",
-      "result" => "error",
       "message" => message
     }
 

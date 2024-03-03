@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.MessagedResponse do
+defmodule Angen.TextProtocol.RegisteredResponse do
   @moduledoc """
 
   """
@@ -7,16 +7,13 @@ defmodule Angen.TextProtocol.MessagedResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "messaged"
+  def name, do: "registered"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate(message, state) do
-    data = TypeConvertors.convert(message)
-
+  def do_generate(%Teiserver.Account.User{} = user, state) do
     result = %{
-      "command" => "messaged",
-      "message" => data
+      "user" => TypeConvertors.convert(user)
     }
 
     {result, state}

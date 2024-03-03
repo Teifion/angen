@@ -17,13 +17,13 @@ defmodule Angen.TextProtocol.CommandHandlerMacro do
     @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
     def handle(msg, state) do
       # Do stuff here
-      TextProtocol.MODULEResponse.generate(:success, data, state)
+      TextProtocol.MODULEResponse.generate(data, state)
     end
   end
 
   """
 
-  @callback command() :: String.t()
+  @callback name :: String.t()
 
   @callback handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
 
@@ -32,6 +32,7 @@ defmodule Angen.TextProtocol.CommandHandlerMacro do
       @behaviour Angen.TextProtocol.CommandHandlerMacro
 
       alias Angen.TextProtocol
+      alias Angen.TextProtocol.FailureResponse
       alias Teiserver.Api
     end
   end

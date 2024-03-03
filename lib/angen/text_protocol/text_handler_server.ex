@@ -57,7 +57,7 @@ defmodule Angen.TextProtocol.TextHandlerServer do
     {:noreply, state}
   end
 
-  def handle_info(%{} = message, {socket, state}) do
+  def handle_info(%{} = message, {_socket, state}) do
     # # Sometimes we'll get this as {socket, state} and sometimes just state
     # # this prevents errors around that
     # state = case state do

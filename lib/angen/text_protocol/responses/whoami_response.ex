@@ -5,8 +5,13 @@ defmodule Angen.TextProtocol.WhoamiResponse do
 
   use Angen.TextProtocol.ResponseMacro
 
-  @spec generate(atom, any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def generate(:not_logged_in, _, state) do
+  @impl true
+  @spec name :: String.t()
+  def name, do: "whoami"
+
+  @impl true
+  @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
+  def do_generate(_, state) do
     result = %{
       "command" => "whoami",
       "result" => "failure",
@@ -16,15 +21,15 @@ defmodule Angen.TextProtocol.WhoamiResponse do
     {result, state}
   end
 
-  def generate(:success, user, state) do
-    json_user = TypeConvertors.convert(user)
+  # def do_generate(user, state) do
+  #   json_user = TypeConvertors.convert(user)
 
-    result = %{
-      "command" => "whoami",
-      "result" => "success",
-      "user" => json_user
-    }
+  #   result = %{
+  #     "command" => "whoami",
+  #     "result" => "success",
+  #     "user" => json_user
+  #   }
 
-    {result, state}
-  end
+  #   {result, state}
+  # end
 end

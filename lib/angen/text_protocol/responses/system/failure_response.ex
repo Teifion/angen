@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.MessagedResponse do
+defmodule Angen.TextProtocol.FailureResponse do
   @moduledoc """
 
   """
@@ -7,16 +7,14 @@ defmodule Angen.TextProtocol.MessagedResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "messaged"
+  def name, do: "failure"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate(message, state) do
-    data = TypeConvertors.convert(message)
-
+  def do_generate({command_name, reason}, state) do
     result = %{
-      "command" => "messaged",
-      "message" => data
+      "command" => command_name,
+      "reason" => reason
     }
 
     {result, state}

@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "error_message.json",
+  "title": "Error message",
+  "description": "A message sent when there is an error",
+  "type": "object",
+  "properties": {
+    "message": {"type": "string"}
+  },
+  "required": []
+}

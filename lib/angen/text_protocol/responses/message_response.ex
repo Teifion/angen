@@ -5,8 +5,13 @@ defmodule Angen.TextProtocol.MessageResponse do
 
   use Angen.TextProtocol.ResponseMacro
 
-  @spec generate(:success | :failure, any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def generate(:failure, {:no_user_found, to_name}, state) do
+  @impl true
+  @spec name :: String.t()
+  def name, do: "message"
+
+  @impl true
+  @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
+  def do_generate({:no_user_found, to_name}, state) do
     result = %{
       "command" => "message",
       "result" => "failure",
@@ -16,12 +21,12 @@ defmodule Angen.TextProtocol.MessageResponse do
     {result, state}
   end
 
-  def generate(:success, _msg, state) do
-    result = %{
-      "command" => "message",
-      "result" => "success"
-    }
+  # def do_generate(_msg, state) do
+  #   result = %{
+  #     "command" => "message",
+  #     "result" => "success"
+  #   }
 
-    {result, state}
-  end
+  #   {result, state}
+  # end
 end

@@ -81,6 +81,9 @@ defmodule Angen.MixProject do
       {:bodyguard, "~> 2.4"},
       {:thousand_island, "~> 1.3"},
 
+      {:cachex, "~> 3.6"},
+      {:ex_json_schema, "~> 0.10.2"},
+
       # We're pointing it at a specific git branch most of the time but
       # when developing locally we'll want to use a relative
       # reference

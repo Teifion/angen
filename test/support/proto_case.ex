@@ -1,4 +1,4 @@
-defmodule AngenWeb.ProtoCase do
+defmodule Angen.ProtoCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a protocol connection.
@@ -20,7 +20,8 @@ defmodule AngenWeb.ProtoCase do
     quote do
       # Import conveniences for testing with connections
       alias Teiserver.Api
-      import AngenWeb.ProtoCase
+      alias Angen.Helpers.JsonSchemaHelper
+      import Angen.ProtoCase
       import Angen.Support.ProtoLib
     end
   end

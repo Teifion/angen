@@ -13,28 +13,28 @@ defmodule Angen.TextProtocol.CommandHandlers.Whois do
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
-  @spec command :: String.t()
-  def command, do: "whois"
+  @spec name :: String.t()
+  def name, do: "whois"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
   def handle(%{"id" => id}, state) do
     case Api.get_user_by_id(id) do
       nil ->
-        TextProtocol.WhoisResponse.generate(:no_user_id, id, state)
+        FailureResponse.generate("No user by that ID", state)
 
       user ->
-        TextProtocol.WhoisResponse.generate(:success, user, state)
+        TextProtocol.WhoisResponse.generate(user, state)
     end
   end
 
   def handle(%{"name" => name}, state) do
     case Api.get_user_by_name(name) do
       nil ->
-        TextProtocol.WhoisResponse.generate(:no_user_name, name, state)
+        FailureResponse.generate("No user by that name", state)
 
       user ->
-        TextProtocol.WhoisResponse.generate(:success, user, state)
+        TextProtocol.WhoisResponse.generate(user, state)
     end
   end
 end

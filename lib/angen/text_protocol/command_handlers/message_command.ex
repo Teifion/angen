@@ -8,19 +8,19 @@ defmodule Angen.TextProtocol.CommandHandlers.Message do
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
-  @spec command :: String.t()
-  def command, do: "message"
+  @spec name :: String.t()
+  def name, do: "message"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
   def handle(%{"to" => to_name, "content" => content} = msg, state) do
     case Account.get_user_by_name(to_name) do
       nil ->
-        TextProtocol.MessageResponse.generate(:failure, {:no_user_found, to_name}, state)
+        FailureResponse.generate("No user found for name #{to_name}", state)
 
       to_user ->
         Communication.send_direct_message(state.user_id, to_user.id, content)
-        TextProtocol.MessageResponse.generate(:success, msg, state)
+        TextProtocol.MessageResponse.generate(msg, state)
     end
   end
 end

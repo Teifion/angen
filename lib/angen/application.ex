@@ -18,6 +18,23 @@ defmodule Angen.Application do
       {Finch, name: Angen.Finch},
       AngenWeb.Endpoint,
 
+      # Caches
+      %{
+        id: :protocol_schemas,
+        start: {Cachex, :start_link, [
+          :protocol_schemas,
+          []
+        ]}
+      },
+
+      # %{
+      #   id: :protocol_roots,
+      #   start: {Cachex, :start_link, [
+      #     :protocol_roots,
+      #     []
+      #   ]}
+      # },
+
       # {Oban, oban_config()},
       {ThousandIsland,
        port: Application.get_env(:angen, :tls_port),
@@ -37,7 +54,15 @@ defmodule Angen.Application do
 
     Logger.info("Angen.Supervisor start result: #{Kernel.inspect(start_result)}")
 
+    startup()
+
+    Logger.info("Angen startup completed")
+
     start_result
+  end
+
+  defp startup() do
+    Angen.Helpers.JsonSchemaHelper.load()
   end
 
   # Tell Phoenix to update the endpoint configuration

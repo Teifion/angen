@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "login_command.json",
+  "title": "Login command",
+  "description": "A command to login.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "required": ["name", "password"]
+}

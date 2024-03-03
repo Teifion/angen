@@ -1,7 +1,7 @@
 **Ping**
 ```
-{"command": "ping","message_id":123}
-> {"command":"ping","message":"pong","message_id":123,"result":"success"}
+{"name":"ping", "message_id":123, "command":{}}
+> {"name":"pong","response":{},"message_id":123}
 
 ```
 

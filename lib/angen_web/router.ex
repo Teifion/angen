@@ -30,6 +30,8 @@ defmodule AngenWeb.Router do
 
       # These will be replaced later, for now we
       live "/login", HomeLive.Index, :index
+      live "/profile", HomeLive.Index, :index
+      live "/logout", HomeLive.Index, :index
     end
   end
 

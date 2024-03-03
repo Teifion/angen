@@ -16,7 +16,6 @@ defmodule Angen.TextProtocol.InternalDispatch do
         send(self(), :disconnect_on_error)
 
         ErrorResponse.generate(
-          :failure,
           "Server FunctionClauseError for message #{inspect(message)}",
           state
         )
@@ -26,7 +25,6 @@ defmodule Angen.TextProtocol.InternalDispatch do
         send(self(), :disconnect_on_error)
 
         ErrorResponse.generate(
-          :failure,
           "Internal server error for message #{inspect(message)}",
           state
         )

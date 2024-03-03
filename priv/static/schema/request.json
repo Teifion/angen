@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "request.json",
+  "title": "Request",
+  "description": "A client message wrapping a command",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "enum": [
+        "__system__",
+        "ping",
+        
+        "__account__",
+        "login",
+        "register"
+      ]
+    },
+    "command": {
+      "type": "object"
+    },
+    "message_id": {
+      "description": "An ID which if included should be mirrored in any response to this command",
+      "type": "string"
+    }
+  },
+  "required": [
+    "command",
+    "name"
+  ]
+}

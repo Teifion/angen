@@ -5,8 +5,13 @@ defmodule Angen.TextProtocol.ClientsResponse do
 
   use Angen.TextProtocol.ResponseMacro
 
-  @spec generate(atom, any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def generate(_, {local_client_ids, global_client_ids}, state) do
+  @impl true
+  @spec name :: String.t()
+  def name, do: "clients"
+
+  @impl true
+  @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
+  def do_generate({local_client_ids, global_client_ids}, state) do
     result = %{
       "command" => "clients",
       "result" => "success",

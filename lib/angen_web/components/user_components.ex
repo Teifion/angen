@@ -64,10 +64,12 @@ defmodule AngenWeb.UserComponents do
   attr :current_user, :map, required: true
 
   def recents_dropdown(assigns) do
-    recents =
-      assigns[:current_user]
-      |> Angen.Account.RecentlyUsedCache.get_recently()
-      |> Enum.take(15)
+    # recents =
+    #   assigns[:current_user]
+    #   |> Angen.Account.RecentlyUsedCache.get_recently()
+    #   |> Enum.take(15)
+
+    recents = []
 
     assigns =
       assigns

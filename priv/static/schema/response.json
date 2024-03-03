@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "response.json",
+  "title": "Response",
+  "description": "A server message wrapping a response",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "enum": [
+        "__system__",
+        "error",
+        "failure",
+        "pong",
+        
+        "__account__",
+        "registered",
+        "auth_token",
+        "logged_in"
+      ]
+    },
+    "message": {
+      "type": "object"
+    },
+    "message_id": {
+      "description": "If the request had an ID it should be mirrored here",
+      "type": "string"
+    }
+  },
+  "required": [
+    "message",
+    "name"
+  ]
+}

@@ -7,7 +7,7 @@ defmodule Angen.Account.AuthLib do
 
   @spec get_all_permission_sets() :: Map.t()
   def get_all_permission_sets do
-    Angen.store_get(:auth_group_store, :all)
+    Cachex.get!(:auth_group_store, :all)
     |> Enum.map(fn key -> {key, get_permission_set(key)} end)
   end
 
@@ -33,7 +33,7 @@ defmodule Angen.Account.AuthLib do
 
   @spec get_permission_set({String.t(), String.t()}) :: [String.t()]
   def get_permission_set(key) do
-    Angen.store_get(:auth_group_store, key)
+    Cachex.get!(:auth_group_store, key)
   end
 
   @spec add_permission_set(String.t(), String.t(), [String.t()]) :: :ok
@@ -45,10 +45,10 @@ defmodule Angen.Account.AuthLib do
       end)
 
     key = {module, section}
-    all_auth_keys = [key | Angen.store_get(:auth_group_store, :all) || []]
+    all_auth_keys = [key | Cachex.get!(:auth_group_store, :all) || []]
 
-    Angen.store_put(:auth_group_store, key, permissions)
-    Angen.store_put(:auth_group_store, :all, all_auth_keys)
+    Cachex.put(:auth_group_store, key, permissions)
+    Cachex.put(:auth_group_store, :all, all_auth_keys)
     :ok
   end
 

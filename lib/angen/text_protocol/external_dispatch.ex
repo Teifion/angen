@@ -2,24 +2,45 @@ defmodule Angen.TextProtocol.ExternalDispatch do
   @moduledoc """
 
   """
-  alias Angen.TextProtocol.CommandHandlers
-  alias Angen.TextProtocol.ErrorResponse
+  alias Angen.TextProtocol.{CommandHandlers, ErrorResponse}
+  alias Angen.Helpers.JsonSchemaHelper
 
+  @doc """
+
+  """
   @spec handle(Angen.raw_message(), Angen.ConnState.t()) ::
           {nil | Angen.raw_message() | [Angen.raw_message()], Angen.ConnState.t()}
-  def handle(message, state) do
+  def handle(raw_message, state) do
     try do
-      message
-      |> decode_message()
-      |> do_dispatch(state)
+      with {:ok, decoded_message} <- decode_message(raw_message),
+           {:ok, validated_message} <- validate_request(decoded_message),
+           {response, new_state} <- do_dispatch(validated_message, state),
+           :ok <- validate_response(response)
+      do
+        {response, new_state}
+      else
+        # Errors with their request
+        {:error, error_message = "Invalid request" <> _} ->
+          ErrorResponse.generate(error_message, state)
+
+        {:error, error_message = "Invalid command" <> _} ->
+          ErrorResponse.generate(error_message, state)
+
+        # Errors with the response we generated
+        {:error, error_message = "Invalid response" <> _} ->
+          ErrorResponse.generate(error_message, state)
+
+        {:error, error_message = "Invalid message" <> _} ->
+          ErrorResponse.generate(error_message, state)
+      end
+
     rescue
       e in FunctionClauseError ->
         handle_error(e, __STACKTRACE__, state)
         send(self(), :disconnect_on_error)
 
         ErrorResponse.generate(
-          :failure,
-          "Server FunctionClauseError for message #{message}",
+          "Server FunctionClauseError for message #{raw_message}",
           state
         )
 
@@ -27,13 +48,13 @@ defmodule Angen.TextProtocol.ExternalDispatch do
         handle_error(e, __STACKTRACE__, state)
         send(self(), :disconnect_on_error)
 
-        ErrorResponse.generate(:failure, "Internal server error for message #{message}", state)
+        ErrorResponse.generate("Internal server error for message #{raw_message}", state)
     end
   end
 
   defp do_dispatch(message, state) do
-    module = lookup(message["command"])
-    {response, state} = module.handle(message, state)
+    module = lookup(message["name"])
+    {response, state} = module.handle(message["command"], state)
 
     if message["message_id"] do
       {Map.put(response, "message_id", message["message_id"]), state}
@@ -52,9 +73,47 @@ defmodule Angen.TextProtocol.ExternalDispatch do
   def lookup("message"), do: CommandHandlers.Message
   def lookup(cmd), do: raise("No module for command #{cmd}")
 
-  @spec decode_message(Angen.raw_message()) :: Angen.json_message()
+  @spec decode_message(Angen.raw_message()) :: {:ok, Angen.json_message()} | {:error, any()}
   defp decode_message(message) do
-    Jason.decode!(message)
+    Jason.decode(message)
+  end
+
+  @spec validate_request(map) :: {:ok, map} | {:error, String.t()}
+  defp validate_request(message) do
+    command_name = "#{message["name"]}_command.json"
+
+    case JsonSchemaHelper.validate("request.json", message) do
+      :ok ->
+        case JsonSchemaHelper.validate(command_name, message["command"]) do
+          :ok ->
+            {:ok, message}
+
+          err ->
+            {:error, "Invalid command schema: #{inspect(err)}"}
+        end
+
+      err ->
+        {:error, "Invalid request schema: #{inspect(err)}"}
+    end
+  end
+
+  @spec validate_response(map) :: {:ok, map} | {:error, String.t()}
+  defp validate_response(response) do
+    message_name = "#{response["name"]}_message.json"
+
+    case JsonSchemaHelper.validate("response.json", response) do
+      :ok ->
+        case JsonSchemaHelper.validate(message_name, response["message"]) do
+          :ok ->
+            :ok
+
+          err ->
+            {:error, "Invalid message schema: #{inspect(err)}"}
+        end
+
+      err ->
+        {:error, "Invalid response schema: #{inspect(err)}"}
+    end
   end
 
   defp handle_error(error, stacktrace, _state) do

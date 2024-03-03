@@ -10,8 +10,8 @@ defmodule Angen.TextProtocol.CommandHandlers.Login do
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
-  @spec command :: String.t()
-  def command, do: "login"
+  @spec name :: String.t()
+  def name, do: "login"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
@@ -19,10 +19,10 @@ defmodule Angen.TextProtocol.CommandHandlers.Login do
     case Teiserver.Api.maybe_authenticate_user(name, password) do
       {:ok, user} ->
         Teiserver.Api.connect_user(user.id)
-        TextProtocol.LoginResponse.generate(:success, user, state)
+        TextProtocol.LoginResponse.generate(user, state)
 
       {:error, reason} ->
-        TextProtocol.LoginResponse.generate(:failure, reason, state)
+        FailureResponse.generate(reason, state)
     end
   end
 end
