@@ -12,7 +12,7 @@ defmodule Angen.TextProtocol.ValidationTest do
       }
 
       assert JsonSchemaHelper.valid?("request.json", msg)
-      assert JsonSchemaHelper.valid?("ping_command.json", msg["command"])
+      assert JsonSchemaHelper.valid?("system/ping_command.json", msg["command"])
     end
 
     test "pong response" do
@@ -23,7 +23,7 @@ defmodule Angen.TextProtocol.ValidationTest do
       }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("pong_message.json", msg["message"])
+      assert JsonSchemaHelper.valid?("system/pong_message.json", msg["message"])
     end
 
     test "registered response" do
@@ -39,7 +39,7 @@ defmodule Angen.TextProtocol.ValidationTest do
       }
 
       assert JsonSchemaHelper.validate("response.json", msg) == :ok
-      assert JsonSchemaHelper.validate("registered_message.json", msg["message"]) == :ok
+      assert JsonSchemaHelper.validate("account/registered_message.json", msg["message"]) == :ok
     end
   end
 

@@ -1,14 +1,11 @@
 defmodule Angen.TextProtocol.CommandHandlers.Ping do
-  @moduledoc """
-  Example usage
-  {"command": "ping","message_id":123}
-  """
+  @moduledoc false
 
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
   @spec name :: String.t()
-  def name, do: "ping"
+  def name, do: "system/ping"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()

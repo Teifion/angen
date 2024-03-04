@@ -7,7 +7,7 @@ defmodule Angen.TextProtocol.PongResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "pong"
+  def name, do: "system/pong"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()

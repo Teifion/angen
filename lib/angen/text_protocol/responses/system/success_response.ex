@@ -7,7 +7,7 @@ defmodule Angen.TextProtocol.SuccessResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "success"
+  def name, do: "system/success"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()

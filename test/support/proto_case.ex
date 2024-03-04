@@ -75,7 +75,7 @@ defmodule Angen.ProtoCase do
     response = listen(socket)
 
     assert response == %{
-      "name" => "logged_in",
+      "name" => "auth/logged_in",
       "message" => %{
         "user" => %{
           "id" => user.id,
@@ -115,4 +115,33 @@ defmodule Angen.ProtoCase do
   #     {:error, :closed} -> :closed
   #   end
   # end
+
+  @spec assert_auth_failure(map(), String.t()) :: :ok
+  def assert_auth_failure(message, command_name) do
+    assert message == %{
+      "name" => "system/failure",
+      "message" => %{
+        "command" => command_name,
+        "reason" => "Must be logged in"
+      }
+    }
+
+    assert Angen.Helpers.JsonSchemaHelper.valid?("response.json", message)
+    assert Angen.Helpers.JsonSchemaHelper.valid?("system/failure_message.json", message["message"])
+    :ok
+  end
+
+  @spec assert_success(map(), String.t()) :: :ok
+  def assert_success(message, command_name) do
+    assert message == %{
+      "name" => "system/success",
+      "message" => %{
+        "command" => command_name
+      }
+    }
+
+    assert Angen.Helpers.JsonSchemaHelper.valid?("response.json", message)
+    assert Angen.Helpers.JsonSchemaHelper.valid?("system/success_message.json", message["message"])
+    :ok
+  end
 end

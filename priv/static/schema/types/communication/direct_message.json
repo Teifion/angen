@@ -1,0 +1,27 @@
+{
+  "$id": "types/communication/direct_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Direct Message",
+  "description": "A direct message",
+  "type": "object",
+  "required": [
+    "from_id",
+    "to_id",
+    "content",
+    "inserted_at"
+  ],
+  "properties": {
+    "from_id": {
+      "type": "string"
+    },
+    "to_id": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "inserted_at": {
+      "type": "string"
+    }
+  }
+}

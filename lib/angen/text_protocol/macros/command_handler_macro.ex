@@ -1,26 +1,6 @@
 defmodule Angen.TextProtocol.CommandHandlerMacro do
   @moduledoc """
-  Apply to handlers with `use Angen.TextProtocol.CommandHandlerMacro`
-
-  Template:
-  defmodule Angen.TextProtocol.CommandHandlers.Login do
-    Example usage
-    {"command": ""}
-
-    use Angen.TextProtocol.CommandHandlerMacro
-
-    @impl true
-    @spec command :: String.t()
-    def command, do: nil
-
-    @impl true
-    @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
-    def handle(msg, state) do
-      # Do stuff here
-      TextProtocol.MODULEResponse.generate(data, state)
-    end
-  end
-
+  Apply to handlers with `use Angen.TextProtocol.CommandHandlerMacro
   """
 
   @callback name :: String.t()

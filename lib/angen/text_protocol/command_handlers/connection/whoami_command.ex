@@ -1,14 +1,11 @@
-defmodule Angen.TextProtocol.CommandHandlers.Whoami do
-  @moduledoc """
-  Example usage
-  {"command":"whoami"}
-  """
+defmodule Angen.TextProtocol.CommandHandlers.Connection.Whoami do
+  @moduledoc false
 
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
   @spec name :: String.t()
-  def name, do: "whoami"
+  def name, do: "connection/whoami"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
@@ -18,6 +15,6 @@ defmodule Angen.TextProtocol.CommandHandlers.Whoami do
 
   def handle(_, state) do
     user = Api.get_user_by_id(state.user_id)
-    TextProtocol.YouareResponse.generate(user, state)
+    TextProtocol.Connection.YouareResponse.generate(user, state)
   end
 end

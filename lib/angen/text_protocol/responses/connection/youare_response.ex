@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.YouareResponse do
+defmodule Angen.TextProtocol.Connection.YouareResponse do
   @moduledoc """
 
   """
@@ -7,7 +7,7 @@ defmodule Angen.TextProtocol.YouareResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "youare"
+  def name, do: "connection/youare"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()

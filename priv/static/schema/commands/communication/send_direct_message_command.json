@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "send_direct_message_command.json",
+  "$id": "communication/send_direct_message_command.json",
   "title": "Login command",
   "description": "Send a direct_message.",
   "type": "object",

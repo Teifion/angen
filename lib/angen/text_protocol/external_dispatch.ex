@@ -63,6 +63,7 @@ defmodule Angen.TextProtocol.ExternalDispatch do
     end
   end
 
+  @spec get_dispatch_module(String.t()) :: module()
   def get_dispatch_module(command) do
     case Cachex.get!(:protocol_command_dispatches, command) do
       nil ->

@@ -1,7 +1,5 @@
 defmodule Angen.TextProtocol.<%= @cap_section %>.<%= @cap_name %>Command do
-  @moduledoc """
-  
-  """
+  @moduledoc false
 
   use Angen.TextProtocol.CommandHandlerMacro
 
@@ -11,6 +9,10 @@ defmodule Angen.TextProtocol.<%= @cap_section %>.<%= @cap_name %>Command do
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
+  def handle(_, %{user_id: nil} = state) do
+    FailureResponse.generate({name(), "Must be logged in"}, state)
+  end
+
   def handle(%{}, state) do
     case get_something() do
       {:ok, result} ->

@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.LoginResponse do
+defmodule Angen.TextProtocol.Auth.LoginResponse do
   @moduledoc """
 
   """
@@ -7,7 +7,7 @@ defmodule Angen.TextProtocol.LoginResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "logged_in"
+  def name, do: "auth/logged_in"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()

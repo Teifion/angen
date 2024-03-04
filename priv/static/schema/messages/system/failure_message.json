@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "failure_message.json",
+  "$id": "system/failure_message.json",
   "title": "Failure message",
   "description": "A message sent when a command failed",
   "type": "object",

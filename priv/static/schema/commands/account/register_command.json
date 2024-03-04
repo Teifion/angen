@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "register_command.json",
+  "$id": "account/register_command.json",
   "title": "Register command",
   "description": "A command to register a new user account.",
   "type": "object",

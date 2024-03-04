@@ -32,18 +32,22 @@ defmodule Angen.Helpers.JsonSchemaHelper do
       end
 
       Cachex.put(:protocol_schemas, root.schema["$id"], root)
-      # Cachex.put(:protocol_roots, root.schema["$id"], root)
 
       root
     end)
   end
 
-  @spec resolve_schema(String.t()) :: map
+  @spec resolve_schema(String.t()) :: map | nil
   def resolve_schema(p) do
-    Cachex.get!(:protocol_schemas, p) |> Map.get(:schema)
+    case resolve_root(p) do
+      nil ->
+        nil
+      root ->
+        root.schema
+    end
   end
 
-  @spec resolve_root(String.t()) :: map
+  @spec resolve_root(String.t()) :: map | nil
   def resolve_root(p) do
     Cachex.get!(:protocol_schemas, p)
   end

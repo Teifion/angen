@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "pong_message.json",
+  "$id": "system/pong_message.json",
   "title": "Pong message",
   "description": "The message for responding to a ping command",
   "type": "object",

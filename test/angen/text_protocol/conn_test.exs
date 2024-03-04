@@ -7,34 +7,34 @@ defmodule Angen.TextProtocol.ConnTest do
       %{socket: socket} = raw_connection()
       id = Ecto.UUID.generate()
 
-      speak(socket, %{name: "ping", message_id: id, command: %{}})
+      speak(socket, %{name: "system/ping", message_id: id, command: %{}})
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "pong",
+        "name" => "system/pong",
         "message" => %{},
         "message_id" => id
       }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("pong_message.json", msg["message"])
+      assert JsonSchemaHelper.valid?("system/pong_message.json", msg["message"])
     end
 
     test "valid auth'd ping" do
       %{socket: socket} = auth_connection()
       id = Ecto.UUID.generate()
 
-      speak(socket, %{name: "ping", message_id: id, command: %{}})
+      speak(socket, %{name: "system/ping", message_id: id, command: %{}})
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "pong",
+        "name" => "system/pong",
         "message" => %{},
         "message_id" => id
       }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("pong_message.json", msg["message"])
+      assert JsonSchemaHelper.valid?("system/pong_message.json", msg["message"])
     end
   end
 
@@ -43,31 +43,31 @@ defmodule Angen.TextProtocol.ConnTest do
       %{socket: socket} = raw_connection()
       id = Ecto.UUID.generate()
 
-      speak(socket, %{name: "whoami", message_id: id, command: %{}})
+      speak(socket, %{name: "connection/whoami", message_id: id, command: %{}})
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "failure",
+        "name" => "system/failure",
         "message" => %{
-          "command" => "whoami",
+          "command" => "connection/whoami",
           "reason" => "You are not logged in"
         },
         "message_id" => id
       }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("pong_message.json", msg["message"])
+      assert JsonSchemaHelper.valid?("system/pong_message.json", msg["message"])
     end
 
     test "auth'd whoami" do
       %{socket: socket, user: user} = auth_connection()
       id = Ecto.UUID.generate()
 
-      speak(socket, %{name: "whoami", message_id: id, command: %{}})
+      speak(socket, %{name: "connection/whoami", message_id: id, command: %{}})
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "youare",
+        "name" => "connection/youare",
         "message" => %{
           "user" => %{
             "id" => user.id,
@@ -78,7 +78,7 @@ defmodule Angen.TextProtocol.ConnTest do
       }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("pong_message.json", msg["message"])
+      assert JsonSchemaHelper.valid?("system/pong_message.json", msg["message"])
     end
   end
 
@@ -91,7 +91,7 @@ defmodule Angen.TextProtocol.ConnTest do
     #   msg = listen(socket)
 
     #   assert msg == %{
-    #     "name" => "error",
+    #     "name" => "system/error",
     #     "message" => %{
     #       "reason" => "Invalid request schema: {:error, [{\"Value is not allowed in enum.\", \"#/name\"}]}"
     #     }
@@ -105,18 +105,18 @@ defmodule Angen.TextProtocol.ConnTest do
       %{socket: socket} = raw_connection()
       id = Ecto.UUID.generate()
 
-      speak(socket, %{gnome: "ping", message_id: id, command: %{}})
+      speak(socket, %{gnome: "system/ping", message_id: id, command: %{}})
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "error",
+        "name" => "system/error",
         "message" => %{
           "reason" => "Invalid request schema: {:error, [{\"Required property name was not present.\", \"#\"}]}"
         }
       }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("error_message.json", msg["message"])
+      assert JsonSchemaHelper.valid?("system/error_message.json", msg["message"])
     end
 
     test "invalid command structure" do
@@ -127,14 +127,14 @@ defmodule Angen.TextProtocol.ConnTest do
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "error",
+        "name" => "system/error",
         "message" => %{
           "reason" => "Invalid command schema: {:error, [{\"Required properties name, password were not present.\", \"#\"}]}"
         }
       }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("error_message.json", msg["message"])
+      assert JsonSchemaHelper.valid?("system/error_message.json", msg["message"])
     end
   end
 end

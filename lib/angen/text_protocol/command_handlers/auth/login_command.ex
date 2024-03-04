@@ -15,7 +15,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Login do
     case Teiserver.Api.maybe_authenticate_user(name, password) do
       {:ok, user} ->
         Teiserver.Api.connect_user(user.id)
-        TextProtocol.LoginResponse.generate(user, state)
+        TextProtocol.Auth.LoginResponse.generate(user, state)
 
       {:error, :no_user} ->
         FailureResponse.generate({name(), "No user"}, state)

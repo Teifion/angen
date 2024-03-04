@@ -1,13 +1,11 @@
-defmodule Angen.TextProtocol.CommandHandlers.Register do
-  @moduledoc """
-  {"command":"register","name":"teifion","password":"password1","email":"teifion@teifion"}
-  """
+defmodule Angen.TextProtocol.CommandHandlers.Account.Register do
+  @moduledoc false
 
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
   @spec name :: String.t()
-  def name, do: "register"
+  def name, do: "account/register"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
@@ -20,14 +18,15 @@ defmodule Angen.TextProtocol.CommandHandlers.Register do
 
     case Teiserver.Account.create_user(params) do
       {:ok, user} ->
-        TextProtocol.RegisteredResponse.generate(user, state)
+        TextProtocol.Account.RegisteredResponse.generate(user, state)
 
       {:error, changeset} ->
-        IO.puts ""
-        IO.inspect changeset
-        IO.puts ""
+        errors = changeset.errors
+          |> Enum.map_join(", ", fn {key, {message, _}} ->
+            "#{key}: #{message}"
+          end)
 
-        FailureResponse.generate({name(), "There was an error registering"}, state)
+        FailureResponse.generate({name(), "There was an error registering: #{errors}"}, state)
     end
   end
 end

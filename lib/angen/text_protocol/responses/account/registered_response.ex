@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.RegisteredResponse do
+defmodule Angen.TextProtocol.Account.RegisteredResponse do
   @moduledoc """
 
   """
@@ -7,7 +7,7 @@ defmodule Angen.TextProtocol.RegisteredResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "registered"
+  def name, do: "account/registered"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()

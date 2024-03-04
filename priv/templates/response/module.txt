@@ -1,7 +1,5 @@
 defmodule Angen.TextProtocol.<%= @cap_section %>.<%= @cap_name %>Response do
-  @moduledoc """
-
-  """
+  @moduledoc false
 
   use Angen.TextProtocol.ResponseMacro
 

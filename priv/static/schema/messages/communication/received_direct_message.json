@@ -1,0 +1,11 @@
+{
+  "$id": "communication/received_direct_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Received direct message",
+  "description": "A direct message was sent to you",
+  "type": "object",
+  "required": ["message"],
+  "properties": {
+    "message": {"$ref": "types/communication/direct_message.json"}
+  }
+}

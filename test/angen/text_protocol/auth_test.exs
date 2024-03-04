@@ -17,16 +17,36 @@ defmodule Angen.TextProtocol.AuthTest do
       response = listen(socket)
 
       assert response == %{
-        "name" => "failure",
+        "name" => "system/failure",
         "message" => %{
           "reason" => "No user",
           "command" => "auth/login"
         }
       }
 
+      # Bad Register command
+      speak(socket, %{
+        name: "account/register",
+        command: %{
+          name: "",
+          password: "",
+          email: ""
+        }
+      })
+
+      response = listen(socket)
+
+      assert response == %{
+        "name" => "system/failure",
+        "message" => %{
+          "command" => "account/register",
+          "reason" => "There was an error registering: name: can't be blank, email: can't be blank, password: can't be blank"
+        }
+      }
+
       # Register command
       speak(socket, %{
-        name: "register",
+        name: "account/register",
         command: %{
           name: "registerTest",
           password: "password1",
@@ -38,7 +58,7 @@ defmodule Angen.TextProtocol.AuthTest do
       user = Api.get_user_by_name("registerTest")
 
       assert response == %{
-        "name" => "registered",
+        "name" => "account/registered",
         "message" => %{
           "user" => %{
             "id" => user.id,
@@ -59,7 +79,7 @@ defmodule Angen.TextProtocol.AuthTest do
       response = listen(socket)
 
       assert response == %{
-        "name" => "failure",
+        "name" => "system/failure",
         "message" => %{
           "command" => "auth/login",
           "reason" => "No user"
@@ -78,7 +98,7 @@ defmodule Angen.TextProtocol.AuthTest do
       response = listen(socket)
 
       assert response == %{
-        "name" => "logged_in",
+        "name" => "auth/logged_in",
         "message" => %{
           "user" => %{
             "id" => user.id,

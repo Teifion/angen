@@ -7,7 +7,7 @@ defmodule Angen.TextProtocol.FailureResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "failure"
+  def name, do: "system/failure"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()

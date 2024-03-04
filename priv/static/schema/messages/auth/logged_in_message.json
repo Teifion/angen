@@ -1,10 +1,12 @@
 {
-  "$id": "account/registered_message.json",
+  "$id": "auth/logged_in_message.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Registered message",
-  "description": "Successfully registered a new account",
+  "description": "Successfully logged in to an account",
   "type": "object",
-  "required": ["user"],
+  "required": [
+    "user"
+  ],
   "properties": {
     "user": {
       "$ref": "types/user.json"

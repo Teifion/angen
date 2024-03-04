@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.UserInfoResponse do
+defmodule Angen.TextProtocol.Account.UserInfoResponse do
   @moduledoc """
 
   """
@@ -7,17 +7,13 @@ defmodule Angen.TextProtocol.UserInfoResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "whois"
+  def name, do: "account/user_info"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
   def do_generate(user, state) do
-    json_user = TypeConvertors.convert(user)
-
     result = %{
-      "command" => "whois",
-      "result" => "success",
-      "user" => json_user
+      "user" => TypeConvertors.convert(user)
     }
 
     {result, state}

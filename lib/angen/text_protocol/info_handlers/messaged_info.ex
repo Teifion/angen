@@ -7,6 +7,6 @@ defmodule Angen.TextProtocol.InfoHandlers.Messaged do
   @impl true
   @spec handle(map, Angen.ConnState.t()) :: Angen.handler_response()
   def handle(%{direct_message: message}, state) do
-    TextProtocol.MessagedResponse.generate(message, state)
+    TextProtocol.Communication.ReceivedDirectMessageResponse.generate(message, state)
   end
 end
