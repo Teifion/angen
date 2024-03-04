@@ -1,0 +1,13 @@
+{
+  "$id": "<%= @lower_section %>/<%= @lower_name %>_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "<%= @cap_section %> - <%= @cap_name %> command",
+  "description": "",
+  "type": "object",
+  "required": [
+    
+  ],
+  "properties": {
+    
+  }
+}

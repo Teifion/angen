@@ -7,7 +7,7 @@ defmodule Angen.TextProtocol.AuthTest do
 
       # Login with no user
       speak(socket, %{
-        name: "login",
+        name: "auth/login",
         command: %{
           name: "registerTest",
           password: "password1"
@@ -20,7 +20,7 @@ defmodule Angen.TextProtocol.AuthTest do
         "name" => "failure",
         "message" => %{
           "reason" => "No user",
-          "command" => "login"
+          "command" => "auth/login"
         }
       }
 
@@ -49,7 +49,7 @@ defmodule Angen.TextProtocol.AuthTest do
 
       # Bad password
       speak(socket, %{
-        name: "login",
+        name: "auth/login",
         command: %{
           name: "registerTest",
           password: "bad-password1"
@@ -61,14 +61,14 @@ defmodule Angen.TextProtocol.AuthTest do
       assert response == %{
         "name" => "failure",
         "message" => %{
-          "command" => "login",
+          "command" => "auth/login",
           "reason" => "No user"
         }
       }
 
       # Good password
       speak(socket, %{
-        name: "login",
+        name: "auth/login",
         command: %{
           name: "registerTest",
           password: "password1"

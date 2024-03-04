@@ -65,7 +65,7 @@ defmodule Angen.ProtoCase do
       )
 
     speak(socket, %{
-      name: "login",
+      name: "auth/login",
       command: %{
         name: user.name,
         password: "password1"

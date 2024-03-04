@@ -1,0 +1,21 @@
+defmodule Angen.TextProtocol.<%= @cap_section %>.<%= @cap_name %>Response do
+  @moduledoc """
+
+  """
+
+  use Angen.TextProtocol.ResponseMacro
+
+  @impl true
+  @spec name :: String.t()
+  def name, do: "<%= @lower_section %>.<%= @lower_name %>"
+
+  @impl true
+  @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
+  def do_generate(data, state) do
+    result = %{
+
+    }
+
+    {result, state}
+  end
+end

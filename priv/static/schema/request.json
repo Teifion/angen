@@ -6,24 +6,7 @@
   "type": "object",
   "properties": {
     "name": {
-      "type": "string",
-      "enum": [
-        "__system__",
-        "ping",
-        
-        "__account__",
-        "login",
-        "register",
-        
-        "__communication__",
-        "send_direct_message",
-        "send_room_message",
-        "send_lobby_message",
-        "send_party_message",
-        
-        "__connection__",
-        "whoami"
-      ]
+      "type": "string"
     },
     "command": {
       "type": "object"

@@ -1,0 +1,25 @@
+defmodule Angen.TextProtocol.<%= @cap_section %>.<%= @cap_name %>Command do
+  @moduledoc """
+  
+  """
+
+  use Angen.TextProtocol.CommandHandlerMacro
+
+  @impl true
+  @spec name :: String.t()
+  def name, do: "<%= @lower_section %>.<%= @lower_name %>"
+
+  @impl true
+  @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
+  def handle(%{}, state) do
+    case get_something() do
+      {:ok, result} ->
+        Teiserver.Api.do_something()
+        TextProtocol.<%= @cap_section %>.<%= @cap_name %>Response.generate(value, state)
+        SuccessResponse.generate(name(), state)
+
+      {:error, _} ->
+        FailureResponse.generate({name(), "Some error"}, state)
+    end
+  end
+end

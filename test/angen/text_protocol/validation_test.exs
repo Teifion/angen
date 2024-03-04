@@ -44,40 +44,38 @@ defmodule Angen.TextProtocol.ValidationTest do
   end
 
   describe "invalid schemas" do
-    test "request - bad name" do
-      msg = %{
-        "name" => "pong",
-        "command" => %{},
-        "message_id" => "123"
-      }
+    # test "request - bad name" do
+    #   msg = %{
+    #     "name" => "pong",
+    #     "command" => %{},
+    #     "message_id" => "123"
+    #   }
 
-      refute JsonSchemaHelper.valid?("request.json", msg)
-    end
+    #   refute JsonSchemaHelper.valid?("request.json", msg)
+    # end
 
     test "request - no command" do
       msg = %{
         "name" => "ping",
-        "response" => %{},
         "message_id" => "123"
       }
 
       refute JsonSchemaHelper.valid?("request.json", msg)
     end
 
-    test "response - bad name" do
-      msg = %{
-        "name" => "ping",
-        "response" => %{},
-        "message_id" => "123"
-      }
+    # test "response - bad name" do
+    #   msg = %{
+    #     "name" => "ping",
+    #     "response" => %{},
+    #     "message_id" => "123"
+    #   }
 
-      refute JsonSchemaHelper.valid?("response.json", msg)
-    end
+    #   refute JsonSchemaHelper.valid?("response.json", msg)
+    # end
 
     test "response - no message" do
       msg = %{
-        "name" => "ping",
-        "message" => %{},
+        "name" => "registered",
         "message_id" => "123"
       }
 

@@ -83,23 +83,23 @@ defmodule Angen.TextProtocol.ConnTest do
   end
 
   describe "bad requests" do
-    test "invalid request name" do
-      %{socket: socket} = raw_connection()
-      id = Ecto.UUID.generate()
+    # test "invalid request name" do
+    #   %{socket: socket} = raw_connection()
+    #   id = Ecto.UUID.generate()
 
-      speak(socket, %{name: "pong", message_id: id, command: %{}})
-      msg = listen(socket)
+    #   speak(socket, %{name: "pong", message_id: id, command: %{}})
+    #   msg = listen(socket)
 
-      assert msg == %{
-        "name" => "error",
-        "message" => %{
-          "reason" => "Invalid request schema: {:error, [{\"Value is not allowed in enum.\", \"#/name\"}]}"
-        }
-      }
+    #   assert msg == %{
+    #     "name" => "error",
+    #     "message" => %{
+    #       "reason" => "Invalid request schema: {:error, [{\"Value is not allowed in enum.\", \"#/name\"}]}"
+    #     }
+    #   }
 
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("error_message.json", msg["message"])
-    end
+    #   assert JsonSchemaHelper.valid?("response.json", msg)
+    #   assert JsonSchemaHelper.valid?("error_message.json", msg["message"])
+    # end
 
     test "invalid request structure" do
       %{socket: socket} = raw_connection()
@@ -123,7 +123,7 @@ defmodule Angen.TextProtocol.ConnTest do
       %{socket: socket} = raw_connection()
       id = Ecto.UUID.generate()
 
-      speak(socket, %{name: "login", message_id: id, command: %{}})
+      speak(socket, %{name: "auth/login", message_id: id, command: %{}})
       msg = listen(socket)
 
       assert msg == %{
