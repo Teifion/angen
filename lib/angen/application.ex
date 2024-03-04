@@ -27,6 +27,14 @@ defmodule Angen.Application do
         ]}
       },
 
+      %{
+        id: :protocol_command_dispatches,
+        start: {Cachex, :start_link, [
+          :protocol_command_dispatches,
+          []
+        ]}
+      },
+
       # %{
       #   id: :protocol_roots,
       #   start: {Cachex, :start_link, [
@@ -63,6 +71,7 @@ defmodule Angen.Application do
 
   defp startup() do
     Angen.Helpers.JsonSchemaHelper.load()
+    Angen.TextProtocol.ExternalDispatch.cache_dispatches()
   end
 
   # Tell Phoenix to update the endpoint configuration

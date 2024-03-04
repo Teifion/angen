@@ -2,7 +2,7 @@ defmodule Angen.TextProtocol.ExternalDispatch do
   @moduledoc """
 
   """
-  alias Angen.TextProtocol.{CommandHandlers, ErrorResponse}
+  alias Angen.TextProtocol.ErrorResponse
   alias Angen.Helpers.JsonSchemaHelper
 
   @doc """
@@ -53,7 +53,7 @@ defmodule Angen.TextProtocol.ExternalDispatch do
   end
 
   defp do_dispatch(message, state) do
-    module = lookup(message["name"])
+    module = get_dispatch_module(message["name"])
     {response, state} = module.handle(message["command"], state)
 
     if message["message_id"] do
@@ -63,15 +63,15 @@ defmodule Angen.TextProtocol.ExternalDispatch do
     end
   end
 
-  @spec lookup(String.t()) :: module()
-  def lookup("register"), do: CommandHandlers.Register
-  def lookup("login"), do: CommandHandlers.Login
-  def lookup("clients"), do: CommandHandlers.Clients
-  def lookup("whoami"), do: CommandHandlers.Whoami
-  def lookup("whois"), do: CommandHandlers.Whois
-  def lookup("ping"), do: CommandHandlers.Ping
-  def lookup("message"), do: CommandHandlers.Message
-  def lookup(cmd), do: raise("No module for command #{cmd}")
+  def get_dispatch_module(command) do
+    case Cachex.get!(:protocol_command_dispatches, command) do
+      nil ->
+        raise("No module for command #{command}")
+
+      m ->
+        m
+    end
+  end
 
   @spec decode_message(Angen.raw_message()) :: {:ok, Angen.json_message()} | {:error, any()}
   defp decode_message(message) do
@@ -108,6 +108,10 @@ defmodule Angen.TextProtocol.ExternalDispatch do
             :ok
 
           err ->
+            IO.puts ""
+            IO.inspect response
+            IO.puts ""
+
             {:error, "Invalid message schema: #{inspect(err)}"}
         end
 
@@ -127,5 +131,51 @@ defmodule Angen.TextProtocol.ExternalDispatch do
     # connection on error
 
     # reraise error, stacktrace
+  end
+
+  @spec cache_dispatches() :: :ok
+  def cache_dispatches() do
+    {:ok, module_list} = :application.get_key(:angen, :modules)
+
+    # First, build the lookup from modules implementing this behaviour
+    # and exporting a name/0 function
+    lookup =
+      module_list
+      |> Enum.filter(fn m ->
+        Code.ensure_loaded(m)
+        case m.__info__(:attributes)[:behaviour] do
+          [] -> false
+          nil -> false
+          b -> Enum.member?(b, Angen.TextProtocol.CommandHandlerMacro)
+        end
+      end)
+      |> Enum.filter(fn m ->
+        function_exported?(m, :name, 0)
+      end)
+      |> Map.new(fn m ->
+        {m.name(), m}
+      end)
+
+    old = Cachex.get!(:protocol_command_dispatches, "all") || []
+
+    # Store all keys, we'll use it later for removing old ones
+    Cachex.put(:protocol_command_dispatches, "all", Map.keys(lookup))
+
+    # Now store our lookups
+    lookup
+    |> Enum.each(fn {key, func} ->
+      Cachex.put(:protocol_command_dispatches, key, func)
+    end)
+
+    # Delete out-dated keys
+    old
+    |> Enum.reject(fn old_key ->
+      Map.has_key?(lookup, old_key)
+    end)
+    |> Enum.each(fn old_key ->
+      Cachex.del(:protocol_command_dispatches, old_key)
+    end)
+
+    :ok
   end
 end

@@ -27,8 +27,8 @@ defmodule Angen.TextProtocol.ExternalDispatchTest do
       |> Enum.each(fn m ->
         command_name = m.name()
 
-        # Assert the lookup for this module exists
-        assert ExternalDispatch.lookup(command_name) == m, msg: "No lookup for module #{m} with name #{command_name}"
+        # Assert the lookup for this module works
+        assert ExternalDispatch.get_dispatch_module(command_name) == m, message: "No lookup for module #{m} with name #{command_name}"
 
         # Assert we have a relevant response schema
         schema_name = "#{command_name}_command.json"

@@ -13,7 +13,16 @@
         
         "__account__",
         "login",
-        "register"
+        "register",
+        
+        "__communication__",
+        "send_direct_message",
+        "send_room_message",
+        "send_lobby_message",
+        "send_party_message",
+        
+        "__connection__",
+        "whoami"
       ]
     },
     "command": {

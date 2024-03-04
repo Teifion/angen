@@ -31,7 +31,7 @@ defmodule Angen.ProtoCase do
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
-  def new_connection() do
+  def raw_connection() do
     host = ~c"127.0.0.1"
     port = Application.get_env(:angen, :tls_port)
 
@@ -42,6 +42,49 @@ defmodule Angen.ProtoCase do
       )
 
     %{socket: socket}
+  end
+
+  def auth_connection() do
+    {:ok, user} = Teiserver.Account.create_user(%{
+      name: Ecto.UUID.generate(),
+      email: "#{Ecto.UUID.generate()}@test",
+      password: "password1"
+    })
+
+    auth_connection(user)
+  end
+
+  def auth_connection(user) do
+    host = ~c"127.0.0.1"
+    port = Application.get_env(:angen, :tls_port)
+
+    {:ok, socket} =
+      :ssl.connect(host, port,
+        active: false,
+        verify: :verify_none
+      )
+
+    speak(socket, %{
+      name: "login",
+      command: %{
+        name: user.name,
+        password: "password1"
+      }
+    })
+
+    response = listen(socket)
+
+    assert response == %{
+      "name" => "logged_in",
+      "message" => %{
+        "user" => %{
+          "id" => user.id,
+          "name" => user.name
+        }
+      }
+    }
+
+    %{socket: socket, user: user}
   end
 
   @spec speak(any(), map) :: any()

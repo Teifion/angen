@@ -8,7 +8,9 @@
     "command": {
       "type": "string"
     },
-    "reason": {"type": "string"}
+    "reason": {
+      "type": "string"
+    }
   },
-  "required": []
+  "required": ["command", "reason"]
 }

@@ -21,20 +21,20 @@ defmodule Angen.TextProtocol.CommandHandlers.Whois do
   def handle(%{"id" => id}, state) do
     case Api.get_user_by_id(id) do
       nil ->
-        FailureResponse.generate("No user by that ID", state)
+        FailureResponse.generate({name(), "No user by that ID"}, state)
 
       user ->
-        TextProtocol.WhoisResponse.generate(user, state)
+        TextProtocol.UserInfoResponse.generate(user, state)
     end
   end
 
   def handle(%{"name" => name}, state) do
     case Api.get_user_by_name(name) do
       nil ->
-        FailureResponse.generate("No user by that name", state)
+        FailureResponse.generate({name(), "No user by that name"}, state)
 
       user ->
-        TextProtocol.WhoisResponse.generate(user, state)
+        TextProtocol.UserInfoResponse.generate(user, state)
     end
   end
 end

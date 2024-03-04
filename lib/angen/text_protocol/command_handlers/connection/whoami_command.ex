@@ -13,11 +13,11 @@ defmodule Angen.TextProtocol.CommandHandlers.Whoami do
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
   def handle(_, %{user_id: nil} = state) do
-    FailureResponse.generate("You are not logged in", state)
+    FailureResponse.generate({name(), "You are not logged in"}, state)
   end
 
   def handle(_, state) do
     user = Api.get_user_by_id(state.user_id)
-    TextProtocol.WhoamiResponse.generate(user, state)
+    TextProtocol.YouareResponse.generate(user, state)
   end
 end

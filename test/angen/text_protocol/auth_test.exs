@@ -3,22 +3,26 @@ defmodule Angen.TextProtocol.AuthTest do
 
   describe "register and auth" do
     test "register and auth" do
-      %{socket: socket} = new_connection()
+      %{socket: socket} = raw_connection()
 
-      # # Login with no user
-      # speak(socket, %{
-      #   command: "login",
-      #   name: "registerTest",
-      #   password: "password1"
-      # })
+      # Login with no user
+      speak(socket, %{
+        name: "login",
+        command: %{
+          name: "registerTest",
+          password: "password1"
+        }
+      })
 
-      # response = listen(socket)
+      response = listen(socket)
 
-      # assert response == %{
-      #          "command" => "login",
-      #          "reason" => "no user",
-      #          "result" => "failure"
-      #        }
+      assert response == %{
+        "name" => "failure",
+        "message" => %{
+          "reason" => "No user",
+          "command" => "login"
+        }
+      }
 
       # Register command
       speak(socket, %{
@@ -31,30 +35,57 @@ defmodule Angen.TextProtocol.AuthTest do
       })
 
       response = listen(socket)
-
-      assert response == %{
-               "command" => "register",
-               "message" => "User 'registerTest' created, you can now login with this user",
-               "result" => "success"
-             }
-
       user = Api.get_user_by_name("registerTest")
 
-      # Now login
+      assert response == %{
+        "name" => "registered",
+        "message" => %{
+          "user" => %{
+            "id" => user.id,
+            "name" => user.name
+          }
+        }
+      }
+
+      # Bad password
       speak(socket, %{
-        command: "login",
-        name: "registerTest",
-        password: "password1"
+        name: "login",
+        command: %{
+          name: "registerTest",
+          password: "bad-password1"
+        }
       })
 
       response = listen(socket)
 
       assert response == %{
-               "command" => "login",
-               "message" => "You are now logged in as 'registerTest'",
-               "user_id" => user.id,
-               "result" => "success"
-             }
+        "name" => "failure",
+        "message" => %{
+          "command" => "login",
+          "reason" => "No user"
+        }
+      }
+
+      # Good password
+      speak(socket, %{
+        name: "login",
+        command: %{
+          name: "registerTest",
+          password: "password1"
+        }
+      })
+
+      response = listen(socket)
+
+      assert response == %{
+        "name" => "logged_in",
+        "message" => %{
+          "user" => %{
+            "id" => user.id,
+            "name" => user.name
+          }
+        }
+      }
     end
   end
 end

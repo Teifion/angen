@@ -7,19 +7,27 @@ defmodule Angen.TextProtocol.TypeConvertors do
   def convert(object), do: convert(object, nil)
 
   @spec convert(any(), atom) :: map()
-  def convert(%Teiserver.Account.User{} = user, :full), do: Jason.encode(user)
+  def convert(object, mode) do
+    case do_convert(object, mode) do
+      %{} = result -> result
+      result -> Jason.decode!(result)
+    end
+  end
 
-  def convert(%Teiserver.Account.User{} = user, _) do
+  @spec do_convert(any(), atom) :: map() | String.t()
+  def do_convert(%Teiserver.Account.User{} = user, :full), do: Jason.encode!(user) |> Jason.decode!
+
+  def do_convert(%Teiserver.Account.User{} = user, _) do
     %{
-      id: user.id,
-      name: user.name
+      "id" => user.id,
+      "name" => user.name
     }
   end
 
-  def convert(object, _) do
+  def do_convert(object, _) do
     case Jason.encode(object) do
       {:ok, str} ->
-        str
+        Jason.decode!(str)
 
       {:error, err} ->
         raise "No handler for object: #{inspect(object)}, err: #{inspect(err)}"

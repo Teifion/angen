@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.ErrorResponse do
+defmodule Angen.TextProtocol.SuccessResponse do
   @moduledoc """
 
   """
@@ -7,13 +7,13 @@ defmodule Angen.TextProtocol.ErrorResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "error"
+  def name, do: "success"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate(reason, state) do
+  def do_generate(command_name, state) do
     result = %{
-      "reason" => reason
+      "command" => command_name
     }
 
     {result, state}

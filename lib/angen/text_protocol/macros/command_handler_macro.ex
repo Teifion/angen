@@ -32,7 +32,7 @@ defmodule Angen.TextProtocol.CommandHandlerMacro do
       @behaviour Angen.TextProtocol.CommandHandlerMacro
 
       alias Angen.TextProtocol
-      alias Angen.TextProtocol.FailureResponse
+      alias Angen.TextProtocol.{FailureResponse, SuccessResponse}
       alias Teiserver.Api
     end
   end

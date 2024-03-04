@@ -11,12 +11,23 @@
         "__system__",
         "error",
         "failure",
+        "success",
         "pong",
-        
+
         "__account__",
         "registered",
         "auth_token",
-        "logged_in"
+        "logged_in",
+        "user_info",
+
+        "__communication__",
+        "received_direct_message",
+        "received_room_message",
+        "received_lobby_message",
+        "received_party_message",
+
+        "__connection__",
+        "youare"
       ]
     },
     "message": {

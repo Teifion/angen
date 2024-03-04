@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.ClientsResponse do
+defmodule Angen.TextProtocol.UserInfoResponse do
   @moduledoc """
 
   """
@@ -7,16 +7,17 @@ defmodule Angen.TextProtocol.ClientsResponse do
 
   @impl true
   @spec name :: String.t()
-  def name, do: "clients"
+  def name, do: "whois"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate({local_client_ids, global_client_ids}, state) do
+  def do_generate(user, state) do
+    json_user = TypeConvertors.convert(user)
+
     result = %{
-      "command" => "clients",
+      "command" => "whois",
       "result" => "success",
-      "local_client_ids" => local_client_ids,
-      "global_client_ids" => global_client_ids
+      "user" => json_user
     }
 
     {result, state}

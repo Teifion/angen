@@ -21,8 +21,11 @@ defmodule Angen.TextProtocol.CommandHandlers.Login do
         Teiserver.Api.connect_user(user.id)
         TextProtocol.LoginResponse.generate(user, state)
 
-      {:error, reason} ->
-        FailureResponse.generate(reason, state)
+      {:error, :no_user} ->
+        FailureResponse.generate({name(), "No user"}, state)
+
+      {:error, :bad_password} ->
+        FailureResponse.generate({name(), "No user"}, state)
     end
   end
 end

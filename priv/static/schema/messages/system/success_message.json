@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "success_message.json",
+  "title": "Success message",
+  "description": "A message sent when a command succeeds but there is no other return value",
+  "type": "object",
+  "properties": {
+    "command": {
+      "type": "string"
+    }
+  },
+  "required": ["command"]
+}

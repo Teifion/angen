@@ -1,0 +1,15 @@
+{
+  "$id": "youare_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "You are",
+  "description": "Message explaining who you are",
+  "type": "object",
+  "required": [
+    "user"
+  ],
+  "properties": {
+    "user": {
+      "$ref": "types/user.json"
+    }
+  }
+}
