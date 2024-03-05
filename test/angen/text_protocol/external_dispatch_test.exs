@@ -8,6 +8,10 @@ defmodule Angen.TextProtocol.ExternalDispatchTest do
     test "lookup" do
       {:ok, module_list} = :application.get_key(:angen, :modules)
 
+      # IO.puts ""
+      # IO.inspect Angen.Helpers.JsonSchemaHelper.cache_keys()
+      # IO.puts ""
+
       module_list
       |> Enum.filter(fn m ->
         Code.ensure_loaded(m)

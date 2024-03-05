@@ -1,0 +1,13 @@
+{
+  "$id": "lobby/opened_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby - Opened message",
+  "description": "",
+  "type": "object",
+  "required": [
+    "lobby_id"
+  ],
+  "properties": {
+    "lobby_id": {"type": "string"}
+  }
+}

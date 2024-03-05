@@ -1,7 +1,5 @@
-defmodule Angen.TextProtocol.CommandHandlers.Login do
-  @moduledoc """
-
-  """
+defmodule Angen.TextProtocol.CommandHandlers.Auth.Login do
+  @moduledoc false
 
   use Angen.TextProtocol.CommandHandlerMacro
 
@@ -11,17 +9,25 @@ defmodule Angen.TextProtocol.CommandHandlers.Login do
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
-  def handle(%{"name" => name, "password" => password}, state) do
-    case Teiserver.Api.maybe_authenticate_user(name, password) do
-      {:ok, user} ->
-        Teiserver.Api.connect_user(user.id)
-        TextProtocol.Auth.LoginResponse.generate(user, state)
+  def handle(%{"token" => token_identifier_code, "user_agent" => _}, state) do
+    case Angen.Account.get_user_token_by_identifier(token_identifier_code) do
+      nil ->
+        FailureResponse.generate({name(), "Bad token"}, state)
 
-      {:error, :no_user} ->
-        FailureResponse.generate({name(), "No user"}, state)
+      token ->
+        bad_ip = if Application.get_env(:angen, :require_tokens_to_persist_ip) do
+          # If the IP must match, it's a bad ip if they are different
+          state.ip != token.ip
+        else
+          false
+        end
 
-      {:error, :bad_password} ->
-        FailureResponse.generate({name(), "No user"}, state)
+        if bad_ip do
+          FailureResponse.generate({name(), "Bad token"}, state)
+        else
+          Teiserver.Api.connect_user(token.user_id)
+          TextProtocol.Auth.LoginResponse.generate(token.user, state)
+        end
     end
   end
 end

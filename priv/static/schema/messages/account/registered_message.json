@@ -7,7 +7,7 @@
   "required": ["user"],
   "properties": {
     "user": {
-      "$ref": "types/user.json"
+      "$ref": "types/account/user.json"
     }
   }
 }

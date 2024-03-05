@@ -88,10 +88,10 @@ defmodule Angen.MixProject do
       # when developing locally we'll want to use a relative
       # reference
       # {:teiserver, git: "https://github.com/teifion/teiserver.git", branch: "0.0.4"}
-      {:teiserver,
-       git: "https://github.com/teifion/teiserver.git",
-       ref: "efab3def32096e29abe00d9b5447d5a12677d01e"}
-      # {:teiserver, path: "../teiserver"}
+      # {:teiserver,
+      #  git: "https://github.com/teifion/teiserver.git",
+      #  ref: "efab3def32096e29abe00d9b5447d5a12677d01e"}
+      {:teiserver, path: "../teiserver"}
     ]
   end
 
@@ -107,6 +107,8 @@ defmodule Angen.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "test.reset": ["ecto.drop --quiet", "test.setup"],
+      "test.setup": ["ecto.create --quiet", "ecto.migrate --quiet"],
       "assets.setup": ["esbuild.install --if-missing"],
       "assets.build": ["esbuild default"],
       "assets.deploy": [

@@ -1,0 +1,60 @@
+{
+  "$id": "types/lobby/standard_lobby.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Standard Lobby",
+  "description": "A lobby with most of the keys",
+  "type": "object",
+  "required": [
+    "from_id",
+    "to_id",
+    "content",
+    "inserted_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "host_id": {
+      "type": "string"
+    },
+    "host": {
+      "$ref": "types/account/user.json"
+    },
+    "name": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "passworded?": {
+      "type": "boolean"
+    },
+    "locked?": {
+      "type": "boolean"
+    },
+    "public?": {
+      "type": "boolean"
+    },
+    "match_type": {
+      "type": "string"
+    },
+    "rated?": {
+      "type": "boolean"
+    },
+    "game_name": {
+      "type": "string"
+    },
+    "game_version": {
+      "type": "string"
+    },
+    "player_count": {
+      "type": "string"
+    },
+    "spectator_count": {
+      "type": "string"
+    }
+  }
+}

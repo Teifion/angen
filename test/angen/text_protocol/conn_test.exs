@@ -129,7 +129,7 @@ defmodule Angen.TextProtocol.ConnTest do
       assert msg == %{
         "name" => "system/error",
         "message" => %{
-          "reason" => "Invalid command schema: {:error, [{\"Required properties name, password were not present.\", \"#\"}]}"
+          "reason" => "Invalid command schema: {:error, [{\"Required property token was not present.\", \"#\"}]}"
         }
       }
 

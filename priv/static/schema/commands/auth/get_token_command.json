@@ -1,14 +1,17 @@
 {
-  "$id": "auth/login_command.json",
+  "$id": "auth/get_token_command.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Auth - Token_login command",
+  "title": "Auth - Get_token command",
   "description": "",
   "type": "object",
   "required": [
-    "token"
+    "name", "password", "user_agent"
   ],
   "properties": {
-    "token": {
+    "name": {
+      "type": "string"
+    },
+    "password": {
       "type": "string"
     },
     "user_agent": {

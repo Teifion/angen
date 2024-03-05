@@ -1,0 +1,72 @@
+{
+  "$id": "types/lobby/extended_lobby.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Extended lobby",
+  "description": "Lobby details for members of the lobby",
+  "type": "object",
+  "required": [
+    "from_id",
+    "to_id",
+    "content",
+    "inserted_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "host_id": {
+      "type": "string"
+    },
+    "host": {
+      "$ref": "types/account/user.json"
+    },
+    "name": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "settings": {
+      "type": "object",
+      "items": {
+        "type": "string"
+      }
+    },
+    "passworded?": {
+      "type": "boolean"
+    },
+    "locked?": {
+      "type": "boolean"
+    },
+    "public?": {
+      "type": "boolean"
+    },
+    "match_type": {
+      "type": "string"
+    },
+    "rated?": {
+      "type": "boolean"
+    },
+    "game_name": {
+      "type": "string"
+    },
+    "game_version": {
+      "type": "string"
+    },
+    "players": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "spectators": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

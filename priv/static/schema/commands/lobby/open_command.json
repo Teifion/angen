@@ -1,0 +1,15 @@
+{
+  "$id": "lobby/open_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby - Open command",
+  "description": "Opens a new lobby with the name you supplied",
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    }
+  }
+}

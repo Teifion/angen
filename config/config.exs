@@ -8,7 +8,10 @@
 import Config
 
 config :angen,
-  ecto_repos: [Angen.Repo]
+  ecto_repos: [Angen.Repo],
+
+  # When set to true, tokens can only be used by the IP they were created with
+  require_tokens_to_persist_ip: false
 
 # Configures the endpoint
 config :angen, AngenWeb.Endpoint,

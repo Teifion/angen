@@ -1,17 +1,19 @@
-defmodule Angen.TextProtocol.<%= @cap_section %>.<%= @cap_name %>Response do
-  @moduledoc false
+defmodule Angen.TextProtocol.Auth.TokenResponse do
+  @moduledoc """
+
+  """
 
   use Angen.TextProtocol.ResponseMacro
 
   @impl true
   @spec name :: String.t()
-  def name, do: "<%= @lower_section %>/<%= @lower_name %>"
+  def name, do: "auth/token"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate(data, state) do
+  def do_generate(token, state) do
     result = %{
-
+      "token" => TypeConvertors.convert(token)
     }
 
     {result, state}

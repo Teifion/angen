@@ -1,5 +1,5 @@
 {
-  "$id": "types/user.json",
+  "$id": "types/account/user.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "User",
   "description": "A user",
