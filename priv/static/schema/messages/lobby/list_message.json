@@ -1,0 +1,18 @@
+{
+  "$id": "lobby/list_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby - List message",
+  "description": "",
+  "type": "object",
+  "required": [
+    "lobbies"
+  ],
+  "properties": {
+    "lobbies": {
+      "type": "array",
+      "items": {
+        "$ref": "types/lobby/partial_lobby.json"
+      }
+    }
+  }
+}

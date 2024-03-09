@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.LobbyTest do
+defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
   @moduledoc false
   use Angen.ProtoCase
 

@@ -4,6 +4,8 @@ defmodule Angen.Helpers.JsonSchemaHelper do
 
   def load() do
     [
+      # Types we have to load in a certain order
+      "priv/static/schema/types/account/user.json",
       "priv/static/schema/types/*.json",
       "priv/static/schema/types/*/*.json",
       "priv/static/schema/commands/*/*.json",

@@ -1,14 +1,13 @@
 {
-  "$id": "types/lobby/extended_lobby.json",
+  "$id": "types/lobby/full_lobby.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Extended lobby",
   "description": "Lobby details for members of the lobby",
   "type": "object",
   "required": [
-    "from_id",
-    "to_id",
-    "content",
-    "inserted_at"
+    "id",
+    "host_id",
+    "name"
   ],
   "properties": {
     "id": {
@@ -20,6 +19,9 @@
     "host": {
       "$ref": "types/account/user.json"
     },
+    "host_data": {
+      "type": "object"
+    },
     "name": {
       "type": "string"
     },
@@ -30,10 +32,7 @@
       }
     },
     "settings": {
-      "type": "object",
-      "items": {
-        "type": "string"
-      }
+      "type": "object"
     },
     "passworded?": {
       "type": "boolean"

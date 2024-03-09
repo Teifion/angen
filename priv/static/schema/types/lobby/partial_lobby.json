@@ -1,14 +1,13 @@
 {
-  "$id": "types/lobby/standard_lobby.json",
+  "$id": "types/lobby/partial_lobby.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Standard Lobby",
-  "description": "A lobby with most of the keys",
+  "title": "Headline Lobby",
+  "description": "A very limited representation of a lobby for things like lobby lists",
   "type": "object",
   "required": [
-    "from_id",
-    "to_id",
-    "content",
-    "inserted_at"
+    "id",
+    "host_id",
+    "name"
   ],
   "properties": {
     "id": {
@@ -17,17 +16,14 @@
     "host_id": {
       "type": "string"
     },
-    "host": {
-      "$ref": "types/account/user.json"
-    },
     "name": {
       "type": "string"
     },
     "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "type": "array"
+    },
+    "match_ongoing?": {
+      "type": "boolean"
     },
     "passworded?": {
       "type": "boolean"
@@ -51,10 +47,10 @@
       "type": "string"
     },
     "player_count": {
-      "type": "string"
+      "type": "number"
     },
     "spectator_count": {
-      "type": "string"
+      "type": "number"
     }
   }
 }

@@ -7,6 +7,13 @@ defmodule Angen.TextProtocol.TypeConvertors do
   def convert(object), do: convert(object, nil)
 
   @spec convert(any(), atom) :: map()
+  def convert(objects, mode) when is_list(objects) do
+    objects
+    |> Enum.map(fn o ->
+      convert(o, mode)
+    end)
+  end
+
   def convert(object, mode) do
     case do_convert(object, mode) do
       %{} = result -> result

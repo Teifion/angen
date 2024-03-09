@@ -1,0 +1,54 @@
+{
+  "$id": "types/lobby/lobby_filters.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby filters",
+  "description": "Filters for querying a list of lobbies",
+  "type": "object",
+  "required": [],
+  "properties": {
+    "match_ongoing?": {
+      "description": "Returns only lobbies where the match_ongoing? property matches this value",
+      "type": "boolean"
+    },
+    "require_tags": {
+      "description": "Returns only lobbies where all of the listed tags are present",
+      "type": "array"
+    },
+    "exclude_tags": {
+      "description": "Returns only lobbies where none of the listed tags are present",
+      "type": "array"
+    },
+    "passworded?": {
+      "description": "Select only lobbies with this passworded? value",
+      "type": "boolean"
+    },
+    "locked?": {
+      "description": "Select only lobbies with this locked? value",
+      "type": "boolean"
+    },
+    "public?": {
+      "description": "Select only lobbies with this public? value",
+      "type": "boolean"
+    },
+    "match_type": {
+      "description": "Select only lobbies with these match_types",
+      "type": "array"
+    },
+    "rated?": {
+      "description": "Select only lobbies with this rated? value",
+      "type": "boolean"
+    },
+    "game_version": {
+      "description": "Select only lobbies with this game version",
+      "type": "string"
+    },
+    "min_player_count": {
+      "description": "The minimum number of players (inclusive) a lobby must have",
+      "type": "number"
+    },
+    "max_player_count": {
+      "description": "The maximum number of players (inclusive) a lobby must have",
+      "type": "number"
+    }
+  }
+}
