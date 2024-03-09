@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.ValidationTest do
   @moduledoc false
-  use Angen.DataCase
+  use Angen.DataCase, async: true
   alias Angen.Helpers.JsonSchemaHelper
 
   describe "valid schemas" do

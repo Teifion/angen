@@ -1,5 +1,6 @@
 defmodule Angen.TextProtocol.ExternalDispatchTest do
-  use Angen.DataCase
+  @moduledoc false
+  use Angen.DataCase, async: true
 
   alias Angen.TextProtocol.ExternalDispatch
   alias Angen.Helpers.JsonSchemaHelper
