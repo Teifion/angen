@@ -33,7 +33,10 @@ config :angen, AngenWeb.Endpoint,
 config :angen, Angen.Mailer, adapter: Swoosh.Adapters.Local
 
 config :teiserver,
-  repo: Angen.Repo
+  repo: Angen.Repo,
+
+  fn_lobby_name_acceptor: &Angen.Helpers.OverrideHelpers.lobby_name_acceptor/1,
+  fn_user_name_acceptor: &Angen.Helpers.OverrideHelpers.user_name_acceptor/1
 
 # Configure esbuild (the version is required)
 config :esbuild,

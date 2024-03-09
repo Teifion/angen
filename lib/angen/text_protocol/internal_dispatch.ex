@@ -40,6 +40,7 @@ defmodule Angen.TextProtocol.InternalDispatch do
   def lookup("Teiserver.Communication.User:" <> _, :message_received), do: InfoHandlers.Messaged
   def lookup("Teiserver.Communication.User:" <> _, :message_sent), do: InfoHandlers.Noop
   def lookup("Teiserver.Communication.User:" <> _, _), do: InfoHandlers.NoopLog
+  def lookup("Teiserver.Connections.Client:" <> _, _), do: InfoHandlers.NoopLog
   def lookup(topic, event), do: raise("No module for info topic:`#{topic}`, event:`#{event}`")
 
   defp handle_error(error, stacktrace, _state) do

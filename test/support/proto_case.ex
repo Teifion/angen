@@ -31,6 +31,7 @@ defmodule Angen.ProtoCase do
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
+  @spec raw_connection() :: %{socket: any()}
   def raw_connection() do
     host = ~c"127.0.0.1"
     port = Application.get_env(:angen, :tls_port)
@@ -44,6 +45,7 @@ defmodule Angen.ProtoCase do
     %{socket: socket}
   end
 
+  @spec auth_connection() :: %{socket: any(), user: Teiserver.Account.User.t()}
   def auth_connection() do
     {:ok, user} = Teiserver.Account.create_user(%{
       name: Ecto.UUID.generate(),
@@ -54,6 +56,7 @@ defmodule Angen.ProtoCase do
     auth_connection(user)
   end
 
+  @spec auth_connection(Teiserver.Account.User.t()) :: %{socket: any(), user: Teiserver.Account.User.t()}
   def auth_connection(user) do
     host = ~c"127.0.0.1"
     port = Application.get_env(:angen, :tls_port)
@@ -87,6 +90,30 @@ defmodule Angen.ProtoCase do
     }
 
     %{socket: socket, user: user}
+  end
+
+  @spec lobby_host_connection() :: %{socket: any(), user: Teiserver.Account.User.t(), lobby: Teiserver.Game.Lobby.t()}
+  def lobby_host_connection(user \\ nil) do
+    %{socket: socket, user: user} = if user do
+      auth_connection(user)
+    else
+      auth_connection()
+    end
+
+    lobby_name = Ecto.UUID.generate()
+
+    speak(socket, %{name: "lobby/open", command: %{name: "test-#{lobby_name}"}})
+
+    lobby = Teiserver.Api.list_lobby_summaries()
+        |> Enum.filter(fn l -> l.host_id == user.id end)
+        |> hd
+
+    listen(socket)
+
+    client = Teiserver.Api.get_client(user.id)
+    assert client.lobby_host?
+
+    %{socket: socket, user: user, lobby: lobby}
   end
 
   @spec speak(any(), map) :: any()
@@ -133,6 +160,7 @@ defmodule Angen.ProtoCase do
     :ok
   end
 
+  # assert_success(msg, "section/command")
   @spec assert_success(map(), String.t()) :: :ok
   def assert_success(message, command_name) do
     assert message == %{
