@@ -80,7 +80,6 @@ defmodule Angen.MixProject do
       {:guardian, "~> 2.1"},
       {:bodyguard, "~> 2.4"},
       {:thousand_island, "~> 1.3"},
-
       {:cachex, "~> 3.6"},
       {:ex_json_schema, "~> 0.10.2"},
 

@@ -1,7 +1,5 @@
 defmodule Angen.TextProtocol.InfoHandlers.Messaged do
-  @moduledoc """
-
-  """
+  @moduledoc false
   use Angen.TextProtocol.InfoMacro
 
   @impl true

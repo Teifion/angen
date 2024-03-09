@@ -1,11 +1,11 @@
-defmodule Angen.TextProtocol.CommandHandlers.Connection.Whoami do
+defmodule Angen.TextProtocol.CommandHandlers.Connections.Whoami do
   @moduledoc false
 
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
   @spec name :: String.t()
-  def name, do: "connection/whoami"
+  def name, do: "connections/whoami"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
@@ -15,6 +15,6 @@ defmodule Angen.TextProtocol.CommandHandlers.Connection.Whoami do
 
   def handle(_, state) do
     user = Api.get_user_by_id(state.user_id)
-    TextProtocol.Connection.YouareResponse.generate(user, state)
+    TextProtocol.Connections.YouareResponse.generate(user, state)
   end
 end

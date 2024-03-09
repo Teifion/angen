@@ -1,13 +1,11 @@
-defmodule Angen.TextProtocol.Connection.YouareResponse do
-  @moduledoc """
-
-  """
+defmodule Angen.TextProtocol.Connections.YouareResponse do
+  @moduledoc false
 
   use Angen.TextProtocol.ResponseMacro
 
   @impl true
   @spec name :: String.t()
-  def name, do: "connection/youare"
+  def name, do: "connections/youare"
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()

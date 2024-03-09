@@ -3,8 +3,8 @@ defmodule Angen.Helpers.OverrideHelpers do
   Overrides for Teiserver functions
   """
 
-@spec lobby_name_acceptor(String.t()) :: boolean
-def lobby_name_acceptor(_name) do
+  @spec lobby_name_acceptor(String.t()) :: boolean
+  def lobby_name_acceptor(_name) do
     true
   end
 

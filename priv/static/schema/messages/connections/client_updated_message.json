@@ -1,0 +1,18 @@
+{
+  "$id": "connections/client_updated_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Connections - Client_updated message",
+  "description": "",
+  "type": "object",
+  "required": [
+    "client"
+  ],
+  "properties": {
+    "client": {
+      "anyOf": [
+        {"$ref": "types/connections/full_client.json"},
+        {"$ref": "types/connections/partial_client.json"}
+      ]
+    }
+  }
+}

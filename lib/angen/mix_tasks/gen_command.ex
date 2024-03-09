@@ -34,12 +34,16 @@ defmodule Mix.Tasks.Angen.Gen.Command do
   end
 
   defp do_module(template_data) do
-    output_file = "#{@module_output_path}/#{template_data.lower_section}/#{template_data.lower_name}_command.ex"
+    output_file =
+      "#{@module_output_path}/#{template_data.lower_section}/#{template_data.lower_name}_command.ex"
+
     Mix.Generator.copy_template(@template_module_path, output_file, template_data)
   end
 
   defp do_schema(template_data) do
-    output_file = "#{@schema_output_path}/#{template_data.lower_section}/#{template_data.lower_name}_command.json"
+    output_file =
+      "#{@schema_output_path}/#{template_data.lower_section}/#{template_data.lower_name}_command.json"
+
     Mix.Generator.copy_template(@template_schema_path, output_file, template_data)
   end
 end

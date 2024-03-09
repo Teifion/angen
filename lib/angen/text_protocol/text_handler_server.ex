@@ -8,7 +8,8 @@ defmodule Angen.TextProtocol.TextHandlerServer do
 
   @impl ThousandIsland.Handler
   def handle_connection(socket, _state) do
-    ip = Map.get(socket.span.start_metadata, :remote_address)
+    ip =
+      Map.get(socket.span.start_metadata, :remote_address)
       |> Tuple.to_list()
       |> Enum.join(".")
 

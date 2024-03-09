@@ -15,8 +15,7 @@ defmodule Angen.TextProtocol.ExternalDispatch do
       with {:ok, decoded_message} <- decode_message(raw_message),
            {:ok, validated_message} <- validate_request(decoded_message),
            {response, new_state} <- do_dispatch(validated_message, state),
-           :ok <- validate_response(response)
-      do
+           :ok <- validate_response(response) do
         {response, new_state}
       else
         # Errors with their request
@@ -33,7 +32,6 @@ defmodule Angen.TextProtocol.ExternalDispatch do
         {:error, error_message = "Invalid message" <> _} ->
           ErrorResponse.generate(error_message, state)
       end
-
     rescue
       e in FunctionClauseError ->
         handle_error(e, __STACKTRACE__, state)
@@ -109,9 +107,9 @@ defmodule Angen.TextProtocol.ExternalDispatch do
             :ok
 
           err ->
-            IO.puts ""
-            IO.inspect response
-            IO.puts ""
+            IO.puts("#{__MODULE__}.validate_response for #{message_name}")
+            IO.inspect(response)
+            IO.puts("")
 
             {:error, "Invalid message schema: #{inspect(err)}"}
         end
@@ -144,6 +142,7 @@ defmodule Angen.TextProtocol.ExternalDispatch do
       module_list
       |> Enum.filter(fn m ->
         Code.ensure_loaded(m)
+
         case m.__info__(:attributes)[:behaviour] do
           [] -> false
           nil -> false

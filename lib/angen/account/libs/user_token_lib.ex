@@ -62,7 +62,7 @@ defmodule Angen.Account.UserTokenLib do
   def get_user_token(user_token_id, query_args \\ []) do
     (query_args ++ [id: user_token_id])
     |> UserTokenQueries.user_token_query()
-    |> Repo.one
+    |> Repo.one()
   end
 
   @doc """
@@ -82,7 +82,7 @@ defmodule Angen.Account.UserTokenLib do
   @spec get_user_token_by_identifier(UserToken.identifier_code()) :: UserToken.t() | nil
   def get_user_token_by_identifier(identifier_code) do
     UserTokenQueries.user_token_query(where: [identifier_code: identifier_code], preload: [:user])
-    |> Repo.one
+    |> Repo.one()
   end
 
   @doc """
@@ -102,7 +102,7 @@ defmodule Angen.Account.UserTokenLib do
   @spec get_user_token_by_renewal(UserToken.renewal_code()) :: UserToken.t() | nil
   def get_user_token_by_renewal(renewal_code) do
     UserTokenQueries.user_token_query(where: [renewal_code: renewal_code], preload: [:user])
-    |> Repo.one
+    |> Repo.one()
   end
 
   @doc """
@@ -117,7 +117,7 @@ defmodule Angen.Account.UserTokenLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_user_token(map) :: {:ok, UserToken.t} | {:error, Ecto.Changeset.t}
+  @spec create_user_token(map) :: {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}
   def create_user_token(attrs) do
     %UserToken{}
     |> UserToken.changeset(attrs)
@@ -136,7 +136,8 @@ defmodule Angen.Account.UserTokenLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_user_token(Teiserver.user_id(), String.t(), String.t()) :: {:ok, UserToken.t} | {:error, Ecto.Changeset.t}
+  @spec create_user_token(Teiserver.user_id(), String.t(), String.t()) ::
+          {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}
   def create_user_token(user_id, user_agent, ip) do
     %UserToken{}
     |> UserToken.changeset(%{
@@ -162,7 +163,8 @@ defmodule Angen.Account.UserTokenLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec update_user_token(UserToken.t, map) :: {:ok, UserToken.t} | {:error, Ecto.Changeset.t}
+  @spec update_user_token(UserToken.t(), map) ::
+          {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}
   def update_user_token(%UserToken{} = user_token, attrs) do
     user_token
     |> UserToken.changeset(attrs)
@@ -181,7 +183,7 @@ defmodule Angen.Account.UserTokenLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec delete_user_token(UserToken.t) :: {:ok, UserToken.t} | {:error, Ecto.Changeset.t}
+  @spec delete_user_token(UserToken.t()) :: {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}
   def delete_user_token(%UserToken{} = user_token) do
     Repo.delete(user_token)
   end
@@ -195,7 +197,7 @@ defmodule Angen.Account.UserTokenLib do
       %Ecto.Changeset{data: %UserToken{}}
 
   """
-  @spec change_user_token(UserToken.t, map) :: Ecto.Changeset.t
+  @spec change_user_token(UserToken.t(), map) :: Ecto.Changeset.t()
   def change_user_token(%UserToken{} = user_token, attrs \\ %{}) do
     UserToken.changeset(user_token, attrs)
   end

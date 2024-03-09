@@ -15,12 +15,13 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.Login do
         FailureResponse.generate({name(), "Bad token"}, state)
 
       token ->
-        bad_ip = if Application.get_env(:angen, :require_tokens_to_persist_ip) do
-          # If the IP must match, it's a bad ip if they are different
-          state.ip != token.ip
-        else
-          false
-        end
+        bad_ip =
+          if Application.get_env(:angen, :require_tokens_to_persist_ip) do
+            # If the IP must match, it's a bad ip if they are different
+            state.ip != token.ip
+          else
+            false
+          end
 
         if bad_ip do
           FailureResponse.generate({name(), "Bad token"}, state)

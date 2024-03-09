@@ -58,7 +58,6 @@ defmodule Angen.Account.UserTokenQueries do
       where: user_tokens.renewal_code == ^renewal_code
   end
 
-
   def _where(query, :inserted_after, timestamp) do
     from user_tokens in query,
       where: user_tokens.inserted_at >= ^timestamp
@@ -69,13 +68,12 @@ defmodule Angen.Account.UserTokenQueries do
       where: user_tokens.inserted_at < ^timestamp
   end
 
-
   @spec do_order_by(Ecto.Query.t(), list | nil) :: Ecto.Query.t()
   defp do_order_by(query, nil), do: query
 
   defp do_order_by(query, params) when is_list(params) do
     params
-    |> List.wrap
+    |> List.wrap()
     |> Enum.reduce(query, fn key, query_acc ->
       _order_by(query_acc, key)
     end)
@@ -102,13 +100,12 @@ defmodule Angen.Account.UserTokenQueries do
       order_by: [asc: user_tokens.inserted_at]
   end
 
-
   @spec do_preload(Ecto.Query.t(), List.t() | nil) :: Ecto.Query.t()
   defp do_preload(query, nil), do: query
 
   defp do_preload(query, preloads) do
     preloads
-    |> List.wrap
+    |> List.wrap()
     |> Enum.reduce(query, fn key, query_acc ->
       _preload(query_acc, key)
     end)

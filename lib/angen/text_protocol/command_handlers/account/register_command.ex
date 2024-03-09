@@ -21,7 +21,8 @@ defmodule Angen.TextProtocol.CommandHandlers.Account.Register do
         TextProtocol.Account.RegisteredResponse.generate(user, state)
 
       {:error, changeset} ->
-        errors = changeset.errors
+        errors =
+          changeset.errors
           |> Enum.map_join(", ", fn {key, {message, _}} ->
             "#{key}: #{message}"
           end)

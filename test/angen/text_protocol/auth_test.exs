@@ -18,12 +18,13 @@ defmodule Angen.TextProtocol.AuthTest do
       response = listen(socket)
 
       assert response == %{
-        "name" => "system/failure",
-        "message" => %{
-          "command" => "account/register",
-          "reason" => "There was an error registering: name: can't be blank, email: can't be blank, password: can't be blank"
-        }
-      }
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "account/register",
+                 "reason" =>
+                   "There was an error registering: name: can't be blank, email: can't be blank, password: can't be blank"
+               }
+             }
 
       # Register command
       speak(socket, %{
@@ -39,14 +40,14 @@ defmodule Angen.TextProtocol.AuthTest do
       user = Api.get_user_by_name("registerTest")
 
       assert response == %{
-        "name" => "account/registered",
-        "message" => %{
-          "user" => %{
-            "id" => user.id,
-            "name" => user.name
-          }
-        }
-      }
+               "name" => "account/registered",
+               "message" => %{
+                 "user" => %{
+                   "id" => user.id,
+                   "name" => user.name
+                 }
+               }
+             }
 
       # Bad password
       speak(socket, %{
@@ -61,12 +62,12 @@ defmodule Angen.TextProtocol.AuthTest do
       response = listen(socket)
 
       assert response == %{
-        "name" => "system/failure",
-        "message" => %{
-          "command" => "auth/get_token",
-          "reason" => "Bad authentication"
-        }
-      }
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "auth/get_token",
+                 "reason" => "Bad authentication"
+               }
+             }
 
       # Good password
       speak(socket, %{
@@ -82,16 +83,16 @@ defmodule Angen.TextProtocol.AuthTest do
       token = Angen.Account.get_user_token(nil, where: [user_id: user.id])
 
       assert response == %{
-        "name" => "auth/token",
-        "message" => %{
-          "token" => %{
-            "user_id" => user.id,
-            "identifier_code" => token.identifier_code,
-            "renewal_code" => token.renewal_code,
-            "expires_at" => Jason.encode!(token.expires_at) |> Jason.decode!
-          }
-        }
-      }
+               "name" => "auth/token",
+               "message" => %{
+                 "token" => %{
+                   "user_id" => user.id,
+                   "identifier_code" => token.identifier_code,
+                   "renewal_code" => token.renewal_code,
+                   "expires_at" => Jason.encode!(token.expires_at) |> Jason.decode!()
+                 }
+               }
+             }
 
       # Now login with the token
       # first a bad password
@@ -106,12 +107,12 @@ defmodule Angen.TextProtocol.AuthTest do
       response = listen(socket)
 
       assert response == %{
-        "name" => "system/failure",
-        "message" => %{
-          "command" => "auth/login",
-          "reason" => "Bad token"
-        }
-      }
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "auth/login",
+                 "reason" => "Bad token"
+               }
+             }
 
       # And valid
       speak(socket, %{
@@ -125,14 +126,14 @@ defmodule Angen.TextProtocol.AuthTest do
       response = listen(socket)
 
       assert response == %{
-        "name" => "auth/logged_in",
-        "message" => %{
-          "user" => %{
-            "id" => user.id,
-            "name" => "registerTest"
-          }
-        }
-      }
+               "name" => "auth/logged_in",
+               "message" => %{
+                 "user" => %{
+                   "id" => user.id,
+                   "name" => "registerTest"
+                 }
+               }
+             }
     end
   end
 end

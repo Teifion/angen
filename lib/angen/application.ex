@@ -21,18 +21,21 @@ defmodule Angen.Application do
       # Caches
       %{
         id: :protocol_schemas,
-        start: {Cachex, :start_link, [
-          :protocol_schemas,
-          []
-        ]}
+        start:
+          {Cachex, :start_link,
+           [
+             :protocol_schemas,
+             []
+           ]}
       },
-
       %{
         id: :protocol_command_dispatches,
-        start: {Cachex, :start_link, [
-          :protocol_command_dispatches,
-          []
-        ]}
+        start:
+          {Cachex, :start_link,
+           [
+             :protocol_command_dispatches,
+             []
+           ]}
       },
 
       # %{

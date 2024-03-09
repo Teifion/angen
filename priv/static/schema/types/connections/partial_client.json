@@ -1,0 +1,38 @@
+{
+  "$id": "types/connections/partial_client.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Partial client",
+  "description": "A client not including lobby info",
+  "type": "object",
+  "required": [
+    "id",
+    "party_id",
+    "connected?",
+    "afk?",
+    "in_game?",
+    "lobby_id"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "party_id": {
+      "type": ["string", "null"]
+    },
+    "connected?": {
+      "type": "boolean"
+    },
+    "last_disconnected": {
+      "type": ["string", "null"]
+    },
+    "afk?": {
+      "type": "boolean"
+    },
+    "in_game?": {
+      "type": "boolean"
+    },
+    "lobby_id": {
+      "type": ["string", "null"]
+    }
+  }
+}

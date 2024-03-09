@@ -1,5 +1,5 @@
 {
-  "$id": "connection/youare_message.json",
+  "$id": "connections/youare_message.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "You are",
   "description": "Message explaining who you are",

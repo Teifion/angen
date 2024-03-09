@@ -32,11 +32,14 @@ defmodule Angen.TextProtocol.ExternalDispatchTest do
         command_name = m.name()
 
         # Assert the lookup for this module works
-        assert ExternalDispatch.get_dispatch_module(command_name) == m, message: "No lookup for module #{m} with name #{command_name}"
+        assert ExternalDispatch.get_dispatch_module(command_name) == m,
+          message: "No lookup for module #{m} with name #{command_name}"
 
         # Assert we have a relevant response schema
         schema_name = "#{command_name}_command.json"
-        assert JsonSchemaHelper.resolve_root(schema_name) != nil, message: "No schema for #{m} with schema_name #{schema_name}"
+
+        assert JsonSchemaHelper.resolve_root(schema_name) != nil,
+          message: "No schema for #{m} with schema_name #{schema_name}"
       end)
     end
   end

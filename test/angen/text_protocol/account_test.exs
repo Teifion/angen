@@ -20,12 +20,12 @@ defmodule Angen.TextProtocol.AccountTest do
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "system/failure",
-        "message" => %{
-          "command" => "account/whois",
-          "reason" => "No user by that ID"
-        }
-      }
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "account/whois",
+                 "reason" => "No user by that ID"
+               }
+             }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
       assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
@@ -35,14 +35,14 @@ defmodule Angen.TextProtocol.AccountTest do
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "account/user_info",
-        "message" => %{
-          "user" => %{
-            "id" => user.id,
-            "name" => user.name
-          }
-        }
-      }
+               "name" => "account/user_info",
+               "message" => %{
+                 "user" => %{
+                   "id" => user.id,
+                   "name" => user.name
+                 }
+               }
+             }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
       assert JsonSchemaHelper.valid?("account/user_info_message.json", msg["message"])

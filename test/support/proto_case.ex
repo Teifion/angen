@@ -47,16 +47,20 @@ defmodule Angen.ProtoCase do
 
   @spec auth_connection() :: %{socket: any(), user: Teiserver.Account.User.t()}
   def auth_connection() do
-    {:ok, user} = Teiserver.Account.create_user(%{
-      name: Ecto.UUID.generate(),
-      email: "#{Ecto.UUID.generate()}@test",
-      password: "password1"
-    })
+    {:ok, user} =
+      Teiserver.Account.create_user(%{
+        name: Ecto.UUID.generate(),
+        email: "#{Ecto.UUID.generate()}@test",
+        password: "password1"
+      })
 
     auth_connection(user)
   end
 
-  @spec auth_connection(Teiserver.Account.User.t()) :: %{socket: any(), user: Teiserver.Account.User.t()}
+  @spec auth_connection(Teiserver.Account.User.t()) :: %{
+          socket: any(),
+          user: Teiserver.Account.User.t()
+        }
   def auth_connection(user) do
     host = ~c"127.0.0.1"
     port = Application.get_env(:angen, :tls_port)
@@ -73,42 +77,48 @@ defmodule Angen.ProtoCase do
       name: "auth/login",
       command: %{
         token: token.identifier_code,
-          user_agent: "UnitTest"
+        user_agent: "UnitTest"
       }
     })
 
     response = listen(socket)
 
     assert response == %{
-      "name" => "auth/logged_in",
-      "message" => %{
-        "user" => %{
-          "id" => user.id,
-          "name" => user.name
-        }
-      }
-    }
+             "name" => "auth/logged_in",
+             "message" => %{
+               "user" => %{
+                 "id" => user.id,
+                 "name" => user.name
+               }
+             }
+           }
 
     %{socket: socket, user: user}
   end
 
-  @spec lobby_host_connection() :: %{socket: any(), user: Teiserver.Account.User.t(), lobby: Teiserver.Game.Lobby.t()}
+  @spec lobby_host_connection() :: %{
+          socket: any(),
+          user: Teiserver.Account.User.t(),
+          lobby: Teiserver.Game.Lobby.t()
+        }
   def lobby_host_connection(user \\ nil) do
-    %{socket: socket, user: user} = if user do
-      auth_connection(user)
-    else
-      auth_connection()
-    end
+    %{socket: socket, user: user} =
+      if user do
+        auth_connection(user)
+      else
+        auth_connection()
+      end
 
     lobby_name = Ecto.UUID.generate()
 
     speak(socket, %{name: "lobby/open", command: %{name: "test-#{lobby_name}"}})
 
-    lobby = Teiserver.Api.list_lobby_summaries()
-        |> Enum.filter(fn l -> l.host_id == user.id end)
-        |> hd
+    lobby =
+      Teiserver.Api.list_lobby_summaries()
+      |> Enum.filter(fn l -> l.host_id == user.id end)
+      |> hd
 
-    listen(socket)
+    listen_all(socket)
 
     client = Teiserver.Api.get_client(user.id)
     assert client.lobby_host?
@@ -125,6 +135,10 @@ defmodule Angen.ProtoCase do
     socket
   end
 
+  @doc """
+  Grabs a message from the socket, if there are multiple messages it will only
+  grab the first one
+  """
   @spec listen(any()) :: any()
   @spec listen(any(), non_neg_integer()) :: any()
   def listen(socket, timeout \\ 500) do
@@ -135,28 +149,53 @@ defmodule Angen.ProtoCase do
     end
   end
 
-  # def listen_until(socket, timeout \\ 500) do
-  #   case :ssl.recv(socket, 0, timeout) do
-  #     {:ok, reply} ->
-  #       msg = reply |> to_string |> Jason.decode!
-  #       [msg | listen_until(socket, timeout)]
-  #     {:error, :timeout} -> :timeout
-  #     {:error, :closed} -> :closed
-  #   end
-  # end
+  @doc """
+  Groups the list of responses according to their name
+  """
+  @spec group_responses([map()]) :: map()
+  def group_responses(responses) do
+    responses
+    |> Enum.group_by(fn r ->
+      r["name"]
+    end)
+  end
+
+  @doc """
+  Grabs all messages in the socket
+  """
+  @spec listen_all(any()) :: any()
+  @spec listen_all(any(), non_neg_integer()) :: any()
+  def listen_all(socket, timeout \\ 500) do
+    case :ssl.recv(socket, 0, timeout) do
+      {:ok, reply} ->
+        msg = reply |> to_string |> Jason.decode!()
+        [msg | listen_all(socket, timeout)]
+
+      {:error, :timeout} ->
+        []
+
+      {:error, :closed} ->
+        []
+    end
+  end
 
   @spec assert_auth_failure(map(), String.t()) :: :ok
   def assert_auth_failure(message, command_name) do
     assert message == %{
-      "name" => "system/failure",
-      "message" => %{
-        "command" => command_name,
-        "reason" => "Must be logged in"
-      }
-    }
+             "name" => "system/failure",
+             "message" => %{
+               "command" => command_name,
+               "reason" => "Must be logged in"
+             }
+           }
 
     assert Angen.Helpers.JsonSchemaHelper.valid?("response.json", message)
-    assert Angen.Helpers.JsonSchemaHelper.valid?("system/failure_message.json", message["message"])
+
+    assert Angen.Helpers.JsonSchemaHelper.valid?(
+             "system/failure_message.json",
+             message["message"]
+           )
+
     :ok
   end
 
@@ -164,14 +203,19 @@ defmodule Angen.ProtoCase do
   @spec assert_success(map(), String.t()) :: :ok
   def assert_success(message, command_name) do
     assert message == %{
-      "name" => "system/success",
-      "message" => %{
-        "command" => command_name
-      }
-    }
+             "name" => "system/success",
+             "message" => %{
+               "command" => command_name
+             }
+           }
 
     assert Angen.Helpers.JsonSchemaHelper.valid?("response.json", message)
-    assert Angen.Helpers.JsonSchemaHelper.valid?("system/success_message.json", message["message"])
+
+    assert Angen.Helpers.JsonSchemaHelper.valid?(
+             "system/success_message.json",
+             message["message"]
+           )
+
     :ok
   end
 end

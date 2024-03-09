@@ -15,13 +15,24 @@ defmodule Angen.TextProtocol.TypeConvertors do
   end
 
   @spec do_convert(any(), atom) :: map() | String.t()
-  def do_convert(%Teiserver.Account.User{} = user, :full), do: Jason.encode!(user) |> Jason.decode!
+  def do_convert(%Teiserver.Account.User{} = user, :full),
+    do: Jason.encode!(user) |> Jason.decode!()
 
   def do_convert(%Teiserver.Account.User{} = user, _) do
-    %{
-      "id" => user.id,
-      "name" => user.name
-    }
+    ~w(id name)a
+    |> Map.new(fn key ->
+      {to_string(key), Map.get(user, key)}
+    end)
+  end
+
+  def do_convert(%Teiserver.Connections.Client{} = client, :full),
+    do: Jason.encode!(client) |> Jason.decode!()
+
+  def do_convert(%Teiserver.Connections.Client{} = client, :partial) do
+    ~w(id party_id connected? last_disconnected afk? in_game? lobby_id)a
+    |> Map.new(fn key ->
+      {to_string(key), Map.get(client, key)}
+    end)
   end
 
   def do_convert(object, _) do

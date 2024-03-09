@@ -23,13 +23,14 @@ defmodule Angen.Helpers.JsonSchemaHelper do
         |> File.read!()
         |> Jason.decode!()
 
-      root = try do
-        ExJsonSchema.Schema.resolve(contents)
-      rescue
-        e ->
-          Logger.error("Error resolving schema for path #{file_path}")
-          reraise e, __STACKTRACE__
-      end
+      root =
+        try do
+          ExJsonSchema.Schema.resolve(contents)
+        rescue
+          e ->
+            Logger.error("Error resolving schema for path #{file_path}")
+            reraise e, __STACKTRACE__
+        end
 
       Cachex.put(:protocol_schemas, root.schema["$id"], root)
 
@@ -42,6 +43,7 @@ defmodule Angen.Helpers.JsonSchemaHelper do
     case resolve_root(p) do
       nil ->
         nil
+
       root ->
         root.schema
     end
@@ -62,6 +64,7 @@ defmodule Angen.Helpers.JsonSchemaHelper do
     case resolve_root(schema_name) do
       nil ->
         raise "No root for '#{schema_name}'"
+
       root ->
         ExJsonSchema.Validator.validate(root, object)
     end

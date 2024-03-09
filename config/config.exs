@@ -34,7 +34,6 @@ config :angen, Angen.Mailer, adapter: Swoosh.Adapters.Local
 
 config :teiserver,
   repo: Angen.Repo,
-
   fn_lobby_name_acceptor: &Angen.Helpers.OverrideHelpers.lobby_name_acceptor/1,
   fn_user_name_acceptor: &Angen.Helpers.OverrideHelpers.user_name_acceptor/1
 
@@ -75,8 +74,8 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :ex_json_schema,
-  :remote_schema_resolver,
-  {Angen.Helpers.JsonSchemaHelper, :resolve_schema}
+       :remote_schema_resolver,
+       {Angen.Helpers.JsonSchemaHelper, :resolve_schema}
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

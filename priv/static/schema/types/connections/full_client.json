@@ -1,0 +1,68 @@
+{
+  "$id": "types/connections/full_client.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Full client",
+  "description": "A client including lobby info",
+  "type": "object",
+  "required": [
+    "id",
+    "party_id",
+    "connected?",
+    "afk?",
+    "in_game?",
+    
+    "lobby_id",
+    "ready?",
+    "player?",
+    "player_number",
+    "team_number",
+    "team_colour",
+    "sync",
+    "lobby_host?"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "party_id": {
+      "type": ["string", "null"]
+    },
+    "connected?": {
+      "type": "boolean"
+    },
+    "last_disconnected": {
+      "type": ["string", "null"]
+    },
+    "afk?": {
+      "type": "boolean"
+    },
+    "in_game?": {
+      "type": "boolean"
+    },
+
+    "lobby_id": {
+      "type": ["string", "null"]
+    },
+    "ready?": {
+      "type": "boolean"
+    },
+    "player?": {
+      "type": "boolean"
+    },
+    "player_number": {
+      "type": "integer"
+    },
+    "team_number": {
+      "type": "integer"
+    },
+    "team_colour": {
+      "type": ["string", "null"]
+    },
+    "sync": {
+      "type": "object"
+    },
+    "lobby_host?": {
+      "type": "boolean"
+    }
+  }
+}

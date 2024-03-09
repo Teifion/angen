@@ -20,12 +20,12 @@ defmodule Angen.TextProtocol.LobbyTest do
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "system/failure",
-        "message" => %{
-          "command" => "lobby/open",
-          "reason" => "No name supplied"
-        }
-      }
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "lobby/open",
+                 "reason" => "No name supplied"
+               }
+             }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
       assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
@@ -34,16 +34,17 @@ defmodule Angen.TextProtocol.LobbyTest do
       speak(socket, %{name: "lobby/open", command: %{name: "my test lobby"}})
       msg = listen(socket)
 
-      lobby = Teiserver.Api.list_lobby_summaries()
+      lobby =
+        Teiserver.Api.list_lobby_summaries()
         |> Enum.filter(fn l -> l.host_id == user.id end)
         |> hd
 
       assert msg == %{
-        "name" => "lobby/opened",
-        "message" => %{
-          "lobby_id" => lobby.id
-        }
-      }
+               "name" => "lobby/opened",
+               "message" => %{
+                 "lobby_id" => lobby.id
+               }
+             }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
       assert JsonSchemaHelper.valid?("lobby/opened_message.json", msg["message"])
@@ -58,38 +59,75 @@ defmodule Angen.TextProtocol.LobbyTest do
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "system/failure",
-        "message" => %{
-          "command" => "lobby/close",
-          "reason" => "Not a lobby host"
-        }
-      }
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "lobby/close",
+                 "reason" => "Not a lobby host"
+               }
+             }
     end
 
     test "while a host" do
       %{socket: socket, user: user, lobby: _lobby} = lobby_host_connection()
 
       # Ensure we appear in the list
-      lobby_list = Teiserver.Api.list_lobby_summaries()
+      lobby_list =
+        Teiserver.Api.list_lobby_summaries()
         |> Enum.filter(fn l -> l.host_id == user.id end)
 
       refute Enum.empty?(lobby_list)
 
       # Now close it
       speak(socket, %{name: "lobby/close", command: %{}})
-      msg = listen(socket)
+
+      messages =
+        socket
+        |> listen_all()
+        |> group_responses()
+
+      assert Map.has_key?(messages, "connections/client_updated")
+      assert Map.has_key?(messages, "system/success")
 
       # We should not appear in the list
-      lobby_list = Teiserver.Api.list_lobby_summaries()
+      lobby_list =
+        Teiserver.Api.list_lobby_summaries()
         |> Enum.filter(fn l -> l.host_id == user.id end)
 
       # Check the client
       client = Api.get_client(user.id)
       refute client.lobby_host?
 
-      # Check the message
+      # Check the success message
       assert Enum.empty?(lobby_list)
-      assert_success(msg, "lobby/close")
+      assert_success(hd(messages["system/success"]), "lobby/close")
+
+      # Check the client updated message
+      msg = hd(messages["connections/client_updated"])
+
+      assert msg == %{
+               "name" => "connections/client_updated",
+               "message" => %{
+                 "client" => %{
+                   "afk?" => false,
+                   "connected?" => true,
+                   "id" => user.id,
+                   "in_game?" => false,
+                   "last_disconnected" => nil,
+                   "lobby_host?" => false,
+                   "lobby_id" => nil,
+                   "party_id" => nil,
+                   "player?" => false,
+                   "player_number" => nil,
+                   "ready?" => false,
+                   "sync" => nil,
+                   "team_colour" => nil,
+                   "team_number" => nil
+                 }
+               }
+             }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("connections/client_updated_message.json", msg["message"])
     end
   end
 end
