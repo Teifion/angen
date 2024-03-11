@@ -14,12 +14,18 @@ defmodule Angen.TextProtocol.Lobby.OpenCommand do
   end
 
   def handle(%{"name" => name}, state) do
-    case Teiserver.Api.open_lobby(state.user_id, name) do
-      {:ok, lobby_id} ->
-        TextProtocol.Lobby.OpenedResponse.generate(lobby_id, state)
+    cond do
+      state.lobby_host? == true or state.lobby_id != nil ->
+        FailureResponse.generate({name(), "Already in a lobby"}, state)
 
-      {:error, reason} ->
-        FailureResponse.generate({name(), reason}, state)
+      true ->
+        case Teiserver.Api.open_lobby(state.user_id, name) do
+          {:ok, lobby_id} ->
+            TextProtocol.Lobby.OpenedResponse.generate(lobby_id, state)
+
+          {:error, reason} ->
+            FailureResponse.generate({name(), reason}, state)
+        end
     end
   end
 end

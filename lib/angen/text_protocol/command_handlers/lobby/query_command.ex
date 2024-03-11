@@ -13,12 +13,23 @@ defmodule Angen.TextProtocol.Lobby.QueryCommand do
     FailureResponse.generate({name(), "Must be logged in"}, state)
   end
 
-  def handle(%{"filters" => filters}, state) do
-    IO.puts("#{__MODULE__}:#{__ENV__.line}")
-    IO.inspect(filters)
-    IO.puts("")
+  def handle(%{"filters" => filters} = msg, state) do
+    # IO.puts("#{__MODULE__}:#{__ENV__.line}")
+    # IO.inspect(filters)
+    # IO.inspect(msg["limit"])
+    # IO.puts("")
 
-    lobbies = Teiserver.Api.list_lobby_summaries()
+    limit = String.to_integer(Map.get(msg, "limit", "50"))
+
+    lobbies =
+      Teiserver.Api.stream_lobby_summaries(filters)
+      |> Stream.take(limit)
+      |> Enum.to_list()
+
+    # IO.puts "#{__MODULE__}:#{__ENV__.line}"
+    # IO.inspect lobbies
+    # IO.puts ""
+
     TextProtocol.Lobby.ListResponse.generate(lobbies, state)
   end
 end

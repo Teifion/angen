@@ -15,9 +15,17 @@ defmodule Angen.TextProtocol.TextHandlerServer do
 
     {:continue,
      %{
-       user_id: nil,
+       # Connection info
        ip: ip,
-       socket: socket
+       socket: socket,
+
+       # Client/User info
+       user_id: nil,
+       user: nil,
+       lobby_host?: false,
+       party_id: nil,
+       lobby_id: nil,
+       in_game?: false
      }}
   end
 

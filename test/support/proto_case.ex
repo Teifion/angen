@@ -114,7 +114,7 @@ defmodule Angen.ProtoCase do
     speak(socket, %{name: "lobby/open", command: %{name: "test-#{lobby_name}"}})
 
     lobby =
-      Teiserver.Api.list_lobby_summaries()
+      Teiserver.Api.stream_lobby_summaries()
       |> Enum.filter(fn l -> l.host_id == user.id end)
       |> hd
 
@@ -217,5 +217,13 @@ defmodule Angen.ProtoCase do
            )
 
     :ok
+  end
+
+  @spec close_all_lobbies() :: :ok
+  def close_all_lobbies do
+    Teiserver.Game.list_lobby_ids()
+    |> Enum.each(fn id ->
+      Teiserver.Api.close_lobby(id)
+    end)
   end
 end

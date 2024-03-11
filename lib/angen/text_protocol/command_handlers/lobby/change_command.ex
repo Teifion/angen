@@ -1,11 +1,11 @@
-defmodule Angen.TextProtocol.Lobby.CloseCommand do
+defmodule Angen.TextProtocol.Lobby.ChangeCommand do
   @moduledoc false
 
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
   @spec name :: String.t()
-  def name, do: "lobby/close"
+  def name, do: "lobby/change"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
@@ -21,18 +21,12 @@ defmodule Angen.TextProtocol.Lobby.CloseCommand do
     FailureResponse.generate({name(), "Must be a lobby host"}, state)
   end
 
-  def handle(_, state) do
-    case Teiserver.Api.get_client(state.user_id) do
-      %{lobby_host?: true, lobby_id: lobby_id} ->
-        if lobby_id do
-          Teiserver.Api.close_lobby(lobby_id)
-          SuccessResponse.generate(name(), state)
-        else
-          FailureResponse.generate({name(), "Not in a lobby"}, state)
-        end
+  def handle(changes, state) do
+    IO.puts "#{__MODULE__}:#{__ENV__.line}"
+    IO.inspect changes
+    IO.puts ""
 
-      _ ->
-        FailureResponse.generate({name(), "Not a lobby host"}, state)
-    end
+    Teiserver.Api.update_lobby(state.lobby_id, changes)
+    SuccessResponse.generate(name(), state)
   end
 end

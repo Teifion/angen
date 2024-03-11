@@ -1,0 +1,48 @@
+{
+  "$id": "lobby/change_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby - Change command",
+  "description": "",
+  "type": "object",
+  "required": [
+    
+  ],
+  "properties": {
+    "host_data": {
+      "type": "object"
+    },
+    "name": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "settings": {
+      "type": "object"
+    },
+    "password": {
+      "type": ["string", "null"]
+    },
+    "locked?": {
+      "type": "boolean"
+    },
+    "public?": {
+      "type": "boolean"
+    },
+    "match_type": {
+      "type": "string"
+    },
+    "rated?": {
+      "type": "boolean"
+    },
+    "game_name": {
+      "type": "string"
+    },
+    "game_version": {
+      "type": "string"
+    }
+  }
+}

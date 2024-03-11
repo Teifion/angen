@@ -1,8 +1,8 @@
 {
-  "$id": "types/lobby/partial_lobby.json",
+  "$id": "types/lobby/lobby_summary.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Headline Lobby",
-  "description": "A very limited representation of a lobby for things like lobby lists",
+  "title": "Partial lobby",
+  "description": "A limited representation of a lobby for things like lobby lists",
   "type": "object",
   "required": [
     "id",
@@ -34,23 +34,20 @@
     "public?": {
       "type": "boolean"
     },
-    "match_type": {
-      "type": "string"
-    },
     "rated?": {
       "type": "boolean"
     },
     "game_name": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "game_version": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "player_count": {
-      "type": "number"
+      "type": "integer"
     },
     "spectator_count": {
-      "type": "number"
+      "type": "integer"
     }
   }
 }

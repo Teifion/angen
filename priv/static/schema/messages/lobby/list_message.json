@@ -11,7 +11,7 @@
     "lobbies": {
       "type": "array",
       "items": {
-        "$ref": "types/lobby/partial_lobby.json"
+        "$ref": "types/lobby/lobby_summary.json"
       }
     }
   }

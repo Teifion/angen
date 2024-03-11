@@ -10,6 +10,9 @@
   "properties": {
     "filters": {
       "$ref": "types/lobby/lobby_filters.json"
+    },
+    "limit": {
+      "type": "integer"
     }
   }
 }

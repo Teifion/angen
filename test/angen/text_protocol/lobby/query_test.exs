@@ -2,7 +2,11 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
   @moduledoc false
   use Angen.ProtoCase
 
-  describe "basics" do
+  setup _ do
+    close_all_lobbies()
+  end
+
+  describe "no lobbies" do
     test "unauth" do
       %{socket: socket} = raw_connection()
 
@@ -34,12 +38,13 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
 
       filters = %{
         match_ongoing?: true,
-        require_tags: ["a", "b"],
+        require_any_tags: ["a", "b"],
+        require_all_tags: ["a", "b"],
         exclude_tags: ["z", "x"],
         passworded?: true,
         locked?: true,
         public?: true,
-        match_type: ["1", "2"],
+        # match_type: ["1", "2"],
         rated?: true,
         game_version: "abc",
         game_name: "zxy",
@@ -56,6 +61,46 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
                  "lobbies" => []
                }
              }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
+    end
+  end
+
+  describe "basics with lobbies" do
+    setup _ do
+      %{socket: host1, lobby: lobby1} = lobby_host_connection()
+      %{socket: host2, lobby: lobby2} = lobby_host_connection()
+      %{socket: host3, lobby: lobby3} = lobby_host_connection()
+
+      %{socket: socket} = auth_connection()
+
+      %{
+        host1: host1,
+        lobby1: lobby1,
+        host2: host2,
+        lobby2: lobby2,
+        host3: host3,
+        lobby3: lobby3,
+        socket: socket
+      }
+    end
+
+    test "no filters", args do
+      %{lobby1: lobby1, lobby2: lobby2, lobby3: lobby3, socket: socket} = args
+
+      speak(socket, %{name: "lobby/query", command: %{filters: %{}}})
+      msg = listen(socket)
+
+      assert Map.has_key?(msg["message"], "lobbies")
+      lobbies = msg["message"]["lobbies"]
+
+      ids = lobbies |> Enum.map(fn l -> l["id"] end)
+
+      assert Enum.member?(ids, lobby1.id)
+      assert Enum.member?(ids, lobby2.id)
+      assert Enum.member?(ids, lobby3.id)
+      assert Enum.count(ids) == 3
 
       assert JsonSchemaHelper.valid?("response.json", msg)
       assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])

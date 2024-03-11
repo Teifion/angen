@@ -7,15 +7,19 @@
   "required": [],
   "properties": {
     "match_ongoing?": {
-      "description": "Returns only lobbies where the match_ongoing? property matches this value",
+      "description": "Selects only lobbies where the match_ongoing? property matches this value",
       "type": "boolean"
     },
-    "require_tags": {
-      "description": "Returns only lobbies where all of the listed tags are present",
+    "require_all_tags": {
+      "description": "Selects only lobbies where all of the listed tags are present",
+      "type": "array"
+    },
+    "require_any_tags": {
+      "description": "Selects only lobbies where one or more of the listed tags are present",
       "type": "array"
     },
     "exclude_tags": {
-      "description": "Returns only lobbies where none of the listed tags are present",
+      "description": "Selects only lobbies where none of the listed tags are present",
       "type": "array"
     },
     "passworded?": {
@@ -44,11 +48,11 @@
     },
     "min_player_count": {
       "description": "The minimum number of players (inclusive) a lobby must have",
-      "type": "number"
+      "type": "integer"
     },
     "max_player_count": {
       "description": "The maximum number of players (inclusive) a lobby must have",
-      "type": "number"
+      "type": "integer"
     }
   }
 }

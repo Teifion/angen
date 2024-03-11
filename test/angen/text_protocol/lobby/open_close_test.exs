@@ -35,7 +35,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       msg = listen(socket)
 
       lobby =
-        Teiserver.Api.list_lobby_summaries()
+        Teiserver.Api.stream_lobby_summaries()
         |> Enum.filter(fn l -> l.host_id == user.id end)
         |> hd
 
@@ -72,7 +72,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
 
       # Ensure we appear in the list
       lobby_list =
-        Teiserver.Api.list_lobby_summaries()
+        Teiserver.Api.stream_lobby_summaries()
         |> Enum.filter(fn l -> l.host_id == user.id end)
 
       refute Enum.empty?(lobby_list)
@@ -90,7 +90,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
 
       # We should not appear in the list
       lobby_list =
-        Teiserver.Api.list_lobby_summaries()
+        Teiserver.Api.stream_lobby_summaries()
         |> Enum.filter(fn l -> l.host_id == user.id end)
 
       # Check the client

@@ -1,7 +1,7 @@
 {
-  "$id": "types/lobby/full_lobby.json",
+  "$id": "types/lobby/lobby.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Extended lobby",
+  "title": "Lobby",
   "description": "Lobby details for members of the lobby",
   "type": "object",
   "required": [
