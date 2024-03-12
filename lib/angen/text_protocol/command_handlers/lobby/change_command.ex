@@ -21,10 +21,27 @@ defmodule Angen.TextProtocol.Lobby.ChangeCommand do
     FailureResponse.generate({name(), "Must be a lobby host"}, state)
   end
 
-  def handle(changes, state) do
-    IO.puts "#{__MODULE__}:#{__ENV__.line}"
-    IO.inspect changes
-    IO.puts ""
+  @change_keys ~w(
+    host_data
+    name
+    tags
+    settings
+    password
+    locked?
+    public?
+    match_type
+    rated?
+    game_name
+    game_version
+  )a
+  def handle(changes_raw, state) do
+    changes = @change_keys
+      |> Enum.filter(fn key ->
+        Map.has_key?(changes_raw, to_string(key))
+      end)
+      |> Map.new(fn key ->
+        {key, changes_raw[to_string(key)]}
+      end)
 
     Teiserver.Api.update_lobby(state.lobby_id, changes)
     SuccessResponse.generate(name(), state)

@@ -53,7 +53,11 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
 
   describe "close" do
     test "not a host" do
-      %{socket: socket} = auth_connection()
+      %{lobby: lobby} = lobby_host_connection()
+      %{socket: socket, user: user} = auth_connection()
+
+      Api.add_client_to_lobby(user.id, lobby.id)
+      listen_all(socket)
 
       speak(socket, %{name: "lobby/close", command: %{}})
       msg = listen(socket)
@@ -62,7 +66,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
                "name" => "system/failure",
                "message" => %{
                  "command" => "lobby/close",
-                 "reason" => "Not a lobby host"
+                 "reason" => "Must be a lobby host"
                }
              }
     end

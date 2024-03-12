@@ -62,7 +62,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       lobby_host_connection()
     end
 
-    test "change nothing", %{socket: socket, lobby: lobby, user: user} do
+    test "change nothing", %{socket: socket} do
       speak(socket, %{name: "lobby/change", command: %{}})
       msg = listen(socket)
 
@@ -71,13 +71,53 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       assert listen_all(socket) == []
     end
 
-    test "change 1 thing", %{socket: socket, lobby: lobby, user: user} do
+    test "change 1 thing", %{socket: socket, lobby_id: lobby_id, user: user} do
+      lobby = Teiserver.Api.get_lobby(lobby_id)
+      refute lobby.name == "New lobby name"
+
       speak(socket, %{name: "lobby/change", command: %{name: "New lobby name"}})
       msg = listen(socket)
-
       assert_success(msg, "lobby/change")
 
+      # Next message should be the updated lobby info
+      msg = listen(socket)
       assert listen_all(socket) == []
+
+      assert msg == %{
+               "name" => "lobby/updated",
+               "message" => %{
+                 "lobby" => %{
+                    "game_name" => nil,
+                    "game_settings" => %{},
+                    "game_version" => nil,
+                    "host_data" => %{},
+                    "host_id" => user.id,
+                    "id" => lobby_id,
+                    "locked?" => false,
+                    "match_id" => lobby.match_id,
+                    "match_ongoing?" => false,
+                    "match_type" => nil,
+                    "members" => [],
+                    "name" => "New lobby name",
+                    "password" => nil,
+                    "passworded?" => false,
+                    "players" => [],
+                    "public?" => true,
+                    "queue_id" => nil,
+                    "rated?" => true,
+                    "spectators" => [],
+                    "tags" => []
+
+                 }
+               }
+             }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/updated_message.json", msg["message"])
+
+      # Check the lobby did indeed update
+      lobby = Teiserver.Api.get_lobby(lobby_id)
+      assert lobby.name == "New lobby name"
     end
   end
 end

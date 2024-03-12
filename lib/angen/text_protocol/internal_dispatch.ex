@@ -37,14 +37,27 @@ defmodule Angen.TextProtocol.InternalDispatch do
   end
 
   @spec lookup(String.t(), atom()) :: module()
+  # User
   def lookup("Teiserver.Communication.User:" <> _, :message_received), do: InfoHandlers.Messaged
   def lookup("Teiserver.Communication.User:" <> _, :message_sent), do: InfoHandlers.Noop
   def lookup("Teiserver.Communication.User:" <> _, _), do: InfoHandlers.NoopLog
 
+  # Client
   def lookup("Teiserver.Connections.Client:" <> _, :client_updated),
     do: InfoHandlers.ClientUpdated
+  def lookup("Teiserver.Connections.Client:" <> _, :joined_lobby),
+    do: InfoHandlers.ClientJoinedLobby
+  def lookup("Teiserver.Connections.Client:" <> _, :left_lobby),
+    do: InfoHandlers.ClientLeftLobby
 
-  def lookup("Teiserver.Connections.Client:" <> _, _), do: InfoHandlers.NoopLog
+  # Lobby
+  def lookup("Teiserver.Game.Lobby:" <> _, :lobby_updated), do: InfoHandlers.LobbyUpdated
+  def lookup("Teiserver.Game.Lobby:" <> _, :lobby_user_joined), do: InfoHandlers.NoopLog
+  def lookup("Teiserver.Game.Lobby:" <> _, :lobby_user_left), do: InfoHandlers.NoopLog
+  def lookup("Teiserver.Game.Lobby:" <> _, :lobby_closed), do: InfoHandlers.NoopLog
+  def lookup("Teiserver.Game.Lobby:" <> _, :lobby_client_change), do: InfoHandlers.NoopLog
+
+  # Fallback
   def lookup(topic, event), do: raise("No module for info topic:`#{topic}`, event:`#{event}`")
 
   defp handle_error(error, stacktrace, _state) do

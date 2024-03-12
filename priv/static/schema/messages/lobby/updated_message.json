@@ -1,0 +1,15 @@
+{
+  "$id": "lobby/updated_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby - Updated message",
+  "description": "",
+  "type": "object",
+  "required": [
+    "lobby"
+  ],
+  "properties": {
+    "lobby": {
+      "$ref": "types/lobby/lobby.json"
+    }
+  }
+}

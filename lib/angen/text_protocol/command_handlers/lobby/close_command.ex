@@ -22,17 +22,18 @@ defmodule Angen.TextProtocol.Lobby.CloseCommand do
   end
 
   def handle(_, state) do
-    case Teiserver.Api.get_client(state.user_id) do
-      %{lobby_host?: true, lobby_id: lobby_id} ->
-        if lobby_id do
-          Teiserver.Api.close_lobby(lobby_id)
-          SuccessResponse.generate(name(), state)
-        else
-          FailureResponse.generate({name(), "Not in a lobby"}, state)
-        end
+    client = Teiserver.Api.get_client(state.user_id)
 
-      _ ->
+    cond do
+      client.lobby_id == nil ->
+        FailureResponse.generate({name(), "Not in a lobby"}, state)
+
+      client.lobby_host? == false ->
         FailureResponse.generate({name(), "Not a lobby host"}, state)
+
+      true ->
+        Teiserver.Api.close_lobby(client.lobby_id)
+        SuccessResponse.generate(name(), state)
     end
   end
 end

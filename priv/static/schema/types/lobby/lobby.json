@@ -16,9 +16,6 @@
     "host_id": {
       "type": "string"
     },
-    "host": {
-      "$ref": "types/account/user.json"
-    },
     "host_data": {
       "type": "object"
     },
@@ -44,16 +41,16 @@
       "type": "boolean"
     },
     "match_type": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "rated?": {
       "type": "boolean"
     },
     "game_name": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "game_version": {
-      "type": "string"
+      "type": ["string", "null"]
     },
     "players": {
       "type": "array",

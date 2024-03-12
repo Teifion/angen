@@ -10,6 +10,12 @@ defmodule Angen.TextProtocol.InfoMacro do
 
       alias Angen.TextProtocol
       alias Teiserver.Api
+      import Angen.TextProtocol.InfoMacro, only: [nil_response: 1]
     end
+  end
+
+  @spec nil_response(Angen.ConnState.t()) :: Angen.handler_response()
+  def nil_response(state) do
+    {nil, state}
   end
 end

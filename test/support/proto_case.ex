@@ -123,7 +123,7 @@ defmodule Angen.ProtoCase do
     client = Teiserver.Api.get_client(user.id)
     assert client.lobby_host?
 
-    %{socket: socket, user: user, lobby: lobby}
+    %{socket: socket, user: user, lobby: lobby, lobby_id: lobby.id}
   end
 
   @spec speak(any(), map) :: any()
