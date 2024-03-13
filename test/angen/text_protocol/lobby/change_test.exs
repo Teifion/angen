@@ -2,9 +2,9 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
   @moduledoc false
   use Angen.ProtoCase
 
-  # setup _ do
-  #   close_all_lobbies()
-  # end
+  setup _ do
+    close_all_lobbies()
+  end
 
   describe "bad context" do
     test "unauth" do
@@ -73,9 +73,9 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
 
     test "change 1 thing", %{socket: socket, lobby_id: lobby_id, user: user} do
       lobby = Teiserver.Api.get_lobby(lobby_id)
-      refute lobby.name == "New lobby name"
+      refute lobby.name == "New lobby name (1)"
 
-      speak(socket, %{name: "lobby/change", command: %{name: "New lobby name"}})
+      speak(socket, %{name: "lobby/change", command: %{name: "New lobby name (1)"}})
       msg = listen(socket)
       assert_success(msg, "lobby/change")
 
@@ -98,7 +98,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
                     "match_ongoing?" => false,
                     "match_type" => nil,
                     "members" => [],
-                    "name" => "New lobby name",
+                    "name" => "New lobby name (1)",
                     "password" => nil,
                     "passworded?" => false,
                     "players" => [],
@@ -117,7 +117,70 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
 
       # Check the lobby did indeed update
       lobby = Teiserver.Api.get_lobby(lobby_id)
-      assert lobby.name == "New lobby name"
+      assert lobby.name == "New lobby name (1)"
+    end
+
+    test "change 3 things", %{socket: socket, lobby_id: lobby_id, user: user} do
+      lobby = Teiserver.Api.get_lobby(lobby_id)
+      refute lobby.name == "New lobby name (3)"
+
+      speak(socket, %{name: "lobby/change", command: %{
+        name: "New lobby name (3)",
+        public?: false,
+        password: "123"
+      }})
+      msg = listen(socket)
+      assert_success(msg, "lobby/change")
+
+      # Next message should be the updated lobby info
+      msg = listen(socket)
+      assert listen_all(socket) == []
+
+      assert msg == %{
+               "name" => "lobby/updated",
+               "message" => %{
+                 "lobby" => %{
+                    "game_name" => nil,
+                    "game_settings" => %{},
+                    "game_version" => nil,
+                    "host_data" => %{},
+                    "host_id" => user.id,
+                    "id" => lobby_id,
+                    "locked?" => false,
+                    "match_id" => lobby.match_id,
+                    "match_ongoing?" => false,
+                    "match_type" => nil,
+                    "members" => [],
+                    "name" => "New lobby name (3)",
+                    "password" => "123",
+                    "passworded?" => true,
+                    "players" => [],
+                    "public?" => false,
+                    "queue_id" => nil,
+                    "rated?" => true,
+                    "spectators" => [],
+                    "tags" => []
+
+                 }
+               }
+             }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/updated_message.json", msg["message"])
+
+      # Check the lobby did indeed update
+      lobby = Teiserver.Api.get_lobby(lobby_id)
+      assert lobby.name == "New lobby name (3)"
+
+      # Verify the changes in the summary too
+      speak(socket, %{name: "lobby/query", command: %{filters: %{}}})
+      msg = listen(socket)
+
+      [summary] = msg["message"]["lobbies"]
+
+      assert summary["id"] == lobby.id
+      assert summary["passworded?"] == true
+      assert summary["name"] == "New lobby name (3)"
     end
   end
 end

@@ -69,25 +69,25 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
 
   describe "basics with lobbies" do
     setup _ do
-      %{socket: host1, lobby: lobby1} = lobby_host_connection()
-      %{socket: host2, lobby: lobby2} = lobby_host_connection()
-      %{socket: host3, lobby: lobby3} = lobby_host_connection()
+      %{socket: host1, lobby_id: lobby1_id} = lobby_host_connection()
+      %{socket: host2, lobby_id: lobby2_id} = lobby_host_connection()
+      %{socket: host3, lobby_id: lobby3_id} = lobby_host_connection()
 
       %{socket: socket} = auth_connection()
 
       %{
         host1: host1,
-        lobby1: lobby1,
+        lobby1_id: lobby1_id,
         host2: host2,
-        lobby2: lobby2,
+        lobby2_id: lobby2_id,
         host3: host3,
-        lobby3: lobby3,
+        lobby3_id: lobby3_id,
         socket: socket
       }
     end
 
     test "no filters", args do
-      %{lobby1: lobby1, lobby2: lobby2, lobby3: lobby3, socket: socket} = args
+      %{lobby1_id: lobby1_id, lobby2_id: lobby2_id, lobby3_id: lobby3_id, socket: socket} = args
 
       speak(socket, %{name: "lobby/query", command: %{filters: %{}}})
       msg = listen(socket)
@@ -97,9 +97,158 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
 
       ids = lobbies |> Enum.map(fn l -> l["id"] end)
 
-      assert Enum.member?(ids, lobby1.id)
-      assert Enum.member?(ids, lobby2.id)
-      assert Enum.member?(ids, lobby3.id)
+      assert Enum.member?(ids, lobby1_id)
+      assert Enum.member?(ids, lobby2_id)
+      assert Enum.member?(ids, lobby3_id)
+      assert Enum.count(ids) == 3
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
+    end
+
+    test "basic match_ongoing?", args do
+      %{lobby1_id: lobby1_id, lobby2_id: lobby2_id, lobby3_id: lobby3_id, socket: socket} = args
+
+      Api.update_lobby(lobby1_id, %{match_ongoing?: false})
+      Api.update_lobby(lobby2_id, %{match_ongoing?: false})
+      Api.update_lobby(lobby3_id, %{match_ongoing?: true})
+
+      speak(socket, %{name: "lobby/query", command: %{filters: %{
+        match_ongoing?: false
+      }}})
+      msg = listen(socket)
+
+      assert Map.has_key?(msg["message"], "lobbies")
+      lobbies = msg["message"]["lobbies"]
+
+      ids = lobbies |> Enum.map(fn l -> l["id"] end)
+
+      assert Enum.member?(ids, lobby1_id)
+      assert Enum.member?(ids, lobby2_id)
+      refute Enum.member?(ids, lobby3_id)
+      assert Enum.count(ids) == 2
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
+    end
+
+    test "basic tags", args do
+      %{lobby1_id: lobby1_id, lobby2_id: lobby2_id, lobby3_id: lobby3_id, socket: socket} = args
+
+      Api.update_lobby(lobby1_id, %{tags: ["tag1", "tag2"]})
+      Api.update_lobby(lobby2_id, %{tags: ["tag2", "tag3"]})
+      Api.update_lobby(lobby3_id, %{tags: ["tag3", "tag4"]})
+
+      # Require all (positive)
+      speak(socket, %{name: "lobby/query", command: %{filters: %{
+        require_all_tags: ["tag1", "tag2"]
+      }}})
+      msg = listen(socket)
+
+      assert Map.has_key?(msg["message"], "lobbies")
+      lobbies = msg["message"]["lobbies"]
+
+      ids = lobbies |> Enum.map(fn l -> l["id"] end)
+
+      assert Enum.member?(ids, lobby1_id)
+      refute Enum.member?(ids, lobby2_id)
+      refute Enum.member?(ids, lobby3_id)
+      assert Enum.count(ids) == 1
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
+
+      # Require all (negative)
+      speak(socket, %{name: "lobby/query", command: %{filters: %{
+        require_all_tags: ["tag1", "tag3"]
+      }}})
+      msg = listen(socket)
+
+      assert Map.has_key?(msg["message"], "lobbies")
+      lobbies = msg["message"]["lobbies"]
+
+      ids = lobbies |> Enum.map(fn l -> l["id"] end)
+
+      refute Enum.member?(ids, lobby1_id)
+      refute Enum.member?(ids, lobby2_id)
+      refute Enum.member?(ids, lobby3_id)
+      assert Enum.empty?(ids)
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
+
+      # Require any (positive)
+      speak(socket, %{name: "lobby/query", command: %{filters: %{
+        require_any_tags: ["tag1", "tag2"]
+      }}})
+      msg = listen(socket)
+
+      assert Map.has_key?(msg["message"], "lobbies")
+      lobbies = msg["message"]["lobbies"]
+
+      ids = lobbies |> Enum.map(fn l -> l["id"] end)
+
+      assert Enum.member?(ids, lobby1_id)
+      assert Enum.member?(ids, lobby2_id)
+      refute Enum.member?(ids, lobby3_id)
+      assert Enum.count(ids) == 2
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
+
+      # Require any (negative)
+      speak(socket, %{name: "lobby/query", command: %{filters: %{
+        require_any_tags: ["tag5", "tag6"]
+      }}})
+      msg = listen(socket)
+
+      assert Map.has_key?(msg["message"], "lobbies")
+      lobbies = msg["message"]["lobbies"]
+
+      ids = lobbies |> Enum.map(fn l -> l["id"] end)
+
+      refute Enum.member?(ids, lobby1_id)
+      refute Enum.member?(ids, lobby2_id)
+      refute Enum.member?(ids, lobby3_id)
+      assert Enum.empty?(ids)
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
+
+
+      # Exclude (positive)
+      speak(socket, %{name: "lobby/query", command: %{filters: %{
+        exclude_tags: ["tag1", "tag2"]
+      }}})
+      msg = listen(socket)
+
+      assert Map.has_key?(msg["message"], "lobbies")
+      lobbies = msg["message"]["lobbies"]
+
+      ids = lobbies |> Enum.map(fn l -> l["id"] end)
+
+      refute Enum.member?(ids, lobby1_id)
+      refute Enum.member?(ids, lobby2_id)
+      assert Enum.member?(ids, lobby3_id)
+      assert Enum.count(ids) == 1
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
+
+      # Exclude (negative)
+      speak(socket, %{name: "lobby/query", command: %{filters: %{
+        exclude_tags: ["tag5", "tag6"]
+      }}})
+      msg = listen(socket)
+
+      assert Map.has_key?(msg["message"], "lobbies")
+      lobbies = msg["message"]["lobbies"]
+
+      ids = lobbies |> Enum.map(fn l -> l["id"] end)
+
+      assert Enum.member?(ids, lobby1_id)
+      assert Enum.member?(ids, lobby2_id)
+      assert Enum.member?(ids, lobby3_id)
       assert Enum.count(ids) == 3
 
       assert JsonSchemaHelper.valid?("response.json", msg)
