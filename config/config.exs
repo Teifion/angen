@@ -11,7 +11,9 @@ config :angen,
   ecto_repos: [Angen.Repo],
 
   # When set to true, tokens can only be used by the IP they were created with
-  require_tokens_to_persist_ip: false
+  require_tokens_to_persist_ip: false,
+
+  json_schema_path: "priv/static/schema"
 
 # Configures the endpoint
 config :angen, AngenWeb.Endpoint,

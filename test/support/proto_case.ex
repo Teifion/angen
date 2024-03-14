@@ -47,10 +47,12 @@ defmodule Angen.ProtoCase do
 
   @spec auth_connection() :: %{socket: any(), user: Teiserver.Account.User.t()}
   def auth_connection() do
+    id = Teiserver.uuid()
+
     {:ok, user} =
       Teiserver.Account.create_user(%{
-        name: Ecto.UUID.generate(),
-        email: "#{Ecto.UUID.generate()}@test",
+        name: id,
+        email: "#{id}@test",
         password: "password1"
       })
 
@@ -119,7 +121,7 @@ defmodule Angen.ProtoCase do
       end
     end
 
-    lobby_name = Ecto.UUID.generate()
+    lobby_name = Teiserver.uuid()
 
     speak(socket, %{name: "lobby/open", command: %{name: "test-#{lobby_name}"}})
     listen_all(socket)

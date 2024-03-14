@@ -5,7 +5,7 @@ defmodule Angen.TextProtocol.ConnTest do
   describe "ping" do
     test "valid unauth ping" do
       %{socket: socket} = raw_connection()
-      id = Ecto.UUID.generate()
+      id = Teiserver.uuid()
 
       speak(socket, %{name: "system/ping", message_id: id, command: %{}})
       msg = listen(socket)
@@ -22,7 +22,7 @@ defmodule Angen.TextProtocol.ConnTest do
 
     test "valid auth'd ping" do
       %{socket: socket} = auth_connection()
-      id = Ecto.UUID.generate()
+      id = Teiserver.uuid()
 
       speak(socket, %{name: "system/ping", message_id: id, command: %{}})
       msg = listen(socket)
@@ -41,7 +41,7 @@ defmodule Angen.TextProtocol.ConnTest do
   describe "whoami" do
     test "unauth whoami" do
       %{socket: socket} = raw_connection()
-      id = Ecto.UUID.generate()
+      id = Teiserver.uuid()
 
       speak(socket, %{name: "connections/whoami", message_id: id, command: %{}})
       msg = listen(socket)
@@ -61,7 +61,7 @@ defmodule Angen.TextProtocol.ConnTest do
 
     test "auth'd whoami" do
       %{socket: socket, user: user} = auth_connection()
-      id = Ecto.UUID.generate()
+      id = Teiserver.uuid()
 
       speak(socket, %{name: "connections/whoami", message_id: id, command: %{}})
       msg = listen(socket)
@@ -85,7 +85,7 @@ defmodule Angen.TextProtocol.ConnTest do
   describe "bad requests" do
     # test "invalid request name" do
     #   %{socket: socket} = raw_connection()
-    #   id = Ecto.UUID.generate()
+    #   id = Teiserver.uuid()
 
     #   speak(socket, %{name: "pong", message_id: id, command: %{}})
     #   msg = listen(socket)
@@ -103,7 +103,7 @@ defmodule Angen.TextProtocol.ConnTest do
 
     test "invalid request structure" do
       %{socket: socket} = raw_connection()
-      id = Ecto.UUID.generate()
+      id = Teiserver.uuid()
 
       speak(socket, %{gnome: "system/ping", message_id: id, command: %{}})
       msg = listen(socket)
@@ -122,7 +122,7 @@ defmodule Angen.TextProtocol.ConnTest do
 
     test "invalid command structure" do
       %{socket: socket} = raw_connection()
-      id = Ecto.UUID.generate()
+      id = Teiserver.uuid()
 
       speak(socket, %{name: "auth/login", message_id: id, command: %{}})
       msg = listen(socket)

@@ -23,7 +23,7 @@ defmodule Angen.TextProtocol.CommunicationTest do
       # Bad target first
       speak(socket1, %{
         name: "communication/send_direct_message",
-        command: %{to_id: Ecto.UUID.generate(), content: ""}
+        command: %{to_id: Teiserver.uuid(), content: ""}
       })
 
       msg = listen(socket1)

@@ -16,7 +16,7 @@ defmodule Angen.TextProtocol.AccountTest do
       %{socket: socket, user: user} = auth_connection()
 
       # Bad ID first
-      speak(socket, %{name: "account/whois", command: %{id: Ecto.UUID.generate()}})
+      speak(socket, %{name: "account/whois", command: %{id: Teiserver.uuid()}})
       msg = listen(socket)
 
       assert msg == %{

@@ -2,15 +2,19 @@ defmodule Angen.Helpers.JsonSchemaHelper do
   @moduledoc false
   require Logger
 
+  # "/apps/teiserver/lib/teiserver-0.1.0/priv/tachyon/schema_v1/*/*/*.json"
+
   def load() do
+    base_path = Application.get_env(:angen, :json_schema_path)
+
     [
       # Types we have to load in a certain order
-      "priv/static/schema/types/account/user.json",
-      "priv/static/schema/types/*.json",
-      "priv/static/schema/types/*/*.json",
-      "priv/static/schema/commands/*/*.json",
-      "priv/static/schema/messages/*/*.json",
-      "priv/static/schema/*.json"
+      "#{base_path}/types/account/user.json",
+      "#{base_path}/types/*.json",
+      "#{base_path}/types/*/*.json",
+      "#{base_path}/commands/*/*.json",
+      "#{base_path}/messages/*/*.json",
+      "#{base_path}/*.json"
     ]
     |> Enum.map(&load_path/1)
     |> List.flatten()
