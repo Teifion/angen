@@ -9,9 +9,10 @@ defmodule Angen.TextProtocol.Connections.ClientUpdatedResponse do
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate(%Teiserver.Connections.Client{} = client, state) do
+  def do_generate({%Teiserver.Connections.Client{} = client, reason}, state) do
     result = %{
-      client: TypeConvertors.convert(client)
+      "client" => TypeConvertors.convert(client),
+      "reason" => reason
     }
 
     {result, state}

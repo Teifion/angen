@@ -4,7 +4,7 @@ defmodule Angen.TextProtocol.InfoHandlers.ClientUpdated do
 
   @impl true
   @spec handle(map, Angen.ConnState.t()) :: Angen.handler_response()
-  def handle(%{client: client}, state) do
+  def handle(%{client: client, reason: reason}, state) do
     new_state = if client.id == state.user_id do
       %{state |
         lobby_host?: client.lobby_host?,
@@ -16,6 +16,6 @@ defmodule Angen.TextProtocol.InfoHandlers.ClientUpdated do
       state
     end
 
-    TextProtocol.Connections.ClientUpdatedResponse.generate(client, new_state)
+    TextProtocol.Connections.ClientUpdatedResponse.generate({client, reason}, new_state)
   end
 end

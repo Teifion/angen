@@ -36,7 +36,7 @@ defmodule Angen.TextProtocol.TypeConvertors do
     do: Jason.encode!(client) |> Jason.decode!()
 
   def do_convert(%Teiserver.Connections.Client{} = client, :partial) do
-    ~w(id party_id connected? last_disconnected afk? in_game? lobby_id)a
+    ~w(id party_id connected? last_disconnected afk? in_game? lobby_id update_id)a
     |> Map.new(fn key ->
       {to_string(key), Map.get(client, key)}
     end)

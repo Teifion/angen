@@ -21,8 +21,8 @@ defmodule Angen.ProtoCase do
       # Import conveniences for testing with connections
       alias Teiserver.Api
       alias Angen.Helpers.JsonSchemaHelper
+      alias Angen.TestSupport.TestConn
       import Angen.ProtoCase
-      import Angen.Support.ProtoLib
     end
   end
 
@@ -109,16 +109,24 @@ defmodule Angen.ProtoCase do
         auth_connection()
       end
 
+    # For some reason the login can happen fast enough the client isn't registered
+    # so we call this just to ensure it is
+    if Teiserver.Api.get_client(user.id) == nil do
+      # If it doesn't exist we wait a moment and try again, just in case
+      :timer.sleep(500)
+      if Teiserver.Api.get_client(user.id) == nil do
+        raise "Client doesn't exist, cannot create lobby"
+      end
+    end
+
     lobby_name = Ecto.UUID.generate()
 
     speak(socket, %{name: "lobby/open", command: %{name: "test-#{lobby_name}"}})
+    listen_all(socket)
 
-    lobby =
-      Teiserver.Api.stream_lobby_summaries()
+    lobby = Teiserver.Api.stream_lobby_summaries()
       |> Enum.filter(fn l -> l.host_id == user.id end)
       |> hd
-
-    listen_all(socket)
 
     client = Teiserver.Api.get_client(user.id)
     assert client.lobby_host?
@@ -168,7 +176,14 @@ defmodule Angen.ProtoCase do
   def listen_all(socket, timeout \\ 500) do
     case :ssl.recv(socket, 0, timeout) do
       {:ok, reply} ->
-        msg = reply |> to_string |> Jason.decode!()
+        msg = case (reply |> to_string |> Jason.decode()) do
+          {:ok, msg} -> msg
+          {:error, err} ->
+            IO.puts "#{__MODULE__}:#{__ENV__.line}"
+            IO.inspect reply, label: "raw reply"
+            IO.puts ""
+            raise err
+        end
         [msg | listen_all(socket, timeout)]
 
       {:error, :timeout} ->
@@ -225,5 +240,8 @@ defmodule Angen.ProtoCase do
     |> Enum.each(fn id ->
       Teiserver.Api.close_lobby(id)
     end)
+
+    # Sleep to ensure they're closed before we do anything else
+    :timer.sleep(100)
   end
 end

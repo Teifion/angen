@@ -33,6 +33,9 @@
     },
     "lobby_id": {
       "type": ["string", "null"]
+    },
+    "updated_id": {
+      "type": "integer"
     }
   }
 }

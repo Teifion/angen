@@ -72,7 +72,10 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
     end
 
     test "while a host" do
-      %{socket: socket, user: user, lobby: _lobby} = lobby_host_connection()
+      # First we want a socket listening to global news about lobbies
+      listener = TestConn.new([Teiserver.Game.LobbyLib.global_lobby_topic()])
+
+      %{socket: socket, user: user, lobby_id: lobby_id} = lobby_host_connection()
 
       # Ensure we appear in the list
       lobby_list =
@@ -125,13 +128,62 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
                    "ready?" => false,
                    "sync" => nil,
                    "team_colour" => nil,
-                   "team_number" => nil
-                 }
+                   "team_number" => nil,
+                   "update_id" => 2
+                 },
+                 "reason" => "closed lobby"
                }
              }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
       assert JsonSchemaHelper.valid?("connections/client_updated_message.json", msg["message"])
+
+      # Now check our global mailbox
+      messages = TestConn.get(listener)
+      assert messages == [
+        %{
+          event: :lobby_closed,
+          topic: Teiserver.Game.LobbyLib.global_lobby_topic(),
+          lobby_id: lobby_id
+        }
+      ]
+    end
+
+    test "add user and close" do
+      %{socket: hsocket, user: _host, lobby_id: lobby_id} = lobby_host_connection()
+      %{socket: usocket, user: user} = auth_connection()
+
+      Teiserver.Api.add_client_to_lobby(user.id, lobby_id)
+
+      # Clear the messages
+      listen_all(hsocket)
+      listen_all(usocket)
+
+      speak(hsocket, %{name: "lobby/close", command: %{}})
+
+      # First, host messages
+      # we mostly want to ensure we get the closed messages
+      messages = hsocket
+        |> listen_all()
+        |> group_responses()
+
+      assert messages["system/success"] == [
+        %{"message" => %{"command" => "lobby/close"}, "name" => "system/success"}
+      ]
+
+      assert messages["lobby/closed"] == [
+        %{"message" => %{"lobby_id" => lobby_id}, "name" => "lobby/closed"}
+      ]
+
+      # Now, the user
+      [msg | _] = listen_all(usocket)
+      assert msg == %{
+        "message" => %{"lobby_id" => lobby_id},
+        "name" => "lobby/closed"
+      }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("lobby/closed_message.json", msg["message"])
     end
   end
 end

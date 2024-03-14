@@ -63,6 +63,9 @@
     },
     "lobby_host?": {
       "type": "boolean"
+    },
+    "updated_id": {
+      "type": "integer"
     }
   }
 }
