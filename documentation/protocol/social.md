@@ -34,3 +34,6 @@ Relationships and interactions with other users (excluding [communications](user
 
 ## Unavoid user
 
+# Reporting
+## Report user for bad behaviour
+

@@ -1,7 +1,8 @@
 # Account
 Everything related to account management.
 
-## `account/register`
+## Request `account/register`
+[Request](/static/schema/commands/account/register_command.json) - [Response](/static/schema/messages/account/registered_message.json)
 Registration is the process of creating new accounts. It can be enabled/disabled with a system setting. To register an account you can use:
 ```json
 {
