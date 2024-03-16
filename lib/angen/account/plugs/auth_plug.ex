@@ -108,16 +108,16 @@ defmodule Angen.Account.AuthPlug do
   Use the `on_mount` lifecycle macro in LiveViews to mount or authenticate
   the current_user:
 
-      defmodule ApolloWeb.PageLive do
-        use ApolloWeb, :live_view
+      defmodule AngenWeb.PageLive do
+        use AngenWeb, :live_view
 
-        on_mount {ApolloWeb.UserAuth, :mount_current_user}
+        on_mount {AngenWeb.UserAuth, :mount_current_user}
         ...
       end
 
   Or use the `live_session` of your router to invoke the on_mount callback:
 
-      live_session :authenticated, on_mount: [{ApolloWeb.UserAuth, :ensure_authenticated}] do
+      live_session :authenticated, on_mount: [{AngenWeb.UserAuth, :ensure_authenticated}] do
         live "/profile", ProfileLive, :index
       end
   """

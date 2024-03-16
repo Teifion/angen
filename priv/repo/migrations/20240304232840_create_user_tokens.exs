@@ -8,6 +8,7 @@ defmodule Angen.Repo.Migrations.CreateUserTokens do
       add :identifier_code, :string
       add :renewal_code, :string
 
+      add :context, :string
       add :user_agent, :string
       add :ip, :string
 

@@ -1,21 +1,21 @@
-Angen is a Phoenix project with a few extra steps. This guide is primarily aimed at those who are new to Elixir/Phoenix.
+# Local setup
+This is a guide for developing Angen locally. If you are just deploying Angen then you likely will not need this guide. Angen is a [Phoenix](https://www.phoenixframework.org/) project with a few extra steps. This guide is primarily aimed at those who are new to Elixir/Phoenix.
 
-## Local/Dev
-### Install services
+## Install services
 You will need to install:
 - [Elixir/Erlang installed](https://elixir-lang.org/install.html).
 - [Postresql](https://www.postgresql.org/download).
 
-I prefer using [asdf](https://github.com/asdf-vm/asdf) and `asdf install`.
+I prefer using [asdf](https://github.com/asdf-vm/asdf) and have included a `.tool-versions` to enable you to simply `asdf install`.
 
-### Clone repo and pull dependencies
+## Clone repo and pull dependencies
 ```bash
 git clone git@github.com:Teifion/Angen.git
 cd angen
 mix deps.get && mix deps.compile
 ```
 
-### Postgres setup
+## Postgres setup
 If you want to change the username or password then you will need to update the relevant files in [config](/config).
 ```bash
 sudo su postgres
@@ -31,13 +31,9 @@ GRANT ALL PRIVILEGES ON DATABASE angen_test to angen_test;
 ALTER USER angen_test WITH SUPERUSER;
 EOF
 exit
-
-# You should now be back in the angen folder as yourself
-# this next command will perform database migrations
-mix ecto.create
 ```
 
-#### Localhost certs
+## Localhost certs
 To run the TLS server locally you will also need to create localhost certificates in `priv/certs` using the following commands
 
 ```bash
@@ -51,22 +47,23 @@ openssl req -x509 -out localhost.crt -keyout localhost.key \
 cd ../..
 ```
 
-### SASS
+## SASS
 We use sass for our css generation and you'll need to run this to get it started.
 ```bash
 mix sass.install
 ```
 
-### Running it
+## Running it
 Standard mode
 ```bash
 mix phx.server
 ```
 
 Interactive REPL mode
-```
+```bash
 iex -S mix phx.server
 ```
+
 If all goes to plan you should be able to access your site locally at [http://localhost:4000/](http://localhost:4000/).
 
 ### Libraries you need to get yourself
@@ -76,63 +73,31 @@ fontawesome/css/all.css -> priv/static/css/fontawesome.css
 fontawesome/webfonts -> priv/static/webfonts
 ```
 
-If you want to use the blog you will also need to place [ace.js](https://ace.c9.io/) folder in the same place.
-
-### Configuration
-Most of the configuration takes place in [config/config.exs](config/config.exs) with the other config files overriding for specific environments. The first block of `config.exs` contains a bunch of keys and values, which you can update.
-
-### Connecting to the spring party of your server locally
+## Connecting to the your server locally
 ```bash
-telnet localhost 8200
 openssl s_client -connect localhost:8201
 ```
 
 ### config/dev.secret.exs
-If you want to do things like have a discord bot in development you don't want these details going into git. It is advisable to create a file `config/dev.secret.exs` where you can put these config details. I would suggest a file like so:
+If you want to do things like have a discord bot in development you don't want these details going into git. You can create a file `config/dev.secret.exs` where you can put these config details; the file must act like any other config file though is already ignored by gitignore.
+
+## Creating your admin account
 ```elixir
-import Config
-
-config :angen, Angen,
-  enable_discord_bridge: true
-
-config :angen, DiscordBridgeBot,
-  token: "------",
-  bot_name: "Angen Bridge DEV",
-  bridges: [
-    {"---", "main"},
-    {"---", "promote"},
-    {"---", "moderation-reports"},
-    {"---", "moderation-actions"}
-  ]
-
-# Comment the below block to enable background jobs to take place locally
-config :angen, Oban,
-  queues: false,
-  crontab: false
-
+Teiserver.Account.create_user(%{
+  name: "root",
+  email: "root@localhost",
+  password: "password",
+  groups: ["admin"],
+  permissions: ["admin"]
+})
 ```
 
-### Fake data
-Running this:
-```bash
-mix angen.fakedata
-```
-
-Will generate a large amount of fake data and setup a root account for you. The account will have full access to everything and the database will be populated with false data as if generated over a period of time to make development and testing easier.
-
-### Resetting your user password
+## Resetting your user password
 When running locally it's likely you won't want to connect the server to an email account, as such password resets need to be done a little differently.
 
 Run your server with `iex -S mix phx.server` and then once it has started up use the following code to update your password.
 
 ```elixir
-user = Angen.Account.get_user_by_email("root@localhost")
-Angen.Account.update_user(user, %{"password" => "your password here"})
+user = Teiserver.Account.get_user_by_email("root@localhost")
+Teiserver.Account.update_user(user, %{"password" => "your password here"})
 ```
-
-### Main 3rd party dependencies
-The main dependencies of the project are:
-- [Phoenix framework](https://www.phoenixframework.org/), a web framework with a role similar to Django or Rails.
-- [Ecto](https://github.com/elixir-ecto/ecto), database ORM
-- [Ranch](https://github.com/ninenines/ranch), a tcp server
-- [Oban](https://github.com/sorentwo/oban), a backend job processing framework.

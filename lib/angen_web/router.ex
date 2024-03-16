@@ -1,6 +1,8 @@
 defmodule AngenWeb.Router do
   use AngenWeb, :router
 
+  import AngenWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -9,8 +11,6 @@ defmodule AngenWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug(Angen.Account.DefaultsPlug)
-    # plug(Angen.Account.AuthPipeline)
-    plug(Angen.Account.AuthPlug)
     # plug(Angen.Plugs.CachePlug)
   end
 
@@ -23,16 +23,46 @@ defmodule AngenWeb.Router do
 
     live_session :general_index,
       on_mount: [
-        # {Angen.Account.AuthPlug, :ensure_authenticated}
-        {Angen.Account.AuthPlug, :mount_current_user}
+        # {AngenWeb.UserAuth, :ensure_authenticated}
+        {AngenWeb.UserAuth, :mount_current_user}
       ] do
       live "/", HomeLive.Index, :index
 
       # These will be replaced later, for now we
-      live "/login", HomeLive.Index, :index
-      live "/profile", HomeLive.Index, :index
-      live "/logout", HomeLive.Index, :index
+      # live "/login", HomeLive.Index, :index
+      # live "/profile", HomeLive.Index, :index
+      # live "/logout", HomeLive.Index, :index
     end
+  end
+
+  scope "/admin", AngenWeb.Admin do
+    pipe_through :browser
+
+    live_session :admin_index,
+      on_mount: [
+        {AngenWeb.UserAuth, :ensure_authenticated}
+      ] do
+      live "/", HomeLive.Index, :index
+
+      # These will be replaced later, for now we
+      # live "/login", HomeLive.Index, :index
+      # live "/profile", HomeLive.Index, :index
+      # live "/logout", HomeLive.Index, :index
+    end
+  end
+
+  scope "/", AngenWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    live_session :redirect_if_user_is_authenticated,
+      on_mount: [{AngenWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      live "/users/register", UserRegistrationLive, :new
+      live "/login", UserLoginLive, :new
+      live "/users/reset_password", UserForgotPasswordLive, :new
+      live "/users/reset_password/:token", UserResetPasswordLive, :edit
+    end
+
+    post "/login", UserSessionController, :create
   end
 
   # Other scopes may use custom stacks.

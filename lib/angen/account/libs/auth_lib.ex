@@ -52,6 +52,10 @@ defmodule Angen.Account.AuthLib do
     :ok
   end
 
+  @doc """
+  Tests if the user or user in the connection is allowed to access any the required permissions.
+  """
+  @spec allow_any?(Map.t() | Plug.Conn.t() | [String.t()], String.t() | [String.t()]) :: boolean
   def allow_any?(conn, perms) do
     Enum.any?(
       perms
@@ -59,8 +63,19 @@ defmodule Angen.Account.AuthLib do
     )
   end
 
-  # If you don't need permissions then lets not bother checking
+  @doc """
+  Overload of `allow?/2` to mirror `allow_any?/2`
+  """
+  @spec allow_all?(Map.t() | Plug.Conn.t() | [String.t()], String.t() | [String.t()]) :: boolean
+  def allow_all?(conn, perms) do
+    allow?(conn, perms)
+  end
+
+  @doc """
+  Tests if the user or user in the connection is allowed to access all the required permissions.
+  """
   @spec allow?(Map.t() | Plug.Conn.t() | [String.t()], String.t() | [String.t()]) :: boolean
+  # If you don't need permissions then lets not bother checking
   def allow?(nil, []), do: false
   def allow?(_, nil), do: true
   def allow?(_, ""), do: true

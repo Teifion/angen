@@ -58,6 +58,11 @@ defmodule Angen.Account.UserTokenQueries do
       where: user_tokens.renewal_code == ^renewal_code
   end
 
+  def _where(query, :expires_after, timestamp) do
+    from user_tokens in query,
+      where: user_tokens.expires_at > ^timestamp
+  end
+
   def _where(query, :inserted_after, timestamp) do
     from user_tokens in query,
       where: user_tokens.inserted_at >= ^timestamp

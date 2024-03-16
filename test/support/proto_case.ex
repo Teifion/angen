@@ -73,7 +73,7 @@ defmodule Angen.ProtoCase do
         verify: :verify_none
       )
 
-    {:ok, token} = Angen.Account.create_user_token(user.id, "UnitTest", "127.0.0.1")
+    {:ok, token} = Angen.Account.create_user_token(user.id, "unit-test", "UnitTest", "127.0.0.1")
 
     speak(socket, %{
       name: "auth/login",

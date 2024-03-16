@@ -26,14 +26,17 @@ defmodule Angen.Account do
   @spec get_user_token_by_renewal(UserToken.renewal_code()) :: UserToken.t() | nil
   defdelegate get_user_token_by_renewal(renewal_code), to: UserTokenLib
 
+  @spec get_user_by_session_token(UserToken.t()) :: UserToken.t() | nil
+  defdelegate get_user_by_session_token(user_token), to: UserTokenLib
+
   @doc section: :user_token
   @spec create_user_token(map) :: {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}
   defdelegate create_user_token(attrs), to: UserTokenLib
 
   @doc section: :user_token
-  @spec create_user_token(Teiserver.user_id(), String.t(), String.t()) ::
+  @spec create_user_token(Teiserver.user_id(), String.t(), String.t(), String.t()) ::
           {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate create_user_token(user_id, user_agent, ip), to: UserTokenLib
+  defdelegate create_user_token(user_id, context, user_agent, ip), to: UserTokenLib
 
   @doc section: :user_token
   @spec update_user_token(UserToken, map) :: {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}

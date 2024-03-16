@@ -45,7 +45,7 @@ config :angen, AngenWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/Angen_web/(controllers|live|components|live_components)/.*(ex|heex)$"
+      ~r"lib/angen_web/(controllers|live|components|live_components)/.*(ex|heex)$"
     ]
   ]
 
@@ -98,3 +98,14 @@ config :logger, :info_log,
   format: "$time [$level] $metadata $message\n",
   metadata: [:request_id, :user_id],
   level: :info
+
+
+try do
+  import_config "dev.secret.exs"
+rescue
+  _ in File.Error ->
+    nil
+
+  error ->
+    reraise error, __STACKTRACE__
+end

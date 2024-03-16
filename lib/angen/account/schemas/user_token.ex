@@ -17,6 +17,7 @@ defmodule Angen.Account.UserToken do
 
     field(:identifier_code, :string)
     field(:renewal_code, :string)
+    field(:context, :string)
     field(:user_agent, :string)
     field(:ip, :string)
 
@@ -36,6 +37,7 @@ defmodule Angen.Account.UserToken do
           user: Teiserver.Account.User.t(),
           identifier_code: identifier_code(),
           renewal_code: renewal_code(),
+          context: String.t(),
           user_agent: String.t(),
           ip: String.t(),
           expires_at: DateTime.t(),
@@ -51,8 +53,8 @@ defmodule Angen.Account.UserToken do
     struct
     |> cast(
       attrs,
-      ~w(user_id identifier_code renewal_code user_agent ip expires_at last_used_at)a
+      ~w(user_id identifier_code renewal_code context user_agent ip expires_at last_used_at)a
     )
-    |> validate_required(~w(user_id identifier_code renewal_code user_agent ip expires_at)a)
+    |> validate_required(~w(user_id identifier_code context renewal_code user_agent ip expires_at)a)
   end
 end

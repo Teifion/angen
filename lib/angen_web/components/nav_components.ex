@@ -2,7 +2,7 @@ defmodule AngenWeb.NavComponents do
   @moduledoc false
   use Phoenix.Component
 
-  # import Angen.Account.AuthLib, only: [allow?: 2, allow_any?: 2]
+  # import Angen.Account.AuthLib, only: [allow?: 2, allow_any?: 2, allow_all?: 2]
 
   use Phoenix.VerifiedRoutes,
     endpoint: AngenWeb.Endpoint,

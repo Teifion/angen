@@ -106,6 +106,28 @@ defmodule Angen.Account.UserTokenLib do
   end
 
   @doc """
+  Checks if the token is valid and returns its underlying lookup query.
+
+  The query returns the user found by the token, if any.
+
+  The token is valid if it matches the value in the database and it has
+  not expired (after @session_validity_in_days).
+  """
+  @spec get_user_by_session_token(UserToken.t()) :: UserToken.t() | nil
+  def get_user_by_session_token(%{identifier_code: identifier_code, user_id: user_id}) do
+    UserTokenQueries.user_token_query(
+      where: [
+        user_id: user_id,
+        identifier_code: identifier_code,
+        expires_after: Timex.now()
+      ],
+      preload: [:user]
+    )
+    |> Repo.one()
+  end
+  def get_user_by_session_token(_), do: nil
+
+  @doc """
   Creates a user_token.
 
   ## Examples
@@ -136,14 +158,15 @@ defmodule Angen.Account.UserTokenLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_user_token(Teiserver.user_id(), String.t(), String.t()) ::
+  @spec create_user_token(Teiserver.user_id(), String.t(), String.t(), String.t()) ::
           {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}
-  def create_user_token(user_id, user_agent, ip) do
+  def create_user_token(user_id, context, user_agent, ip) do
     %UserToken{}
     |> UserToken.changeset(%{
       user_id: user_id,
       identifier_code: generate_code(),
       renewal_code: generate_code(),
+      context: context,
       user_agent: user_agent,
       ip: ip,
       expires_at: Timex.now() |> Timex.shift(days: 31)

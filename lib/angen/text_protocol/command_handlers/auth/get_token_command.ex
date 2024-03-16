@@ -12,7 +12,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.GetToken do
   def handle(%{"name" => name, "password" => password, "user_agent" => user_agent}, state) do
     case Teiserver.Api.maybe_authenticate_user(name, password) do
       {:ok, user} ->
-        case Angen.Account.create_user_token(user.id, user_agent, state.ip) do
+        case Angen.Account.create_user_token(user.id, "text-protocol", user_agent, state.ip) do
           {:ok, token} ->
             TextProtocol.Auth.TokenResponse.generate(token, state)
 
