@@ -1,33 +1,34 @@
 # Lobby users
 For general users interactions with lobbies.
 
-## Joining
-```json
-{
-  "name": "",
-  "command": {
-    
-  }
-}
-```
+## List lobbies
 
-## Leaving
-```json
-{
-  "name": "",
-  "command": {
-    
-  }
-}
-```
+## Join lobby
 
-## Changing status
-```json
-{
-  "name": "",
-  "command": {
-    
-  }
-}
-```
+## Leave lobby
+
+## Lobby state change
+
+## Update status
+See connections
+
+# Votes
+## Vote history
+
+## Ongoing votes
+
+## Vote started
+
+## Vote completed
+
+## Start vote
+
+# Chat
+## Send message
+
+## Receive message
+
+## Whisper
+
+## Receive whisper
 

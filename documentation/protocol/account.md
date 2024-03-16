@@ -1,7 +1,8 @@
-# Registration
-Registration is the process of creating new accounts. It can be enabled/disabled with a system setting.
+# Account
+Everything related to account management.
 
-To register an account you can use:
+## `account/register`
+Registration is the process of creating new accounts. It can be enabled/disabled with a system setting. To register an account you can use:
 ```json
 {
   "name": "account/register",
@@ -28,3 +29,9 @@ If successful you should receive something like:
 ```
 
 At that stage you can make use of the [authentication flow](authentication.md) to login.
+
+## `account/reset_password`
+
+## `account/verify`
+
+## `account/whois`

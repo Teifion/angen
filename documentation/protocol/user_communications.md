@@ -1,7 +1,8 @@
 # User communications
 For communicating with other users
 
-## Direct messages
+# Direct messages
+## Send direct message
 ```json
 {
   "name": "",
@@ -11,33 +12,37 @@ For communicating with other users
 }
 ```
 
-## Rooms
-```json
-{
-  "name": "",
-  "command": {
-    
-  }
-}
-```
+## Receive direct message
 
-## Lobbies
-```json
-{
-  "name": "",
-  "command": {
-    
-  }
-}
-```
+## List recent direct messages
 
-## Parties
-```json
-{
-  "name": "",
-  "command": {
-    
-  }
-}
-```
+
+# Rooms
+## List rooms
+
+## Join room
+
+## Leave room
+
+## List recent room messages
+
+## Send room message
+
+## Receive room message
+
+
+# Lobbies
+## List recent lobby messages
+
+## Send lobby message
+
+## Receive lobby message
+
+
+# Parties
+## List recent party messages
+
+## Send party message
+
+## Receive party message
 

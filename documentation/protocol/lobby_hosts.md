@@ -1,34 +1,13 @@
 # Lobby hosts
 For users hosting lobbies.
 
-## Opening
-```json
-{
-  "name": "",
-  "command": {
-    
-  }
-}
-```
+## Open
 
-## Closing
-```json
-{
-  "name": "",
-  "command": {
-    
-  }
-}
-```
+## Close
 
-## Changing
-```json
-{
-  "name": "",
-  "command": {
-    
-  }
-}
-```
+## Change state
+
+# Host commands
+## List commands supplied by host
 
 
