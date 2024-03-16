@@ -12,6 +12,7 @@ Messages sent from server to clients
 
 ## Topics
 - [Authentication](authentication.md)
-- [Lobby hosts](lobby_hosts.md)
-- [Lobby users](lobby_users.md)
+- [Registration](registration.md)
+- [Lobby - Hosts](lobby_hosts.md)
+- [Lobby - Users](lobby_users.md)
 - [User communication](user_communication.md)

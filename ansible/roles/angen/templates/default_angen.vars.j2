@@ -10,3 +10,9 @@ SECRET_KEY_BASE="{{ secret_key_base }}"
 GUARDIAN_KEY="{{ guardian_key }}"
 DOMAIN_NAME="{{ ansible_host }}"
 RELEASE_NODE="angen@{{ ansible_host }}"
+NODE_NAME="{{ inventory_hostname }}"
+
+# Optional values
+# JSON_SCHEMA_PATH="/apps/angen/lib/angen-0.0.1/priv/static/schema"
+# TLS_PORT=8201
+# CERT_ROOT="/etc/letsencrypt/live/{{ ansible_host }}"

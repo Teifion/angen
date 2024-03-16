@@ -128,12 +128,16 @@ if config_env() == :prod do
   config :teiserver,
     node_name: System.get_env("NODE_NAME") || hd(String.split(domain_name, "."))
 
+
+  cert_root = (System.get_env("CERT_ROOT") || "/etc/letsencrypt/live/#{domain_name}")
+
   # Angen itself
   config :angen,
     tls_port: String.to_integer(System.get_env("TLS_PORT") || "8201"),
+    json_schema_path: (System.get_env("JSON_SCHEMA_PATH") || "/apps/angen/lib/angen-0.0.1/priv/static/schema"),
     certs: [
-      keyfile: "/etc/letsencrypt/live/#{domain_name}/privkey.pem",
-      certfile: "/etc/letsencrypt/live/#{domain_name}/cert.pem",
-      cacertfile: "/etc/letsencrypt/live/#{domain_name}/fullchain.pem"
+      keyfile: "#{cert_root}/privkey.pem",
+      certfile: "#{cert_root}/cert.pem",
+      cacertfile: "#{cert_root}/fullchain.pem"
     ]
 end

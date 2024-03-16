@@ -11,9 +11,6 @@ import Config
 # before starting your production server.
 config :angen, AngenWeb.Endpoint, cache_static_manifest: "priv/static/cache_manifest.json"
 
-config :angen,
-  json_schema_path: "/apps/angen/lib/angen-0.0.1/priv/static/schema"
-
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Angen.Finch
 
