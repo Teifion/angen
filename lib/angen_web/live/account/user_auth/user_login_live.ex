@@ -11,8 +11,7 @@ defmodule AngenWeb.UserLoginLive do
           <div class="card-header">
             <h3>
               <img
-                phx-track-static
-                src={~p"/favicon.ico"}
+                src={~p"/images/favicon.png"}
                 height="42"
                 style="margin-right: 5px;"
                 class="d-inline align-top"
