@@ -77,7 +77,6 @@ defmodule Angen.MixProject do
       {:tzdata, "~> 1.1"},
       {:etop, "~> 0.7.0"},
       {:fontawesome_icons, "~> 0.0.4"},
-      {:guardian, "~> 2.1"},
       {:bodyguard, "~> 2.4"},
       {:thousand_island, "~> 1.3"},
       {:cachex, "~> 3.6"},

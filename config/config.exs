@@ -60,13 +60,6 @@ config :dart_sass,
     cd: Path.expand("../assets", __DIR__)
   ]
 
-# This secret key is overwritten in prod.secret.exs
-config :teiserver, Barserver.Account.Guardian,
-  issuer: "teiserver",
-  # This is overriden in your secret config, it's here only to allow things to run easily
-  secret_key: "9vJcJOYwsjdIQ9IhfOI5F9GQMykuNjBW58FY9S/TqMsq6gRdKgY05jscQAFVKfwa",
-  ttl: {30, :days}
-
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$date $time $metadata[$level] $message\n",

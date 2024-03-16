@@ -65,6 +65,18 @@ defmodule AngenWeb.Router do
     post "/login", UserSessionController, :create
   end
 
+  scope "/", AngenWeb do
+    pipe_through [:browser]
+
+    delete "/logout", UserSessionController, :delete
+
+    live_session :current_user,
+      on_mount: [{AngenWeb.UserAuth, :mount_current_user}] do
+      live "/users/confirm/:token", UserConfirmationLive, :edit
+      live "/users/confirm", UserConfirmationInstructionsLive, :new
+    end
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", AngenWeb do
   #   pipe_through :api

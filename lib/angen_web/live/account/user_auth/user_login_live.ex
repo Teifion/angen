@@ -21,7 +21,7 @@ defmodule AngenWeb.UserLoginLive do
           </div>
           <div class="card-body">
             <.simple_form for={@form} id="login_form" action={~p"/login"} phx-update="ignore">
-              <.input field={@form[:email]} type="email" label="Email" required />
+              <.input field={@form[:email]} type="email" label="Email" autofocus="autofocus" required />
               <.input field={@form[:password]} type="password" label="Password" required />
 
               <:actions>

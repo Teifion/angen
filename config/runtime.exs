@@ -120,10 +120,6 @@ if config_env() == :prod do
     version: "0.0.1",
     secret_key_base: secret_key_base
 
-  # Guardian
-  config :teiserver, Angen.Account.Guardian,
-    secret_key: System.get_env("GUARDIAN_KEY") || raise("No env of GUARDIAN_KEY")
-
   # Teiserver specific to prod
   config :teiserver,
     node_name: System.get_env("NODE_NAME") || hd(String.split(domain_name, "."))
