@@ -128,8 +128,10 @@ if config_env() == :prod do
   config :teiserver,
     node_name: System.get_env("NODE_NAME") || hd(String.split(domain_name, "."))
 
-
   cert_root = (System.get_env("CERT_ROOT") || "/etc/letsencrypt/live/#{domain_name}")
+
+  config :fontawesome,
+    free_only: (System.get_env("FONTAWESOME_FREE_ONLY", "TRUE") == "TRUE")
 
   # Angen itself
   config :angen,

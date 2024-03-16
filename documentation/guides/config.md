@@ -32,6 +32,9 @@ Angen.Helpers.JsonSchemaHelper.load()
 
 Defaults to `/apps/angen/lib/angen-0.0.1/priv/static/schema`
 
+## FONTAWESOME_FREE_ONLY
+Angen makes use of Fontawesome for its icons. By default it will only display the free icons but you can change this via this variable (set it to "FALSE" in the env file).
+
 # Options - Startup only
 The following options are used at startup time only, changing them on the fly will almost certainly not work correctly (and in some cases could break things).
 
