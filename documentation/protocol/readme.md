@@ -25,7 +25,7 @@ Clients message the server using Requests and receive Responses. A request wraps
 
 Nearly every Request will result in a Response of some sort. In some cases it will be a specific response (e.g. registering a user will result in you being told your user_id) while in others it will be a generic response (Success, Failure or Error).
 
-### Request structure
+## Request structure
 A request consists of 3 properties:
 - **`name`**: The name of the command being sent
 - **`command`**: The command itself which must adhere to the relevant command schema
@@ -42,7 +42,7 @@ A request consists of 3 properties:
 }
 ```
 
-### Response structure
+## Response structure
 Responses will consist of up to 3 properties:
 - **`name`**: The name of the message being sent
 - **`message`**: The message itself which must adhere to the relevant message schema
@@ -59,6 +59,15 @@ Responses will consist of up to 3 properties:
 }
 ```
 
+## Generic response messages
+Many commands will have specific response messages but in some cases there will be a generic "success" message and if something goes wrong you should expect to receive a "failure" or "error" message.
+
+### Success
+When a command succeeds but has no further information to send back 
+
+### Failure
+
+### Error
 
 ## Documentation
 - [Account](account.md)

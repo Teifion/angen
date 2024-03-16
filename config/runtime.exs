@@ -137,5 +137,14 @@ if config_env() == :prod do
       keyfile: "#{cert_root}/privkey.pem",
       certfile: "#{cert_root}/cert.pem",
       cacertfile: "#{cert_root}/fullchain.pem"
-    ]
+    ],
+
+    default_site_settings: %{
+      allow_user_registration: true,
+
+      allow_lobby_whisper: false
+    },
+    default_user_settings: %{
+
+    }
 end

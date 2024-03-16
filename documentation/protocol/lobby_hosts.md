@@ -1,5 +1,5 @@
 # Lobby hosts
-For users hosting lobbies.
+For hosting of lobbies
 
 ## Request `lobby/open`
 

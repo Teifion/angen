@@ -33,7 +33,19 @@ If successful you should receive something like:
 At that stage you can make use of the [authentication flow](authentication.md) to login.
 
 ## `account/reset_password`
+Start the reset-password process, revokes tokens.
 
 ## `account/verify`
+Command to verify the account in some way
 
 ## `account/whois`
+Returns info about the account you are logged in as.
+
+## `account/update`
+Updates account details.
+
+## `account/revoke_tokens`
+Invalidates all tokens for this account.
+
+## `account/forgetme`
+Flag the account for GDPR deletion in 24 hours (to allow undoing of this command)
