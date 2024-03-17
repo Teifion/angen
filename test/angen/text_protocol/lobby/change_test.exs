@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.Lobby.ChangeTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   setup _ do
     close_all_lobbies()
@@ -39,7 +39,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       %{socket: socket, user: user} = auth_connection()
 
       Teiserver.Api.add_client_to_lobby(user.id, lobby.id)
-      listen_all(socket)
+      flush_socket(socket)
 
       speak(socket, %{name: "lobby/change", command: %{}})
       msg = listen(socket)
@@ -71,7 +71,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       assert listen_all(socket) == []
     end
 
-    test "change 1 thing", %{socket: socket, lobby_id: lobby_id, user: user} do
+    test "change 1 thing", %{socket: socket, lobby_id: lobby_id, user: _user} do
       lobby = Teiserver.Api.get_lobby(lobby_id)
       refute lobby.name == "New lobby name (1)"
 
@@ -86,29 +86,10 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       assert msg == %{
                "name" => "lobby/updated",
                "message" => %{
-                 "lobby" => %{
-                    "game_name" => nil,
-                    "game_settings" => %{},
-                    "game_version" => nil,
-                    "host_data" => %{},
-                    "host_id" => user.id,
-                    "id" => lobby_id,
-                    "locked?" => false,
-                    "match_id" => lobby.match_id,
-                    "match_ongoing?" => false,
-                    "match_type" => nil,
-                    "members" => [],
+                 "changes" => %{
                     "name" => "New lobby name (1)",
-                    "password" => nil,
-                    "passworded?" => false,
-                    "players" => [],
-                    "public?" => true,
-                    "queue_id" => nil,
-                    "rated?" => true,
-                    "spectators" => [],
-                    "tags" => []
-
-                 }
+                    "update_id" => 2
+                }
                }
              }
 
@@ -120,7 +101,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       assert lobby.name == "New lobby name (1)"
     end
 
-    test "change 3 things", %{socket: socket, lobby_id: lobby_id, user: user} do
+    test "change 3 things", %{socket: socket, lobby_id: lobby_id, user: _user} do
       lobby = Teiserver.Api.get_lobby(lobby_id)
       refute lobby.name == "New lobby name (3)"
 
@@ -139,29 +120,13 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       assert msg == %{
                "name" => "lobby/updated",
                "message" => %{
-                 "lobby" => %{
-                    "game_name" => nil,
-                    "game_settings" => %{},
-                    "game_version" => nil,
-                    "host_data" => %{},
-                    "host_id" => user.id,
-                    "id" => lobby_id,
-                    "locked?" => false,
-                    "match_id" => lobby.match_id,
-                    "match_ongoing?" => false,
-                    "match_type" => nil,
-                    "members" => [],
-                    "name" => "New lobby name (3)",
-                    "password" => "123",
-                    "passworded?" => true,
-                    "players" => [],
-                    "public?" => false,
-                    "queue_id" => nil,
-                    "rated?" => true,
-                    "spectators" => [],
-                    "tags" => []
-
-                 }
+                 "changes" => %{
+                  "name" => "New lobby name (3)",
+                  "password" => "123",
+                  "passworded?" => true,
+                  "public?" => false,
+                  "update_id" => 2
+                }
                }
              }
 

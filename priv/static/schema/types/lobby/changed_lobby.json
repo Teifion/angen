@@ -1,0 +1,62 @@
+{
+  "$id": "types/lobby/changed_lobby.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Changed lobby",
+  "description": "Changes a lobby may have had",
+  "type": "object",
+  "required": [
+  ],
+  "properties": {
+    "host_id": {
+      "type": "string"
+    },
+    "host_data": {
+      "type": "object"
+    },
+    "name": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "settings": {
+      "type": "object"
+    },
+    "passworded?": {
+      "type": "boolean"
+    },
+    "locked?": {
+      "type": "boolean"
+    },
+    "public?": {
+      "type": "boolean"
+    },
+    "match_type": {
+      "type": ["string", "null"]
+    },
+    "rated?": {
+      "type": "boolean"
+    },
+    "game_name": {
+      "type": ["string", "null"]
+    },
+    "game_version": {
+      "type": ["string", "null"]
+    },
+    "players": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "spectators": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

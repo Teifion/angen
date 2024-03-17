@@ -9,9 +9,9 @@ defmodule Angen.TextProtocol.Lobby.UpdatedResponse do
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate(lobby, state) do
+  def do_generate(changes, state) do
     result = %{
-      "lobby" => TypeConvertors.convert(lobby)
+      "changes" => changes
     }
 
     {result, state}

@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.Lobby.QueryTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   setup _ do
     close_all_lobbies()

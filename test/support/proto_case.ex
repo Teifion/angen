@@ -98,6 +98,28 @@ defmodule Angen.ProtoCase do
     %{socket: socket, user: user}
   end
 
+  @spec try_to_host_lobby(any(), Teiserver.Account.User.t(), String.t()) :: Teiserver.Game.Lobby.t()
+  defp try_to_host_lobby(socket, user, lobby_name) do
+    speak(socket, %{name: "lobby/open", command: %{name: "test-#{lobby_name}"}})
+
+    msgs = listen_all(socket)
+
+    try do
+      Teiserver.Api.stream_lobby_summaries()
+        |> Enum.filter(fn l -> l.host_id == user.id end)
+        |> hd
+    rescue
+      e ->
+        # Bug where we get a failure saying "Client is disconnected"
+        # because there are no connections for the client (despite us sending stuff....)
+        IO.puts "#{__MODULE__}:#{__ENV__.line}"
+        IO.inspect Teiserver.Api.get_client(user.id)
+        IO.inspect msgs
+        IO.puts ""
+        reraise e, __STACKTRACE__
+    end
+  end
+
   @spec lobby_host_connection() :: %{
           socket: any(),
           user: Teiserver.Account.User.t(),
@@ -122,16 +144,13 @@ defmodule Angen.ProtoCase do
     end
 
     lobby_name = Teiserver.uuid()
-
-    speak(socket, %{name: "lobby/open", command: %{name: "test-#{lobby_name}"}})
-    listen_all(socket)
-
-    lobby = Teiserver.Api.stream_lobby_summaries()
-      |> Enum.filter(fn l -> l.host_id == user.id end)
-      |> hd
+    lobby = try_to_host_lobby(socket, user, lobby_name)
 
     client = Teiserver.Api.get_client(user.id)
     assert client.lobby_host?
+
+    # Clear the socket
+    flush_socket(socket)
 
     %{socket: socket, user: user, lobby: lobby, lobby_id: lobby.id}
   end
@@ -150,10 +169,24 @@ defmodule Angen.ProtoCase do
   grab the first one
   """
   @spec listen(any()) :: any()
-  @spec listen(any(), non_neg_integer()) :: any()
+  @spec listen(any(), non_neg_integer()) :: [map()] | :timeout | :closed
   def listen(socket, timeout \\ 500) do
     case :ssl.recv(socket, 0, timeout) do
-      {:ok, reply} -> reply |> to_string |> Jason.decode!()
+      # This sometimes borks because there are two messages in the queue and it gets both
+      # will need to refactor this to return a list and update all tests accordingly
+      {:ok, reply} ->
+        reply |> to_string |> Jason.decode!
+        # reply
+        # |> to_string
+        # |> String.split("\n")
+        # |> Enum.map(fn
+        #   "" ->
+        #     nil
+        #   s ->
+        #     Jason.decode!(s)
+        # end)
+        # |> Enum.reject(&(&1 == nil))
+
       {:error, :timeout} -> :timeout
       {:error, :closed} -> :closed
     end
@@ -178,21 +211,44 @@ defmodule Angen.ProtoCase do
   def listen_all(socket, timeout \\ 500) do
     case :ssl.recv(socket, 0, timeout) do
       {:ok, reply} ->
-        msg = case (reply |> to_string |> Jason.decode()) do
-          {:ok, msg} -> msg
-          {:error, err} ->
-            IO.puts "#{__MODULE__}:#{__ENV__.line}"
-            IO.inspect reply, label: "raw reply"
-            IO.puts ""
-            raise err
-        end
-        [msg | listen_all(socket, timeout)]
+        # In theory there should only ever be one message in the socket but we do this because
+        # sometimes there are two and then it errors. If you're using listen_all you
+        # are already expecting a list so ez pz
+        messages = reply
+        |> to_string
+        |> String.split("\n")
+        |> Enum.map(fn
+          "" ->
+            nil
+          s ->
+            Jason.decode!(s)
+        end)
+        |> Enum.reject(&(&1 == nil))
+
+        messages ++ listen_all(socket, timeout)
 
       {:error, :timeout} ->
         []
 
       {:error, :closed} ->
         []
+    end
+  end
+
+  @doc """
+  Reads all messages in the socket and discards them.
+  """
+  @spec flush_socket(any()) :: :ok
+  def flush_socket(socket) do
+    case :ssl.recv(socket, 0, 5) do
+      {:ok, _reply} ->
+        flush_socket(socket)
+
+      {:error, :timeout} ->
+        :ok
+
+      {:error, :closed} ->
+        :ok
     end
   end
 

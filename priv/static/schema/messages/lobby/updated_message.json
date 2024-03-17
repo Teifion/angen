@@ -5,11 +5,11 @@
   "description": "",
   "type": "object",
   "required": [
-    "lobby"
+    "changes"
   ],
   "properties": {
-    "lobby": {
-      "$ref": "types/lobby/lobby.json"
+    "changes": {
+      "$ref": "types/lobby/changed_lobby.json"
     }
   }
 }

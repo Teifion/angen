@@ -5,7 +5,7 @@ defmodule Angen.TextProtocol.InfoHandlers.LobbyUpdated do
 
   @impl true
   @spec handle(map, Angen.ConnState.t()) :: Angen.handler_response()
-  def handle(%{lobby: lobby}, state) do
-    UpdatedResponse.generate(lobby, state)
+  def handle(%{changes: changes}, state) do
+    UpdatedResponse.generate(changes, state)
   end
 end

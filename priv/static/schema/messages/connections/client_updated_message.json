@@ -5,15 +5,12 @@
   "description": "",
   "type": "object",
   "required": [
-    "client",
+    "changes",
     "reason"
   ],
   "properties": {
-    "client": {
-      "anyOf": [
-        {"$ref": "types/connections/full_client.json"},
-        {"$ref": "types/connections/partial_client.json"}
-      ]
+    "changes": {
+      "$ref": "types/connections/changed_client.json"
     },
     "reason": {
       "type": "string"

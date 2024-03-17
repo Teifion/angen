@@ -134,7 +134,7 @@ defmodule AngenWeb.UserComponents do
         aria-labelledby="user-dropdown-link"
         style="min-width: 300px; max-width: 500px;"
       >
-        <a class="dropdown-item" href={~p"/profile"}>
+        <a class="dropdown-item" href={~p"/"}>
           <i class="fa-fw fa-user fa-solid"></i> &nbsp;
           Account
         </a>

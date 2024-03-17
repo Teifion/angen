@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   describe "open" do
     test "unauth" do
@@ -57,7 +57,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       %{socket: socket, user: user} = auth_connection()
 
       Api.add_client_to_lobby(user.id, lobby.id)
-      listen_all(socket)
+      flush_socket(socket)
 
       speak(socket, %{name: "lobby/close", command: %{}})
       msg = listen(socket)
@@ -114,21 +114,9 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       assert msg == %{
                "name" => "connections/client_updated",
                "message" => %{
-                 "client" => %{
-                   "afk?" => false,
-                   "connected?" => true,
-                   "id" => user.id,
-                   "in_game?" => false,
-                   "last_disconnected" => nil,
+                 "changes" => %{
                    "lobby_host?" => false,
                    "lobby_id" => nil,
-                   "party_id" => nil,
-                   "player?" => false,
-                   "player_number" => nil,
-                   "ready?" => false,
-                   "sync" => nil,
-                   "team_colour" => nil,
-                   "team_number" => nil,
                    "update_id" => 2
                  },
                  "reason" => "closed lobby"
@@ -156,8 +144,8 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       Teiserver.Api.add_client_to_lobby(user.id, lobby_id)
 
       # Clear the messages
-      listen_all(hsocket)
-      listen_all(usocket)
+      flush_socket(hsocket)
+      flush_socket(usocket)
 
       speak(hsocket, %{name: "lobby/close", command: %{}})
 
