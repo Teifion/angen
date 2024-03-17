@@ -5,9 +5,12 @@
   "description": "A command to get the name of a user.",
   "type": "object",
   "properties": {
-    "id": {
-      "type": "string"
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
-  "required": ["id"]
+  "required": ["ids"]
 }

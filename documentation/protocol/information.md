@@ -1,7 +1,7 @@
 # News
-## List posts
+## TODO: List posts
 
-## List post details
+## TODO: List post details
 
 ```
 -- Might not include comments

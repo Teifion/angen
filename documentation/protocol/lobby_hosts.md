@@ -1,7 +1,7 @@
 # Lobby hosts
 For hosting of lobbies
 
-## Request `lobby/open`
+## `lobby/open`
 
 ## Close
 

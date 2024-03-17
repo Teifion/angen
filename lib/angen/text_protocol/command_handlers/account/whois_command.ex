@@ -1,8 +1,5 @@
 defmodule Angen.TextProtocol.CommandHandlers.Account.Whois do
-  @moduledoc """
-
-  """
-
+  @moduledoc false
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
@@ -15,13 +12,9 @@ defmodule Angen.TextProtocol.CommandHandlers.Account.Whois do
     FailureResponse.generate({name(), "Must be logged in"}, state)
   end
 
-  def handle(%{"id" => id}, state) do
-    case Api.get_user_by_id(id) do
-      nil ->
-        FailureResponse.generate({name(), "No user by that ID"}, state)
+  def handle(%{"ids" => ids}, state) do
+    users = Teiserver.Account.list_users(where: [id: ids], limit: 50)
 
-      user ->
-        TextProtocol.Account.UserInfoResponse.generate(user, state)
-    end
+    TextProtocol.Account.UserInfoResponse.generate(users, state)
   end
 end

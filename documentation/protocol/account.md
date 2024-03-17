@@ -9,7 +9,7 @@ Registration is the process of creating new accounts. It can be enabled/disabled
 {
   "name": "account/register",
   "command": {
-    "name": "teifion",
+    "name": "Teifion",
     "password": "password1",
     "email": "email@email"
   }
@@ -24,7 +24,7 @@ If successful you should receive something like:
   "message": {
     "user": {
       "id": "3c914d97-e055-4f39-9ae1-1b5276c67bcb",
-      "name": "teifion"
+      "name": "Teifion"
     }
   }
 }
@@ -39,7 +39,45 @@ Start the reset-password process, revokes tokens.
 Command to verify the account in some way
 
 ## `account/whois`
-Returns info about the account you are logged in as.
+[Request](/priv/static/schema/commands/account/whois_command.json) - [Response](/priv/static/schema/messages/account/user_info_message.json)
+
+Retrieves information about one or more users by their IDs:
+```json
+{
+  "name": "account/whois",
+  "command": {
+    "ids": [
+      "f627ed52-54ce-4074-ba14-03f283f025c6",
+      "a9d3dbe8-9376-4b0b-90ce-435ea3028005",
+      "f301e9b7-53dd-4df7-bbcb-194ff9aad4e2"
+    ]
+  }
+}
+```
+
+Found users are returned as such. Any IDs which do not link to a user are simply not included. As long as the schema is correctly structured a "failure" response will just be an empty list of users.
+
+```json
+{
+  "name": "account/registered",
+  "message": {
+    "users": [
+      {
+        "id": "f627ed52-54ce-4074-ba14-03f283f025c6",
+        "name": "Teifion"
+      },
+      {
+        "id": "f627ed52-54ce-4074-ba14-03f283f025c6",
+        "name": "Nacho"
+      },
+      {
+        "id": "f627ed52-54ce-4074-ba14-03f283f025c6",
+        "name": "Noodle"
+      }
+    ]
+  }
+}
+```
 
 ## `account/update`
 Updates account details.
@@ -49,3 +87,7 @@ Invalidates all tokens for this account.
 
 ## `account/forgetme`
 Flag the account for GDPR deletion in 24 hours (to allow undoing of this command)
+
+## `account/cancel_forgetme`
+Cancels GDPR deletion.
+

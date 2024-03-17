@@ -1,8 +1,5 @@
 defmodule Angen.TextProtocol.Account.UserInfoResponse do
-  @moduledoc """
-
-  """
-
+  @moduledoc false
   use Angen.TextProtocol.ResponseMacro
 
   @impl true
@@ -11,9 +8,9 @@ defmodule Angen.TextProtocol.Account.UserInfoResponse do
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate(user, state) do
+  def do_generate(users, state) do
     result = %{
-      "user" => TypeConvertors.convert(user)
+      "users" => TypeConvertors.convert(users)
     }
 
     {result, state}

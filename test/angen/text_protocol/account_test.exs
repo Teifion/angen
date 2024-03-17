@@ -6,7 +6,7 @@ defmodule Angen.TextProtocol.AccountTest do
     test "unauth" do
       %{socket: socket} = raw_connection()
 
-      speak(socket, %{name: "account/whois", command: %{id: "123"}})
+      speak(socket, %{name: "account/whois", command: %{ids: ["123"]}})
       msg = listen(socket)
 
       assert_auth_failure(msg, "account/whois")
@@ -16,31 +16,51 @@ defmodule Angen.TextProtocol.AccountTest do
       %{socket: socket, user: user} = auth_connection()
 
       # Bad ID first
-      speak(socket, %{name: "account/whois", command: %{id: Teiserver.uuid()}})
-      msg = listen(socket)
-
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "account/whois",
-                 "reason" => "No user by that ID"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
-
-      # Now good ID
-      speak(socket, %{name: "account/whois", command: %{id: user.id}})
+      speak(socket, %{name: "account/whois", command: %{ids: [Teiserver.uuid()]}})
       msg = listen(socket)
 
       assert msg == %{
                "name" => "account/user_info",
                "message" => %{
-                 "user" => %{
+                 "users" => []
+               }
+             }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("account/user_info_message.json", msg["message"])
+
+      # Now good ID
+      speak(socket, %{name: "account/whois", command: %{ids: [user.id]}})
+      msg = listen(socket)
+
+      assert msg == %{
+               "name" => "account/user_info",
+               "message" => %{
+                 "users" => [
+                  %{
                    "id" => user.id,
                    "name" => user.name
                  }
+                ]
+               }
+             }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("account/user_info_message.json", msg["message"])
+
+      # Good and bad
+      speak(socket, %{name: "account/whois", command: %{ids: [Teiserver.uuid(), user.id]}})
+      msg = listen(socket)
+
+      assert msg == %{
+               "name" => "account/user_info",
+               "message" => %{
+                 "users" => [
+                  %{
+                   "id" => user.id,
+                   "name" => user.name
+                 }
+                ]
                }
              }
 

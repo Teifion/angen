@@ -9,11 +9,13 @@ The login flow for the Angen protocol is:
 ### Why use tokens
 By using tokens instead of passwords there is no need to keep the user password on the computer meaning it cannot be stolen. If a token is stolen it can of course be used but the password itself is not compromised and the token can be revoked.
 
-## Configs
+# Configuration
 ### `:require_tokens_to_persist_ip`
 When a token is created the IP used is tracked. If this option is enabled then the IP used to login via the token must match the token stored in the database. When enabled this can help prevent token theft but at the cost of needing users to re-acquire a token every time they change IP address.
 
+# Protocol
 ## `auth/get_token`
+[Request](/priv/static/schema/commands/auth/get_token_command.json) - [Response](/priv/static/schema/messages/auth/token_message.json)
 Start by making an `auth/get_token` request like so:
 ```json
 {
@@ -42,7 +44,9 @@ This will return you a token like so:
 
 You will need to use the `identifier_code` to login and the `renewal_code` to renew the token when it is due to expire.
 
-### `auth/login`
+## `auth/login`
+[Request](/priv/static/schema/commands/auth/login_command.json) - [Response](/priv/static/schema/messages/auth/logged_in_message.json)
+
 To login you will need to send an `auth/login` request:
 ```json
 {
@@ -65,3 +69,6 @@ If successful you will get a response of:
   }
 }
 ```
+
+## TODO: `auth/renew`
+Renews the token

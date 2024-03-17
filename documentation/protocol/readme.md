@@ -1,6 +1,20 @@
 # Protocol documentation
 Angen makes use of a JSON schema as defined in [/priv/static/schema](/priv/static/schema). If the documentation and schema ever disagree; this is a bug and should be raised as an issue. The schema should always be considered the source of truth; the purpose of the documentation is to make using the schema a bit easier.
 
+# Links
+- [Account](account.md)
+- [Authentication](authentication.md)
+- [Connections](connections.md)
+- [Lobby - Hosts](lobby_hosts.md)
+- [Lobby - Users](lobby_users.md)
+- [Matchmaking](matchmaking.md)
+- [Social](social.md)
+- [System](system.md)
+- [Telemetry](telemetry.md)
+- [User communication](user_communication.md)
+- [User settings](user_settings.md)
+
+
 ## Terminology
 
 | Term               | Meaning                                                                                                                         |
@@ -20,7 +34,7 @@ Angen makes use of a JSON schema as defined in [/priv/static/schema](/priv/stati
 | Server             | The provider of the protocol and what clients connect to. i.e. the master/middleware server                                     |
 | User               | Syonymous with an account, and strictly represents the data which is stored in the server database                              |
 
-## Request / Response process
+# Request / Response process
 Clients message the server using Requests and receive Responses. A request wraps around a command and a response wraps around a message. Wrapping allows us to include generic or universal data such as the `message_id`.
 
 Nearly every Request will result in a Response of some sort. In some cases it will be a specific response (e.g. registering a user will result in you being told your user_id) while in others it will be a generic response (Success, Failure or Error).
@@ -59,25 +73,40 @@ Responses will consist of up to 3 properties:
 }
 ```
 
-## Generic response messages
+# Generic response messages
 Many commands will have specific response messages but in some cases there will be a generic "success" message and if something goes wrong you should expect to receive a "failure" or "error" message.
 
 ### Success
-When a command succeeds but has no further information to send back 
+When a command succeeds but has no further information to send back. If there was a message_id in the command it will also be present in the success response.
 
-### Failure
+```json
+{
+  "name": "system/success",
+  "message": {}
+}
+```
 
-### Error
+## Failure
+When a command fails you will receive a failure response message with the reason for the failure. If there was a message_id in the command it will also be present in the failure response.
 
-## Documentation
-- [Account](account.md)
-- [Authentication](authentication.md)
-- [Connections](connections.md)
-- [Lobby - Hosts](lobby_hosts.md)
-- [Lobby - Users](lobby_users.md)
-- [Matchmaking](matchmaking.md)
-- [Social](social.md)
-- [System](system.md)
-- [Telemetry](telemetry.md)
-- [User communication](user_communication.md)
-- [User settings](user_settings.md)
+```json
+{
+  "name": "system/failure",
+  "message": {
+    "command": "section/command",
+    "reason": "Reason why something didn't work"
+  }
+}
+```
+
+## Error
+When an unexpected error/exception occurs on the server while handling a command you will receive an error response. While this will almost certainly mean the command has failed it may be part of it has succeeded; it may also be the error happened outside of the command itself (e.g. bad message payload) so the error will not contain the command but will contain a reason..
+
+```json
+{
+  "name": "system/error",
+  "message": {
+    "reason": "Reason why something broke"
+  }
+}
+```

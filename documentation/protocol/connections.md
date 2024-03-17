@@ -5,7 +5,7 @@ Commands related to changing your client
 
 ## Message `connection/client_updated`
 
-## Login queue heartbeat
+## TODO: Login queue heartbeat
 
-## Disconnect
+## TODO: Disconnect
 

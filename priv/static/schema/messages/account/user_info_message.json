@@ -5,11 +5,14 @@
   "description": "",
   "type": "object",
   "required": [
-    "user"
+    "users"
   ],
   "properties": {
-    "user": {
-      "$ref": "types/account/user.json"
+    "users": {
+      "type": "array",
+      "items": {
+        "$ref": "types/account/user.json"
+      }
     }
   }
 }

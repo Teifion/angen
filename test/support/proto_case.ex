@@ -133,15 +133,15 @@ defmodule Angen.ProtoCase do
         auth_connection()
       end
 
-    # For some reason the login can happen fast enough the client isn't registered
-    # so we call this just to ensure it is
-    if Teiserver.Api.get_client(user.id) == nil do
-      # If it doesn't exist we wait a moment and try again, just in case
-      :timer.sleep(500)
-      if Teiserver.Api.get_client(user.id) == nil do
-        raise "Client doesn't exist, cannot create lobby"
-      end
-    end
+    # # For some reason the login can happen fast enough the client isn't registered
+    # # so we call this just to ensure it is
+    # if Teiserver.Api.get_client(user.id) == nil do
+    #   # If it doesn't exist we wait a moment and try again, just in case
+    #   :timer.sleep(500)
+    #   if Teiserver.Api.get_client(user.id) == nil do
+    #     raise "Client doesn't exist, cannot create lobby"
+    #   end
+    # end
 
     lobby_name = Teiserver.uuid()
     lobby = try_to_host_lobby(socket, user, lobby_name)
@@ -168,9 +168,9 @@ defmodule Angen.ProtoCase do
   Grabs a message from the socket, if there are multiple messages it will only
   grab the first one
   """
-  @spec listen(any()) :: any()
-  @spec listen(any(), non_neg_integer()) :: [map()] | :timeout | :closed
-  def listen(socket, timeout \\ 500) do
+  @spec listen(any()) :: map() | :timeout | :closed
+  @spec listen(any(), non_neg_integer()) :: map() | :timeout | :closed
+  def listen(socket, timeout \\ 100) do
     case :ssl.recv(socket, 0, timeout) do
       # This sometimes borks because there are two messages in the queue and it gets both
       # will need to refactor this to return a list and update all tests accordingly
@@ -208,7 +208,7 @@ defmodule Angen.ProtoCase do
   """
   @spec listen_all(any()) :: any()
   @spec listen_all(any(), non_neg_integer()) :: any()
-  def listen_all(socket, timeout \\ 500) do
+  def listen_all(socket, timeout \\ 100) do
     case :ssl.recv(socket, 0, timeout) do
       {:ok, reply} ->
         # In theory there should only ever be one message in the socket but we do this because
