@@ -176,7 +176,12 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       ]
 
       # Now, the user
-      [msg | _] = listen_all(usocket)
+      messages = usocket
+        |> listen_all()
+        |> group_responses()
+
+      [msg] = messages["lobby/closed"]
+
       assert msg == %{
         "message" => %{"lobby_id" => lobby_id},
         "name" => "lobby/closed"

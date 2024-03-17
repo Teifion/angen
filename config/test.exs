@@ -40,3 +40,6 @@ config :angen,
     certfile: "priv/certs/localhost.crt",
     cacertfile: "priv/certs/localhost.crt"
   ]
+
+# This makes anything in our tests involving user passwords (creating or logging in) much faster
+config :argon2_elixir, t_cost: 1, m_cost: 8
