@@ -10,8 +10,7 @@ import Config
 config :angen,
   ecto_repos: [Angen.Repo],
 
-  # When set to true, tokens can only be used by the IP they were created with
-  require_tokens_to_persist_ip: false,
+  site_title: "Angen DEV",
 
   json_schema_path: "priv/static/schema"
 

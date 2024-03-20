@@ -52,7 +52,7 @@ defmodule AngenWeb.NavComponents do
             >
             </i>
             <span id="page-title">
-              <%= Application.get_env(:angen, Angen)[:site_title] %>
+              <%#= Application.get_env(:angen, :site_title) %>
             </span>
           </a>
           <!-- Left links -->

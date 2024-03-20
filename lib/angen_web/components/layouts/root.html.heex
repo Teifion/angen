@@ -11,10 +11,10 @@
     <% end %>
 
     <.live_title>
-      xyz
+      <%= Application.get_env(:angen, :site_title) %>
     </.live_title>
 
-    <% dark_mode = true %>
+    <% dark_mode = false %>
 
     <%= if dark_mode do %>
       <link phx-track-static rel="stylesheet" href={~p"/assets/dark.css"} />

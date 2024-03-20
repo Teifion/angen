@@ -139,8 +139,14 @@ if config_env() == :prod do
       cacertfile: "#{cert_root}/fullchain.pem"
     ],
 
+    # Website
+    site_title: System.get_env("ANGEN_SITE_TITLE", "Angen"),
+
+    # Default configs
     default_site_settings: %{
       allow_user_registration: true,
+
+      require_tokens_to_persist_ip: false,
 
       allow_lobby_whisper: false
     },
