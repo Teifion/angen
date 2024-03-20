@@ -50,6 +50,26 @@ defmodule Angen.TextProtocol.AuthTest do
                }
              }
 
+      # No user
+      speak(socket, %{
+        name: "auth/get_token",
+        command: %{
+          name: "no-user",
+          password: "bad-password1",
+          user_agent: "UnitTest"
+        }
+      })
+
+      response = listen(socket)
+
+      assert response == %{
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "auth/get_token",
+                 "reason" => "Bad authentication"
+               }
+             }
+
       # Bad password
       speak(socket, %{
         name: "auth/get_token",

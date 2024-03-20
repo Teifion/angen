@@ -3,7 +3,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
   use Angen.ProtoCase, async: false
 
   describe "open" do
-    test "unauth" do
+    test "not logged in" do
       %{socket: socket} = raw_connection()
 
       speak(socket, %{name: "lobby/open", command: %{name: "OpenLobbyTest"}})
@@ -12,7 +12,26 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       assert_auth_failure(msg, "lobby/open")
     end
 
-    test "auth" do
+    test "already in a lobby" do
+      %{lobby: lobby} = lobby_host_connection()
+      %{socket: socket, user: user} = auth_connection()
+
+      Api.add_client_to_lobby(user.id, lobby.id)
+      flush_socket(socket)
+
+      speak(socket, %{name: "lobby/open", command: %{name: "OpenLobbyTest"}})
+      msg = listen(socket)
+
+      assert msg == %{
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "lobby/open",
+                 "reason" => "Already in a lobby"
+               }
+             }
+    end
+
+    test "correct" do
       %{socket: socket, user: user} = auth_connection()
 
       # Bad ID first
@@ -52,6 +71,36 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
   end
 
   describe "close" do
+    test "not logged in" do
+      %{socket: socket} = raw_connection()
+
+      speak(socket, %{name: "lobby/close", command: %{}})
+      msg = listen(socket)
+
+      assert msg == %{
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "lobby/close",
+                 "reason" => "Must be logged in"
+               }
+             }
+    end
+
+    test "must be in a lobby" do
+      %{socket: socket} = auth_connection()
+
+      speak(socket, %{name: "lobby/close", command: %{}})
+      msg = listen(socket)
+
+      assert msg == %{
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "lobby/close",
+                 "reason" => "Must be in a lobby"
+               }
+             }
+    end
+
     test "not a host" do
       %{lobby: lobby} = lobby_host_connection()
       %{socket: socket, user: user} = auth_connection()

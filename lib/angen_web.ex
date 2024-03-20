@@ -57,6 +57,8 @@ defmodule AngenWeb do
       import Angen.Account.AuthLib,
         only: [allow?: 2, allow_any?: 2, allow_all?: 2, mount_require_all: 2, mount_require_any: 2]
 
+      alias Angen.Helper.StylingHelper
+
       unquote(html_helpers())
     end
   end

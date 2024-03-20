@@ -32,7 +32,7 @@ defmodule AngenWeb.UserAuth do
       _ -> nil
     end
 
-    {:ok, token} = Angen.Account.create_user_token(user.id, "text-protocol", user_agent, ip)
+    {:ok, token} = Angen.Account.create_user_token(user.id, "web", user_agent, ip)
 
     user_return_to = get_session(conn, :user_return_to)
 
@@ -176,6 +176,19 @@ defmodule AngenWeb.UserAuth do
       {:halt, Phoenix.LiveView.redirect(socket, to: signed_in_path(socket))}
     else
       {:cont, socket}
+    end
+  end
+
+  def on_mount({:authorise, permissions}, _params, _session, socket) do
+    if Account.AuthLib.allow?(socket.assigns.current_user, permissions) do
+      {:cont, socket}
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You do not have permission to view that page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/")
+
+      {:halt, socket}
     end
   end
 

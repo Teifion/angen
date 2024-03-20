@@ -19,35 +19,25 @@ defmodule AngenWeb.Router do
   end
 
   scope "/", AngenWeb.General do
-    pipe_through :browser
+    pipe_through [:browser]
 
     live_session :general_index,
       on_mount: [
-        # {AngenWeb.UserAuth, :ensure_authenticated}
         {AngenWeb.UserAuth, :mount_current_user}
       ] do
       live "/", HomeLive.Index, :index
-
-      # These will be replaced later, for now we
-      # live "/login", HomeLive.Index, :index
-      # live "/profile", HomeLive.Index, :index
-      # live "/logout", HomeLive.Index, :index
     end
   end
 
   scope "/admin", AngenWeb.Admin do
-    pipe_through :browser
+    pipe_through [:browser]
 
     live_session :admin_index,
       on_mount: [
-        {AngenWeb.UserAuth, :ensure_authenticated}
+        {AngenWeb.UserAuth, :ensure_authenticated},
+        {AngenWeb.UserAuth, {:authorise, "admin"}}
       ] do
       live "/", HomeLive.Index, :index
-
-      # These will be replaced later, for now we
-      # live "/login", HomeLive.Index, :index
-      # live "/profile", HomeLive.Index, :index
-      # live "/logout", HomeLive.Index, :index
     end
   end
 
@@ -77,25 +67,20 @@ defmodule AngenWeb.Router do
     end
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", AngenWeb do
-  #   pipe_through :api
-  # end
-
-  # Enable LiveDashboard and Swoosh mailbox preview in development
-  if Application.compile_env(:angen, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
+  scope "/admin", AngenWeb.Admin do
+    pipe_through [:browser]
     import Phoenix.LiveDashboard.Router
 
-    scope "/dev" do
-      pipe_through :browser
-
-      live_dashboard "/dashboard", metrics: AngenWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
-    end
+    live_dashboard("/live_dashboard",
+      metrics: AngenWeb.Telemetry,
+      ecto_repos: [Angen.Repo],
+      on_mount: [
+        {AngenWeb.UserAuth, :ensure_authenticated},
+        {AngenWeb.UserAuth, {:authorise, "admin"}}
+      ],
+      additional_pages: [
+        # live_dashboard_additional_pages
+      ]
+    )
   end
 end
