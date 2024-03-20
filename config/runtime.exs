@@ -144,11 +144,13 @@ if config_env() == :prod do
 
     # Default configs
     default_site_settings: %{
-      allow_user_registration: true,
+      allow_user_registration: System.get_env("ANGEN_DEFAULT_ALLOW_USER_REGISTRATION", "TRUE") == "TRUE",
 
-      require_tokens_to_persist_ip: false,
+      require_tokens_to_persist_ip: System.get_env("ANGEN_DEFAULT_REQUIRE_TOKENS_TO_PERSIST_IP", "FALSE") == "TRUE",
 
-      allow_lobby_whisper: false
+      allow_lobby_whisper: System.get_env("ANGEN_DEFAULT_ALLOW_LOBBY_WHISPER", "FALSE") == "TRUE",
+
+      integration_mode: System.get_env("ANGEN_DEFAULT_INTEGRATION_MODE", "FALSE") == "TRUE"
     },
     default_user_settings: %{
 

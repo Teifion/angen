@@ -18,6 +18,9 @@ defmodule Angen.Application do
       {Finch, name: Angen.Finch},
       AngenWeb.Endpoint,
 
+      # Integration mode
+      Angen.DevSupport.IntegrationSupervisor,
+
       # Caches
       %{
         id: :protocol_schemas,

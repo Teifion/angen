@@ -34,6 +34,7 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :angen,
   dev_routes: true,
+  test_mode: true,
   tls_port: 9201,
   certs: [
     keyfile: "priv/certs/localhost.key",
