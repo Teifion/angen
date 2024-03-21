@@ -20,18 +20,20 @@ defmodule Angen.DevSupport.BotLib do
   end
 
   defp create_bot_account(name, groups) do
-    Account.create_user(%{
+    {:ok, user} = Account.create_user(%{
       "name" => name,
       "email" => email_from_name(name),
       "password" => Account.generate_password(),
       "groups" => ["integration" | groups]
     })
+    user
   end
 
   defp update_bot_account(user, groups) do
-    Account.update_user(user, %{
+    {:ok, user} = Account.update_user(user, %{
       "groups" => ["integration" | groups]
     })
+    user
   end
 
   defp email_from_name(name) do

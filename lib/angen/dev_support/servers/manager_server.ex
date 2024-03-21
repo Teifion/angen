@@ -4,8 +4,13 @@ defmodule Angen.DevSupport.ManagerServer do
   """
   use GenServer
   require Logger
+  alias Angen.DevSupport
 
   @startup_delay 500
+
+  @bots [
+    {DevSupport.DMEchoBot, %{}}
+  ]
 
   def start_link(params, _opts \\ []) do
     GenServer.start_link(
@@ -37,7 +42,10 @@ defmodule Angen.DevSupport.ManagerServer do
   @impl true
   def handle_info({:startup, _start_count}, _state) do
     if integration_active?() do
-      # Do integration stuff here
+      @bots
+      |> Enum.each(fn {bot, params} ->
+        start_bot(bot, params)
+      end)
     end
 
     {:noreply, :started}
@@ -46,6 +54,14 @@ defmodule Angen.DevSupport.ManagerServer do
   def handle_info(other, state) do
     Logger.warning("unhandled message to #{__MODULE__}: #{inspect(other)}.")
     {:noreply, state}
+  end
+
+  @spec start_bot(module(), map()) :: {:ok, pid()}
+  defp start_bot(bot, params) do
+    DynamicSupervisor.start_child(
+      DevSupport.IntegrationSupervisor,
+      {bot, params}
+    )
   end
 
   @spec integration_active?() :: boolean

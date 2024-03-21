@@ -1,5 +1,20 @@
 import Config
 
+config :angen,
+  dev_routes: true,
+  tls_port: 8201,
+  certs: [
+    keyfile: "priv/certs/localhost.key",
+    certfile: "priv/certs/localhost.crt",
+    cacertfile: "priv/certs/localhost.crt"
+  ],
+
+  default_site_settings: %{
+    allow_user_registration: true,
+    require_tokens_to_persist_ip: false,
+    integration_mode: true
+  }
+
 # Configure your database
 config :angen, Angen.Repo,
   username: "angen_dev",
@@ -47,16 +62,6 @@ config :angen, AngenWeb.Endpoint,
       ~r"priv/gettext/.*(po)$",
       ~r"lib/angen_web/(controllers|live|components|live_components)/.*(ex|heex)$"
     ]
-  ]
-
-# Enable dev routes for dashboard and mailbox
-config :angen,
-  dev_routes: true,
-  tls_port: 8201,
-  certs: [
-    keyfile: "priv/certs/localhost.key",
-    certfile: "priv/certs/localhost.crt",
-    cacertfile: "priv/certs/localhost.crt"
   ]
 
 # Do not include metadata nor timestamps in development logs

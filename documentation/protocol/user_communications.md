@@ -5,9 +5,10 @@ For communicating with other users
 ## Send direct message
 ```json
 {
-  "name": "",
+  "name": "communication/send_direct_message",
   "command": {
-    
+    "to_id": "user-id",
+    "content": "Test message"
   }
 }
 ```

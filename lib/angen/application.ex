@@ -78,6 +78,7 @@ defmodule Angen.Application do
   defp startup() do
     Angen.Helpers.JsonSchemaHelper.load()
     Angen.TextProtocol.ExternalDispatch.cache_dispatches()
+    Angen.DevSupport.IntegrationSupervisor.start_integration_supervisor_children()
   end
 
   # Tell Phoenix to update the endpoint configuration

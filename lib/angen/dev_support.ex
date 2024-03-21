@@ -1,3 +1,3 @@
 defmodule Angen.DevSupport do
-  import Angen.DevSupport.BotLib
+  # alias Angen.DevSupport.BotLib
 end

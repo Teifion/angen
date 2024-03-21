@@ -5,7 +5,8 @@
   "description": "",
   "type": "object",
   "required": [
-    "token"
+    "token",
+    "user_agent"
   ],
   "properties": {
     "token": {

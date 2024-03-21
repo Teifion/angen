@@ -21,8 +21,9 @@ Start by making an `auth/get_token` request like so:
 {
   "name": "auth/get_token",
   "command": {
-    "username": "teifion",
-    "password": "password1"
+    "name": "teifion",
+    "password": "password1",
+    "user_agent": "application name"
   }
 }
 ```
@@ -52,7 +53,8 @@ To login you will need to send an `auth/login` request:
 {
   "name": "auth/login",
   "command": {
-    "identifier_code": "dd0PBc9vPibBozlfDh0RUekd34o......FLxaPIpFs+HSIe79"
+    "identifier_code": "dd0PBc9vPibBozlfDh0RUekd34o......FLxaPIpFs+HSIe79",
+    "user_agent": "application name"
   }
 }
 ```
