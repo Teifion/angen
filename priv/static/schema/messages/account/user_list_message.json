@@ -1,5 +1,5 @@
 {
-  "$id": "account/user_info_message.json",
+  "$id": "account/user_list_message.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Account - User_info message",
   "description": "",

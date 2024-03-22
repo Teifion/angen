@@ -21,7 +21,7 @@ defmodule AngenWeb.Admin.HomeLiveTest do
     test "index", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, ~p"/admin")
 
-      assert html =~ "ADMIN SECTION"
+      assert html =~ "Live dashboard"
     end
   end
 

@@ -1,0 +1,18 @@
+{
+  "$id": "account/user_query_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User - Query command",
+  "description": "",
+  "type": "object",
+  "required": [
+    "filters"
+  ],
+  "properties": {
+    "filters": {
+      "$ref": "types/account/user_filters.json"
+    },
+    "limit": {
+      "type": "integer"
+    }
+  }
+}

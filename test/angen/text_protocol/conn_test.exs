@@ -131,7 +131,7 @@ defmodule Angen.TextProtocol.ConnTest do
                "name" => "system/error",
                "message" => %{
                  "reason" =>
-                   "Invalid command schema: {:error, [{\"Required property token was not present.\", \"#\"}]}"
+                   "Invalid command schema: {:error, [{\"Required properties token, user_agent were not present.\", \"#\"}]}"
                }
              }
 

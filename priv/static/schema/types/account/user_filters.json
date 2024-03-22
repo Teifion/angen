@@ -1,0 +1,21 @@
+{
+  "$id": "types/account/user_filters.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby filters",
+  "description": "Filters for querying a list of lobbies",
+  "type": "object",
+  "required": [],
+  "properties": {
+    "name": {
+      "description": "Selects users where their name is equal to this value",
+      "type": "string"
+    },
+    "id": {
+      "description": "Selects users whose ID appears in this list of IDs",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
