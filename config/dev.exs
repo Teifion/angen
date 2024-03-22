@@ -83,27 +83,9 @@ config :angen, Oban,
   crontab: false
 
 # Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
-
-config :logger,
-  backends: [
-    {LoggerFileBackend, :error_log},
-    {LoggerFileBackend, :info_log},
-    :console
-  ]
-
-config :logger, :error_log,
-  path: "/tmp/angen_error.log",
-  format: "$time [$level] $metadata $message\n",
-  metadata: [:request_id, :user_id],
-  level: :error
-
-config :logger, :info_log,
-  path: "/tmp/angen_info.log",
-  format: "$time [$level] $metadata $message\n",
-  metadata: [:request_id, :user_id],
-  level: :info
-
+config :logger, :console,
+  format: "[$level] $message\n",
+  truncate: :infinity
 
 try do
   import_config "dev.secret.exs"

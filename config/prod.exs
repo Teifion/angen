@@ -19,7 +19,8 @@ config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Angen.Finch
 
 config :logger,
   format: "$date $time [$level] $metadata $message\n",
-  level: :info
+  level: :info,
+  truncate: :infinity
 
 config :logger, :default_formatter,
   format: "$date $time [$level] $metadata $message\n",
