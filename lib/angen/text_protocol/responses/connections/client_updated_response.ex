@@ -9,8 +9,9 @@ defmodule Angen.TextProtocol.Connections.ClientUpdatedResponse do
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate({changes, reason}, state) do
+  def do_generate({user_id, changes, reason}, state) do
     result = %{
+      "user_id" => user_id,
       "changes" => changes,
       "reason" => reason
     }

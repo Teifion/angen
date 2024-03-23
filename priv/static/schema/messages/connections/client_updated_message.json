@@ -5,10 +5,14 @@
   "description": "",
   "type": "object",
   "required": [
+    "user_id",
     "changes",
     "reason"
   ],
   "properties": {
+    "user_id": {
+      "type": "string"
+    },
     "changes": {
       "$ref": "types/connections/changed_client.json"
     },

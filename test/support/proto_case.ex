@@ -95,7 +95,7 @@ defmodule Angen.ProtoCase do
              }
            }
 
-    %{socket: socket, user: user}
+    %{socket: socket, user: user, user_id: user.id}
   end
 
   @spec try_to_host_lobby(any(), Teiserver.Account.User.t(), String.t()) :: Teiserver.Game.Lobby.t()
@@ -152,7 +152,7 @@ defmodule Angen.ProtoCase do
     # Clear the socket
     flush_socket(socket)
 
-    %{socket: socket, user: user, lobby: lobby, lobby_id: lobby.id}
+    %{socket: socket, user: user, user_id: user.id, lobby: lobby, lobby_id: lobby.id}
   end
 
   @spec speak(any(), map) :: any()
