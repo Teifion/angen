@@ -9,6 +9,7 @@ defmodule Angen.DevSupport.ManagerServer do
   @startup_delay 500
 
   @bots [
+    {DevSupport.LobbyHostBot, %{}},
     {DevSupport.DMEchoBot, %{}}
   ]
 

@@ -39,7 +39,7 @@ Start the reset-password process, revokes tokens.
 Command to verify the account in some way
 
 ## `account/user_query`
-[Request](/priv/static/schema/commands/account/user_query_command.json) - [Response](/priv/static/schema/messages/account/user_info_message.json)
+[Request](/priv/static/schema/commands/account/user_query_command.json) - [Response](/priv/static/schema/messages/account/user_list_message.json)
 
 Retrieves information about one or more users by their IDs or name:
 ```json
@@ -62,7 +62,7 @@ Found users are returned as such. Any IDs which do not link to a user are simply
 
 ```json
 {
-  "name": "account/registered",
+  "name": "account/user_list",
   "message": {
     "users": [
       {

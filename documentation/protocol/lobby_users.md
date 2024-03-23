@@ -1,11 +1,11 @@
 # Lobby users
 For general interactions with lobbies.
 
-## List lobbies
+## `lobby/query`
 
-## Join lobby
+## `lobby/join`
 
-## Leave lobby
+## `lobby/leave`
 
 ## Lobby state change
 

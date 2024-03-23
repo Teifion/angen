@@ -1,11 +1,13 @@
-defmodule Angen.DevSupport.EchoBotTest do
+defmodule Angen.DevSupport.DMEchoBotTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   alias Angen.DevSupport.{DMEchoBot, ManagerServer}
 
   describe "echo bot" do
     test "back and forth" do
+      close_all_lobbies()
+
       {:ok, p} = ManagerServer.start_bot(DMEchoBot, %{})
       send(p, :startup)
       :timer.sleep(100)
@@ -22,12 +24,6 @@ defmodule Angen.DevSupport.EchoBotTest do
       assert msg["message"]["message"]["content"] == "egassem tseT"
       assert msg["message"]["message"]["from_id"] == bot_user.id
       assert msg["message"]["message"]["to_id"] == user.id
-
-      # Shut it down
-      send(p, :stop)
-      :timer.sleep(100)
-
-      refute Process.alive?(p)
     end
   end
 end

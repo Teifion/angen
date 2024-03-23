@@ -7,18 +7,11 @@ defmodule Angen.DevSupport.DMEchoBot do
   use Angen.DevSupport.BotMacro
   require Logger
 
-  @interval 15_000
-
   def handle_info(:startup, state) do
     user = BotLib.get_or_create_bot_account("DMEchoBot")
     Api.connect_user(user.id)
 
-    :timer.send_interval(@interval, :tick)
     {:noreply, %{state | user: user, connected: true}}
-  end
-
-  def handle_info(:tick, state) do
-    {:noreply, state}
   end
 
   def handle_info(%{event: :message_received, topic: "Teiserver.Communication.User:" <> _} = msg, state) do

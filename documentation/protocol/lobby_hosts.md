@@ -3,9 +3,9 @@ For hosting of lobbies
 
 ## `lobby/open`
 
-## Close
+## `lobby/close`
 
-## Change state
+## `lobby/change`
 
 # Host commands
 ## List commands supplied by host

@@ -31,6 +31,7 @@ defmodule Angen.DevSupport.BotMacro do
         %{
           params: params,
           user: nil,
+          lobby_id: nil,
           connected: false
         }
       end
