@@ -85,8 +85,17 @@ Found users are returned as such. Any IDs which do not link to a user are simply
 ## TODO: `account/update`
 Updates account details.
 
-## TODO: `account/revoke_tokens`
-Invalidates all tokens for this account.
+## `account/revoke_tokens`
+[Request](/priv/static/schema/commands/account/revoke_tokens_command.json)
+
+Invalidates all tokens for this account; any existing connections (including the one currently connected) will be disconnected. Due to timing issues with the destruction of the connection it is possible you will receive a success message.
+
+```json
+{
+  "name": "account/revoke_tokens",
+  "message": {}
+}
+```
 
 ## TODO: `account/forgetme`
 Flag the account for GDPR deletion in 24 hours (to allow undoing of this command)

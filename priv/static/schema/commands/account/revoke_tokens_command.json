@@ -1,0 +1,13 @@
+{
+  "$id": "account/revoke_tokens_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Account - Revoke_tokens command",
+  "description": "",
+  "type": "object",
+  "required": [
+    
+  ],
+  "properties": {
+    
+  }
+}

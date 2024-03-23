@@ -244,7 +244,7 @@ defmodule Angen.Account.UserTokenLib do
 
   @spec delete_user_tokens(Teiserver.user_id()) :: :ok
   def delete_user_tokens(user_id) do
-    UserTokenQueries.user_token_query(where: [user_id: user_id])
+    UserTokenQueries.user_token_query(where: [user_id: user_id], limit: :infinity)
     |> Repo.delete_all()
   end
 end
