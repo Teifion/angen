@@ -65,7 +65,7 @@ defmodule Angen.DevSupport.ManagerServer do
   end
 
   @spec integration_active?() :: boolean
-  defp integration_active?() do
+  def integration_active?() do
     if Application.get_env(:angen, :test_mode) == true do
       false
     else

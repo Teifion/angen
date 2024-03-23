@@ -5,7 +5,7 @@ defmodule Angen do
 
   defmodule ConnState do
     @moduledoc false
-    defstruct [:user_id, :socket]
+    defstruct ~w(ip socket user_id user lobby_host? party_id lobby_id in_game?)a
   end
 
   @type raw_message :: String.t()

@@ -1,0 +1,18 @@
+{
+  "$id": "system/integration_data_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "System - Integration_data message",
+  "description": "",
+  "type": "object",
+  "required": [
+    "bots"
+  ],
+  "properties": {
+    "bots": {
+      "type": "array",
+      "items": {
+        "$ref": "types/account/user.json"
+      }
+    }
+  }
+}

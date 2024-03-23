@@ -1,0 +1,13 @@
+{
+  "$id": "system/nodes_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "System - Nodes command",
+  "description": "",
+  "type": "object",
+  "required": [
+    
+  ],
+  "properties": {
+    
+  }
+}

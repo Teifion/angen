@@ -31,6 +31,20 @@ defmodule Angen.ProtoCase do
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
+  @spec create_test_user() :: Teiserver.Account.User.t()
+  def create_test_user() do
+    id = Teiserver.uuid()
+
+    {:ok, user} =
+      Teiserver.Account.create_user(%{
+        name: id,
+        email: "#{id}@test",
+        password: "password1"
+      })
+
+    user
+  end
+
   @spec raw_connection() :: %{socket: any()}
   def raw_connection() do
     host = ~c"127.0.0.1"
@@ -47,14 +61,7 @@ defmodule Angen.ProtoCase do
 
   @spec auth_connection() :: %{socket: any(), user: Teiserver.Account.User.t()}
   def auth_connection() do
-    id = Teiserver.uuid()
-
-    {:ok, user} =
-      Teiserver.Account.create_user(%{
-        name: id,
-        email: "#{id}@test",
-        password: "password1"
-      })
+    user = create_test_user()
 
     auth_connection(user)
   end
@@ -290,6 +297,23 @@ defmodule Angen.ProtoCase do
            )
 
     :ok
+  end
+
+  @spec dummy_conn_state() :: Angen.ConnState.t()
+  def dummy_conn_state(opts \\ []) do
+    user = opts[:user] || create_test_user()
+
+    %{
+      ip: opts[:ip] || "127.0.0.1",
+      socket: nil,
+
+      user_id: user.id,
+      user: user,
+      lobby_host?: opts[:lobby_host?] || false,
+      party_id: opts[:party_id] || nil,
+      lobby_id: opts[:lobby_id] || nil,
+      in_game?: opts[:in_game?] || false
+    }
   end
 
   @spec close_all_lobbies() :: :ok
