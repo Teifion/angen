@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.ConnTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   describe "ping" do
     test "valid unauth ping" do

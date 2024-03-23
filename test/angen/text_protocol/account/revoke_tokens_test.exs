@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.Account.RevokeTokensTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   alias Angen.Account
 

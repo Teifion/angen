@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.Account.UpdateTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   test "unauth" do
     %{socket: socket} = raw_connection()

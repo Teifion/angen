@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.Auth.RenewTokenTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   alias Angen.Account
 

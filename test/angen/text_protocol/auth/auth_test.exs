@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.AuthTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   describe "register and auth" do
     test "register and auth" do

@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.Account.ChangePasswordTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   alias Angen.Account
 
@@ -114,7 +114,7 @@ defmodule Angen.TextProtocol.Account.ChangePasswordTest do
       name: "auth/get_token",
       command: %{
         name: user.name,
-        password: "password1",
+        password: "password123",
         user_agent: "UnitTest"
       }
     })

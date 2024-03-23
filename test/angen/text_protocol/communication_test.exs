@@ -1,6 +1,6 @@
 defmodule Angen.TextProtocol.CommunicationTest do
   @moduledoc false
-  use Angen.ProtoCase
+  use Angen.ProtoCase, async: false
 
   describe "send_direct_message" do
     test "unauth" do
