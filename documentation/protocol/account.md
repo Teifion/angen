@@ -41,7 +41,7 @@ Command to verify the account in some way
 ## `account/user_query`
 [Request](/priv/static/schema/commands/account/user_query_command.json) - [Response](/priv/static/schema/messages/account/user_info_message.json)
 
-Retrieves information about one or more users by their IDs:
+Retrieves information about one or more users by their IDs or name:
 ```json
 {
   "name": "account/user_query",
@@ -82,15 +82,15 @@ Found users are returned as such. Any IDs which do not link to a user are simply
 }
 ```
 
-## `account/update`
+## TODO: `account/update`
 Updates account details.
 
-## `account/revoke_tokens`
+## TODO: `account/revoke_tokens`
 Invalidates all tokens for this account.
 
-## `account/forgetme`
+## TODO: `account/forgetme`
 Flag the account for GDPR deletion in 24 hours (to allow undoing of this command)
 
-## `account/cancel_forgetme`
+## TODO: `account/cancel_forgetme`
 Cancels GDPR deletion.
 

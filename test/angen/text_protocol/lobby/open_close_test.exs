@@ -168,6 +168,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
                    "lobby_id" => nil,
                    "update_id" => 2
                  },
+                 "user_id" => user.id,
                  "reason" => "closed lobby"
                }
              }

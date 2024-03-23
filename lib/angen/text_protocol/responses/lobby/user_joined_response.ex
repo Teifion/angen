@@ -17,4 +17,14 @@ defmodule Angen.TextProtocol.Lobby.UserJoinedResponse do
 
     {result, state}
   end
+
+  def do_generate({client, lobby_id, shared_secret}, state) do
+    result = %{
+      "lobby_id" => lobby_id,
+      "client" => TypeConvertors.convert(client),
+      "shared_secret" => shared_secret
+    }
+
+    {result, state}
+  end
 end

@@ -7,40 +7,194 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
   end
 
   describe "joining - simple" do
-    test "bad command" do
+    test "unauth" do
+      %{socket: socket} = raw_connection()
+
+      speak(socket, %{name: "lobby/join", command: %{id: Teiserver.uuid()}})
+      msg = listen(socket)
+
+      assert_auth_failure(msg, "lobby/join")
+    end
+
+    test "no lobby" do
+      %{socket: socket} = auth_connection()
+
+      speak(socket, %{name: "lobby/join", command: %{id: Teiserver.uuid()}})
+      msg = listen(socket)
+
+      assert msg == %{
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "lobby/join",
+                 "reason" => "No lobby"
+               }
+             }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+    end
+
+    test "locked" do
+      flunk "Not implemented"
+    end
+
+    test "not public" do
       flunk "Not implemented"
     end
 
     test "good command" do
-      flunk "Not implemented"
+      %{socket: hsocket, lobby_id: lobby_id} = lobby_host_connection()
+      %{socket: socket, user: user} = auth_connection()
+
+      flush_socket(hsocket)
+
+      speak(socket, %{name: "lobby/join", command: %{id: lobby_id}})
+      messages = socket |> listen_all |> group_responses()
+
+      [msg] = messages["lobby/joined"]
+      shared_secret = msg["message"]["shared_secret"]
+      assert Map.has_key?(msg["message"], "lobby")
+
+      lobby = Api.get_lobby(lobby_id)
+      assert Enum.member?(lobby.members, user.id)
+
+      [msg] = messages["connections/client_updated"]
+      assert msg == %{
+        "message" => %{
+          "changes" => %{
+            "lobby_id" => lobby_id,
+            "update_id" => 1
+          },
+          "reason" => "joined_lobby",
+          "user_id" => user.id
+        },
+        "name" => "connections/client_updated"
+      }
+
+      messages = hsocket |> listen_all |> group_responses()
+      [msg] = messages["lobby/user_joined"]
+
+      assert msg["message"]["shared_secret"] == shared_secret
+    end
+
+    test "good command - superfluous password" do
+      %{lobby_id: lobby_id} = lobby_host_connection()
+      %{socket: socket, user: user} = auth_connection()
+
+      speak(socket, %{name: "lobby/join", command: %{id: lobby_id, password: "no password needed"}})
+      messages = socket |> listen_all |> group_responses()
+
+      [msg] = messages["lobby/joined"]
+      assert Map.has_key?(msg["message"], "shared_secret")
+      lobby = Api.get_lobby(lobby_id)
+      assert Enum.member?(lobby.members, user.id)
+
+      [msg] = messages["connections/client_updated"]
+      assert msg == %{
+        "message" => %{
+          "changes" => %{
+            "lobby_id" => lobby_id,
+            "update_id" => 1
+          },
+          "reason" => "joined_lobby",
+          "user_id" => user.id
+        },
+        "name" => "connections/client_updated"
+      }
     end
 
     test "passworded lobby" do
-      flunk "Not implemented"
-    end
+      %{lobby_id: lobby_id} = lobby_host_connection()
+      %{socket: socket, user: user} = auth_connection()
 
-    test "locked lobby" do
-      flunk "Not implemented"
+      Api.update_lobby(lobby_id, %{password: "password1"})
+
+      # No password given
+      speak(socket, %{name: "lobby/join", command: %{id: lobby_id}})
+      msg = listen(socket)
+
+      assert msg == %{
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "lobby/join",
+                 "reason" => "Incorrect password"
+               }
+             }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+
+      # Wrong given
+      speak(socket, %{name: "lobby/join", command: %{id: lobby_id, password: "123456"}})
+      msg = listen(socket)
+
+      assert msg == %{
+               "name" => "system/failure",
+               "message" => %{
+                 "command" => "lobby/join",
+                 "reason" => "Incorrect password"
+               }
+             }
+
+      assert JsonSchemaHelper.valid?("response.json", msg)
+      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+
+      # And now the correct password
+      speak(socket, %{name: "lobby/join", command: %{id: lobby_id, password: "password1"}})
+      messages = socket |> listen_all |> group_responses()
+
+      [msg] = messages["lobby/joined"]
+      assert Map.has_key?(msg["message"], "shared_secret")
+      lobby = Api.get_lobby(lobby_id)
+      assert Enum.member?(lobby.members, user.id)
+
+      [msg] = messages["connections/client_updated"]
+      assert msg == %{
+        "message" => %{
+          "changes" => %{
+            "lobby_id" => lobby_id,
+            "update_id" => 1
+          },
+          "reason" => "joined_lobby",
+          "user_id" => user.id
+        },
+        "name" => "connections/client_updated"
+      }
     end
   end
 
-  describe "joining - complex" do
-    test "bad command" do
-      flunk "Not implemented"
-    end
+  # These cannot be done until we have server_settings implemented
+  # describe "joining - complex" do
+  #   test "unauth" do
+  #     Application.put_env(:teiserver, :lobby_join_method, :host_approval)
+  #     %{socket: socket} = raw_connection()
 
-    test "good command" do
-      flunk "Not implemented"
-    end
+  #     speak(socket, %{name: "lobby/join", command: %{id: Teiserver.uuid()}})
+  #     msg = listen(socket)
 
-    test "passworded lobby" do
-      flunk "Not implemented"
-    end
+  #     assert_auth_failure(msg, "lobby/join")
+  #   end
 
-    test "locked lobby" do
-      flunk "Not implemented"
-    end
-  end
+  #   test "bad command" do
+  #     Application.put_env(:teiserver, :lobby_join_method, :host_approval)
+  #     flunk "Not implemented"
+  #   end
+
+  #   test "good command" do
+  #     Application.put_env(:teiserver, :lobby_join_method, :host_approval)
+  #     flunk "Not implemented"
+  #   end
+
+  #   test "passworded lobby" do
+  #     Application.put_env(:teiserver, :lobby_join_method, :host_approval)
+  #     flunk "Not implemented"
+  #   end
+
+  #   test "locked lobby" do
+  #     Application.put_env(:teiserver, :lobby_join_method, :host_approval)
+  #     flunk "Not implemented"
+  #   end
+  # end
 
   describe "leaving" do
     test "unauth" do
@@ -92,7 +246,11 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       messages = usocket1 |> listen_all |> group_responses()
       [user_msg] = messages["lobby/user_joined"]
 
-      assert host_msg == user_msg
+      # The user message should NOT containt the shared_secret, thus they should be different
+      assert host_msg["message"] != user_msg["message"]
+
+      # We can verify that's the only difference by simply adding the shared secret
+      assert host_msg["message"] == Map.put(user_msg["message"], "shared_secret", host_msg["message"]["shared_secret"])
 
       flush_socket(hsocket)
       flush_socket(usocket1)
@@ -121,7 +279,26 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
         "name" => "connections/client_updated"
       }
 
-      flunk "Now check the members of the lobby received a user_left update"
+      # And the other members?
+      messages = usocket1 |> listen_all |> group_responses()
+      [msg | _] = messages["lobby/user_left"]
+      assert msg == %{
+        "message" => %{
+          "lobby_id" => lobby_id,
+          "user_id" => user2_id
+        },
+        "name" => "lobby/user_left"
+      }
+
+      messages = hsocket |> listen_all |> group_responses()
+      [msg | _] = messages["lobby/user_left"]
+      assert msg == %{
+        "message" => %{
+          "lobby_id" => lobby_id,
+          "user_id" => user2_id
+        },
+        "name" => "lobby/user_left"
+      }
     end
   end
 end

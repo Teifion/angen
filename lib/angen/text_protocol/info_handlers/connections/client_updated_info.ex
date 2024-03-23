@@ -4,7 +4,7 @@ defmodule Angen.TextProtocol.InfoHandlers.ClientUpdated do
 
   @impl true
   @spec handle(map, Angen.ConnState.t()) :: Angen.handler_response()
-  def handle(%{changes: changes, reason: reason, user_id: user_id} = msg, state) do
+  def handle(%{changes: changes, reason: reason, user_id: user_id}, state) do
     new_state = if user_id == state.user_id do
       %{state |
         lobby_host?: Map.get(changes, :lobby_host?, state.lobby_host?),

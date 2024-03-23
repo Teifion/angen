@@ -1,6 +1,8 @@
 defmodule Angen.DevSupport.DMEchoBot do
   @moduledoc """
-  Apply to bots with `use Angen.DevSupport.BotMacro`
+  Creates an account called `DMEchoBot` which will reply to Direct Messages with a reversed message.
+
+  e.g. if you send "Test Message" it will reply via DM with "egasseM tseT"
   """
   use Angen.DevSupport.BotMacro
   require Logger

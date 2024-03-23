@@ -41,7 +41,7 @@ Lists nodes in the cluster. Authentication is not required for this command.
 }
 ```
 
-## TODO: Integration data
+## Integration data
 [Request](/priv/static/schema/commands/system/integration_data_command.json) - [Response](/priv/static/schema/messages/system/integration_data_message.json)
 
 If Integration mode is active, return data relevant to using it. If not return a generic failure. Authentication is not required for this command.

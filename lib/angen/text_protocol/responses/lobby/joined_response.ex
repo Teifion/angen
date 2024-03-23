@@ -9,9 +9,10 @@ defmodule Angen.TextProtocol.Lobby.JoinedResponse do
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate(data, state) do
+  def do_generate({shared_secret, lobby}, state) when is_bitstring(shared_secret) do
     result = %{
-
+      "lobby" => TypeConvertors.convert(lobby),
+      "shared_secret" => shared_secret
     }
 
     {result, state}

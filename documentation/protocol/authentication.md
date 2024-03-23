@@ -16,6 +16,7 @@ When a token is created the IP used is tracked. If this option is enabled then t
 # Protocol
 ## `auth/get_token`
 [Request](/priv/static/schema/commands/auth/get_token_command.json) - [Response](/priv/static/schema/messages/auth/token_message.json)
+
 Start by making an `auth/get_token` request like so:
 ```json
 {
