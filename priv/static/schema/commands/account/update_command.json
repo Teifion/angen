@@ -1,0 +1,22 @@
+{
+  "$id": "account/update_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Account - Update command",
+  "description": "",
+  "type": "object",
+  "required": [
+    "password"
+  ],
+  "properties": {
+    "password": {
+      "description": "Password used to confirm this is an intentional change",
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    }
+  }
+}

@@ -37,6 +37,7 @@ defmodule Angen.TextProtocol.Account.Change_passwordCommand do
 
         # This probably won't make it...
         SuccessResponse.generate(name(), state)
+
       {:error, changeset} ->
         errors =
           changeset.errors

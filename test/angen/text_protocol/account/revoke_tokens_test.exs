@@ -18,7 +18,7 @@ defmodule Angen.TextProtocol.Account.RevokeTokensTest do
     %{socket: socket1} = auth_connection(user)
     %{socket: socket2} = auth_connection(user)
 
-    {:ok, extra_token} = Account.create_user_token(user.id, "text-protocol", "test", "127.0.0.1")
+    {:ok, _extra_token} = Account.create_user_token(user.id, "text-protocol", "test", "127.0.0.1")
 
     assert Enum.count(Account.list_user_tokens(where: [user_id: user.id])) == 3
 
