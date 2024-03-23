@@ -57,7 +57,7 @@ defmodule Angen.DevSupport.ManagerServer do
   end
 
   @spec start_bot(module(), map()) :: {:ok, pid()}
-  defp start_bot(bot, params) do
+  def start_bot(bot, params) do
     DynamicSupervisor.start_child(
       DevSupport.IntegrationSupervisor,
       {bot, params}

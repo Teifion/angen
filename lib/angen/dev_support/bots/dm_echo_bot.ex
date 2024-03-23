@@ -34,4 +34,8 @@ defmodule Angen.DevSupport.DMEchoBot do
   def handle_info(%{event: :message_sent, topic: "Teiserver.Communication.User:" <> _}, state) do
     {:noreply, state}
   end
+
+  def handle_info(:stop, state) do
+    {:stop, :normal, state}
+  end
 end
