@@ -62,7 +62,7 @@ To login you will need to send an `auth/login` request:
 
 If successful you will get a response of:
 ```json
-%{
+{
   "name": "auth/logged_in",
   "message": {
     "user": {
