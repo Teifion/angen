@@ -82,8 +82,36 @@ Found users are returned as such. Any IDs which do not link to a user are simply
 }
 ```
 
-## TODO: `account/update`
+## `account/update`
+[Request](/priv/static/schema/commands/account/update_command.json)
+
 Updates account details.
+
+```json
+{
+  "name": "account/update",
+  "command": {
+    "email": "new-email@email",
+    "name": "new-name"
+  }
+}
+```
+
+## `account/change_password`
+[Request](/priv/static/schema/commands/account/change_password_command.json)
+
+Updates the password for the account. If successful all user connections (including this one) will be disconnected; similar to the `account/revoke_tokens`.
+
+```json
+{
+  "name": "account/change_password",
+  "command": {
+    "existing_password": "password1",
+    "new_password": "password2"
+  }
+}
+```
+
 
 ## `account/revoke_tokens`
 [Request](/priv/static/schema/commands/account/revoke_tokens_command.json)
@@ -93,7 +121,7 @@ Invalidates all tokens for this account; any existing connections (including the
 ```json
 {
   "name": "account/revoke_tokens",
-  "message": {}
+  "command": {}
 }
 ```
 
