@@ -16,7 +16,13 @@ defmodule Angen.TextProtocol.Auth.RenewCommand do
         FailureResponse.generate({name(), "No token"}, state)
 
       old_token ->
-        {:ok, new_token} = Angen.Account.create_user_token(old_token.user_id, "text-protocol", old_token.user_agent, state.ip)
+        {:ok, new_token} =
+          Angen.Account.create_user_token(
+            old_token.user_id,
+            "text-protocol",
+            old_token.user_agent,
+            state.ip
+          )
 
         Account.delete_user_token(old_token)
         TextProtocol.Auth.TokenResponse.generate(new_token, state)

@@ -16,6 +16,7 @@ defmodule Angen.TextProtocol.Account.Change_passwordCommand do
 
   def handle(%{"current_password" => current_password, "new_password" => new_password}, state) do
     user = Teiserver.Api.get_user_by_id(state.user_id)
+
     params = %{
       "existing" => current_password,
       "password" => new_password,
@@ -45,7 +46,10 @@ defmodule Angen.TextProtocol.Account.Change_passwordCommand do
             "#{key}: #{message}"
           end)
 
-        FailureResponse.generate({name(), "There was an error changing your password: #{errors}"}, state)
+        FailureResponse.generate(
+          {name(), "There was an error changing your password: #{errors}"},
+          state
+        )
     end
   end
 end

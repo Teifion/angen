@@ -29,16 +29,17 @@ defmodule AngenWeb.UserSessionController do
         |> put_flash(:error, "Invalid email or password")
         |> put_flash(:email, String.slice(email, 0, 160))
         |> redirect(to: ~p"/login")
+
       user ->
         if Account.valid_password?(user, password) do
           conn
-            |> put_flash(:info, info)
-            |> UserAuth.log_in_user(user, user_params)
+          |> put_flash(:info, info)
+          |> UserAuth.log_in_user(user, user_params)
         else
           conn
-            |> put_flash(:error, "Invalid email or password")
-            |> put_flash(:email, String.slice(email, 0, 160))
-            |> redirect(to: ~p"/login")
+          |> put_flash(:error, "Invalid email or password")
+          |> put_flash(:email, String.slice(email, 0, 160))
+          |> redirect(to: ~p"/login")
         end
     end
   end

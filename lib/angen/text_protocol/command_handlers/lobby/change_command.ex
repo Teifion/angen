@@ -35,7 +35,8 @@ defmodule Angen.TextProtocol.Lobby.ChangeCommand do
     game_version
   )a
   def handle(changes_raw, state) do
-    changes = @change_keys
+    changes =
+      @change_keys
       |> Enum.filter(fn key ->
         Map.has_key?(changes_raw, to_string(key))
       end)

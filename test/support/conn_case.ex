@@ -38,13 +38,14 @@ defmodule AngenWeb.ConnCase do
 
   @spec auth(map()) :: map()
   def auth(data) do
-    {:ok, user} = Teiserver.Account.create_user(%{
-      name: Teiserver.uuid(),
-      email: "#{Teiserver.uuid()}@test",
-      password: "password",
-      groups: [],
-      permissions: []
-    })
+    {:ok, user} =
+      Teiserver.Account.create_user(%{
+        name: Teiserver.uuid(),
+        email: "#{Teiserver.uuid()}@test",
+        password: "password",
+        groups: [],
+        permissions: []
+      })
 
     data
     |> Map.put(:user, user)
@@ -53,13 +54,14 @@ defmodule AngenWeb.ConnCase do
 
   @spec admin_auth(map()) :: map()
   def admin_auth(data) do
-    {:ok, user} = Teiserver.Account.create_user(%{
-      name: Teiserver.uuid(),
-      email: "#{Teiserver.uuid()}@test",
-      password: "password",
-      groups: ["admin"],
-      permissions: ["admin"]
-    })
+    {:ok, user} =
+      Teiserver.Account.create_user(%{
+        name: Teiserver.uuid(),
+        email: "#{Teiserver.uuid()}@test",
+        password: "password",
+        groups: ["admin"],
+        permissions: ["admin"]
+      })
 
     data
     |> Map.put(:user, user)
@@ -70,9 +72,10 @@ defmodule AngenWeb.ConnCase do
   defp log_in_user(%{conn: conn, user: user} = data) do
     {:ok, token} = Angen.Account.create_user_token(user.id, "test", "test-user", "127.0.0.1")
 
-    conn = conn
-    |> Phoenix.ConnTest.init_test_session(%{})
-    |> Plug.Conn.put_session(:user_token, token)
+    conn =
+      conn
+      |> Phoenix.ConnTest.init_test_session(%{})
+      |> Plug.Conn.put_session(:user_token, token)
 
     %{data | conn: conn}
   end

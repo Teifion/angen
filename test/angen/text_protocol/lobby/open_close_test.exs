@@ -178,13 +178,14 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
 
       # Now check our global mailbox
       messages = TestConn.get(listener)
+
       assert messages == [
-        %{
-          event: :lobby_closed,
-          topic: Teiserver.Game.LobbyLib.global_lobby_topic(),
-          lobby_id: lobby_id
-        }
-      ]
+               %{
+                 event: :lobby_closed,
+                 topic: Teiserver.Game.LobbyLib.global_lobby_topic(),
+                 lobby_id: lobby_id
+               }
+             ]
     end
 
     test "add user and close" do
@@ -201,29 +202,31 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
 
       # First, host messages
       # we mostly want to ensure we get the closed messages
-      messages = hsocket
+      messages =
+        hsocket
         |> listen_all()
         |> group_responses()
 
       assert messages["system/success"] == [
-        %{"message" => %{"command" => "lobby/close"}, "name" => "system/success"}
-      ]
+               %{"message" => %{"command" => "lobby/close"}, "name" => "system/success"}
+             ]
 
       assert messages["lobby/closed"] == [
-        %{"message" => %{"lobby_id" => lobby_id}, "name" => "lobby/closed"}
-      ]
+               %{"message" => %{"lobby_id" => lobby_id}, "name" => "lobby/closed"}
+             ]
 
       # Now, the user
-      messages = usocket
+      messages =
+        usocket
         |> listen_all()
         |> group_responses()
 
       [msg] = messages["lobby/closed"]
 
       assert msg == %{
-        "message" => %{"lobby_id" => lobby_id},
-        "name" => "lobby/closed"
-      }
+               "message" => %{"lobby_id" => lobby_id},
+               "name" => "lobby/closed"
+             }
 
       assert JsonSchemaHelper.valid?("response.json", msg)
       assert JsonSchemaHelper.valid?("lobby/closed_message.json", msg["message"])

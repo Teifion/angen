@@ -55,6 +55,8 @@ defmodule Angen.Account.UserToken do
       attrs,
       ~w(user_id identifier_code renewal_code context user_agent ip expires_at last_used_at)a
     )
-    |> validate_required(~w(user_id identifier_code context renewal_code user_agent ip expires_at)a)
+    |> validate_required(
+      ~w(user_id identifier_code context renewal_code user_agent ip expires_at)a
+    )
   end
 end

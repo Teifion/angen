@@ -33,17 +33,21 @@ defmodule Angen.TextProtocol.Account.UserQueryTest do
     test "filter on IDs" do
       %{socket: socket, user: user} = auth_connection()
 
-      speak(socket, %{name: "account/user_query", command: %{filters: %{id: [user.id, Teiserver.uuid()]}}})
+      speak(socket, %{
+        name: "account/user_query",
+        command: %{filters: %{id: [user.id, Teiserver.uuid()]}}
+      })
+
       msg = listen(socket)
 
       assert msg == %{
                "name" => "account/user_list",
                "message" => %{
                  "users" => [
-                    %{
-                      "id" => user.id,
-                      "name" => user.name
-                    }
+                   %{
+                     "id" => user.id,
+                     "name" => user.name
+                   }
                  ]
                }
              }
@@ -62,10 +66,10 @@ defmodule Angen.TextProtocol.Account.UserQueryTest do
                "name" => "account/user_list",
                "message" => %{
                  "users" => [
-                    %{
-                      "id" => user.id,
-                      "name" => user.name
-                    }
+                   %{
+                     "id" => user.id,
+                     "name" => user.name
+                   }
                  ]
                }
              }

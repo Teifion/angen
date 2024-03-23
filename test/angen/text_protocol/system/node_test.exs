@@ -14,7 +14,7 @@ defmodule Angen.TextProtocol.System.NodeTest do
                "name" => "system/nodes",
                "message" => %{
                  "nodes" => [
-                    this_node
+                   this_node
                  ]
                }
              }

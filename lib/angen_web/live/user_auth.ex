@@ -27,10 +27,12 @@ defmodule AngenWeb.UserAuth do
   """
   def log_in_user(conn, user, params \\ %{}) do
     ip = get_ip_from_conn(conn) |> Tuple.to_list() |> Enum.join(".")
-    user_agent = case List.keyfind(conn.req_headers, "user-agent", 0) do
-      {_, agent} -> agent
-      _ -> nil
-    end
+
+    user_agent =
+      case List.keyfind(conn.req_headers, "user-agent", 0) do
+        {_, agent} -> agent
+        _ -> nil
+      end
 
     {:ok, token} = Angen.Account.create_user_token(user.id, "web", user_agent, ip)
 

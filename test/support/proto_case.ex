@@ -105,7 +105,8 @@ defmodule Angen.ProtoCase do
     %{socket: socket, user: user, user_id: user.id}
   end
 
-  @spec try_to_host_lobby(any(), Teiserver.Account.User.t(), String.t()) :: Teiserver.Game.Lobby.t()
+  @spec try_to_host_lobby(any(), Teiserver.Account.User.t(), String.t()) ::
+          Teiserver.Game.Lobby.t()
   defp try_to_host_lobby(socket, user, lobby_name) do
     speak(socket, %{name: "lobby/open", command: %{name: "test-#{lobby_name}"}})
 
@@ -113,16 +114,16 @@ defmodule Angen.ProtoCase do
 
     try do
       Teiserver.Api.stream_lobby_summaries()
-        |> Enum.filter(fn l -> l.host_id == user.id end)
-        |> hd
+      |> Enum.filter(fn l -> l.host_id == user.id end)
+      |> hd
     rescue
       e ->
         # Bug where we get a failure saying "Client is disconnected"
         # because there are no connections for the client (despite us sending stuff....)
-        IO.puts "#{__MODULE__}:#{__ENV__.line}"
-        IO.inspect Teiserver.Api.get_client(user.id)
-        IO.inspect msgs
-        IO.puts ""
+        IO.puts("#{__MODULE__}:#{__ENV__.line}")
+        IO.inspect(Teiserver.Api.get_client(user.id))
+        IO.inspect(msgs)
+        IO.puts("")
         reraise e, __STACKTRACE__
     end
   end
@@ -182,20 +183,24 @@ defmodule Angen.ProtoCase do
       # This sometimes borks because there are two messages in the queue and it gets both
       # will need to refactor this to return a list and update all tests accordingly
       {:ok, reply} ->
-        reply |> to_string |> Jason.decode!
-        # reply
-        # |> to_string
-        # |> String.split("\n")
-        # |> Enum.map(fn
-        #   "" ->
-        #     nil
-        #   s ->
-        #     Jason.decode!(s)
-        # end)
-        # |> Enum.reject(&(&1 == nil))
+        reply |> to_string |> Jason.decode!()
 
-      {:error, :timeout} -> :timeout
-      {:error, :closed} -> :closed
+      # reply
+      # |> to_string
+      # |> String.split("\n")
+      # |> Enum.map(fn
+      #   "" ->
+      #     nil
+      #   s ->
+      #     Jason.decode!(s)
+      # end)
+      # |> Enum.reject(&(&1 == nil))
+
+      {:error, :timeout} ->
+        :timeout
+
+      {:error, :closed} ->
+        :closed
     end
   end
 
@@ -221,16 +226,18 @@ defmodule Angen.ProtoCase do
         # In theory there should only ever be one message in the socket but we do this because
         # sometimes there are two and then it errors. If you're using listen_all you
         # are already expecting a list so ez pz
-        messages = reply
-        |> to_string
-        |> String.split("\n")
-        |> Enum.map(fn
-          "" ->
-            nil
-          s ->
-            Jason.decode!(s)
-        end)
-        |> Enum.reject(&(&1 == nil))
+        messages =
+          reply
+          |> to_string
+          |> String.split("\n")
+          |> Enum.map(fn
+            "" ->
+              nil
+
+            s ->
+              Jason.decode!(s)
+          end)
+          |> Enum.reject(&(&1 == nil))
 
         messages ++ listen_all(socket, timeout)
 
@@ -306,7 +313,6 @@ defmodule Angen.ProtoCase do
     %{
       ip: opts[:ip] || "127.0.0.1",
       socket: nil,
-
       user_id: user.id,
       user: user,
       lobby_host?: opts[:lobby_host?] || false,

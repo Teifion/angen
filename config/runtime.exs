@@ -124,15 +124,16 @@ if config_env() == :prod do
   config :teiserver,
     node_name: System.get_env("NODE_NAME") || hd(String.split(domain_name, "."))
 
-  cert_root = (System.get_env("CERT_ROOT") || "/etc/letsencrypt/live/#{domain_name}")
+  cert_root = System.get_env("CERT_ROOT") || "/etc/letsencrypt/live/#{domain_name}"
 
   config :fontawesome,
-    free_only: (System.get_env("FONTAWESOME_FREE_ONLY", "TRUE") == "TRUE")
+    free_only: System.get_env("FONTAWESOME_FREE_ONLY", "TRUE") == "TRUE"
 
   # Angen itself
   config :angen,
     tls_port: String.to_integer(System.get_env("TLS_PORT") || "8201"),
-    json_schema_path: (System.get_env("JSON_SCHEMA_PATH") || "/apps/angen/lib/angen-0.0.1/priv/static/schema"),
+    json_schema_path:
+      System.get_env("JSON_SCHEMA_PATH") || "/apps/angen/lib/angen-0.0.1/priv/static/schema",
     certs: [
       keyfile: "#{cert_root}/privkey.pem",
       certfile: "#{cert_root}/cert.pem",
@@ -144,15 +145,12 @@ if config_env() == :prod do
 
     # Default configs
     default_site_settings: %{
-      allow_user_registration: System.get_env("ANGEN_DEFAULT_ALLOW_USER_REGISTRATION", "TRUE") == "TRUE",
-
-      require_tokens_to_persist_ip: System.get_env("ANGEN_DEFAULT_REQUIRE_TOKENS_TO_PERSIST_IP", "FALSE") == "TRUE",
-
+      allow_user_registration:
+        System.get_env("ANGEN_DEFAULT_ALLOW_USER_REGISTRATION", "TRUE") == "TRUE",
+      require_tokens_to_persist_ip:
+        System.get_env("ANGEN_DEFAULT_REQUIRE_TOKENS_TO_PERSIST_IP", "FALSE") == "TRUE",
       allow_lobby_whisper: System.get_env("ANGEN_DEFAULT_ALLOW_LOBBY_WHISPER", "FALSE") == "TRUE",
-
       integration_mode: System.get_env("ANGEN_DEFAULT_INTEGRATION_MODE", "FALSE") == "TRUE"
     },
-    default_user_settings: %{
-
-    }
+    default_user_settings: %{}
 end

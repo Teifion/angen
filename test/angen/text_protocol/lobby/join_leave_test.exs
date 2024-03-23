@@ -35,11 +35,11 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
     end
 
     test "locked" do
-      flunk "Not implemented"
+      flunk("Not implemented")
     end
 
     test "not public" do
-      flunk "Not implemented"
+      flunk("Not implemented")
     end
 
     test "good command" do
@@ -59,17 +59,18 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       assert Enum.member?(lobby.members, user.id)
 
       [msg] = messages["connections/client_updated"]
+
       assert msg == %{
-        "message" => %{
-          "changes" => %{
-            "lobby_id" => lobby_id,
-            "update_id" => 1
-          },
-          "reason" => "joined_lobby",
-          "user_id" => user.id
-        },
-        "name" => "connections/client_updated"
-      }
+               "message" => %{
+                 "changes" => %{
+                   "lobby_id" => lobby_id,
+                   "update_id" => 1
+                 },
+                 "reason" => "joined_lobby",
+                 "user_id" => user.id
+               },
+               "name" => "connections/client_updated"
+             }
 
       messages = hsocket |> listen_all |> group_responses()
       [msg] = messages["lobby/user_joined"]
@@ -81,7 +82,11 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       %{lobby_id: lobby_id} = lobby_host_connection()
       %{socket: socket, user: user} = auth_connection()
 
-      speak(socket, %{name: "lobby/join", command: %{id: lobby_id, password: "no password needed"}})
+      speak(socket, %{
+        name: "lobby/join",
+        command: %{id: lobby_id, password: "no password needed"}
+      })
+
       messages = socket |> listen_all |> group_responses()
 
       [msg] = messages["lobby/joined"]
@@ -90,17 +95,18 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       assert Enum.member?(lobby.members, user.id)
 
       [msg] = messages["connections/client_updated"]
+
       assert msg == %{
-        "message" => %{
-          "changes" => %{
-            "lobby_id" => lobby_id,
-            "update_id" => 1
-          },
-          "reason" => "joined_lobby",
-          "user_id" => user.id
-        },
-        "name" => "connections/client_updated"
-      }
+               "message" => %{
+                 "changes" => %{
+                   "lobby_id" => lobby_id,
+                   "update_id" => 1
+                 },
+                 "reason" => "joined_lobby",
+                 "user_id" => user.id
+               },
+               "name" => "connections/client_updated"
+             }
     end
 
     test "passworded lobby" do
@@ -149,17 +155,18 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       assert Enum.member?(lobby.members, user.id)
 
       [msg] = messages["connections/client_updated"]
+
       assert msg == %{
-        "message" => %{
-          "changes" => %{
-            "lobby_id" => lobby_id,
-            "update_id" => 1
-          },
-          "reason" => "joined_lobby",
-          "user_id" => user.id
-        },
-        "name" => "connections/client_updated"
-      }
+               "message" => %{
+                 "changes" => %{
+                   "lobby_id" => lobby_id,
+                   "update_id" => 1
+                 },
+                 "reason" => "joined_lobby",
+                 "user_id" => user.id
+               },
+               "name" => "connections/client_updated"
+             }
     end
   end
 
@@ -250,7 +257,8 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       assert host_msg["message"] != user_msg["message"]
 
       # We can verify that's the only difference by simply adding the shared secret
-      assert host_msg["message"] == Map.put(user_msg["message"], "shared_secret", host_msg["message"]["shared_secret"])
+      assert host_msg["message"] ==
+               Map.put(user_msg["message"], "shared_secret", host_msg["message"]["shared_secret"])
 
       flush_socket(hsocket)
       flush_socket(usocket1)
@@ -267,38 +275,41 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       # Client state update, it's possible we will get two of these, one as we are the client
       # and another because we are subscribed to the lobby
       [msg | _] = messages["connections/client_updated"]
+
       assert msg == %{
-        "message" => %{
-          "changes" => %{
-            "lobby_id" => nil,
-            "update_id" => 2
-          },
-          "user_id" => user2_id,
-          "reason" => "left_lobby"
-        },
-        "name" => "connections/client_updated"
-      }
+               "message" => %{
+                 "changes" => %{
+                   "lobby_id" => nil,
+                   "update_id" => 2
+                 },
+                 "user_id" => user2_id,
+                 "reason" => "left_lobby"
+               },
+               "name" => "connections/client_updated"
+             }
 
       # And the other members?
       messages = usocket1 |> listen_all |> group_responses()
       [msg | _] = messages["lobby/user_left"]
+
       assert msg == %{
-        "message" => %{
-          "lobby_id" => lobby_id,
-          "user_id" => user2_id
-        },
-        "name" => "lobby/user_left"
-      }
+               "message" => %{
+                 "lobby_id" => lobby_id,
+                 "user_id" => user2_id
+               },
+               "name" => "lobby/user_left"
+             }
 
       messages = hsocket |> listen_all |> group_responses()
       [msg | _] = messages["lobby/user_left"]
+
       assert msg == %{
-        "message" => %{
-          "lobby_id" => lobby_id,
-          "user_id" => user2_id
-        },
-        "name" => "lobby/user_left"
-      }
+               "message" => %{
+                 "lobby_id" => lobby_id,
+                 "user_id" => user2_id
+               },
+               "name" => "lobby/user_left"
+             }
     end
   end
 end

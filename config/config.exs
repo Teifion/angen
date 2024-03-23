@@ -9,9 +9,7 @@ import Config
 
 config :angen,
   ecto_repos: [Angen.Repo],
-
   site_title: "Angen DEV",
-
   json_schema_path: "priv/static/schema"
 
 # Configures the endpoint

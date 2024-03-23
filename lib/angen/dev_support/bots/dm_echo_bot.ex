@@ -14,7 +14,10 @@ defmodule Angen.DevSupport.DMEchoBot do
     {:noreply, %{state | user: user, connected: true}}
   end
 
-  def handle_info(%{event: :message_received, topic: "Teiserver.Communication.User:" <> _} = msg, state) do
+  def handle_info(
+        %{event: :message_received, topic: "Teiserver.Communication.User:" <> _} = msg,
+        state
+      ) do
     dm = msg.direct_message
 
     echo_content = msg.direct_message.content |> String.reverse()

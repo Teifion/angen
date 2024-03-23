@@ -33,15 +33,15 @@ defmodule Angen.TextProtocol.System.IntegrationDataTest do
       {result, _new_state} = IntegrationDataResponse.generate(:ok, state)
 
       assert result == %{
-        "message" => %{
-          "bots" => [
-            %{"id" => bot1.id, "name" => "IntTestBot1"},
-            %{"id" => bot2.id, "name" => "IntTestBot2"},
-            %{"id" => bot3.id, "name" => "IntTestBot3"}
-          ]
-        },
-        "name" => "system/integration_data"
-      }
+               "message" => %{
+                 "bots" => [
+                   %{"id" => bot1.id, "name" => "IntTestBot1"},
+                   %{"id" => bot2.id, "name" => "IntTestBot2"},
+                   %{"id" => bot3.id, "name" => "IntTestBot3"}
+                 ]
+               },
+               "name" => "system/integration_data"
+             }
     end
   end
 end

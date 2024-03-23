@@ -8,7 +8,6 @@ config :angen,
     certfile: "priv/certs/localhost.crt",
     cacertfile: "priv/certs/localhost.crt"
   ],
-
   default_site_settings: %{
     allow_user_registration: true,
     require_tokens_to_persist_ip: false,

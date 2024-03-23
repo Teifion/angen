@@ -23,7 +23,7 @@ defmodule Angen.TextProtocol.Account.UserQueryCommand do
       limit = String.to_integer(Map.get(msg, "limit", "50"))
 
       users =
-        Teiserver.Account.list_users([where: filters, limit: limit])
+        Teiserver.Account.list_users(where: filters, limit: limit)
         |> Enum.to_list()
 
       UserListResponse.generate(users, state)
@@ -36,6 +36,6 @@ defmodule Angen.TextProtocol.Account.UserQueryCommand do
       {:name, Map.get(filters, "name", nil)}
     ]
     |> Enum.reject(fn {_, v} -> v == nil end)
-    |> Map.new
+    |> Map.new()
   end
 end

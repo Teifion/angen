@@ -113,9 +113,15 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
       Api.update_lobby(lobby2_id, %{match_ongoing?: false})
       Api.update_lobby(lobby3_id, %{match_ongoing?: true})
 
-      speak(socket, %{name: "lobby/query", command: %{filters: %{
-        match_ongoing?: false
-      }}})
+      speak(socket, %{
+        name: "lobby/query",
+        command: %{
+          filters: %{
+            match_ongoing?: false
+          }
+        }
+      })
+
       msg = listen(socket)
 
       assert Map.has_key?(msg["message"], "lobbies")
@@ -140,9 +146,15 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
       Api.update_lobby(lobby3_id, %{tags: ["tag3", "tag4"]})
 
       # Require all (positive)
-      speak(socket, %{name: "lobby/query", command: %{filters: %{
-        require_all_tags: ["tag1", "tag2"]
-      }}})
+      speak(socket, %{
+        name: "lobby/query",
+        command: %{
+          filters: %{
+            require_all_tags: ["tag1", "tag2"]
+          }
+        }
+      })
+
       msg = listen(socket)
 
       assert Map.has_key?(msg["message"], "lobbies")
@@ -159,9 +171,15 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
       assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
 
       # Require all (negative)
-      speak(socket, %{name: "lobby/query", command: %{filters: %{
-        require_all_tags: ["tag1", "tag3"]
-      }}})
+      speak(socket, %{
+        name: "lobby/query",
+        command: %{
+          filters: %{
+            require_all_tags: ["tag1", "tag3"]
+          }
+        }
+      })
+
       msg = listen(socket)
 
       assert Map.has_key?(msg["message"], "lobbies")
@@ -178,9 +196,15 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
       assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
 
       # Require any (positive)
-      speak(socket, %{name: "lobby/query", command: %{filters: %{
-        require_any_tags: ["tag1", "tag2"]
-      }}})
+      speak(socket, %{
+        name: "lobby/query",
+        command: %{
+          filters: %{
+            require_any_tags: ["tag1", "tag2"]
+          }
+        }
+      })
+
       msg = listen(socket)
 
       assert Map.has_key?(msg["message"], "lobbies")
@@ -197,9 +221,15 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
       assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
 
       # Require any (negative)
-      speak(socket, %{name: "lobby/query", command: %{filters: %{
-        require_any_tags: ["tag5", "tag6"]
-      }}})
+      speak(socket, %{
+        name: "lobby/query",
+        command: %{
+          filters: %{
+            require_any_tags: ["tag5", "tag6"]
+          }
+        }
+      })
+
       msg = listen(socket)
 
       assert Map.has_key?(msg["message"], "lobbies")
@@ -215,11 +245,16 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
       assert JsonSchemaHelper.valid?("response.json", msg)
       assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
 
-
       # Exclude (positive)
-      speak(socket, %{name: "lobby/query", command: %{filters: %{
-        exclude_tags: ["tag1", "tag2"]
-      }}})
+      speak(socket, %{
+        name: "lobby/query",
+        command: %{
+          filters: %{
+            exclude_tags: ["tag1", "tag2"]
+          }
+        }
+      })
+
       msg = listen(socket)
 
       assert Map.has_key?(msg["message"], "lobbies")
@@ -236,9 +271,15 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
       assert JsonSchemaHelper.valid?("lobby/list_message.json", msg["message"])
 
       # Exclude (negative)
-      speak(socket, %{name: "lobby/query", command: %{filters: %{
-        exclude_tags: ["tag5", "tag6"]
-      }}})
+      speak(socket, %{
+        name: "lobby/query",
+        command: %{
+          filters: %{
+            exclude_tags: ["tag5", "tag6"]
+          }
+        }
+      })
+
       msg = listen(socket)
 
       assert Map.has_key?(msg["message"], "lobbies")

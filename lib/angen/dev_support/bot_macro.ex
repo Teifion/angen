@@ -2,6 +2,7 @@ defmodule Angen.DevSupport.BotMacro do
   @moduledoc """
   Apply to bots with `use Angen.DevSupport.BotMacro`
   """
+
   # @callback handle(map(), Angen.ConnState.t()) :: Angen.handler_response()
 
   @spec __using__(any) :: Macro.t()

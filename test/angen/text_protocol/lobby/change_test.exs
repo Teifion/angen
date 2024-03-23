@@ -87,9 +87,9 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
                "name" => "lobby/updated",
                "message" => %{
                  "changes" => %{
-                    "name" => "New lobby name (1)",
-                    "update_id" => 2
-                }
+                   "name" => "New lobby name (1)",
+                   "update_id" => 2
+                 }
                }
              }
 
@@ -105,11 +105,15 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       lobby = Teiserver.Api.get_lobby(lobby_id)
       refute lobby.name == "New lobby name (3)"
 
-      speak(socket, %{name: "lobby/change", command: %{
-        name: "New lobby name (3)",
-        public?: false,
-        password: "123"
-      }})
+      speak(socket, %{
+        name: "lobby/change",
+        command: %{
+          name: "New lobby name (3)",
+          public?: false,
+          password: "123"
+        }
+      })
+
       msg = listen(socket)
       assert_success(msg, "lobby/change")
 
@@ -121,12 +125,12 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
                "name" => "lobby/updated",
                "message" => %{
                  "changes" => %{
-                  "name" => "New lobby name (3)",
-                  "password" => "123",
-                  "passworded?" => true,
-                  "public?" => false,
-                  "update_id" => 2
-                }
+                   "name" => "New lobby name (3)",
+                   "password" => "123",
+                   "passworded?" => true,
+                   "public?" => false,
+                   "update_id" => 2
+                 }
                }
              }
 

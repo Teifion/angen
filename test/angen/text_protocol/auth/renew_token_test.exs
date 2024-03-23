@@ -23,13 +23,12 @@ defmodule Angen.TextProtocol.Auth.RenewTokenTest do
     response = listen(socket)
 
     assert response == %{
-              "name" => "system/failure",
-              "message" => %{
-                "command" => "auth/renew",
-                "reason" =>
-                  "No token"
-              }
-            }
+             "name" => "system/failure",
+             "message" => %{
+               "command" => "auth/renew",
+               "reason" => "No token"
+             }
+           }
 
     # Bad renewal
     speak(socket, %{
@@ -43,13 +42,12 @@ defmodule Angen.TextProtocol.Auth.RenewTokenTest do
     response = listen(socket)
 
     assert response == %{
-              "name" => "system/failure",
-              "message" => %{
-                "command" => "auth/renew",
-                "reason" =>
-                  "No token"
-              }
-            }
+             "name" => "system/failure",
+             "message" => %{
+               "command" => "auth/renew",
+               "reason" => "No token"
+             }
+           }
 
     # Now correctly
     speak(socket, %{
@@ -64,16 +62,16 @@ defmodule Angen.TextProtocol.Auth.RenewTokenTest do
     new_token = Angen.Account.get_user_token(nil, where: [user_id: user.id])
 
     assert response == %{
-              "name" => "auth/token",
-              "message" => %{
-                "token" => %{
-                  "user_id" => user.id,
-                  "identifier_code" => new_token.identifier_code,
-                  "renewal_code" => new_token.renewal_code,
-                  "expires_at" => Jason.encode!(new_token.expires_at) |> Jason.decode!()
-                }
-              }
-            }
+             "name" => "auth/token",
+             "message" => %{
+               "token" => %{
+                 "user_id" => user.id,
+                 "identifier_code" => new_token.identifier_code,
+                 "renewal_code" => new_token.renewal_code,
+                 "expires_at" => Jason.encode!(new_token.expires_at) |> Jason.decode!()
+               }
+             }
+           }
 
     assert new_token.identifier_code != token.identifier_code
     assert new_token.renewal_code != token.renewal_code

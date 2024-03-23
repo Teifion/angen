@@ -99,7 +99,10 @@ defmodule Angen.Account.UserTokenLib do
       nil
 
   """
-  @spec get_user_token_by_identifier_renewal(UserToken.identifier_code(), UserToken.renewal_code()) :: UserToken.t() | nil
+  @spec get_user_token_by_identifier_renewal(
+          UserToken.identifier_code(),
+          UserToken.renewal_code()
+        ) :: UserToken.t() | nil
   def get_user_token_by_identifier_renewal(identifier_code, renewal_code) do
     UserTokenQueries.user_token_query(
       where: [
@@ -131,6 +134,7 @@ defmodule Angen.Account.UserTokenLib do
     )
     |> Repo.one()
   end
+
   def get_user_by_session_token(_), do: nil
 
   @doc """

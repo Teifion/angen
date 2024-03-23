@@ -51,9 +51,7 @@ defmodule AngenWeb.NavComponents do
               style="margin: -4px 20px 0 0px;"
             >
             </i>
-            <span id="page-title">
-              <%#= Application.get_env(:angen, :site_title) %>
-            </span>
+            <span id="page-title"></span>
           </a>
           <!-- Left links -->
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">

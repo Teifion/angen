@@ -27,7 +27,10 @@ defmodule Angen.TextProtocol.Account.UpdateCommand do
             "#{key}: #{message}"
           end)
 
-        FailureResponse.generate({name(), "There was an error changing your details: #{errors}"}, state)
+        FailureResponse.generate(
+          {name(), "There was an error changing your details: #{errors}"},
+          state
+        )
     end
   end
 end

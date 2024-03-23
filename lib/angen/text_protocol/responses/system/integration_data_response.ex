@@ -10,9 +10,13 @@ defmodule Angen.TextProtocol.System.IntegrationDataResponse do
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
   def do_generate(_, state) do
-    bots = Teiserver.Account.list_users(where: [
-      has_group: "integration"
-    ], limit: :infinity)
+    bots =
+      Teiserver.Account.list_users(
+        where: [
+          has_group: "integration"
+        ],
+        limit: :infinity
+      )
 
     result = %{
       "bots" => TypeConvertors.convert(bots)
