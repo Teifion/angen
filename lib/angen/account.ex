@@ -23,8 +23,8 @@ defmodule Angen.Account do
   @spec get_user_token_by_identifier(UserToken.identifier_code()) :: UserToken.t() | nil
   defdelegate get_user_token_by_identifier(identifier_code), to: UserTokenLib
 
-  @spec get_user_token_by_renewal(UserToken.renewal_code()) :: UserToken.t() | nil
-  defdelegate get_user_token_by_renewal(renewal_code), to: UserTokenLib
+  @spec get_user_token_by_identifier_renewal(UserToken.identifier_code(), UserToken.renewal_code()) :: UserToken.t() | nil
+  defdelegate get_user_token_by_identifier_renewal(identifier_code, renewal_code), to: UserTokenLib
 
   @spec get_user_by_session_token(UserToken.t()) :: UserToken.t() | nil
   defdelegate get_user_by_session_token(user_token), to: UserTokenLib

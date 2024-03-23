@@ -73,5 +73,31 @@ If successful you will get a response of:
 }
 ```
 
-## TODO: `auth/renew`
-Renews the token
+## `auth/renew`
+[Request](/priv/static/schema/commands/auth/renew_command.json) - [Response](/priv/static/schema/messages/auth/token_message.json)
+
+Renews the token; if successful you will receive a new token similar to `auth/get_token` and the existing token will expire early. You do not need to be authenticated to perform this operation and any existing connection will not be affected.
+
+```json
+{
+  "name": "auth/renew",
+  "command": {
+    "identifier_code": "dd0PBc9vPibBozlfDh0RUekd34o......FLxaPIpFs+HSIe79",
+    "renewal_code": "ZdyzlENHgAwZU1LaPkDwM.......bTMgobp7Wlbeh0sSWN1pKXZ",
+  }
+}
+```
+
+```json
+{
+  "name": "auth/token",
+  "message": {
+    "token": {
+      "user_id": "1a29545c-f2b0-4b70-9f35-d4104471f3aa",
+      "identifier_code": "UFlW1tuqy+u9sz2uhxM8kI1m01l90SOt1zjNGYi",
+      "renewal_code": "KPdk2rOBHwRu0a3lLUeB5/sW4v1E9F7tHMJUcqwWa",
+      "expires_at": "2024-04-05T00:06:40.888869Z"
+    }
+  }
+}
+```

@@ -92,16 +92,22 @@ defmodule Angen.Account.UserTokenLib do
 
   ## Examples
 
-      iex> get_user_token_by_renewal("abc")
+      iex> get_user_token_by_renewal("abc", "def")
       %UserToken{}
 
-      iex> get_user_token_by_renewal("def")
+      iex> get_user_token_by_renewal("def", "abc")
       nil
 
   """
-  @spec get_user_token_by_renewal(UserToken.renewal_code()) :: UserToken.t() | nil
-  def get_user_token_by_renewal(renewal_code) do
-    UserTokenQueries.user_token_query(where: [renewal_code: renewal_code], preload: [:user])
+  @spec get_user_token_by_identifier_renewal(UserToken.identifier_code(), UserToken.renewal_code()) :: UserToken.t() | nil
+  def get_user_token_by_identifier_renewal(identifier_code, renewal_code) do
+    UserTokenQueries.user_token_query(
+      where: [
+        identifier_code: identifier_code,
+        renewal_code: renewal_code
+      ],
+      preload: [:user]
+    )
     |> Repo.one()
   end
 
@@ -234,5 +240,11 @@ defmodule Angen.Account.UserTokenLib do
     :crypto.strong_rand_bytes(length)
     |> Base.encode64(padding: false)
     |> binary_part(0, length)
+  end
+
+  @spec delete_user_tokens(Teiserver.user_id()) :: :ok
+  def delete_user_tokens(user_id) do
+    UserTokenQueries.user_token_query(where: [user_id: user_id])
+    |> Repo.delete_all()
   end
 end

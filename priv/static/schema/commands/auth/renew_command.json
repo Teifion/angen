@@ -1,0 +1,19 @@
+{
+  "$id": "auth/renew_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Auth - Renew command",
+  "description": "",
+  "type": "object",
+  "required": [
+    "identifier_code",
+    "renewal_code"
+  ],
+  "properties": {
+    "identifier_code": {
+      "type": "string"
+    },
+    "renewal_code": {
+      "type": "string"
+    }
+  }
+}
