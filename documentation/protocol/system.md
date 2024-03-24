@@ -55,7 +55,13 @@ If Integration mode is active, return data relevant to using it. If not return a
 ```json
 {
   "name": "system/integration_data",
-  "message": {}
+  "message": {
+    "bots": [
+      {"id": "32e5b4d1-13e9-4c7e-84ae-de80643e6992", "name": "IntegrationBot1"},
+      {"id": "16fb7c67-741f-4391-a609-1187fce6b1d2", "name": "IntegrationBot2"},
+      {"id": "cb7ec06e-a5ae-4803-8c2a-a8e4858bcc3f", "name": "IntegrationBot3"}
+    ]
+  }
 }
 ```
 
