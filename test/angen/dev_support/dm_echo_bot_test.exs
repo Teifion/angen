@@ -24,6 +24,8 @@ defmodule Angen.DevSupport.DMEchoBotTest do
       assert msg["message"]["message"]["content"] == "egassem tseT"
       assert msg["message"]["message"]["from_id"] == bot_user.id
       assert msg["message"]["message"]["to_id"] == user.id
+
+      send(p, :stop)
     end
   end
 end

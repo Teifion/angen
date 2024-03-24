@@ -13,6 +13,8 @@ defmodule Angen.DevSupport.LobbyHostBotTest do
       :timer.sleep(1000)
 
       assert Enum.count(Api.list_lobby_ids()) == 1
+
+      send(p, :stop)
     end
   end
 end
