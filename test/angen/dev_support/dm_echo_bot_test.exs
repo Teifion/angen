@@ -25,7 +25,9 @@ defmodule Angen.DevSupport.DMEchoBotTest do
       assert msg["message"]["message"]["from_id"] == bot_user.id
       assert msg["message"]["message"]["to_id"] == user.id
 
+      # Stop the bot manually to prevent it doing something while we tear down the test
       send(p, :stop)
+      :timer.sleep(100)
     end
   end
 end

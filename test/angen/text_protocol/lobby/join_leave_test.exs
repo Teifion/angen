@@ -35,11 +35,21 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
     end
 
     test "locked" do
-      flunk("Not implemented")
-    end
+      %{socket: _hsocket, lobby_id: lobby_id} = lobby_host_connection()
+      %{socket: socket} = auth_connection()
 
-    test "not public" do
-      flunk("Not implemented")
+      Api.update_lobby(lobby_id, %{locked?: true})
+
+      speak(socket, %{name: "lobby/join", command: %{id: lobby_id}})
+      msg = listen(socket)
+
+      assert msg == %{
+        "message" => %{
+          "command" => "lobby/join",
+          "reason" => "Lobby is locked"
+        },
+        "name" => "system/failure"
+      }
     end
 
     test "good command" do
