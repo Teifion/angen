@@ -6,7 +6,7 @@ defmodule Angen.DevSupport.LobbyHostBotTest do
 
   describe "echo bot" do
     test "back and forth" do
-      assert Enum.empty?(Api.list_lobby_ids())
+      close_all_lobbies()
 
       {:ok, p} = ManagerServer.start_bot(LobbyHostBot, %{})
       send(p, :startup)

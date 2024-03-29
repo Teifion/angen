@@ -22,7 +22,7 @@ defmodule Angen.DevSupport.DMEchoBotTest do
       msg = listen(socket)
       assert msg["name"] == "communication/received_direct_message"
       assert msg["message"]["message"]["content"] == "egassem tseT"
-      assert msg["message"]["message"]["from_id"] == bot_user.id
+      assert msg["message"]["message"]["sender_id"] == bot_user.id
       assert msg["message"]["message"]["to_id"] == user.id
 
       # Stop the bot manually to prevent it doing something while we tear down the test

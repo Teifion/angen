@@ -22,7 +22,7 @@ defmodule Angen.DevSupport.DMEchoBot do
 
     echo_content = msg.direct_message.content |> String.reverse()
 
-    Api.send_direct_message(state.user.id, dm.from_id, echo_content)
+    Api.send_direct_message(state.user.id, dm.sender_id, echo_content)
 
     {:noreply, state}
   end

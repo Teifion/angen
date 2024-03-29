@@ -35,10 +35,33 @@ See connections
 ## Send message
 Send a message visible to all users in the lobby.
 
-## Receive message
-Send a message visible to all users in the lobby.
-
+```json
+{
+  "name": "lobby/send_message",
+  "command": {
+    "content": "Test message"
+  }
+}
 ```
+
+## Receive message
+When a message was sent to a lobby you subscribe to.
+
+```json
+{
+  "message": {
+    "lobby_id": "ae03a6af-dd99-4c24-9409-3bdf46861e3a",
+    "message": {
+      "content": "Test message",
+      "inserted_at": "2024-03-29T21:34:22Z",
+      "match_id": "e969f5ef-c55d-4fd1-a58e-408a3ec4fc6a",
+      "sender_id": "95023c95-8672-44f6-a9f9-ce45c424feb4"
+    }
+  },
+  "name": "lobby/message_received"
+}
+```
+
 -- Still deciding if I want to add this or not, it is not set in stone --
 
 ## Whisper

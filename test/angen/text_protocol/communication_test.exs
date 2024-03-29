@@ -52,7 +52,7 @@ defmodule Angen.TextProtocol.CommunicationTest do
       # User2 should see it
       msg = listen(socket2)
 
-      dm = Teiserver.Communication.get_direct_message(nil, from_id: user1.id, to_id: user2.id)
+      dm = Teiserver.Communication.get_direct_message(nil, sender_id: user1.id, to_id: user2.id)
       timestamp = dm.inserted_at |> Jason.encode!() |> Jason.decode!()
 
       assert msg == %{
@@ -61,7 +61,7 @@ defmodule Angen.TextProtocol.CommunicationTest do
                  "message" => %{
                    "content" => "Test message",
                    "delivered?" => false,
-                   "from_id" => user1.id,
+                   "sender_id" => user1.id,
                    "inserted_at" => timestamp,
                    "read?" => false,
                    "to_id" => user2.id

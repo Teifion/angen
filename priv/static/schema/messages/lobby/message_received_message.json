@@ -1,0 +1,19 @@
+{
+  "$id": "lobby/message_received_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby - Message_received message",
+  "description": "",
+  "type": "object",
+  "required": [
+    "message",
+    "lobby_id"
+  ],
+  "properties": {
+    "message": {
+      "$ref": "types/communication/match_message.json"
+    },
+    "lobby_id": {
+      "type": "string"
+    }
+  }
+}

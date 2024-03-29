@@ -1,12 +1,12 @@
 {
-  "$id": "types/communication/direct_message.json",
+  "$id": "types/communication/match_message.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Direct Message",
   "description": "A direct message",
   "type": "object",
   "required": [
     "sender_id",
-    "to_id",
+    "match_id",
     "content",
     "inserted_at"
   ],

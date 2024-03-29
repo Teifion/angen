@@ -61,6 +61,7 @@ defmodule Angen.TextProtocol.InternalDispatch do
   def lookup("Teiserver.Game.Lobby:" <> _, :lobby_user_left), do: InfoHandlers.UserLeftLobby
   def lookup("Teiserver.Game.Lobby:" <> _, :lobby_closed), do: InfoHandlers.LobbyClosed
   def lookup("Teiserver.Game.Lobby:" <> _, :lobby_client_change), do: InfoHandlers.ClientUpdated
+  def lookup("Teiserver.Game.Lobby:" <> _, :message_received), do: InfoHandlers.LobbyMessageReceived
 
   # Fallback
   def lookup(topic, event), do: raise("No module for info topic:`#{topic}`, event:`#{event}`")

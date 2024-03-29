@@ -10,6 +10,7 @@ defmodule Angen.DevSupport.ManagerServer do
 
   @bots [
     {DevSupport.LobbyHostBot, %{}},
+    {DevSupport.LobbyChatEchoBot, %{}},
     {DevSupport.DMEchoBot, %{}}
   ]
 
