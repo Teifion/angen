@@ -103,6 +103,21 @@ If successful the you will be sent a shared secret (known only to you and the ho
 }
 ```
 
+## `lobby/update_client`
+Sends a request to change your client. The server may deny the change and depending on settings the host may also deny the change. You will get a success message if the command is submitted correctly but the results of the change will be present in a `connections/client_updated` message. If no change is performed then no updated message will be sent.
+
+```json
+{
+  "name": "lobby/update_client",
+  "command": {
+    "player?": true,
+    "player_number": 123,
+    "team_number": 456,
+    "team_colour": "#458812"
+  }
+}
+```
+
 
 ## Lobby state change
 [Response](/priv/static/schema/messages/lobby/updated_message.json)

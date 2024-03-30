@@ -39,7 +39,7 @@
     "team_number": {
       "type": "integer"
     },
-    "team_colour": {
+    "player_colour": {
       "type": ["string", "null"]
     },
     "sync": {

@@ -4,7 +4,7 @@ Commands related to changing your client. Clients in the protocol are a represen
 ## Command `connection/update_client`
 [Request](/priv/static/schema/commands/connections/update_client_command.json)
 
-Allows you to signal to the server and other users various changes to your client state.
+Allows you to signal to the server and other users various changes to your client state. For Lobby related changes please see [lobby/update_client](lobby_users.md#updateclient)
 
 ```json
 {

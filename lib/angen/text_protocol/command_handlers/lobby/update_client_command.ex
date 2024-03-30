@@ -1,11 +1,11 @@
-defmodule Angen.TextProtocol.Connections.UpdateClientCommand do
+defmodule Angen.TextProtocol.Lobby.UpdateClientCommand do
   @moduledoc false
 
   use Angen.TextProtocol.CommandHandlerMacro
 
   @impl true
   @spec name :: String.t()
-  def name, do: "connections/update_client"
+  def name, do: "lobby/update_client"
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
@@ -13,11 +13,15 @@ defmodule Angen.TextProtocol.Connections.UpdateClientCommand do
     FailureResponse.generate({name(), "Must be logged in"}, state)
   end
 
+  def handle(_, %{lobby_id: nil} = state) do
+    FailureResponse.generate({name(), "Must be in a lobby"}, state)
+  end
+
   @change_keys ~w(
-    afk?
-    in_game?
-    ready?
-    sync
+    player?
+    player_number
+    team_number
+    player_colour
   )a
 
   def handle(changes_raw, state) do
@@ -33,7 +37,7 @@ defmodule Angen.TextProtocol.Connections.UpdateClientCommand do
     if Enum.empty?(changes) do
       FailureResponse.generate({name(), "No changes"}, state)
     else
-      Teiserver.Api.update_client(state.user_id, changes, "self_update")
+      Teiserver.Api.update_client_in_lobby(state.user_id, changes, "self_update")
       SuccessResponse.generate(name(), state)
     end
   end

@@ -1,0 +1,24 @@
+{
+  "$id": "lobby/update_client_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby - Update_client command",
+  "description": "",
+  "type": "object",
+  "required": [
+    
+  ],
+  "properties": {
+    "player?": {
+      "type": "boolean"
+    },
+    "player_number": {
+      "type": "integer"
+    },
+    "team_number": {
+      "type": "integer"
+    },
+    "player_colour": {
+      "type": "string"
+    }
+  }
+}

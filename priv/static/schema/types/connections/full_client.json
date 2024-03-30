@@ -16,7 +16,7 @@
     "player?",
     "player_number",
     "team_number",
-    "team_colour",
+    "player_colour",
     "sync",
     "lobby_host?"
   ],
@@ -55,7 +55,7 @@
     "team_number": {
       "type": "integer"
     },
-    "team_colour": {
+    "player_colour": {
       "type": ["string", "null"]
     },
     "sync": {
