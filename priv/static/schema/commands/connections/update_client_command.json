@@ -1,0 +1,24 @@
+{
+  "$id": "connections/update_client_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Connections - Update_client command",
+  "description": "",
+  "type": "object",
+  "required": [
+    
+  ],
+  "properties": {
+    "afk?": {
+      "type": "boolean"
+    },
+    "in_game?": {
+      "type": "boolean"
+    },
+    "ready?": {
+      "type": "boolean"
+    },
+    "sync": {
+      "type": "object"
+    }
+  }
+}

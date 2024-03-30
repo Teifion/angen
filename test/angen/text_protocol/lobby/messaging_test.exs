@@ -60,12 +60,7 @@ defmodule Angen.TextProtocol.Lobby.MessagingTest do
       # First, success
       msg = listen(socket)
 
-      assert msg == %{
-               "name" => "system/success",
-               "message" => %{
-                 "command" => "lobby/send_message"
-               }
-             }
+      assert_success(msg, "lobby/send_message")
 
       # Query it in the DB
       [match_message] = Teiserver.Communication.list_match_messages(where: [match_id: match_id])

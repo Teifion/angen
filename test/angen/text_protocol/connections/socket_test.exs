@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.ConnTest do
+defmodule Angen.TextProtocol.SocketTest do
   @moduledoc false
   use Angen.ProtoCase, async: false
 

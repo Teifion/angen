@@ -59,7 +59,8 @@
       "type": ["string", "null"]
     },
     "sync": {
-      "type": "object"
+      "type": "object",
+      "description": "Showing a client is synchronised with the lobby host. These can include as many fields as you want, common examples include things like a game version, maps and mods. A synced state is represented by a number 100 to show fully downloaded while partial sync would be anything from 0 to 99 showing progress of the download."
     },
     "lobby_host?": {
       "type": "boolean"

@@ -268,11 +268,16 @@ defmodule Angen.ProtoCase do
 
   @spec assert_auth_failure(map(), String.t()) :: :ok
   def assert_auth_failure(message, command_name) do
+    assert_failure(message, command_name, "Must be logged in")
+  end
+
+  @spec assert_failure(map(), String.t(), String.t()) :: :ok
+  def assert_failure(message, command_name, expected_reason) do
     assert message == %{
              "name" => "system/failure",
              "message" => %{
                "command" => command_name,
-               "reason" => "Must be logged in"
+               "reason" => expected_reason
              }
            }
 

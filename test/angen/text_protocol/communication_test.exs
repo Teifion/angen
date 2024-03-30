@@ -27,17 +27,7 @@ defmodule Angen.TextProtocol.CommunicationTest do
       })
 
       msg = listen(socket1)
-
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "communication/send_direct_message",
-                 "reason" => "No user by that ID"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "communication/send_direct_message", "No user by that ID")
 
       # Now good ID
       speak(socket1, %{
