@@ -32,10 +32,10 @@ If successful you should receive something like:
 
 At that stage you can make use of the [authentication flow](authentication.md) to login.
 
-## `account/reset_password`
+## TODO: `account/reset_password`
 Start the reset-password process, revokes tokens.
 
-## `account/verify`
+## TODO: `account/verify`
 Command to verify the account in some way
 
 ## `account/user_query`

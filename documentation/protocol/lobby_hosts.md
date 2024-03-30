@@ -16,7 +16,7 @@ Opens a new lobby; new lobbies have very few details and you are expected to sen
 
 If successful you will get a `lobby/opened` response:
 ```json
-%{
+{
   "name": "lobby/opened",
   "message": {
     "lobby_id": "84b7e163-4086-49f5-a9e4-f33a1a9f41cd"
@@ -67,6 +67,6 @@ If successful, every connection subscribed to the lobby should get a `lobby/upda
 ```
 
 # Host commands
-## List commands supplied by host
+## TODO: List commands supplied by host
 
 

@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.CommunicationTest do
+defmodule Angen.TextProtocol.DirectMessageTest do
   @moduledoc false
   use Angen.ProtoCase, async: false
 
