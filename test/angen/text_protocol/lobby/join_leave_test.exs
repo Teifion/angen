@@ -21,17 +21,7 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
 
       speak(socket, %{name: "lobby/join", command: %{id: Teiserver.uuid()}})
       msg = listen(socket)
-
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/join",
-                 "reason" => "No lobby"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "lobby/join", "No lobby")
     end
 
     test "locked" do
@@ -42,14 +32,7 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
 
       speak(socket, %{name: "lobby/join", command: %{id: lobby_id}})
       msg = listen(socket)
-
-      assert msg == %{
-        "message" => %{
-          "command" => "lobby/join",
-          "reason" => "Lobby is locked"
-        },
-        "name" => "system/failure"
-      }
+      assert_failure(msg, "lobby/join", "Lobby is locked")
     end
 
     test "good command" do
@@ -128,32 +111,13 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       # No password given
       speak(socket, %{name: "lobby/join", command: %{id: lobby_id}})
       msg = listen(socket)
-
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/join",
-                 "reason" => "Incorrect password"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "lobby/join", "Incorrect password")
 
       # Wrong given
       speak(socket, %{name: "lobby/join", command: %{id: lobby_id, password: "123456"}})
       msg = listen(socket)
 
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/join",
-                 "reason" => "Incorrect password"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "lobby/join", "Incorrect password")
 
       # And now the correct password
       speak(socket, %{name: "lobby/join", command: %{id: lobby_id, password: "password1"}})
@@ -228,17 +192,7 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
 
       speak(socket, %{name: "lobby/leave", command: %{}})
       msg = listen(socket)
-
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/leave",
-                 "reason" => "Not in a lobby"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "lobby/leave", "Not in a lobby")
     end
 
     test "correctly" do

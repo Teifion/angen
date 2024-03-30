@@ -23,6 +23,7 @@ defmodule Angen.DevSupport.LobbyChatEchoBot do
       nil ->
         # No lobby found yet, we just wait
         {:noreply, state}
+
       lobby_id ->
         Api.add_client_to_lobby(state.user.id, lobby_id)
         Api.subscribe_to_lobby(lobby_id)
@@ -54,10 +55,12 @@ defmodule Angen.DevSupport.LobbyChatEchoBot do
         state
       ) do
     if msg.match_message.sender_id != state.user.id do
-      content = msg.match_message.content
+      content =
+        msg.match_message.content
         |> String.reverse()
 
-      name = msg.match_message.sender_id
+      name =
+        msg.match_message.sender_id
         |> Api.get_user_by_id()
         |> Map.get(:name)
 
@@ -80,10 +83,14 @@ defmodule Angen.DevSupport.LobbyChatEchoBot do
 
   defp get_lobby_id() do
     case Api.get_user_by_name("LobbyHostBot") do
-      nil -> nil
+      nil ->
+        nil
+
       user ->
         case Api.get_client(user.id) do
-          nil -> nil
+          nil ->
+            nil
+
           client ->
             client.lobby_id
         end

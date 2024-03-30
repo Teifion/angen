@@ -24,17 +24,11 @@ defmodule Angen.TextProtocol.Account.UpdateTest do
 
     msg = listen(socket)
 
-    assert msg == %{
-             "name" => "system/failure",
-             "message" => %{
-               "command" => "account/update",
-               "reason" =>
-                 "There was an error changing your details: password_confirmation: Incorrect password"
-             }
-           }
-
-    assert JsonSchemaHelper.valid?("response.json", msg)
-    assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+    assert_failure(
+      msg,
+      "account/update",
+      "There was an error changing your details: password_confirmation: Incorrect password"
+    )
 
     # No changes
     speak(socket, %{
@@ -82,16 +76,10 @@ defmodule Angen.TextProtocol.Account.UpdateTest do
 
     msg = listen(socket)
 
-    assert msg == %{
-             "name" => "system/failure",
-             "message" => %{
-               "command" => "account/update",
-               "reason" =>
-                 "There was an error changing your details: email: has already been taken"
-             }
-           }
-
-    assert JsonSchemaHelper.valid?("response.json", msg)
-    assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+    assert_failure(
+      msg,
+      "account/update",
+      "There was an error changing your details: email: has already been taken"
+    )
   end
 end

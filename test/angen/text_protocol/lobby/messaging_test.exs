@@ -22,16 +22,7 @@ defmodule Angen.TextProtocol.Lobby.MessagingTest do
       speak(socket, %{name: "lobby/send_message", command: %{content: "Test content"}})
       msg = listen(socket)
 
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/send_message",
-                 "reason" => "Not in a lobby"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "lobby/send_message", "Not in a lobby")
     end
   end
 
@@ -44,13 +35,11 @@ defmodule Angen.TextProtocol.Lobby.MessagingTest do
       speak(socket, %{name: "lobby/send_message", command: %{content: ""}})
       msg = listen(socket)
 
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/send_message",
-                 "reason" => "There was an error changing your details: content: can't be blank"
-               }
-             }
+      assert_failure(
+        msg,
+        "lobby/send_message",
+        "There was an error changing your details: content: can't be blank"
+      )
     end
 
     test "good command", %{socket: socket, user_id: user_id, lobby_id: lobby_id} do
@@ -69,17 +58,17 @@ defmodule Angen.TextProtocol.Lobby.MessagingTest do
       msg = listen(socket)
 
       assert msg == %{
-        "name" => "lobby/message_received",
-        "message" => %{
-          "lobby_id" => lobby_id,
-          "message" => %{
-            "content" => "Test content",
-            "match_id" => match_id,
-            "sender_id" => user_id,
-            "inserted_at" => Jason.encode!(match_message.inserted_at) |> Jason.decode!()
-          }
-        }
-      }
+               "name" => "lobby/message_received",
+               "message" => %{
+                 "lobby_id" => lobby_id,
+                 "message" => %{
+                   "content" => "Test content",
+                   "match_id" => match_id,
+                   "sender_id" => user_id,
+                   "inserted_at" => Jason.encode!(match_message.inserted_at) |> Jason.decode!()
+                 }
+               }
+             }
     end
   end
 end

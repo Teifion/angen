@@ -21,17 +21,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
 
       speak(socket, %{name: "lobby/change", command: %{}})
       msg = listen(socket)
-
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/change",
-                 "reason" => "Must be in a lobby"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "lobby/change", "Must be in a lobby")
     end
 
     test "not a host" do
@@ -44,16 +34,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       speak(socket, %{name: "lobby/change", command: %{}})
       msg = listen(socket)
 
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/change",
-                 "reason" => "Must be a lobby host"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "lobby/change", "Must be a lobby host")
     end
   end
 

@@ -32,17 +32,11 @@ defmodule Angen.TextProtocol.Account.ChangePasswordTest do
 
     msg = listen(socket)
 
-    assert msg == %{
-             "name" => "system/failure",
-             "message" => %{
-               "command" => "account/change_password",
-               "reason" =>
-                 "There was an error changing your password: existing: Incorrect password"
-             }
-           }
-
-    assert JsonSchemaHelper.valid?("response.json", msg)
-    assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+    assert_failure(
+      msg,
+      "account/change_password",
+      "There was an error changing your password: existing: Incorrect password"
+    )
 
     # Bad new password
     speak(socket, %{
@@ -55,17 +49,11 @@ defmodule Angen.TextProtocol.Account.ChangePasswordTest do
 
     msg = listen(socket)
 
-    assert msg == %{
-             "name" => "system/failure",
-             "message" => %{
-               "command" => "account/change_password",
-               "reason" =>
-                 "There was an error changing your password: password: Passwords must be at least 6 characters long"
-             }
-           }
-
-    assert JsonSchemaHelper.valid?("response.json", msg)
-    assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+    assert_failure(
+      msg,
+      "account/change_password",
+      "There was an error changing your password: password: Passwords must be at least 6 characters long"
+    )
 
     # Now good password
     speak(socket, %{
@@ -100,14 +88,7 @@ defmodule Angen.TextProtocol.Account.ChangePasswordTest do
     })
 
     response = listen(socket)
-
-    assert response == %{
-             "name" => "system/failure",
-             "message" => %{
-               "command" => "auth/get_token",
-               "reason" => "Bad authentication"
-             }
-           }
+    assert_failure(response, "auth/get_token", "Bad authentication")
 
     # Now with a the new password
     speak(socket, %{

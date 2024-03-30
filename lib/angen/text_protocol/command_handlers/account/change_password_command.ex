@@ -1,4 +1,4 @@
-defmodule Angen.TextProtocol.Account.Change_passwordCommand do
+defmodule Angen.TextProtocol.Account.ChangePasswordCommand do
   @moduledoc false
 
   use Angen.TextProtocol.CommandHandlerMacro

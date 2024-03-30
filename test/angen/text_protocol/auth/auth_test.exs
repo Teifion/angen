@@ -18,14 +18,11 @@ defmodule Angen.TextProtocol.AuthTest do
 
       response = listen(socket)
 
-      assert response == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "account/register",
-                 "reason" =>
-                   "There was an error registering: name: can't be blank, email: can't be blank, password: can't be blank"
-               }
-             }
+      assert_failure(
+        response,
+        "account/register",
+        "There was an error registering: name: can't be blank, email: can't be blank, password: can't be blank"
+      )
 
       # Register command
       speak(socket, %{
@@ -61,14 +58,7 @@ defmodule Angen.TextProtocol.AuthTest do
       })
 
       response = listen(socket)
-
-      assert response == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "auth/get_token",
-                 "reason" => "Bad authentication"
-               }
-             }
+      assert_failure(response, "auth/get_token", "Bad authentication")
 
       # Bad password
       speak(socket, %{
@@ -81,14 +71,7 @@ defmodule Angen.TextProtocol.AuthTest do
       })
 
       response = listen(socket)
-
-      assert response == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "auth/get_token",
-                 "reason" => "Bad authentication"
-               }
-             }
+      assert_failure(response, "auth/get_token", "Bad authentication")
 
       # Good password
       speak(socket, %{
@@ -126,14 +109,7 @@ defmodule Angen.TextProtocol.AuthTest do
       })
 
       response = listen(socket)
-
-      assert response == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "auth/login",
-                 "reason" => "Bad token"
-               }
-             }
+      assert_failure(response, "auth/login", "Bad token")
 
       # And valid
       speak(socket, %{

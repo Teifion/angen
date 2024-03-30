@@ -24,63 +24,76 @@ defmodule Angen.TextProtocol.ClientTest do
     test "auth'd update" do
       %{socket: socket, user_id: user_id} = auth_connection()
 
-      speak(socket, %{name: "connections/update_client", command: %{
-        afk?: true,
-        ready?: true,
-        in_game?: true,
-        sync: %{"key" => 100}
-      }})
+      speak(socket, %{
+        name: "connections/update_client",
+        command: %{
+          afk?: true,
+          ready?: true,
+          in_game?: true,
+          sync: %{"key" => 100}
+        }
+      })
+
       # First, success
       msg = listen(socket)
       assert_success(msg, "connections/update_client")
 
       # Now the result of the update
       msg = listen(socket)
+
       assert msg == %{
-        "message" => %{
-          "changes" => %{
-            "afk?" => true,
-            "ready?" => true,
-            "in_game?" => true,
-            "sync" => %{"key" => 100},
-            "update_id" => 1
-          },
-          "reason" => "self_update",
-          "user_id" => user_id
-        },
-        "name" => "connections/client_updated"
-      }
+               "message" => %{
+                 "changes" => %{
+                   "afk?" => true,
+                   "ready?" => true,
+                   "in_game?" => true,
+                   "sync" => %{"key" => 100},
+                   "update_id" => 1
+                 },
+                 "reason" => "self_update",
+                 "user_id" => user_id
+               },
+               "name" => "connections/client_updated"
+             }
 
       # Now test we only get updates based on what we change
-      speak(socket, %{name: "connections/update_client", command: %{
-        afk?: false,
-        ready?: true,
-        in_game?: true,
-        sync: %{"key" => 100}
-      }})
+      speak(socket, %{
+        name: "connections/update_client",
+        command: %{
+          afk?: false,
+          ready?: true,
+          in_game?: true,
+          sync: %{"key" => 100}
+        }
+      })
+
       # First, success
       msg = listen(socket)
       assert_success(msg, "connections/update_client")
 
       # Now the result of the update
       msg = listen(socket)
+
       assert msg == %{
-        "message" => %{
-          "changes" => %{
-            "afk?" => false,
-            "update_id" => 2
-          },
-          "reason" => "self_update",
-          "user_id" => user_id
-        },
-        "name" => "connections/client_updated"
-      }
+               "message" => %{
+                 "changes" => %{
+                   "afk?" => false,
+                   "update_id" => 2
+                 },
+                 "reason" => "self_update",
+                 "user_id" => user_id
+               },
+               "name" => "connections/client_updated"
+             }
 
       # And the system ignores keys we can't change
-      speak(socket, %{name: "connections/update_client", command: %{
-        ready?: false,
-        lobby_host?: true
-      }})
+      speak(socket, %{
+        name: "connections/update_client",
+        command: %{
+          ready?: false,
+          lobby_host?: true
+        }
+      })
 
       # First, success
       msg = listen(socket)
@@ -88,17 +101,18 @@ defmodule Angen.TextProtocol.ClientTest do
 
       # Now the result of the update
       msg = listen(socket)
+
       assert msg == %{
-        "message" => %{
-          "changes" => %{
-            "ready?" => false,
-            "update_id" => 3
-          },
-          "reason" => "self_update",
-          "user_id" => user_id
-        },
-        "name" => "connections/client_updated"
-      }
+               "message" => %{
+                 "changes" => %{
+                   "ready?" => false,
+                   "update_id" => 3
+                 },
+                 "reason" => "self_update",
+                 "user_id" => user_id
+               },
+               "name" => "connections/client_updated"
+             }
 
       # Finally we request changes but nothing actually changes
       # so we get a success but nothing else

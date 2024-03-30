@@ -18,16 +18,7 @@ defmodule Angen.TextProtocol.Account.UserQueryTest do
       speak(socket, %{name: "account/user_query", command: %{filters: %{}}})
       msg = listen(socket)
 
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "account/user_query",
-                 "reason" => "Must provide at least 1 filter"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "account/user_query", "Must provide at least 1 filter")
     end
 
     test "filter on IDs" do

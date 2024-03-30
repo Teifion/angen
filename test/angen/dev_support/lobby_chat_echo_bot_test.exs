@@ -41,7 +41,9 @@ defmodule Angen.DevSupport.LobbyChatEchoBotTest do
       assert reply_msg["name"] == "lobby/message_received"
       assert reply_msg["message"]["message"]["content"] == "LobbyHostBot: egassem tseT"
       assert reply_msg["message"]["message"]["sender_id"] == bot_user.id
-      assert reply_msg["message"]["message"]["match_id"] == self_msg["message"]["message"]["match_id"]
+
+      assert reply_msg["message"]["message"]["match_id"] ==
+               self_msg["message"]["message"]["match_id"]
 
       # Stop the bot manually to prevent it doing something while we tear down the test
       send(p, :stop)

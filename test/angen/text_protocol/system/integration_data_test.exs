@@ -12,16 +12,7 @@ defmodule Angen.TextProtocol.System.IntegrationDataTest do
       speak(socket, %{name: "system/integration_data", command: %{}})
       msg = listen(socket)
 
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "system/integration_data",
-                 "reason" => "Integration not active"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "system/integration_data", "Integration not active")
     end
 
     test "forced response" do

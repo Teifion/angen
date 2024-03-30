@@ -21,14 +21,7 @@ defmodule Angen.TextProtocol.Auth.RenewTokenTest do
     })
 
     response = listen(socket)
-
-    assert response == %{
-             "name" => "system/failure",
-             "message" => %{
-               "command" => "auth/renew",
-               "reason" => "No token"
-             }
-           }
+    assert_failure(response, "auth/renew", "No token")
 
     # Bad renewal
     speak(socket, %{
@@ -40,14 +33,7 @@ defmodule Angen.TextProtocol.Auth.RenewTokenTest do
     })
 
     response = listen(socket)
-
-    assert response == %{
-             "name" => "system/failure",
-             "message" => %{
-               "command" => "auth/renew",
-               "reason" => "No token"
-             }
-           }
+    assert_failure(response, "auth/renew", "No token")
 
     # Now correctly
     speak(socket, %{

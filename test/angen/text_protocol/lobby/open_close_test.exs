@@ -22,13 +22,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       speak(socket, %{name: "lobby/open", command: %{name: "OpenLobbyTest"}})
       msg = listen(socket)
 
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/open",
-                 "reason" => "Already in a lobby"
-               }
-             }
+      assert_failure(msg, "lobby/open", "Already in a lobby")
     end
 
     test "correct" do
@@ -37,17 +31,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       # Bad ID first
       speak(socket, %{name: "lobby/open", command: %{name: ""}})
       msg = listen(socket)
-
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/open",
-                 "reason" => "No name supplied"
-               }
-             }
-
-      assert JsonSchemaHelper.valid?("response.json", msg)
-      assert JsonSchemaHelper.valid?("system/failure_message.json", msg["message"])
+      assert_failure(msg, "lobby/open", "No name supplied")
 
       # Now good ID
       speak(socket, %{name: "lobby/open", command: %{name: "my test lobby"}})
@@ -76,14 +60,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
 
       speak(socket, %{name: "lobby/close", command: %{}})
       msg = listen(socket)
-
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/close",
-                 "reason" => "Must be logged in"
-               }
-             }
+      assert_auth_failure(msg, "lobby/close")
     end
 
     test "must be in a lobby" do
@@ -91,14 +68,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
 
       speak(socket, %{name: "lobby/close", command: %{}})
       msg = listen(socket)
-
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/close",
-                 "reason" => "Must be in a lobby"
-               }
-             }
+      assert_failure(msg, "lobby/close", "Must be in a lobby")
     end
 
     test "not a host" do
@@ -111,13 +81,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       speak(socket, %{name: "lobby/close", command: %{}})
       msg = listen(socket)
 
-      assert msg == %{
-               "name" => "system/failure",
-               "message" => %{
-                 "command" => "lobby/close",
-                 "reason" => "Must be a lobby host"
-               }
-             }
+      assert_failure(msg, "lobby/close", "Must be a lobby host")
     end
 
     test "while a host" do
