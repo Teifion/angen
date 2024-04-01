@@ -32,15 +32,15 @@ defmodule Angen.TextProtocol.Lobby.UpdateClientTest do
       assert_success(msg, "lobby/update_client")
 
       msg = listen(socket)
-      assert msg == %{
-        "message" => %{
-          "changes" => %{"player?" => true, "update_id" => 2},
-          "reason" => "self_update",
-          "user_id" => user_id
-        },
-        "name" => "connections/client_updated"
-      }
 
+      assert msg == %{
+               "message" => %{
+                 "changes" => %{"player?" => true, "update_id" => 2},
+                 "reason" => "self_update",
+                 "user_id" => user_id
+               },
+               "name" => "connections/client_updated"
+             }
     end
   end
 end

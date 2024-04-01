@@ -81,7 +81,6 @@ defmodule Angen.MixProject do
       {:cachex, "~> 3.6"},
       {:ex_json_schema, "~> 0.10.2"},
 
-
       # We're pointing it at a specific git branch most of the time but
       # when developing locally we'll want to use a relative
       # reference or a specific git commit

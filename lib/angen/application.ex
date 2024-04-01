@@ -22,32 +22,8 @@ defmodule Angen.Application do
       Angen.DevSupport.IntegrationSupervisor,
 
       # Caches
-      %{
-        id: :protocol_schemas,
-        start:
-          {Cachex, :start_link,
-           [
-             :protocol_schemas,
-             []
-           ]}
-      },
-      %{
-        id: :protocol_command_dispatches,
-        start:
-          {Cachex, :start_link,
-           [
-             :protocol_command_dispatches,
-             []
-           ]}
-      },
-
-      # %{
-      #   id: :protocol_roots,
-      #   start: {Cachex, :start_link, [
-      #     :protocol_roots,
-      #     []
-      #   ]}
-      # },
+      add_cache(:protocol_schemas),
+      add_cache(:protocol_command_dispatches),
 
       # {Oban, oban_config()},
       {ThousandIsland,
@@ -79,6 +55,20 @@ defmodule Angen.Application do
     Angen.Helpers.JsonSchemaHelper.load()
     Angen.TextProtocol.ExternalDispatch.cache_dispatches()
     Angen.DevSupport.IntegrationSupervisor.start_integration_supervisor_children()
+  end
+
+  @spec add_cache(atom) :: map()
+  @spec add_cache(atom, list) :: map()
+  defp add_cache(name, opts \\ []) when is_atom(name) do
+    %{
+      id: name,
+      start:
+        {Cachex, :start_link,
+         [
+           name,
+           opts
+         ]}
+    }
   end
 
   # Tell Phoenix to update the endpoint configuration
