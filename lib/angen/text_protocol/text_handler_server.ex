@@ -45,8 +45,9 @@ defmodule Angen.TextProtocol.TextHandlerServer do
     {response, new_state} = ExternalDispatch.handle(clean_data, state)
 
     # If we get one or more responses, we send them
-    (response || [])
+    response
     |> List.wrap()
+    |> Enum.reject(&(&1 == nil))
     |> Enum.each(fn r ->
       msg = encode_message(r)
       ThousandIsland.Socket.send(socket, "#{msg}\n")

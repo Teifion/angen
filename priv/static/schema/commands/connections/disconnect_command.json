@@ -1,0 +1,13 @@
+{
+  "$id": "connections/disconnect_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Connections - Disconnect command",
+  "description": "",
+  "type": "object",
+  "required": [
+    
+  ],
+  "properties": {
+    
+  }
+}

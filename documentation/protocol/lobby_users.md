@@ -68,9 +68,9 @@ If successful the you will be sent a shared secret (known only to you and the ho
     "lobby": {
       "approved_members": [],
       "game_name": "Best Game This Year",
-      "game_settings": %{},
+      "game_settings": {},
       "game_version": "v123",
-      "host_data": %{},
+      "host_data": {},
       "host_id": "9846df9c-4c89-4df1-845a-cfea214e5d11",
       "id": "cadc6555-dcf7-4e05-915b-58e21a8fc040",
       "locked?": false,

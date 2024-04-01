@@ -44,5 +44,13 @@ A message from the server indicating a client has changed.
 ## TODO: Login queue heartbeat
 
 
-## TODO: Disconnect
+## Disconnect
 Disconnects your connection. If this is the last connection for the client; the client will be destroyed. The application is assumed to be signalling the player no longer wishes to interact with the server and not intending to return as they might in a crash.
+
+```json
+{
+  "name": "connections/disconnect",
+  "command": {}
+}
+```
+
