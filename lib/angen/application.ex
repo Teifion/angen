@@ -54,6 +54,7 @@ defmodule Angen.Application do
   defp startup() do
     Angen.Helpers.JsonSchemaHelper.load()
     Angen.TextProtocol.ExternalDispatch.cache_dispatches()
+    Angen.Settings.ServerSettings.create_server_settings()
     Angen.DevSupport.IntegrationSupervisor.start_integration_supervisor_children()
   end
 

@@ -1,7 +1,7 @@
 # Angen
 A fast and reliable Elixir middleware server built on top of [Teiserver](https://github.com/Teifion/teiserver).
 
-Documentation is found in [the documentation folder](documentation), protocol schemas are in [priv/static/schema].
+Documentation is found in [the documentation folder](documentation), protocol schemas are in [priv/static/schema]. Additionally [Teiserver itself](https://hexdocs.pm/teiserver/Teiserver.html) has documentation describing things such as how the middleware server works.
 
 # Features
 Angen provides features allowing you to run your own [middleware](https://hexdocs.pm/teiserver/Teiserver.html) server and leverage all the benefits of that, broadly speaking these would be:
