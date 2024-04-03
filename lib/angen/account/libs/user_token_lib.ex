@@ -1,6 +1,6 @@
 defmodule Angen.Account.UserTokenLib do
   @moduledoc """
-  TODO: Library of user_token related functions.
+  Library of UserToken related functions.
   """
   alias Angen.Repo
   alias Angen.Account.{UserToken, UserTokenQueries}
