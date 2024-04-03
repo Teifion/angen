@@ -2,9 +2,6 @@ defmodule Angen.Account.AuthLib do
   @moduledoc false
   require Logger
 
-  @spec icon :: String.t()
-  def icon(), do: "fa-regular fa-address-card"
-
   @spec get_all_permission_sets() :: Map.t()
   def get_all_permission_sets do
     Cachex.get!(:auth_group_store, :all)
