@@ -8,7 +8,9 @@ config :angen,
     certfile: "priv/certs/localhost.crt",
     cacertfile: "priv/certs/localhost.crt"
   ],
-  integration_mode: true
+  integration_mode: true,
+  enfys_mode: true,
+  enfys_key: "enfys"
 
 # Configure your database
 config :angen, Angen.Repo,

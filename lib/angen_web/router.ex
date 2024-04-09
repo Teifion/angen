@@ -67,6 +67,11 @@ defmodule AngenWeb.Router do
     end
   end
 
+  scope "/api/enfys", AngenWeb.Api, as: :ts do
+    pipe_through([:api])
+    post("/start", EnfysController, :start)
+  end
+
   scope "/admin", AngenWeb.Admin do
     pipe_through [:browser]
     import Phoenix.LiveDashboard.Router

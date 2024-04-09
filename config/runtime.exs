@@ -143,5 +143,7 @@ if config_env() == :prod do
     # Website
     site_title: System.get_env("ANGEN_SITE_TITLE", "Angen"),
 
-    integration_mode: System.get_env("ANGEN_INTEGRATION_MODE", "FALSE") == "TRUE"
+    integration_mode: System.get_env("ANGEN_INTEGRATION_MODE", "FALSE") == "TRUE",
+    enfys_mode: System.get_env("ENFYS_MODE", "FALSE") == "TRUE",
+    enfys_key: System.get_env("ENFYS_KEY", nil)
 end

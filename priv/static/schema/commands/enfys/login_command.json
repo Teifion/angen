@@ -1,0 +1,15 @@
+{
+  "$id": "enfys/login_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Enfys - Login command",
+  "description": "",
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    }
+  }
+}
