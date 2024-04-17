@@ -72,6 +72,23 @@ defmodule Angen.TextProtocol.SocketTest do
                  "user" => %{
                    "id" => user.id,
                    "name" => user.name
+                 },
+                 "client" => %{
+                   "afk?" => false,
+                   "connected?" => true,
+                   "id" => user.id,
+                   "in_game?" => false,
+                   "last_disconnected" => nil,
+                   "lobby_host?" => false,
+                   "lobby_id" => nil,
+                   "party_id" => nil,
+                   "player?" => false,
+                   "player_colour" => nil,
+                   "player_number" => nil,
+                   "ready?" => false,
+                   "sync" => nil,
+                   "team_number" => nil,
+                   "update_id" => 0
                  }
                },
                "message_id" => id

@@ -10,30 +10,63 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.GetToken do
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
   def handle(%{"name" => name, "password" => password, "user_agent" => user_agent}, state) do
-    case Teiserver.Api.maybe_authenticate_user(name, password) do
+    case Teiserver.Api.maybe_authenticate_user_by_name(name, password) do
       {:ok, user} ->
-        case Angen.Account.create_user_token(user.id, "text-protocol", user_agent, state.ip) do
-          {:ok, token} ->
-            TextProtocol.Auth.TokenResponse.generate(token, state)
-
-          {:error, changeset} ->
-            errors =
-              changeset.errors
-              |> Enum.map_join(", ", fn {key, {message, _}} ->
-                "#{key}: #{message}"
-              end)
-
-            FailureResponse.generate(
-              {name(), "There was an error generating the token: #{errors}"},
-              state
-            )
-        end
+        do_handle(user, user_agent, state)
 
       {:error, :no_user} ->
+        Api.create_anonymous_audit_log(state.ip, "auth/get_token", %{reason: "no_user", name: name, user_agent: user_agent})
         FailureResponse.generate({name(), "Bad authentication"}, state)
 
-      {:error, :bad_password} ->
+      {:error, _} ->
         FailureResponse.generate({name(), "Bad authentication"}, state)
+    end
+  end
+
+  def handle(%{"email" => email, "password" => password, "user_agent" => user_agent}, state) do
+    case Teiserver.Api.maybe_authenticate_user_by_email(email, password) do
+      {:ok, user} ->
+        do_handle(user, user_agent, state)
+
+      {:error, :no_user} ->
+        Api.create_anonymous_audit_log(state.ip, "auth/get_token", %{reason: "no_user", email: email, user_agent: user_agent})
+        FailureResponse.generate({name(), "Bad authentication"}, state)
+
+      {:error, _} ->
+        FailureResponse.generate({name(), "Bad authentication"}, state)
+    end
+  end
+
+  def handle(%{"id" => id, "password" => password, "user_agent" => user_agent}, state) do
+    case Teiserver.Api.maybe_authenticate_user_by_id(id, password) do
+      {:ok, user} ->
+        do_handle(user, user_agent, state)
+
+      {:error, :no_user} ->
+        Api.create_anonymous_audit_log(state.ip, "auth/get_token", %{reason: "no_user", id: id, user_agent: user_agent})
+        FailureResponse.generate({name(), "Bad authentication"}, state)
+
+      {:error, _} ->
+        FailureResponse.generate({name(), "Bad authentication"}, state)
+    end
+  end
+
+  defp do_handle(user, user_agent, state) do
+    case Angen.Account.create_user_token(user.id, "text-protocol", user_agent, state.ip) do
+      {:ok, token} ->
+        TextProtocol.Auth.TokenResponse.generate(token, state)
+
+      {:error, changeset} ->
+        errors =
+          changeset.errors
+          |> Enum.map_join(", ", fn {key, {message, _}} ->
+            "#{key}: #{message}"
+          end)
+
+        FailureResponse.generate(
+          {name(), "There was an error generating the token: #{errors}"},
+          state
+        )
     end
   end
 end

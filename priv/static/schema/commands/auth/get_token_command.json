@@ -1,14 +1,20 @@
 {
   "$id": "auth/get_token_command.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Auth - Get_token command",
+  "title": "Auth - Get_token command, can use name, email or id. Name only works if the name is unique so typically is not advised.",
   "description": "",
   "type": "object",
   "required": [
-    "name", "password", "user_agent"
+    "password", "user_agent"
   ],
   "properties": {
     "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "id": {
       "type": "string"
     },
     "password": {

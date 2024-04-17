@@ -3,6 +3,10 @@ defmodule Angen.DataCase do
   This module defines the setup for tests requiring
   access to the application's data layer.
 
+  ```
+  use Angen.DataCase, async: true
+  ```
+
   You may define functions here to be used as helpers in
   your tests.
 

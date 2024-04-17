@@ -10,6 +10,16 @@
   "properties": {
     "user": {
       "$ref": "types/account/user.json"
+    },
+    "client": {
+      "anyOf": [
+        {
+          "$ref": "types/connections/full_client.json"
+        },
+        {
+          "$ref": "types/connections/partial_client.json"
+        }
+      ]
     }
   }
 }

@@ -15,6 +15,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Connections.Whoami do
 
   def handle(_, state) do
     user = Api.get_user_by_id(state.user_id)
-    TextProtocol.Connections.YouareResponse.generate(user, state)
+    client = Api.get_client(state.user_id)
+    TextProtocol.Connections.YouareResponse.generate({user, client}, state)
   end
 end
