@@ -26,6 +26,7 @@ defmodule AngenWeb.Router do
         {AngenWeb.UserAuth, :mount_current_user}
       ] do
       live "/", HomeLive.Index, :index
+      live "/guest", HomeLive.Guest, :index
     end
   end
 
@@ -52,6 +53,7 @@ defmodule AngenWeb.Router do
       live "/users/reset_password/:token", UserResetPasswordLive, :edit
     end
 
+    get "/login/:code", UserSessionController, :login_from_code
     post "/login", UserSessionController, :create
   end
 

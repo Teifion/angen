@@ -12,16 +12,7 @@
 </div>
 
 <div class="row">
-  <.menu_card
-    :if={@current_user == nil}
-    icon="fa-sign-in-alt"
-    icon_class="fa-duotone"
-    url={~p"/login"}
-  >
-    Login
-  </.menu_card>
-
-  <div :if={@current_user} class="col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-1 menu-card">
+  <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 col-xxl-1 menu-card">
     <.link
       href={~p"/logout"}
       method="delete"

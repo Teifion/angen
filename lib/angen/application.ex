@@ -23,6 +23,8 @@ defmodule Angen.Application do
       Angen.DevSupport.IntegrationSupervisor,
 
       # Caches
+      add_cache(:one_time_login_code, ttl: :timer.seconds(30)),
+      add_cache(:user_token_identifier_cache, ttl: :timer.minutes(5)),
       add_cache(:angen_metadata),
       add_cache(:protocol_schemas),
       add_cache(:protocol_command_dispatches),

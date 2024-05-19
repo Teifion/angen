@@ -27,8 +27,13 @@ defmodule Angen do
   end
 
   @type conn_id :: Ecto.UUID.t()
+  @type user_id :: Teiserver.user_id()
   @type raw_message :: String.t()
   @type json_message :: map()
 
   @type handler_response :: {nil | raw_message() | [raw_message()], ConnState.t()}
+
+  # Cluster cache delegation
+  @spec invalidate_cache(atom, any) :: :ok
+  defdelegate invalidate_cache(table, key_or_keys), to: Teiserver.System.CacheClusterServer
 end

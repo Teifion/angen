@@ -32,7 +32,7 @@ defmodule AngenWeb.NavComponents do
   end
 
   @doc """
-  <AngenWeb.NavComponents.top_navbar active={"string"} />
+  <AngenWeb.NavComponents.top_navbar current_user={@current_user} active={"string"} />
   """
   attr :current_user, :map, required: true
   attr :active, :string, required: true
@@ -55,7 +55,7 @@ defmodule AngenWeb.NavComponents do
           </a>
           <!-- Left links -->
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <.top_nav_item text="Home" active={@active == "central_home"} route={~p"/"} />
+            <.top_nav_item text="Home" active={@active == "home"} route={~p"/"} />
           </ul>
           <!-- Left links -->
         </div>
@@ -66,8 +66,6 @@ defmodule AngenWeb.NavComponents do
           <%= if @current_user do %>
             <AngenWeb.UserComponents.recents_dropdown current_user={@current_user} />
             <AngenWeb.UserComponents.account_dropdown current_user={@current_user} />
-
-            <div style="width: 300px; display: inline-block;"></div>
           <% else %>
             <a class="nav-link" href={~p"/login"}>
               Sign in
@@ -125,10 +123,12 @@ defmodule AngenWeb.NavComponents do
     Text here
   </.menu_card>
   """
-  attr :url, :string, required: true
+  attr :url, :string, default: nil
   attr :icon, :string, required: true
   attr :icon_class, :string, default: "duotone"
   attr :size, :atom, default: nil
+  attr :dynamic_attrs, :map, default: []
+  attr :col_classes, :string, default: nil
   slot :inner_block, required: true
 
   def menu_card(assigns) do
@@ -167,7 +167,7 @@ defmodule AngenWeb.NavComponents do
       |> assign(:style, style)
 
     ~H"""
-    <div class={"#{@col_classes} menu-card #{@extra_classes}"}>
+    <div class={"#{@col_classes} menu-card #{@extra_classes}"} {@dynamic_attrs}>
       <a href={@url} class="block-link" style={@style}>
         <Fontawesome.icon icon={@icon} style={@icon_class} size={@icon_size} /><br />
         <%= render_slot(@inner_block) %>
@@ -296,6 +296,43 @@ defmodule AngenWeb.NavComponents do
         <% end %>
       </div>
     </nav>
+    """
+  end
+
+  @doc """
+  <AngenWeb.NavComponents.ward_nav_item active={active} route={route} icon={icon} />
+  """
+  def ward_nav_item(assigns) do
+    active = if assigns[:active], do: "btn-primary", else: "btn-outline-info"
+
+    assigns =
+      assigns
+      |> assign(:active, active)
+
+    ~H"""
+    <.link
+      patch={@route}
+      class={"btn #{@active}"}
+    >
+      <Fontawesome.icon icon={@icon} style="solid" />
+      <%= @text %>
+    </.link>
+    """
+  end
+
+  @doc """
+  <AngenWeb.NavComponents.ward_navbar game_id={@game_id} active={"string"} />
+  """
+  attr :active, :string, required: true
+  attr :game_id, :string, required: true
+
+  def ward_navbar(assigns) do
+    ~H"""
+    <div class="">
+      <.ward_nav_item text="Ward" active={@active == "ward"} route={~p"/play/ward/#{@game_id}"} icon="stretcher" />
+
+      <.ward_nav_item text="Patients" active={@active == "patients"} route={~p"/play/patients/#{@game_id}"} icon="users-medical" />
+    </div>
     """
   end
 end

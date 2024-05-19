@@ -1,8 +1,33 @@
 defmodule AngenWeb.UserSessionController do
   use AngenWeb, :controller
 
-  alias Teiserver.Account
+  alias Angen.Account
   alias AngenWeb.UserAuth
+
+  def login_from_code(conn, %{"code" => code}) do
+    case Cachex.get(:one_time_login_code, code) do
+      {:ok, nil} ->
+        redirect(conn, to: ~p"/guest")
+      {:ok, token_id} ->
+        maybe_login_with_token(conn, token_id)
+      _ ->
+        redirect(conn, to: ~p"/guest")
+    end
+  end
+
+  defp maybe_login_with_token(conn, token_id) do
+    token = Account.get_user_token(token_id, preload: [:user])
+
+    case token do
+      nil ->
+        redirect(conn, to: ~p"/guest")
+
+      token ->
+        conn
+        |> put_flash(:info, "You are now logged in with a guest account.")
+        |> UserAuth.log_in_with_token(token)
+    end
+  end
 
   def create(conn, %{"_action" => "registered"} = params) do
     create(conn, params, "Account created successfully!")

@@ -10,7 +10,7 @@ defmodule AngenWeb.UserAuth do
   # If you want bump or reduce this value, also change
   # the token expiry itself in UserToken.
   @max_age 60 * 60 * 24 * 60
-  @remember_me_cookie "_angen_user_remember_me"
+  @remember_me_cookie "_Angen_user_remember_me"
   @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
 
   @doc """
@@ -36,6 +36,16 @@ defmodule AngenWeb.UserAuth do
 
     {:ok, token} = Angen.Account.create_user_token(user.id, "web", user_agent, ip)
 
+    user_return_to = get_session(conn, :user_return_to)
+
+    conn
+    |> renew_session()
+    |> put_token_in_session(token)
+    |> maybe_write_remember_me_cookie(token, params)
+    |> redirect(to: user_return_to || signed_in_path(conn))
+  end
+
+  def log_in_with_token(conn, %Angen.Account.UserToken{} = token, params \\ %{}) do
     user_return_to = get_session(conn, :user_return_to)
 
     conn
@@ -80,8 +90,12 @@ defmodule AngenWeb.UserAuth do
   It clears all session data for safety. See renew_session.
   """
   def log_out_user(conn) do
-    user_token = get_session(conn, :user_token)
+    user_token_identifier = get_session(conn, :user_token)
+    cached_user_token = Account.get_user_token_by_identifier(user_token_identifier)
+    user_token = cached_user_token && Account.get_user_token(cached_user_token.id)
+
     user_token && Account.delete_user_token(user_token)
+    cached_user_token && Angen.invalidate_cache(:user_token_identifier_cache, cached_user_token.identifier_code)
 
     if live_socket_id = get_session(conn, :live_socket_id) do
       AngenWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
@@ -98,8 +112,9 @@ defmodule AngenWeb.UserAuth do
   and remember me token.
   """
   def fetch_current_user(conn, _opts) do
-    {user_token, conn} = ensure_user_token(conn)
-    user = user_token && Account.get_user_by_session_token(user_token)
+    {user_token_identifier, conn} = ensure_user_token(conn)
+    token = user_token_identifier && Account.get_user_token_by_identifier(user_token_identifier)
+    user = token && Account.get_user_by_id(token.user_id)
     assign(conn, :current_user, user)
   end
 
@@ -128,17 +143,7 @@ defmodule AngenWeb.UserAuth do
 
     * `:ensure_authenticated` - Authenticates the user from the session,
       and assigns the current_user to socket assigns based
-      on user_token.
-      Redirects to login page if there's no logged user.
-
-    * `:redirect_if_user_is_authenticated` - Authenticates the user from the session.
-      Redirects to signed_in_path if there's a logged user.
-
-  ## Examples
-
-  Use the `on_mount` lifecycle macro in LiveViews to mount or authenticate
-  the current_user:
-
+      on user_token.stop_execu
       defmodule AngenWeb.PageLive do
         use AngenWeb, :live_view
 
@@ -196,11 +201,11 @@ defmodule AngenWeb.UserAuth do
 
   defp mount_current_user(socket, session) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
-      case Account.get_user_by_session_token(session["user_token"]) do
+      case Account.get_user_from_token_identifier(session["user_token"]) do
         nil ->
           nil
 
-        %{user: user} ->
+        %Teiserver.Account.User{} = user ->
           user
       end
     end)
@@ -239,7 +244,7 @@ defmodule AngenWeb.UserAuth do
 
   defp put_token_in_session(conn, token) do
     conn
-    |> put_session(:user_token, token)
+    |> put_session(:user_token, token.identifier_code)
     |> put_session(:live_socket_id, "users_sessions:#{Base.url_encode64(token.identifier_code)}")
   end
 

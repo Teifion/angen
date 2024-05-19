@@ -1,11 +1,10 @@
 defmodule Angen.Account.UserTokenQueries do
   @moduledoc false
-  import Ecto.Query, warn: false
-  alias Teiserver.Helpers.QueryHelper
+  use TeiserverMacros, :queries
   alias Angen.Account.UserToken
   require Logger
 
-  @spec user_token_query(Teiserver.query_args()) :: Ecto.Query.t()
+  @spec user_token_query(Angen.query_args()) :: Ecto.Query.t()
   def user_token_query(args) do
     query = from(user_tokens in UserToken)
 

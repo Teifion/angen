@@ -7,19 +7,8 @@ These are values configured at startup (for Elixir devs, this just goes over the
 
 The values are intended to be set once and not need changing again, they are also designed to only need to be accessed by devops/sysadmin users. Game admins/moderators have a set of runtime configs they can access via a live interface and are designed to be changed while the server is still running.
 
-## Changing things on the fly
-If for whatever reason you need to change something on the fly you can do so by accessing the remote shell of Angen and using the following commands.
-
-```elixir
-# Get a value
-Application.get_env(:angen, :var_name)
-
-# Put a value
-Application.put_env(:angen, :var_name, value)
-```
-
-# Options - Runtime
-The following options can be changed on the fly using the above snippet.
+## Startup values
+The following values are set at application startup; to change them will require changing the config file and restarting the Angen application on that node.
 
 ## `CERT_ROOT`
 The root path for your certificate. By default it will point to `/etc/letsencrypt/live/#{domain_name}`.
@@ -32,11 +21,35 @@ Angen.Helpers.JsonSchemaHelper.load()
 
 Defaults to `/apps/angen/lib/angen-0.0.1/priv/static/schema`
 
-## `FONTAWESOME_FREE_ONLY`
-Angen makes use of Fontawesome for its icons. By default it will only display the free icons but you can change this via this variable (set it to "FALSE" in the env file).
-
-# Options - Startup only
-The following options are used at startup time only, changing them on the fly will almost certainly not work correctly (and in some cases could break things).
-
 ## `TLS_PORT`
 The port used to accept TLS connections. Defaults to `8201`.
+
+# Changing things on the fly
+If for whatever reason you need to change something on the fly you can do so by accessing the remote shell of Angen and using the following commands.
+
+```elixir
+# Get a value
+Application.get_env(:angen, :var_name)
+
+# Put a value
+Application.put_env(:angen, :var_name, value)
+```
+
+## `FONTAWESOME_FREE_ONLY`
+Angen makes use of Fontawesome for its icons. By default it will only display the free icons but you can change this via this variable (set it to "FALSE" in the env file).
+```elixir
+Application.put_env(:fontawesome, :free_only, true | false)
+```
+
+# ANGEN_ALLOW_WEB_REGISTER
+Defaults to "FALSE". It allows creation of accounts via the web interface.
+```elixir
+Application.put_env(:angen, :allow_web_register, true | false)
+```
+
+# ANGEN_ALLOW_GUEST_ACCOUNTS="FALSE"
+Defaults to "FALSE". It allows use of guest accounts (both through the web interface and any protocol interfaces)
+```elixir
+Application.put_env(:angen, :allow_guest_accounts, true | false)
+```
+

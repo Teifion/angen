@@ -1,0 +1,32 @@
+<div style="height: 15px;">&nbsp;</div>
+
+<div class="row">
+  <.menu_card
+    :if={@allow_registration}
+    icon="fa-user-plus"
+    icon_class="fa-duotone"
+    col_classes="col"
+    url={~p"/users/register"}
+  >
+    Register
+  </.menu_card>
+  
+  <.menu_card
+    icon="fa-sign-in-alt"
+    icon_class="fa-duotone"
+    col_classes="col"
+    url={~p"/login"}
+  >
+    Login
+  </.menu_card>
+  
+  <.menu_card
+    :if={@allow_guests}
+    icon="fa-user-secret"
+    icon_class="fa-duotone"
+    col_classes="col"
+    dynamic_attrs={%{"phx-click" => "guest-account"}}
+  >
+    Continue as Guest
+  </.menu_card>
+</div>

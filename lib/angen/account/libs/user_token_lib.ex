@@ -80,8 +80,26 @@ defmodule Angen.Account.UserTokenLib do
 
   """
   @spec get_user_token_by_identifier(UserToken.identifier_code()) :: UserToken.t() | nil
+  def get_user_token_by_identifier(nil), do: nil
   def get_user_token_by_identifier(identifier_code) do
-    UserTokenQueries.user_token_query(where: [identifier_code: identifier_code], preload: [:user])
+    case Cachex.get(:user_token_identifier_cache, identifier_code) do
+      {:ok, nil} ->
+        token = do_get_user_token_by_identifier(identifier_code)
+        Cachex.put(:user_token_identifier_cache, identifier_code, token)
+        token
+
+      {:ok, value} ->
+        value
+    end
+  end
+
+  defp do_get_user_token_by_identifier(identifier_code) do
+    UserTokenQueries.user_token_query(
+      where: [
+        identifier_code: identifier_code,
+        expires_after: Timex.now()
+      ]
+    )
     |> Repo.one()
   end
 
@@ -108,34 +126,10 @@ defmodule Angen.Account.UserTokenLib do
       where: [
         identifier_code: identifier_code,
         renewal_code: renewal_code
-      ],
-      preload: [:user]
+      ]
     )
     |> Repo.one()
   end
-
-  @doc """
-  Checks if the token is valid and returns its underlying lookup query.
-
-  The query returns the user found by the token, if any.
-
-  The token is valid if it matches the value in the database and it has
-  not expired (after @session_validity_in_days).
-  """
-  @spec get_user_by_session_token(UserToken.t()) :: UserToken.t() | nil
-  def get_user_by_session_token(%{identifier_code: identifier_code, user_id: user_id}) do
-    UserTokenQueries.user_token_query(
-      where: [
-        user_id: user_id,
-        identifier_code: identifier_code,
-        expires_after: Timex.now()
-      ],
-      preload: [:user]
-    )
-    |> Repo.one()
-  end
-
-  def get_user_by_session_token(_), do: nil
 
   @doc """
   Creates a user_token.
@@ -168,7 +162,7 @@ defmodule Angen.Account.UserTokenLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_user_token(Teiserver.user_id(), String.t(), String.t(), String.t()) ::
+  @spec create_user_token(Angen.user_id(), String.t(), String.t(), String.t()) ::
           {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}
   def create_user_token(user_id, context, user_agent, ip) do
     %UserToken{}
@@ -218,6 +212,7 @@ defmodule Angen.Account.UserTokenLib do
   """
   @spec delete_user_token(UserToken.t()) :: {:ok, UserToken.t()} | {:error, Ecto.Changeset.t()}
   def delete_user_token(%UserToken{} = user_token) do
+    Angen.invalidate_cache(:user_token_identifier_cache, user_token.identifier_code)
     Repo.delete(user_token)
   end
 
@@ -246,7 +241,7 @@ defmodule Angen.Account.UserTokenLib do
     |> binary_part(0, length)
   end
 
-  @spec delete_user_tokens(Teiserver.user_id()) :: :ok
+  @spec delete_user_tokens(Angen.user_id()) :: :ok
   def delete_user_tokens(user_id) do
     UserTokenQueries.user_token_query(where: [user_id: user_id], limit: :infinity)
     |> Repo.delete_all()
