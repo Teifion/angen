@@ -64,14 +64,13 @@ defmodule Angen.MixProject do
       {:plug_cowboy, "~> 2.5"},
 
       # Extra deps
+      {:horde, "~> 0.9"},
+      {:telemetry, "~> 1.2.1"},
       {:ecto_psql_extras, "~> 0.7"},
-      {:logger_file_backend, "~> 0.0.10"},
       {:timex, "~> 3.7.5"},
       {:argon2_elixir, "~> 3.0"},
       {:oban, "~> 2.17"},
       {:phoenix_pubsub, "~> 2.0"},
-      {:excoveralls, "~> 0.15.3", only: :test, runtime: false},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dart_sass, "~> 0.6"},
       {:tzdata, "~> 1.1"},
       {:etop, "~> 0.7.0"},
@@ -79,6 +78,8 @@ defmodule Angen.MixProject do
       {:thousand_island, "~> 1.3"},
       {:cachex, "~> 3.6"},
       {:ex_json_schema, "~> 0.10.2"},
+      {:excoveralls, "~> 0.15.3", only: :test, runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
 
       # We're pointing it at a specific git branch most of the time but
       # when developing locally we'll want to use a relative

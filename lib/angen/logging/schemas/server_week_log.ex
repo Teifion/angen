@@ -8,6 +8,7 @@ defmodule Angen.Logging.ServerWeekLog do
   * `:date` - The date this log refers to
   * `:year` - The year this log refers to
   * `:week` - The week this log refers to
+  * `:node` - The node this log refers to or "all" if for all nodes combined
   * `:data` - The data included
   """
   use TeiserverMacros, :schema
@@ -16,6 +17,7 @@ defmodule Angen.Logging.ServerWeekLog do
   schema "logging_server_week_logs" do
     field(:year, :integer, primary_key: true)
     field(:week, :integer, primary_key: true)
+    field(:node, :string, primary_key: true)
     field(:date, :date)
     field(:data, :map)
   end
@@ -32,7 +34,7 @@ defmodule Angen.Logging.ServerWeekLog do
   @spec changeset(map(), map()) :: Ecto.Changeset.t()
   def changeset(struct, attrs \\ %{}) do
     struct
-    |> cast(attrs, ~w(year week date data)a)
-    |> validate_required(~w(year week date data)a)
+    |> cast(attrs, ~w(year week date node data)a)
+    |> validate_required(~w(year week date node data)a)
   end
 end

@@ -8,6 +8,7 @@ defmodule Angen.Logging.ServerMonthLog do
   * `:date` - The date this log refers to
   * `:year` - The year this log refers to
   * `:month` - The month this log refers to
+  * `:node` - The node this log refers to or "all" if for all nodes combined
   * `:data` - The data included
   """
   use TeiserverMacros, :schema
@@ -16,6 +17,7 @@ defmodule Angen.Logging.ServerMonthLog do
   schema "logging_server_month_logs" do
     field(:year, :integer, primary_key: true)
     field(:month, :integer, primary_key: true)
+    field(:node, :string, primary_key: true)
     field(:date, :date)
     field(:data, :map)
   end
@@ -32,7 +34,7 @@ defmodule Angen.Logging.ServerMonthLog do
   @spec changeset(map(), map()) :: Ecto.Changeset.t()
   def changeset(struct, attrs \\ %{}) do
     struct
-    |> cast(attrs, ~w(year month date data)a)
-    |> validate_required(~w(year month date data)a)
+    |> cast(attrs, ~w(year month date node data)a)
+    |> validate_required(~w(year month date node data)a)
   end
 end

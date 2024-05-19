@@ -35,6 +35,8 @@ config :logger, level: :warning
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
 
+config :angen, Oban, testing: :manual
+
 config :angen,
   dev_routes: true,
   test_mode: true,

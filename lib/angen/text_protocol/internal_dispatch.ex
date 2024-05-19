@@ -52,6 +52,9 @@ defmodule Angen.TextProtocol.InternalDispatch do
   def lookup("Teiserver.Connections.Client:" <> _, :left_lobby),
     do: InfoHandlers.ClientLeftLobby
 
+  def lookup("Teiserver.Connections.Client:" <> _, :client_connected),
+    do: InfoHandlers.ClientConnected
+
   def lookup("Teiserver.Connections.Client:" <> _, :client_destroyed),
     do: InfoHandlers.ClientDestroyed
 

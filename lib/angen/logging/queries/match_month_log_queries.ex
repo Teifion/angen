@@ -31,6 +31,12 @@ defmodule Angen.Logging.MatchMonthLogQueries do
   def _where(query, _, ""), do: query
   def _where(query, _, nil), do: query
 
+  def _where(query, :node, node) do
+    from(match_month_logs in query,
+      where: match_month_logs.node in ^List.wrap(node)
+    )
+  end
+
   def _where(query, :date, date) do
     from(match_month_logs in query,
       where: match_month_logs.date == ^date

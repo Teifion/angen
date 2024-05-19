@@ -6,6 +6,7 @@ defmodule Angen.Logging.MatchDayLog do
   ### Attributes
 
   * `:date` - The date this log refers to
+  * `:node` - The node this log refers to or "all" if for all nodes combined
   * `:data` - The data included
   """
   use TeiserverMacros, :schema
@@ -13,6 +14,7 @@ defmodule Angen.Logging.MatchDayLog do
   @primary_key false
   schema "logging_match_day_logs" do
     field(:date, :date, primary_key: true)
+    field(:node, :string, primary_key: true)
     field(:data, :map)
   end
 
@@ -26,7 +28,7 @@ defmodule Angen.Logging.MatchDayLog do
   @spec changeset(map(), map()) :: Ecto.Changeset.t()
   def changeset(struct, attrs \\ %{}) do
     struct
-    |> cast(attrs, ~w(date data)a)
-    |> validate_required(~w(date data)a)
+    |> cast(attrs, ~w(date node data)a)
+    |> validate_required(~w(date node data)a)
   end
 end

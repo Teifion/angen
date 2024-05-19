@@ -8,18 +8,36 @@ defmodule Angen.TextProtocol.TextHandlerServer do
 
   @impl ThousandIsland.Handler
   def handle_connection(socket, _state) do
+    Angen.wait_for_startup()
+
     ip =
       Map.get(socket.span.start_metadata, :remote_address)
       |> Tuple.to_list()
       |> Enum.join(".")
 
+    conn_id = Teiserver.uuid()
+
+    # Update the queue pids cache to point to this process
+    Horde.Registry.register(
+      Angen.ConnectionRegistry,
+      conn_id,
+      conn_id
+    )
+
+    Registry.register(
+      Angen.LocalConnectionRegistry,
+      conn_id,
+      conn_id
+    )
+
     {:continue,
-     %{
+     %Angen.ConnState{
        # Connection info
        ip: ip,
        socket: socket,
 
        # Client/User info
+       conn_id: conn_id,
        user_id: nil,
        user: nil,
        lobby_host?: false,
@@ -42,7 +60,7 @@ defmodule Angen.TextProtocol.TextHandlerServer do
     clean_data = String.trim(data)
 
     # This part handles the actual command
-    {response, new_state} = ExternalDispatch.handle(clean_data, state)
+    {response, %Angen.ConnState{} = new_state} = ExternalDispatch.handle(clean_data, state)
 
     # If we get one or more responses, we send them
     response
@@ -81,7 +99,7 @@ defmodule Angen.TextProtocol.TextHandlerServer do
     # end
 
     # This handles the actual message
-    {response, new_state} = InternalDispatch.handle(message, state)
+    {response, %Angen.ConnState{} = new_state} = InternalDispatch.handle(message, state)
 
     # If we get one or more responses, we send them
     (response || [])

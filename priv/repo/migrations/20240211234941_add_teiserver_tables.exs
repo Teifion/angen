@@ -6,6 +6,6 @@ defmodule HelloWorldServer.Repo.Migrations.AddTeiserverTables do
   end
 
   def down do
-    Teiserver.Migration.down(version: 1)
+    Teiserver.Migration.down(version: 2)
   end
 end

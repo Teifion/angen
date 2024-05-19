@@ -131,3 +131,9 @@ Flag the account for GDPR deletion in 24 hours (to allow undoing of this command
 ## TODO: `account/cancel_forgetme`
 Cancels GDPR deletion.
 
+## TODO: `account/get_settings`
+Gets the user settings stored on the server.
+
+## TODO: `account/put_settings`
+Puts user settings.
+

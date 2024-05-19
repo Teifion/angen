@@ -24,28 +24,6 @@ defmodule Angen.Logging.ServerMinuteLogLib do
   @doc """
   Gets a single server_minute_log.
 
-  Raises `Ecto.NoResultsError` if the ServerMinuteLog does not exist.
-
-  ## Examples
-
-      iex> get_server_minute_log!(123)
-      %ServerMinuteLog{}
-
-      iex> get_server_minute_log!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  @spec get_server_minute_log!(DateTime.t()) :: ServerMinuteLog.t()
-  @spec get_server_minute_log!(DateTime.t(), Teiserver.query_args()) :: ServerMinuteLog.t()
-  def get_server_minute_log!(timestamp, query_args \\ []) do
-    (query_args ++ [timestamp: timestamp])
-    |> ServerMinuteLogQueries.server_minute_log_query()
-    |> Repo.one!()
-  end
-
-  @doc """
-  Gets a single server_minute_log.
-
   Returns nil if the ServerMinuteLog does not exist.
 
   ## Examples
@@ -57,10 +35,9 @@ defmodule Angen.Logging.ServerMinuteLogLib do
       nil
 
   """
-  @spec get_server_minute_log(DateTime.t()) :: ServerMinuteLog.t() | nil
-  @spec get_server_minute_log(DateTime.t(), Teiserver.query_args()) :: ServerMinuteLog.t() | nil
-  def get_server_minute_log(timestamp, query_args \\ []) do
-    (query_args ++ [timestamp: timestamp])
+  @spec get_server_minute_log(DateTime.t(), String.t() | [String.t()], Teiserver.query_args()) :: ServerMinuteLog.t() | nil
+  def get_server_minute_log(timestamp, node, query_args \\ []) do
+    (query_args ++ [timestamp: timestamp, node: node])
     |> ServerMinuteLogQueries.server_minute_log_query()
     |> Repo.one()
   end

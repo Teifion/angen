@@ -77,7 +77,7 @@ defmodule AngenWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     live_dashboard("/live_dashboard",
-      metrics: AngenWeb.Telemetry,
+      metrics: Angen.TelemetrySupervisor,
       ecto_repos: [Angen.Repo],
       on_mount: [
         {AngenWeb.UserAuth, :ensure_authenticated},

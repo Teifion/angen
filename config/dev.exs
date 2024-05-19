@@ -75,9 +75,9 @@ config :phoenix, :plug_init_mode, :runtime
 config :swoosh, :api_client, false
 
 # Comment the below block to allow background jobs to happen in dev
-config :angen, Oban,
-  queues: false,
-  crontab: false
+# config :angen, Oban,
+#   queues: false,
+#   crontab: false
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console,

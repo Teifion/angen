@@ -31,6 +31,12 @@ defmodule Angen.Logging.ServerYearLogQueries do
   def _where(query, _, ""), do: query
   def _where(query, _, nil), do: query
 
+  def _where(query, :node, node) do
+    from(server_year_logs in query,
+      where: server_year_logs.node in ^List.wrap(node)
+    )
+  end
+
   def _where(query, :date, date) do
     from(server_year_logs in query,
       where: server_year_logs.date == ^date

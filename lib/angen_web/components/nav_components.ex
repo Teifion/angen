@@ -156,7 +156,7 @@ defmodule AngenWeb.NavComponents do
         :auto -> "fa-4x"
         :medium -> "fa-4x"
         :large -> "fa-6x"
-        nil -> assigns[:col_classes] || "fa-4x"
+        nil -> assigns[:icon_size] || "fa-4x"
       end
 
     assigns =

@@ -9,7 +9,8 @@ defmodule Angen.Logging.ServerMinuteLogQueries do
     query = from(server_minute_logs in ServerMinuteLog)
 
     query
-    |> do_where(date: args[:date])
+    |> do_where(timestamp: args[:timestamp])
+    |> do_where(node: args[:node])
     |> do_where(args[:where])
     |> do_where(args[:search])
     |> do_order_by(args[:order_by])
@@ -30,6 +31,24 @@ defmodule Angen.Logging.ServerMinuteLogQueries do
   @spec _where(Ecto.Query.t(), Atom.t(), any()) :: Ecto.Query.t()
   def _where(query, _, ""), do: query
   def _where(query, _, nil), do: query
+
+  def _where(query, :node, node) do
+    from(server_minute_logs in query,
+      where: server_minute_logs.node in ^List.wrap(node)
+    )
+  end
+
+  def _where(query, :not_node, node) do
+    from(server_minute_logs in query,
+      where: server_minute_logs.node not in ^List.wrap(node)
+    )
+  end
+
+  def _where(query, :timestamp, timestamp) do
+    from(server_minute_logs in query,
+      where: server_minute_logs.timestamp == ^timestamp
+    )
+  end
 
   def _where(query, :after, timestamp) do
     from(server_minute_logs in query,

@@ -12,7 +12,8 @@ defmodule Angen.Application do
       {Ecto.Migrator,
        repos: Application.fetch_env!(:angen, :ecto_repos),
        skip: System.get_env("SKIP_MIGRATIONS") == "true"},
-      AngenWeb.Telemetry,
+      Angen.TelemetrySupervisor,
+      {Angen.Telemetry.CollectorServer, name: Angen.Telemetry.CollectorServer},
       Angen.Repo,
       {Phoenix.PubSub, name: Angen.PubSub},
       {Finch, name: Angen.Finch},
@@ -22,10 +23,13 @@ defmodule Angen.Application do
       Angen.DevSupport.IntegrationSupervisor,
 
       # Caches
+      add_cache(:angen_metadata),
       add_cache(:protocol_schemas),
       add_cache(:protocol_command_dispatches),
 
-      # {Oban, oban_config()},
+      {Horde.Registry, [keys: :unique, members: :auto, name: Angen.ConnectionRegistry]},
+      {Registry, [keys: :unique, members: :auto, name: Angen.LocalConnectionRegistry]},
+
       {ThousandIsland,
        port: Application.get_env(:angen, :tls_port),
        handler_module: Angen.TextProtocol.TextHandlerServer,
@@ -34,7 +38,9 @@ defmodule Angen.Application do
          keyfile: Application.get_env(:angen, :certs)[:keyfile],
          certfile: Application.get_env(:angen, :certs)[:certfile]
          # certfile: Application.get_env(:angen, :certs)[:cacertfile]
-       ]}
+       ]},
+
+      {Oban, oban_config()},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -56,6 +62,26 @@ defmodule Angen.Application do
     Angen.TextProtocol.ExternalDispatch.cache_dispatches()
     Angen.Settings.ServerSettings.create_server_settings()
     Angen.DevSupport.IntegrationSupervisor.start_integration_supervisor_children()
+
+    teiserver_events = Teiserver.Telemetry.event_list()
+    angen_events = Angen.Telemetry.event_list()
+
+    # Collector server
+    :telemetry.attach_many("teiserver-collector", teiserver_events ++ angen_events, &Angen.Telemetry.CollectorServer.handle_event/4, [])
+
+    # For when we want to track Oban events
+    # oban_events = [
+    #   [:oban, :job, :start],
+    #   [:oban, :job, :stop],
+    #   [:oban, :job, :exception],
+    #   [:oban, :circuit, :trip]
+    # ]
+    # :telemetry.attach_many("oban-logger", events, &Teiserver.Helper.ObanLogger.handle_event/4, [])
+
+    Cachex.put(:angen_metadata, :startup_complete, true)
+
+    # Straight to logs
+    # :telemetry.attach_many("teiserver-logger", teiserver_events, &Angen.Telemetry.TelemetryHelper.handle_event/4, [])
   end
 
   @spec add_cache(atom) :: map()
@@ -70,6 +96,10 @@ defmodule Angen.Application do
            opts
          ]}
     }
+  end
+
+  defp oban_config do
+    Application.get_env(:angen, Oban)
   end
 
   # Tell Phoenix to update the endpoint configuration

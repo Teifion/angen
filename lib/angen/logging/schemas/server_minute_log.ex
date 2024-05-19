@@ -6,6 +6,7 @@ defmodule Angen.Logging.ServerMinuteLog do
   ### Attributes
 
   * `:timestamp` - The timestamp this log refers to
+  * `:node` - The node this log refers to or "all" if for all nodes combined
   * `:data` - The data included
   """
   use TeiserverMacros, :schema
@@ -13,6 +14,7 @@ defmodule Angen.Logging.ServerMinuteLog do
   @primary_key false
   schema "logging_server_minute_logs" do
     field(:timestamp, :utc_datetime, primary_key: true)
+    field(:node, :string, primary_key: true)
     field(:data, :map)
   end
 
@@ -26,7 +28,7 @@ defmodule Angen.Logging.ServerMinuteLog do
   @spec changeset(map(), map()) :: Ecto.Changeset.t()
   def changeset(struct, attrs \\ %{}) do
     struct
-    |> cast(attrs, ~w(timestamp data)a)
-    |> validate_required(~w(timestamp data)a)
+    |> cast(attrs, ~w(timestamp node data)a)
+    |> validate_required(~w(timestamp node data)a)
   end
 end

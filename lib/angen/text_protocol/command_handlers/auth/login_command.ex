@@ -9,7 +9,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.Login do
 
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
-  def handle(%{"token" => token_identifier_code, "user_agent" => _}, state) do
+  def handle(%{"token" => token_identifier_code, "user_agent" => _} = cmd, state) do
     case Angen.Account.get_user_token_by_identifier(token_identifier_code) do
       nil ->
         FailureResponse.generate({name(), "Bad token"}, state)
@@ -26,7 +26,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.Login do
         if bad_ip do
           FailureResponse.generate({name(), "Bad token"}, state)
         else
-          Teiserver.Api.connect_user(token.user_id)
+          Teiserver.Api.connect_user(token.user_id, bot: Map.get(cmd, "bot?", false))
           TextProtocol.Auth.LoginResponse.generate(token.user, state)
         end
     end

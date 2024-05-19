@@ -92,6 +92,15 @@ Teiserver.Account.create_user(%{
 })
 ```
 
+Editing it if you change something later
+```elixir
+user = Teiserver.Account.get_user_by_email("root@localhost")
+Teiserver.Account.update_user(user, %{
+  groups: ["admin"],
+  permissions: ["admin"]
+})
+```
+
 ## Resetting your user password
 When running locally it's likely you won't want to connect the server to an email account, as such password resets need to be done a little differently.
 

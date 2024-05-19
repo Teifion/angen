@@ -69,6 +69,19 @@ config :ex_json_schema,
        :remote_schema_resolver,
        {Angen.Helpers.JsonSchemaHelper, :resolve_schema}
 
+config :angen, Oban,
+  repo: Angen.Repo,
+  plugins: [
+    {Oban.Plugins.Pruner, max_age: 3600},
+    {Oban.Plugins.Cron,
+     crontab: [
+       # Every minute
+       {"* * * * *", Angen.Logging.PersistServerMinuteTask},
+     ]}
+  ],
+  queues: [logging: 1, cleanup: 1, teiserver: 10]
+
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

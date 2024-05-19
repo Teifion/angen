@@ -1,4 +1,5 @@
-defmodule AngenWeb.Telemetry do
+defmodule Angen.TelemetrySupervisor do
+  @moduledoc false
   use Supervisor
   import Telemetry.Metrics
 
@@ -11,15 +12,20 @@ defmodule AngenWeb.Telemetry do
     children = [
       # Telemetry poller will execute the given period measurements
       # every 10_000ms. Learn more here: https://hexdocs.pm/telemetry_metrics
-      {:telemetry_poller, measurements: periodic_measurements(), period: 10_000}
+      {:telemetry_poller, measurements: periodic_measurements(), period: 10_000},
       # Add reporters as children of your supervision tree.
-      # {Telemetry.Metrics.ConsoleReporter, metrics: metrics()}
+      # {Telemetry.Metrics.ConsoleReporter, metrics: teiserver_metrics()}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
   end
 
+  @spec metrics() :: list()
   def metrics do
+    phoenix_metrics() ++ repo_metrics() ++ vm_metrics() ++ teiserver_metrics() ++ angen_metrics()
+  end
+
+  defp phoenix_metrics() do
     [
       # Phoenix Metrics
       summary("phoenix.endpoint.start.system_time",
@@ -49,9 +55,12 @@ defmodule AngenWeb.Telemetry do
       summary("phoenix.channel_handled_in.duration",
         tags: [:event],
         unit: {:native, :millisecond}
-      ),
+      )
+    ]
+  end
 
-      # Database Metrics
+  defp repo_metrics() do
+    [
       summary("angen.repo.query.total_time",
         unit: {:native, :millisecond},
         description: "The sum of the other measurements"
@@ -72,13 +81,35 @@ defmodule AngenWeb.Telemetry do
         unit: {:native, :millisecond},
         description:
           "The time the connection spent waiting before being checked out for the query"
-      ),
+      )
+    ]
+  end
 
-      # VM Metrics
+  defp vm_metrics() do
+    [
       summary("vm.memory.total", unit: {:byte, :kilobyte}),
       summary("vm.total_run_queue_lengths.total"),
       summary("vm.total_run_queue_lengths.cpu"),
       summary("vm.total_run_queue_lengths.io")
+    ]
+  end
+
+  defp teiserver_metrics() do
+    [
+      counter("teiserver.user.failed_login.reason"),
+
+      counter("teiserver.client.event.type", description: "ClientServer events"),
+      counter("teiserver.client.disconnect.reason"),
+
+      counter("teiserver.lobby.event.type"),
+
+      summary("teiserver.logging.add_audit_log.action")
+    ]
+  end
+
+  defp angen_metrics() do
+    [
+      counter("angen.protocol.response.start.system_time")
     ]
   end
 

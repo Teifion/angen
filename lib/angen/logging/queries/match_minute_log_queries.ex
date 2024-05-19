@@ -31,6 +31,12 @@ defmodule Angen.Logging.MatchMinuteLogQueries do
   def _where(query, _, ""), do: query
   def _where(query, _, nil), do: query
 
+  def _where(query, :node, node) do
+    from(match_minute_logs in query,
+      where: match_minute_logs.node in ^List.wrap(node)
+    )
+  end
+
   def _where(query, :after, timestamp) do
     from(match_minute_logs in query,
       where: match_minute_logs.timestamp >= ^timestamp
