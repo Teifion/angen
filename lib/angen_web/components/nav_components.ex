@@ -2,7 +2,12 @@ defmodule AngenWeb.NavComponents do
   @moduledoc false
   use Phoenix.Component
 
-  # import Angen.Account.AuthLib, only: [allow?: 2, allow_any?: 2, allow_all?: 2]
+  import Angen.Account.AuthLib,
+    only: [
+      allow?: 2
+      # allow_any?: 2,
+      # allow_all?: 2
+    ]
 
   use Phoenix.VerifiedRoutes,
     endpoint: AngenWeb.Endpoint,
@@ -56,6 +61,11 @@ defmodule AngenWeb.NavComponents do
           <!-- Left links -->
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <.top_nav_item text="Home" active={@active == "home"} route={~p"/"} />
+
+            <%= if allow?(@current_user, ~w(admin)a) do %>
+              <.top_nav_item text="Admin" active={@active == "admin"} route={~p"/admin"} />
+              <.top_nav_item text="Logging" active={@active == "logging"} route={~p"/admin/logging"} />
+            <% end %>
           </ul>
           <!-- Left links -->
         </div>
@@ -165,6 +175,7 @@ defmodule AngenWeb.NavComponents do
       |> assign(:extra_classes, extra_classes)
       |> assign(:icon_size, icon_size)
       |> assign(:style, style)
+      |> assign(:url, (if assigns[:disabled], do: nil, else: assigns[:url]))
 
     ~H"""
     <div class={"#{@col_classes} menu-card #{@extra_classes}"} {@dynamic_attrs}>

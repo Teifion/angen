@@ -13,7 +13,8 @@ defmodule Angen.Application do
        repos: Application.fetch_env!(:angen, :ecto_repos),
        skip: System.get_env("SKIP_MIGRATIONS") == "true"},
       Angen.TelemetrySupervisor,
-      {Angen.Telemetry.CollectorServer, name: Angen.Telemetry.CollectorServer},
+      {Angen.Telemetry.TeiserverCollectorServer, name: Angen.Telemetry.TeiserverCollectorServer},
+      {Angen.Telemetry.AngenCollectorServer, name: Angen.Telemetry.AngenCollectorServer},
       Angen.Repo,
       {Phoenix.PubSub, name: Angen.PubSub},
       {Finch, name: Angen.Finch},
@@ -69,7 +70,8 @@ defmodule Angen.Application do
     angen_events = Angen.Telemetry.event_list()
 
     # Collector server
-    :telemetry.attach_many("teiserver-collector", teiserver_events ++ angen_events, &Angen.Telemetry.CollectorServer.handle_event/4, [])
+    :telemetry.attach_many("teiserver-collector", teiserver_events, &Angen.Telemetry.TeiserverCollectorServer.handle_event/4, [])
+    :telemetry.attach_many("angen-collector", angen_events, &Angen.Telemetry.AngenCollectorServer.handle_event/4, [])
 
     # For when we want to track Oban events
     # oban_events = [

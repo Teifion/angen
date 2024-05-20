@@ -109,7 +109,10 @@ defmodule Angen.TelemetrySupervisor do
 
   defp angen_metrics() do
     [
-      counter("angen.protocol.response.start.system_time")
+      distribution("angen.protocol.response.stop.duration", buckets: [500, 1000, 3000, 7500, 15000], unit: {:native, :microsecond}, description: "Resp dist"),
+      summary("angen.protocol.response.stop.duration", description: "Resp summary"),
+      counter("angen.protocol.response.stop.duration", description: "Resp span"),
+      counter("angen.proto.response.name", description: "Resp emit")
     ]
   end
 

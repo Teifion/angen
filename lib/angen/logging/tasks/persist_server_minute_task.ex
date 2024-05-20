@@ -40,7 +40,8 @@ defmodule Angen.Logging.PersistServerMinuteTask do
       client: get_client_states(),
       lobby: get_lobby_states(),
       server_processes: get_server_details(),
-      os: get_os_details()
+      os: get_os_details(),
+      telemetry_events: get_telemetry_events()
     }
 
     Logging.create_server_minute_log(%{
@@ -131,6 +132,11 @@ defmodule Angen.Logging.PersistServerMinuteTask do
       # disk: disk |> Map.new(),
       system_mem: :memsup.get_system_memory_data() |> Map.new()
     }
+  end
+
+  @spec get_telemetry_events() :: map()
+  def get_telemetry_events() do
+    Telemetry.TelemetryLib.get_all_totals(true)
   end
 
   # Given a map where the values are integers, add them up and create a new key `:total`

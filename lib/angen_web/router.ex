@@ -36,7 +36,19 @@ defmodule AngenWeb.Router do
     live_session :admin_index,
       on_mount: [
         {AngenWeb.UserAuth, :ensure_authenticated},
-        {AngenWeb.UserAuth, {:authorise, "admin"}}
+        {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
+      ] do
+      live "/", HomeLive.Index, :index
+    end
+  end
+
+  scope "/admin/logging", AngenWeb.Admin.Logging do
+    pipe_through [:browser]
+
+    live_session :logging_index,
+      on_mount: [
+        {AngenWeb.UserAuth, :ensure_authenticated},
+        {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
       ] do
       live "/", HomeLive.Index, :index
     end

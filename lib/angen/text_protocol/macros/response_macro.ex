@@ -14,20 +14,12 @@ defmodule Angen.TextProtocol.ResponseMacro do
 
       @spec generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
       def generate(data, state) do
-        #  =
-
-        :telemetry.execute(
-          [:angen, :proto, :response],
-          %{name: name()},
-          %{}
-        )
-
         {result, new_state} = :telemetry.span(
           [:angen, :protocol, :response],
           %{name: name()},
           fn ->
             r = do_generate(data, state)
-            {r, %{metadata: "Information"}}
+            {r, %{name: name()}}
           end
         )
 

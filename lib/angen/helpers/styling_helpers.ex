@@ -52,43 +52,49 @@ defmodule Angen.Helper.StylingHelper do
   def get_bsname(colour), do: elem(colours(colour), 2)
 
   @spec icon(atom) :: String.t()
-  def icon(atom), do: icon(atom, "solid")
-
-  @spec icon(atom, String.t()) :: String.t()
-  def icon(:report, fa_type), do: "fa-#{fa_type} fa-signal"
-  def icon(:up, fa_type), do: "fa-#{fa_type} fa-level-up"
-  def icon(:back, fa_type), do: "fa-#{fa_type} fa-arrow-left"
+  def icon(:report), do: "fa-signal"
+  def icon(:up), do: "fa-level-up"
+  def icon(:back), do: "fa-arrow-left"
 
   def icon(:list, _fa_type), do: "fa-bars"
-  def icon(:show, fa_type), do: "fa-#{fa_type} fa-eye"
-  def icon(:search, fa_type), do: "fa-#{fa_type} fa-search"
-  def icon(:new, fa_type), do: "fa-#{fa_type} fa-plus"
-  def icon(:edit, fa_type), do: "fa-#{fa_type} fa-wrench"
-  def icon(:delete, fa_type), do: "fa-#{fa_type} fa-trash"
-  def icon(:export, fa_type), do: "fa-#{fa_type} fa-download"
-  def icon(:structure, fa_type), do: "fa-#{fa_type} fa-cubes"
-  def icon(:documentation, fa_type), do: "fa-#{fa_type} fa-book"
-  def icon(:chat, fa_type), do: "fa-#{fa_type} fa-comment"
-  def icon(:live_view, _fa_type), do: "fa-brands fa-phoenix-framework"
+  def icon(:show), do: "fa-eye"
+  def icon(:search), do: "fa-search"
+  def icon(:new), do: "fa-plus"
+  def icon(:edit), do: "fa-wrench"
+  def icon(:delete), do: "fa-trash"
+  def icon(:export), do: "fa-download"
+  def icon(:structure), do: "fa-cubes"
+  def icon(:documentation), do: "fa-book"
+  def icon(:chat), do: "fa-comment"
 
-  def icon(:admin, fa_type), do: "fa-#{fa_type} fa-user-crown"
-  def icon(:moderation, fa_type), do: "fa-#{fa_type} fa-gavel"
+  def icon(:admin), do: "fa-user-crown"
+  def icon(:moderation), do: "fa-gavel"
 
-  def icon(:overview, fa_type), do: "fa-#{fa_type} fa-expand-alt"
-  def icon(:detail, fa_type), do: "fa-#{fa_type} fa-file-alt"
-  def icon(:user, fa_type), do: "fa-#{fa_type} fa-user"
+  def icon(:overview), do: "fa-expand-alt"
+  def icon(:detail), do: "fa-file-alt"
+  def icon(:user), do: "fa-user"
 
-  def icon(:filter, fa_type), do: "fa-#{fa_type} fa-filter"
+  def icon(:filter), do: "fa-filter"
 
-  def icon(:summary, fa_type), do: "fa-#{fa_type} fa-user-chart"
+  def icon(:summary), do: "fa-user-chart"
 
-  def icon(:chart, fa_type), do: "fa-#{fa_type} fa-chart-line"
+  def icon(:chart), do: "fa-chart-line"
 
-  def icon(:day, fa_type), do: "fa-#{fa_type} fa-calendar-day"
-  def icon(:week, fa_type), do: "fa-#{fa_type} fa-calendar-week"
-  def icon(:month, fa_type), do: "fa-#{fa_type} fa-calendar-range"
-  def icon(:quarter, fa_type), do: "fa-#{fa_type} fa-calendar"
-  def icon(:year, fa_type), do: "fa-#{fa_type} fa-circle-calendar"
+  def icon(:day), do: "fa-calendar-day"
+  def icon(:week), do: "fa-calendar-week"
+  def icon(:month), do: "fa-calendar-range"
+  def icon(:quarter), do: "fa-calendar"
+  def icon(:year), do: "fa-circle-calendar"
+
+  # Sections
+  def icon(:logging), do: "fa-bars"
+  def icon(:server_activity), do: "fa-monitor-heart-rate"
+  def icon(:game_activity), do: "fa-swords"
+  def icon(:audit), do: "fa-archive"
+
+  @spec icon(atom, String.t()) :: String.t()
+  def icon(icon_atom, fa_type), do: "fa-#{fa_type} #{icon(icon_atom)}"
+
 
   # defp split_colour(c) do
   #   {r, _} = c |> String.slice(1, 2) |> Integer.parse(16)

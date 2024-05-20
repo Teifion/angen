@@ -20,15 +20,13 @@ defmodule Angen.Telemetry do
   - `Angen.Telemetry.ComplexAnonEvent`
   """
 
-  def event_list() do
-    [
-      [:angen, :protocol, :response],
-      [:angen, :protocol, :response, :start],
-      [:angen, :protocol, :response, :stop]
 
-      # [:angen, :proto, :response]
-    ]
-  end
+
+  alias Angen.Telemetry.TelemetryLib
+
+  @doc false
+  @spec event_list() :: [[atom]]
+  defdelegate event_list(), to: TelemetryLib
 
   # EventTypes
   alias Angen.Telemetry.{EventType, EventTypeLib, EventTypeQueries}

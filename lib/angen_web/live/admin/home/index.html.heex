@@ -9,6 +9,15 @@
   >
     Live dashboard
   </.menu_card>
+
+  <.menu_card
+    :if={allow?(@current_user, ~w(admin))}
+    icon={StylingHelper.icon(:logging)}
+    icon_class="fa-duotone"
+    url={~p"/admin/logging"}
+  >
+    Logging
+  </.menu_card>
 </div>
 
 <div class="row mt-3">
