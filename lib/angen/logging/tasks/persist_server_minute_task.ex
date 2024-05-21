@@ -1,13 +1,9 @@
 defmodule Angen.Logging.PersistServerMinuteTask do
-  @moduledoc """
-  A task used to persist a `Angen.Logging.ServerMinuteLog`; [(can be extended)](config.html#logging_post_server_minute_collect).
-  """
+  @moduledoc false
   use Oban.Worker, queue: :logging
 
   alias Angen.{Logging, Telemetry}
   alias Teiserver.{Connections, Game}
-
-  # Angen.Logging.PersistServerMinuteTask.perform(%{})
 
   @impl Oban.Worker
   @spec perform(any()) :: :ok

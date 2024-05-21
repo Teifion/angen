@@ -35,7 +35,6 @@ defmodule Angen.Logging.ServerDayLogLib do
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_server_day_log!(Date.t()) :: ServerDayLog.t()
   @spec get_server_day_log!(Date.t(), Teiserver.query_args()) :: ServerDayLog.t()
   def get_server_day_log!(date, query_args \\ []) do
     (query_args ++ [date: date])
@@ -57,11 +56,24 @@ defmodule Angen.Logging.ServerDayLogLib do
       nil
 
   """
-  @spec get_server_day_log(Date.t()) :: ServerDayLog.t() | nil
   @spec get_server_day_log(Date.t(), Teiserver.query_args()) :: ServerDayLog.t() | nil
   def get_server_day_log(date, query_args \\ []) do
     (query_args ++ [date: date])
     |> ServerDayLogQueries.server_day_log_query()
+    |> Repo.one()
+  end
+
+
+  @doc """
+  Gets the date of the last ServerMinuteLog in the database, returns nil if there are none.
+  """
+  @spec get_last_server_day_log_date() :: Date.t() | nil
+  def get_last_server_day_log_date() do
+    ServerDayLogQueries.server_day_log_query(
+      order_by: "Newest first",
+      select: [:date],
+      limit: 1
+    )
     |> Repo.one()
   end
 

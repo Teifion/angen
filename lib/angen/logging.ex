@@ -274,6 +274,10 @@ defmodule Angen.Logging do
   defdelegate get_server_minute_log(timestamp, node, query_args \\ []), to: ServerMinuteLogLib
 
   @doc section: :server_minute_log
+  @spec get_first_server_minute_datetime() :: DateTime.t() | nil
+  defdelegate get_first_server_minute_datetime(), to: ServerMinuteLogLib
+
+  @doc section: :server_minute_log
   @spec create_server_minute_log(map) :: {:ok, ServerMinuteLog.t()} | {:error, Ecto.Changeset.t()}
   defdelegate create_server_minute_log(attrs), to: ServerMinuteLogLib
 
@@ -304,9 +308,12 @@ defmodule Angen.Logging do
   defdelegate list_server_day_logs(args), to: ServerDayLogLib
 
   @doc section: :server_day_log
-  @spec get_server_day_log!(Date.t()) :: ServerDayLog.t()
   @spec get_server_day_log!(Date.t(), Angen.query_args()) :: ServerDayLog.t()
   defdelegate get_server_day_log!(date, query_args \\ []), to: ServerDayLogLib
+
+  @doc section: :server_day_log
+  @spec get_last_server_day_log_date() :: DateTime.t() | nil
+  defdelegate get_last_server_day_log_date(), to: ServerDayLogLib
 
   @doc section: :server_day_log
   @spec get_server_day_log(Date.t()) :: ServerDayLog.t() | nil

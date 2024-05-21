@@ -28,7 +28,7 @@ defmodule Angen.Logging.ServerDayLog do
   @spec changeset(map(), map()) :: Ecto.Changeset.t()
   def changeset(struct, attrs \\ %{}) do
     struct
-    |> cast(attrs, ~w(date node ata)a)
+    |> cast(attrs, ~w(date node data)a)
     |> validate_required(~w(date node data)a)
   end
 end

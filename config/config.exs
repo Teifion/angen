@@ -75,8 +75,19 @@ config :angen, Oban,
     {Oban.Plugins.Pruner, max_age: 3600},
     {Oban.Plugins.Cron,
      crontab: [
-       # Every minute
-       {"* * * * *", Angen.Logging.PersistServerMinuteTask},
+      # Every minute
+      {"* * * * *", Angen.Logging.PersistServerMinuteTask},
+
+      # 2am, to help prevent any issues when clocks move an hour
+      #  {"1 2 * * *", Teiserver.Logging.PersistServerDayTask},
+
+      #  {"2 2 * * *", Teiserver.Logging.Tasks.PersistServerWeekTask},
+      #  {"3 2 * * *", Teiserver.Logging.Tasks.PersistServerMonthTask},
+      #  {"4 2 * * *", Teiserver.Logging.Tasks.PersistServerQuarterTask},
+      #  {"5 2 * * *", Teiserver.Logging.Tasks.PersistServerYearTask},
+      #  {"6 2 * * *", Teiserver.Logging.Tasks.PersistMatchDayTask},
+      #  {"7 2 * * *", Teiserver.Logging.Tasks.PersistMatchMonthTask},
+      #  {"9 2 * * *", Teiserver.Logging.Tasks.PersistUserActivityDayTask},
      ]}
   ],
   queues: [logging: 1, cleanup: 1, teiserver: 10]

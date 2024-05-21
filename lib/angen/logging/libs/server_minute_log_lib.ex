@@ -5,6 +5,9 @@ defmodule Angen.Logging.ServerMinuteLogLib do
   use TeiserverMacros, :library
   alias Angen.Logging.{ServerMinuteLog, ServerMinuteLogQueries}
 
+  @segment_length 60
+  @segment_count div(1440, @segment_length) - 1
+
   @doc """
   Returns the list of server_minute_logs.
 
@@ -40,6 +43,21 @@ defmodule Angen.Logging.ServerMinuteLogLib do
     (query_args ++ [timestamp: timestamp, node: node])
     |> ServerMinuteLogQueries.server_minute_log_query()
     |> Repo.one()
+  end
+
+  @doc """
+  Gets the datetime of the first ServerMinuteLog in the database, returns nil if there are none.
+  """
+  @spec get_first_server_minute_datetime() :: DateTime.t() | nil
+  def get_first_server_minute_datetime() do
+    log = ServerMinuteLogQueries.server_minute_log_query(
+      order_by: "Oldest first",
+      select: [:timestamp],
+      limit: 1
+    )
+    |> Repo.one()
+
+    if log, do: log.timestamp, else: nil
   end
 
   @doc """
