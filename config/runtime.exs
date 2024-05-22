@@ -46,7 +46,7 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
+  host = System.get_env("PHX_HOST") || System.get_env("DOMAIN_NAME")
   domain_name = System.get_env("DOMAIN_NAME") || raise "DOMAIN_NAME not set"
 
   config :angen, AngenWeb.Endpoint,

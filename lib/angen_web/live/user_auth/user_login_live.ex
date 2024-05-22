@@ -19,24 +19,24 @@ defmodule AngenWeb.UserLoginLive do
             </h3>
 
             <.simple_form for={@form} id="login_form" action={~p"/login"} phx-update="ignore">
-              <.input field={@form[:email]} type="email" label="Email" autofocus="autofocus" required />
+              <.input field={@form[:email]} type="email" label="Email" autofocus="autofocus"  tabindex="1" required />
               <br />
 
-              <.link href={~p"/users/reset_password"} class="float-end">
+              <.link href={~p"/users/reset_password"} class="float-end" tabindex="-1">
                 Forgot your password?
               </.link>
-              <.input field={@form[:password]} type="password" label="Password" required />
+              <.input field={@form[:password]} type="password" label="Password" tabindex="2" required />
               <br />
 
               <:actions>
-                <.button phx-disable-with="Signing in..." class="btn btn-primary float-end w-40">
-                  Login <span aria-hidden="true">→</span>
-                </.button>
+                <div class="float-start">
+                  <.input field={@form[:remember_me]} type="checkbox" tabindex="3" label="Keep me logged in" />
+                </div>
               </:actions>
               <:actions>
-                <div class="float-start">
-                <.input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
-                </div>
+                <.button phx-disable-with="Signing in..." class="btn btn-primary float-end w-40"  tabindex="40">
+                  Login <span aria-hidden="true">→</span>
+                </.button>
               </:actions>
             </.simple_form>
           </div>
