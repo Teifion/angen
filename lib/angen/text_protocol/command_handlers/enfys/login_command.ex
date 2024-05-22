@@ -22,7 +22,11 @@ defmodule Angen.TextProtocol.Enfys.LoginCommand do
         user
     end
 
-    Teiserver.Api.connect_user(user.id)
-    TextProtocol.Auth.LoginResponse.generate(user, state)
+    case Teiserver.Api.connect_user(user.id) do
+      nil ->
+       FailureResponse.generate({name(), "No clint created, please retry"}, state)
+      _ ->
+        TextProtocol.Auth.LoginResponse.generate(user, state)
+    end
   end
 end

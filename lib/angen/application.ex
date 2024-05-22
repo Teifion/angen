@@ -13,8 +13,6 @@ defmodule Angen.Application do
        repos: Application.fetch_env!(:angen, :ecto_repos),
        skip: System.get_env("SKIP_MIGRATIONS") == "true"},
       Angen.TelemetrySupervisor,
-      {Angen.Telemetry.TeiserverCollectorServer, name: Angen.Telemetry.TeiserverCollectorServer},
-      {Angen.Telemetry.AngenCollectorServer, name: Angen.Telemetry.AngenCollectorServer},
       Angen.Repo,
       {Phoenix.PubSub, name: Angen.PubSub},
       {Finch, name: Angen.Finch},
@@ -42,6 +40,7 @@ defmodule Angen.Application do
          certfile: Application.get_env(:angen, :certs)[:certfile]
          # certfile: Application.get_env(:angen, :certs)[:cacertfile]
        ]},
+      {Angen.TaskServer, name: Angen.TaskServer},
 
       {Oban, oban_config()},
     ]

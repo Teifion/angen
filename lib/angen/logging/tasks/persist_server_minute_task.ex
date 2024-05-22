@@ -8,26 +8,22 @@ defmodule Angen.Logging.PersistServerMinuteTask do
   @impl Oban.Worker
   @spec perform(any()) :: :ok
   def perform(_) do
-    if Angen.startup_complete?() do
-      now = Timex.now() |> Timex.set(microsecond: 0, second: 0)
+    now = Timex.now() |> Timex.set(microsecond: 0, second: 0)
 
-      case Logging.get_server_minute_log(now, Teiserver.get_node_name()) do
-        nil ->
-          case perform_telemetry_persist(now) do
-            {:ok, _log} ->
-              :ok
+    case Logging.get_server_minute_log(now, Teiserver.get_node_name()) do
+      nil ->
+        case perform_telemetry_persist(now) do
+          {:ok, _log} ->
+            :ok
 
-            v ->
-              raise v
+          v ->
+            raise v
 
-          end
+        end
 
-        _ ->
-          :ok
-      end
+      _ ->
+        :ok
     end
-
-    :ok
   end
 
   @spec perform_telemetry_persist(DateTime.t()) :: any
