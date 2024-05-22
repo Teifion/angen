@@ -31,12 +31,6 @@ defmodule Angen.Logging.MatchQuarterLogQueries do
   def _where(query, _, ""), do: query
   def _where(query, _, nil), do: query
 
-  def _where(query, :node, node) do
-    from(match_quarter_logs in query,
-      where: match_quarter_logs.node in ^List.wrap(node)
-    )
-  end
-
   def _where(query, :date, date) do
     from(match_quarter_logs in query,
       where: match_quarter_logs.date == ^date

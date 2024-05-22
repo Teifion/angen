@@ -77,6 +77,7 @@ config :angen, Oban,
      crontab: [
       # Every minute
       {"* * * * *", Angen.Logging.PersistServerMinuteTask},
+      # {"* * * * *", Angen.Logging.CombineServerMinuteTask},
 
       # 2am, to help prevent any issues when clocks move an hour
       #  {"1 2 * * *", Teiserver.Logging.PersistServerDayTask},

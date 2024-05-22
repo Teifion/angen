@@ -31,12 +31,6 @@ defmodule Angen.Logging.ServerWeekLogQueries do
   def _where(query, _, ""), do: query
   def _where(query, _, nil), do: query
 
-  def _where(query, :node, node) do
-    from(server_week_logs in query,
-      where: server_week_logs.node in ^List.wrap(node)
-    )
-  end
-
   def _where(query, :date, date) do
     from(server_week_logs in query,
       where: server_week_logs.date == ^date

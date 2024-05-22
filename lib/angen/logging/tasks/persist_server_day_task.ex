@@ -124,8 +124,7 @@ defmodule Angen.Logging.PersistServerDayTask do
       end
 
     if Timex.compare(date, Timex.today()) == -1 do
-      node = Teiserver.get_node_name()
-      do_perform(date, node, cleanup: true)
+      do_perform(date, cleanup: true)
 
       new_date = Timex.shift(date, days: 1)
 
@@ -139,18 +138,18 @@ defmodule Angen.Logging.PersistServerDayTask do
     :ok
   end
 
-  @spec do_perform(Date.t(), String.t(), boolean()) :: :ok
-  def do_perform(date, node, cleanup) do
+  @spec do_perform(Date.t(), boolean()) :: :ok
+  def do_perform(date, cleanup) do
     date = Timex.to_date(date)
 
     data =
       0..@segment_count
       |> Enum.reduce(@empty_log, fn segment_number, segment ->
-        logs = get_logs(date, segment_number, node)
+        logs = get_logs(date, segment_number, "all")
         extend_segment(segment, logs)
       end)
-      |> calculate_day_statistics(date, node)
-      |> add_telemetry(date, node)
+      |> calculate_day_statistics(date, "all")
+      |> add_telemetry(date, "all")
 
     if cleanup do
       clean_up_logs(date)
@@ -158,14 +157,13 @@ defmodule Angen.Logging.PersistServerDayTask do
 
     # Delete old log if it exists
     Logging.server_day_log_query(
-      where: [date: date, node: node],
+      where: [date: date],
       limit: :infinity
     )
     |> Repo.delete_all()
 
     Logging.create_server_day_log(%{
       date: date,
-      node: node,
       data: data
     })
 
@@ -190,7 +188,7 @@ defmodule Angen.Logging.PersistServerDayTask do
   end
 
   @spec get_logs(Date.t(), non_neg_integer(), String.t()) :: list()
-  defp get_logs(date, segment_number, _node) do
+  defp get_logs(date, segment_number, node) do
     start_time =
       Timex.shift(date |> Timex.to_datetime(), minutes: segment_number * @segment_length)
 
@@ -201,7 +199,7 @@ defmodule Angen.Logging.PersistServerDayTask do
       search: [
         after: start_time,
         before: end_time,
-        # node: node
+        node: node
       ],
       select: [:data],
       limit: @segment_length
