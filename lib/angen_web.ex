@@ -65,6 +65,16 @@ defmodule AngenWeb do
 
       alias Angen.Helper.StylingHelper
 
+      defguard is_connected?(socket) when socket.transport_pid != nil
+      unquote(html_helpers())
+    end
+  end
+
+  def component do
+    quote do
+      use Phoenix.Component
+
+      alias Angen.Helper.StylingHelper
       unquote(html_helpers())
     end
   end
@@ -73,6 +83,7 @@ defmodule AngenWeb do
     quote do
       use Phoenix.LiveComponent
 
+      alias Angen.Helper.StylingHelper
       unquote(html_helpers())
     end
   end
@@ -95,11 +106,12 @@ defmodule AngenWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
-      import AngenWeb.{CoreComponents, NavComponents}
+      import AngenWeb.{CoreComponents, NavComponents, BootstrapComponents}
       import AngenWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
+      import Angen.Helper.TimexHelper, only: [duration_to_str_short: 1, represent_minutes: 1, date_to_str: 1, date_to_str: 2]
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())

@@ -62,7 +62,7 @@ defmodule AngenWeb.NavComponents do
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <.top_nav_item text="Home" active={@active == "home"} route={~p"/"} />
 
-            <%= if allow?(@current_user, ~w(admin)a) do %>
+            <%= if allow?(@current_user, ~w(admin)) do %>
               <.top_nav_item text="Admin" active={@active == "admin"} route={~p"/admin"} />
               <.top_nav_item text="Logging" active={@active == "logging"} route={~p"/admin/logging"} />
             <% end %>
@@ -188,13 +188,13 @@ defmodule AngenWeb.NavComponents do
   end
 
   @doc """
-  <.sub_menu_button bsname={bsname} icon={lib} active={true/false} url={url}>
+  <.sub_menu_button colour={colour} icon={lib} active={true/false} url={url}>
     Text goes here
   </.sub_menu_button>
   """
   attr :icon, :string, default: nil
   attr :url, :string, required: true
-  attr :bsname, :string, default: "secondary"
+  attr :colour, :string, default: "secondary"
   attr :active, :boolean, default: false
   slot :inner_block, required: true
 
@@ -219,15 +219,15 @@ defmodule AngenWeb.NavComponents do
   end
 
   @doc """
-  <.section_menu_button bsname={bsname} icon={lib} active={true/false} url={url}>
+  <.section_menu_button colour={colour} icon={lib} active={true/false} phx-action="do-something">
     Text goes here
   </.section_menu_button>
   """
   attr :icon, :string, default: nil
-  attr :url, :string, required: true
-  attr :bsname, :string, default: "secondary"
+  attr :colour, :string, default: "secondary"
   attr :active, :boolean, default: false
   slot :inner_block, required: true
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the button"
 
   def section_menu_button(assigns) do
     assigns =
@@ -235,20 +235,45 @@ defmodule AngenWeb.NavComponents do
       |> assign(:active_class, if(assigns[:active], do: "active"))
 
     ~H"""
-    <.link navigate={@url} class={"btn btn-outline-#{@bsname} #{@active_class}"}>
+    <div class={"btn btn-outline-#{@colour} #{@active_class}"} {@rest}>
       <Fontawesome.icon :if={@icon} icon={@icon} style={if @active, do: "solid", else: "regular"} />
       &nbsp; <%= render_slot(@inner_block) %>
+    </div>
+    """
+  end
+
+  @doc """
+  <.section_menu_button_url colour={colour} icon={lib} active={true/false} url={url}>
+    Text goes here
+  </.section_menu_button_url>
+  """
+  attr :icon, :string, default: nil
+  attr :url, :string, required: true
+  attr :colour, :string, default: "secondary"
+  attr :active, :boolean, default: false
+  slot :inner_block, required: true
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the button"
+
+  def section_menu_button_url(assigns) do
+    assigns =
+      assigns
+      |> assign(:active_class, if(assigns[:active], do: "active"))
+
+    ~H"""
+    <.link navigate={@url} class={"btn btn-outline-#{@colour} #{@active_class}"} {@rest}>
+      <Fontawesome.icon :if={@icon} icon={@icon} style={if @active, do: "solid", else: "regular"} />
+      <%= render_slot(@inner_block) %>
     </.link>
     """
   end
 
   @doc """
-  <.section_menu_button bsname={bsname} icon={lib} active={true/false} url={url}>
+  <.section_menu_button colour={colour} icon={lib} active={true/false} url={url}>
     Text goes here
   </.section_menu_button>
 
   <.section_menu_button
-      bsname={@view_colour}
+      colour={@view_colour}
       icon={StylingHelper.icon(:list)}
       active={@active == "index"}
       url={~p"/account/relationship"}
@@ -258,9 +283,10 @@ defmodule AngenWeb.NavComponents do
   """
   attr :icon, :string, default: nil
   attr :url, :string, required: true
-  attr :bsname, :string, default: "secondary"
+  attr :colour, :string, default: "secondary"
   attr :active, :boolean, default: false
   slot :inner_block, required: true
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the button"
 
   def section_menu_button_patch(assigns) do
     assigns =
@@ -268,7 +294,7 @@ defmodule AngenWeb.NavComponents do
       |> assign(:active_class, if(assigns[:active], do: "active"))
 
     ~H"""
-    <.link patch={@url} class={"btn btn-outline-#{@bsname} #{@active_class}"}>
+    <.link patch={@url} class={"btn btn-outline-#{@colour} #{@active_class}"} {@rest}>
       <Fontawesome.icon :if={@icon} icon={@icon} style={if @active, do: "solid", else: "regular"} />
       <%= render_slot(@inner_block) %>
     </.link>

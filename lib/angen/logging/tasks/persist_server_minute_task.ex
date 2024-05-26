@@ -70,7 +70,8 @@ defmodule Angen.Logging.PersistServerMinuteTask do
     |> Map.new(fn {key, values} ->
       {key, Enum.count(values)}
     end)
-    |> add_total_key
+    |> add_total_key(:total_non_bot, [:bot])
+    |> add_total_key(:total_bot, [:non_bot])
   end
 
   @spec get_lobby_states() :: map()
@@ -133,9 +134,9 @@ defmodule Angen.Logging.PersistServerMinuteTask do
 
   # Given a map where the values are integers, add them up and create a new key `:total`
   # with the sum of said values
-  @spec add_total_key(map, atom) :: map
-  defp add_total_key(m, key \\ :total) do
-    total = m |> Map.values |> Enum.sum()
+  @spec add_total_key(map, atom, list) :: map
+  def add_total_key(m, key \\ :total, dropping \\ []) do
+    total = m |> Map.drop(dropping) |> Map.values |> Enum.sum()
     Map.put(m, key, total)
   end
 end

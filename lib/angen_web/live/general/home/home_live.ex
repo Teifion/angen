@@ -1,4 +1,4 @@
-defmodule AngenWeb.General.HomeLive.Index do
+defmodule AngenWeb.General.HomeLive do
   use AngenWeb, :live_view
 
   @impl true

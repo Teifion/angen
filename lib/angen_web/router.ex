@@ -25,8 +25,8 @@ defmodule AngenWeb.Router do
       on_mount: [
         {AngenWeb.UserAuth, :mount_current_user}
       ] do
-      live "/", HomeLive.Index, :index
-      live "/guest", HomeLive.Guest, :index
+      live "/", HomeLive
+      live "/guest", GuestLive
     end
   end
 
@@ -38,7 +38,7 @@ defmodule AngenWeb.Router do
         {AngenWeb.UserAuth, :ensure_authenticated},
         {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
       ] do
-      live "/", HomeLive.Index, :index
+      live "/", HomeLive
     end
   end
 
@@ -50,7 +50,17 @@ defmodule AngenWeb.Router do
         {AngenWeb.UserAuth, :ensure_authenticated},
         {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
       ] do
-      live "/", HomeLive.Index, :index
+      live "/", HomeLive
+
+      # Special reports
+      live "/server/now", Server.NowLive, :index
+      live "/server/load", Server.LoadLive, :index
+
+      # Generic log views
+      live "/server", Server.IndexLive
+      live "/server/:unit", Server.IndexLive
+      live "/server/show/:unit/:date", Server.ShowLive, :index
+      live "/server/show/:unit/:date/:mode", Server.ShowLive, :index
     end
   end
 

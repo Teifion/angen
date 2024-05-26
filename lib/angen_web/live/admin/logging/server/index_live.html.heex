@@ -1,0 +1,51 @@
+<%
+  unit_items = ~w(day week month quarter year)
+    |> Enum.map(fn i ->
+      %{
+        click: "set-unit:#{i}",
+        label: String.capitalize(i),
+        selected: assigns[:unit] == i,
+      }
+    end)
+
+  mode_items = ~w(table)
+    |> Enum.map(fn i ->
+      %{
+        click: "set-mode:#{i}",
+        label: String.capitalize(i),
+        selected: assigns[:mode] == i,
+      }
+    end)
+%>
+
+<AngenWeb.Logging.ServerComponents.filter_bar unit={@unit} mode={@mode} selected="history">
+  <.dropdown
+    items={unit_items}
+    label={@unit}
+  />
+
+  <.dropdown
+    items={mode_items}
+    label={@mode}
+  />
+</AngenWeb.Logging.ServerComponents.filter_bar>
+
+<%= case @mode do %>
+  <% "table" -> %>
+    <.table id="logs" rows={@logs} table_class="table-sm table-hover">
+      <:col :let={log} label="Date"><%= log.date %></:col>
+      <:col :let={log} label="Unique users"><%= log.data["stats"]["unique_users"] %></:col>
+      <:col :let={log} label="Peak clients"><%= log.data["stats"]["peak_user_counts"]["total"] %></:col>
+      <:col :let={log} label="Peak players"><%= log.data["stats"]["peak_user_counts"]["player"] %></:col>
+      <:col :let={log} label="Accounts created"><%= log.data["stats"]["accounts_created"] %></:col>
+      <:col :let={log} label="Total time"><%= represent_minutes(log.data["minutes"]["total"]) %></:col>
+      <:col :let={log} label="Player time"><%= represent_minutes(log.data["minutes"]["player"]) %></:col>
+      
+      <:col :let={log}>
+        <.link navigate={~p"/admin/logging/server/show/#{@unit}/#{date_to_str(log.date, :ymd)}"} class="btn btn-sm btn-secondary">
+          Show
+        </.link>
+      </:col>
+    </.table>
+
+<% end %>

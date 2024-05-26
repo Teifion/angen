@@ -111,6 +111,10 @@ defmodule Angen.Account.AuthLib do
     true
   end
 
+  def allow?(_, permission_required) when is_atom(permission_required) do
+    raise "permission_required must be a string, it was given as an atom (#{inspect permission_required})"
+  end
+
   def allow?(permissions_held, permission_required) do
     Logger.debug(
       "Permission test, has: #{Kernel.inspect(permissions_held)}, needs: #{Kernel.inspect(permission_required)}"
@@ -134,7 +138,7 @@ defmodule Angen.Account.AuthLib do
 
       # Default to not having permission
       true ->
-        Logger.debug("AuthLib.allow?() -> Permission not found: #{permission_required}")
+        Logger.debug("AuthLib.allow?() -> Permission not found: #{permission_required}, looked in #{inspect permissions_held}")
         false
     end
   end

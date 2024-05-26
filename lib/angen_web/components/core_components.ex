@@ -6,7 +6,6 @@ defmodule AngenWeb.CoreComponents do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
   import AngenWeb.Gettext
-  alias Fontawesome
 
   @doc """
   Renders a modal.
@@ -478,7 +477,7 @@ defmodule AngenWeb.CoreComponents do
 
     ~H"""
     <div class="">
-      <table class={"table #{@table_class}"}>
+      <table class={["table", @table_class]}>
         <thead class="">
           <tr>
             <th :for={col <- @col} class=""><%= col[:label] %></th>

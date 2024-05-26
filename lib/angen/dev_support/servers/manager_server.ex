@@ -71,7 +71,7 @@ defmodule Angen.DevSupport.ManagerServer do
     if Application.get_env(:angen, :test_mode) == true do
       false
     else
-      Application.get_env(:angen, :default_site_settings)[:integration_mode]
+      Application.get_env(:angen, :integration_mode, false)
     end
   end
 end

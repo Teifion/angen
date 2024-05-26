@@ -26,22 +26,20 @@ defmodule Angen.Logging.PersistServerDayTask do
     },
 
     # Daily totals
-    aggregates: %{
-      stats: %{
-        accounts_created: 0,
-        unique_users: 0,
-        unique_players: 0
-      },
+    stats: %{
+      accounts_created: 0,
+      unique_users: 0,
+      unique_players: 0
+    },
 
-      # Total number of minutes spent doing that across all players that day
-      minutes: %{
-        player: 0,
-        spectator: 0,
-        lobby: 0,
-        menu: 0,
-        bot: 0,
-        total: 0
-      }
+    # Total number of minutes spent doing that across all players that day
+    minutes: %{
+      player: 0,
+      spectator: 0,
+      lobby: 0,
+      menu: 0,
+      bot: 0,
+      total: 0
     },
 
     # The number of minutes users (combined) spent in that state during the segment
@@ -71,22 +69,20 @@ defmodule Angen.Logging.PersistServerDayTask do
     },
 
     # Daily totals
-    aggregates: %{
-      stats: %{
-        accounts_created: 0,
-        unique_users: 0,
-        unique_players: 0
-      },
+    stats: %{
+      accounts_created: 0,
+      unique_users: 0,
+      unique_players: 0
+    },
 
-      # Total number of minutes spent doing that across all players that day
-      minutes: %{
-        bot: 0,
-        player: 0,
-        spectator: 0,
-        lobby: 0,
-        menu: 0,
-        total: 0
-      }
+    # Total number of minutes spent doing that across all players that day
+    minutes: %{
+      bot: 0,
+      player: 0,
+      spectator: 0,
+      lobby: 0,
+      menu: 0,
+      total: 0
     },
 
     # The number of minutes users (combined) spent in that state during the segment
@@ -146,6 +142,7 @@ defmodule Angen.Logging.PersistServerDayTask do
       0..@segment_count
       |> Enum.reduce(@empty_log, fn segment_number, segment ->
         logs = get_logs(date, segment_number, "all")
+
         extend_segment(segment, logs)
       end)
       |> calculate_day_statistics(date, "all")
@@ -202,7 +199,7 @@ defmodule Angen.Logging.PersistServerDayTask do
         node: node
       ],
       select: [:data],
-      limit: @segment_length
+      limit: :infinity
     )
     |> Enum.map(fn l -> l.data end)
   end
@@ -213,21 +210,19 @@ defmodule Angen.Logging.PersistServerDayTask do
 
     %{
       # Daily totals
-      aggregates: %{
-        stats: %{
-          accounts_created: 0,
-          unique_users: 0,
-          unique_players: 0
-        },
+      stats: %{
+        accounts_created: 0,
+        unique_users: 0,
+        unique_players: 0
+      },
 
-        # Total number of minutes spent doing that across all players that day
-        minutes: %{
-          player: segment.aggregates.minutes.player + extend.aggregates.minutes.player,
-          spectator: segment.aggregates.minutes.spectator + extend.aggregates.minutes.spectator,
-          lobby: segment.aggregates.minutes.lobby + extend.aggregates.minutes.lobby,
-          menu: segment.aggregates.minutes.menu + extend.aggregates.minutes.menu,
-          total: segment.aggregates.minutes.total + extend.aggregates.minutes.total
-        }
+      # Total number of minutes spent doing that across all players that day
+      minutes: %{
+        player: segment.minutes.player + extend.minutes.player,
+        spectator: segment.minutes.spectator + extend.minutes.spectator,
+        lobby: segment.minutes.lobby + extend.minutes.lobby,
+        menu: segment.minutes.menu + extend.minutes.menu,
+        total: segment.minutes.total + extend.minutes.total
       },
 
       # The number of minutes users (combined) spent in that state during the segment
@@ -280,16 +275,14 @@ defmodule Angen.Logging.PersistServerDayTask do
 
     %{
       # Daily totals
-      aggregates: %{
-        stats: %{
-          accounts_created: 0,
-          unique_users: 0,
-          unique_players: 0
-        },
-
-        # Total number of minutes spent doing that across all players that day
-        minutes: user_maps
+      stats: %{
+        accounts_created: 0,
+        unique_users: 0,
+        unique_players: 0
       },
+
+      # Total number of minutes spent doing that across all players that day
+      minutes: user_maps,
 
       # The number of minutes users (combined) spent in that state during the segment
       average_user_counts: %{
@@ -319,7 +312,6 @@ defmodule Angen.Logging.PersistServerDayTask do
   defp calculate_day_statistics(data, date, _node) do
     tomorrow = Timex.shift(date, days: 1)
 
-    # TODO: Calculate this only for the "all" node
     accounts_created =
       Teiserver.Account.user_query(
         where: [
@@ -333,6 +325,9 @@ defmodule Angen.Logging.PersistServerDayTask do
       )
       |> Repo.aggregate(:count)
 
+    unique_users = accounts_created
+    unique_players = accounts_created
+
     # Calculate peak users across the day
     peak_user_counts =
       @client_states
@@ -341,12 +336,15 @@ defmodule Angen.Logging.PersistServerDayTask do
         {state_key, Enum.max(counts)}
       end)
 
-    aggregate_stats = %{
+    stats = %{
+      unique_users: unique_users,
+      unique_players: unique_players,
       accounts_created: accounts_created,
-      peak_user_counts: peak_user_counts
     }
 
-    put_in(data, ~w(aggregates stats)a, aggregate_stats)
+    data
+    |> put_in(~w(stats)a, stats)
+    |> put_in(~w(peak_user_counts)a, peak_user_counts)
     |> Map.delete(:tmp_reduction)
   end
 
@@ -378,13 +376,6 @@ defmodule Angen.Logging.PersistServerDayTask do
   end
 
   defp sum_counts(items, path) do
-    items
-    |> Enum.reduce(0, fn row, acc ->
-      acc + (get_in(row, path) || 0)
-    end)
-  end
-
-  defp sum_keys(items, path) do
     items
     |> Enum.reduce(0, fn row, acc ->
       acc + (get_in(row, path) || 0)

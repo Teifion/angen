@@ -1,4 +1,4 @@
-defmodule AngenWeb.General.HomeLive.Guest do
+defmodule AngenWeb.General.GuestLive do
   use AngenWeb, :live_view
 
   alias Angen.Account
