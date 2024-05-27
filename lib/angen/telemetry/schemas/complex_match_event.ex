@@ -16,7 +16,7 @@ defmodule Angen.Telemetry.ComplexMatchEvent do
 
   schema "telemetry_complex_anon_events" do
     belongs_to(:user, Teiserver.Account.User, type: Ecto.UUID)
-    belongs_to(:match_id, Teiserver.Game.Match)
+    belongs_to(:match, Teiserver.Game.Match, type: Ecto.UUID)
     belongs_to(:event_type, Angen.Telemetry.EventType)
     field(:inserted_at, :utc_datetime)
 

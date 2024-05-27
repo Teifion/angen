@@ -425,7 +425,8 @@ defmodule Angen.Helper.TimexHelper do
     Timex.compare(a, b) == -1
   end
 
-  def represent_minutes(nil), do: ""
+  def represent_minutes(nil), do: "0 minutes"
+  def represent_minutes(0), do: "0 minutes"
 
   def represent_minutes(s) do
     now = Timex.now()

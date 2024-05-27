@@ -56,7 +56,7 @@ defmodule Angen.Helper.StylingHelper do
   def icon(:up), do: "fa-level-up"
   def icon(:back), do: "fa-arrow-left"
 
-  def icon(:list, _fa_type), do: "fa-bars"
+  def icon(:list), do: "fa-bars"
   def icon(:show), do: "fa-eye"
   def icon(:search), do: "fa-search"
   def icon(:new), do: "fa-plus"

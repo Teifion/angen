@@ -5,7 +5,7 @@ defmodule Angen.Telemetry.SimpleLobbyEvent do
 
   ### Attributes
 
-  * `:user_id` - The `Teiserver.Account.User` this event took place for
+  * `:user_id` - The `Teiserver.Account.User` this event took place for (nullable)
   * `:match_id` - The match_id of the lobby this took place in
   * `:event_type_id` - The `Angen.Telemetry.EventType` this event belongs to
   * `:inserted_at` - The timestamp the event took place
@@ -14,7 +14,7 @@ defmodule Angen.Telemetry.SimpleLobbyEvent do
 
   schema "telemetry_simple_lobby_events" do
     belongs_to(:user, Teiserver.Account.User, type: Ecto.UUID)
-    belongs_to(:match_id, Teiserver.Game.Match)
+    belongs_to(:match, Teiserver.Game.Match, type: Ecto.UUID)
     belongs_to(:event_type, Angen.Telemetry.EventType)
     field(:inserted_at, :utc_datetime)
   end
@@ -34,6 +34,6 @@ defmodule Angen.Telemetry.SimpleLobbyEvent do
   def changeset(struct, attrs \\ %{}) do
     struct
     |> cast(attrs, ~w(user_id match_id event_type_id inserted_at)a)
-    |> validate_required(~w(user_id match_id event_type_id inserted_at)a)
+    |> validate_required(~w(match_id event_type_id inserted_at)a)
   end
 end

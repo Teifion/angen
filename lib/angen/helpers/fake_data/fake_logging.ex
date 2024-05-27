@@ -69,8 +69,7 @@ defmodule Angen.FakeData.FakeLogging do
       "spectator" => rand_int(0, config.max_users / 2, 10),
       "player" => rand_int(0, config.max_users / 3, 10),
     }
-    |> add_total_key(:total_non_bot, [:bot])
-    |> add_total_key(:total_bot, [:non_bot])
+    |> add_bot_totals
 
     lobby = %{
       "in_progress" => rand_int(0, config.max_users / 2, 10),
@@ -168,27 +167,25 @@ defmodule Angen.FakeData.FakeLogging do
     )
     |> Enum.count
 
+    minutes = %{
+      "lobby" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes lobby))),
+      "menu" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes menu))),
+      "player" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes player))),
+      "spectator" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes spectator))),
+      "bot" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes bot)))
+    }
+    |> add_bot_totals
+
     %{
       "average_user_counts" => %{
         "lobby" => rand_int_sequence(config.max_users / 10, config.max_users / 3, 0, 24),
         "menu" => rand_int_sequence(config.max_users / 10, config.max_users / 3, 0, 24),
         "player" => rand_int_sequence(config.max_users / 10, config.max_users / 3, 0, 24),
         "spectator" => rand_int_sequence(config.max_users / 10, config.max_users / 3, 0, 24),
-        "total" => rand_int_sequence(config.max_users / 10, config.max_users / 3, 0, 24)
+        "total_inc_bot" => rand_int_sequence(config.max_users / 10, config.max_users / 3, 0, 24),
+        "total_non_bot" => rand_int_sequence(config.max_users / 10, config.max_users / 3, 0, 24)
       },
-      "minutes" => add_total_key(%{
-        "lobby" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes lobby))),
-        "menu" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes menu))),
-        "player" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes player))),
-        "spectator" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes spectator)))
-      }, "total", []),
-      "peak_user_counts" => %{
-        "lobby" => rand_int_sequence(config.max_users / 10, config.max_users / 4, 0, 24),
-        "menu" => rand_int_sequence(config.max_users / 10, config.max_users / 4, 0, 24),
-        "player" => rand_int_sequence(config.max_users / 10, config.max_users / 4, 0, 24),
-        "spectator" => rand_int_sequence(config.max_users / 10, config.max_users / 4, 0, 24),
-        "total" => rand_int_sequence(config.max_users / 10, config.max_users / 4, 0, 24)
-      },
+      "minutes" => minutes,
       "peak_user_counts" => %{
         "bot" => rand_int(10, config.max_users / 3, get_in(last_day, ~w(stats peak_user_counts bot))),
         "lobby" => rand_int(10, config.max_users / 3, get_in(last_day, ~w(stats peak_user_counts lobby))),
@@ -196,12 +193,18 @@ defmodule Angen.FakeData.FakeLogging do
         "player" => rand_int(10, config.max_users / 3, get_in(last_day, ~w(stats peak_user_counts player))),
         "spectator" => rand_int(10, config.max_users / 3, get_in(last_day, ~w(stats peak_user_counts spectator))),
         "total" => rand_int(10, config.max_users / 3, get_in(last_day, ~w(stats peak_user_counts total))),
-      },
+      } |> add_bot_totals,
       "stats" => %{
         "accounts_created" => accounts_created,
         "unique_users" => rand_int(config.max_users / 10, config.max_users, get_in(last_day, ~w(stats unique_users))),
         "unique_players" => rand_int(config.max_users / 12, config.max_users / 1.5, get_in(last_day, ~w(stats unique_users))),
       }
     }
+  end
+
+  defp add_bot_totals(m) do
+    m
+    |> add_total_key("total_non_bot", ["bot"])
+    |> add_total_key("total_inc_bot", ["total_non_bot"])
   end
 end

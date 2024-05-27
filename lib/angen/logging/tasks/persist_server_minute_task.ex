@@ -71,7 +71,7 @@ defmodule Angen.Logging.PersistServerMinuteTask do
       {key, Enum.count(values)}
     end)
     |> add_total_key(:total_non_bot, [:bot])
-    |> add_total_key(:total_bot, [:non_bot])
+    |> add_total_key(:total_inc_bot, [:total_non_bot])
   end
 
   @spec get_lobby_states() :: map()

@@ -82,16 +82,28 @@ defmodule AngenWeb.Logging.ServerComponents do
           <table class="table">
             <tbody>
               <tr>
-                <td>Total</td>
-                <td><%= @data["peak_user_counts"]["total"] %></td>
-              </tr>
-              <tr>
                 <td>Player</td>
                 <td><%= @data["peak_user_counts"]["player"] %></td>
               </tr>
               <tr>
                 <td>Spectator</td>
                 <td><%= @data["peak_user_counts"]["spectator"] %></td>
+              </tr>
+              <tr>
+                <td>Lobby</td>
+                <td><%= @data["peak_user_counts"]["lobby"] %></td>
+              </tr>
+              <tr>
+                <td>Menu</td>
+                <td><%= @data["peak_user_counts"]["menu"] %></td>
+              </tr>
+              <tr>
+                <td>Bot</td>
+                <td><%= @data["peak_user_counts"]["bot"] %></td>
+              </tr>
+              <tr style="font-weight: bold;">
+                <td>Total (no bots)</td>
+                <td><%= @data["peak_user_counts"]["total_non_bot"] %></td>
               </tr>
             </tbody>
           </table>
@@ -104,16 +116,28 @@ defmodule AngenWeb.Logging.ServerComponents do
           <table class="table">
             <tbody>
               <tr>
-                <td>Total</td>
-                <td><%= represent_minutes(@data["minutes"]["total"]) %></td>
-              </tr>
-              <tr>
                 <td>Player</td>
                 <td><%= represent_minutes(@data["minutes"]["player"]) %></td>
               </tr>
               <tr>
                 <td>Spectator</td>
                 <td><%= represent_minutes(@data["minutes"]["spectator"]) %></td>
+              </tr>
+              <tr>
+                <td>Lobby</td>
+                <td><%= represent_minutes(@data["minutes"]["lobby"]) %></td>
+              </tr>
+              <tr>
+                <td>Menu</td>
+                <td><%= represent_minutes(@data["minutes"]["menu"]) %></td>
+              </tr>
+              <tr>
+                <td>Bot</td>
+                <td><%= represent_minutes(@data["minutes"]["bot"]) %></td>
+              </tr>
+              <tr style="font-weight: bold;">
+                <td>Total (no bots)</td>
+                <td><%= represent_minutes(@data["minutes"]["total_non_bot"]) %></td>
               </tr>
             </tbody>
           </table>
@@ -124,7 +148,21 @@ defmodule AngenWeb.Logging.ServerComponents do
     <div class="row mt-4">
       <div class="col">
         <.card>
-          <h4>Simple Clientapp events</h4>
+          <h4>Server events</h4>
+
+        </.card>
+      </div>
+
+      <div class="col">
+        <.card>
+          <h4>Anon events</h4>
+
+        </.card>
+      </div>
+
+      <div class="col">
+        <.card>
+          <h4>Clientapp events</h4>
           <table class="table">
             <tbody>
               <tr :for={{event, count} <- @events["simple_clientapp"]}>
@@ -138,14 +176,21 @@ defmodule AngenWeb.Logging.ServerComponents do
 
       <div class="col">
         <.card>
-          <h4>...</h4>
-
+          <h4>Lobby events</h4>
+          <table class="table">
+            <tbody>
+              <tr :for={{event, count} <- @events["simple_lobby"]}>
+                <td><%= event %></td>
+                <td><%= StringHelper.format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
         </.card>
       </div>
 
       <div class="col">
         <.card>
-          <h4>...</h4>
+          <h4>Match events</h4>
 
         </.card>
       </div>

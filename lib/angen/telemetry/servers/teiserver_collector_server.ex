@@ -47,9 +47,28 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
     {:noreply, %{state | client_disconnect_counter: new_counter}}
   end
 
+  # Lobby events
   def handle_info({:emit, [:teiserver, :lobby, :event], %{type: type}, _meta, _opts}, state) do
     new_count = Map.get(state.lobby_event_counter, type, 0) + 1
     new_counter = Map.put(state.lobby_event_counter, type, new_count)
+
+    {:noreply, %{state | lobby_event_counter: new_counter}}
+  end
+
+  def handle_info({:emit, [:teiserver, :lobby, :cycle], data, meta, _opts}, state) do
+    new_count = Map.get(state.lobby_event_counter, :cycle, 0) + 1
+    new_counter = Map.put(state.lobby_event_counter, :cycle, new_count)
+
+    :ok = Telemetry.log_simple_lobby_event("cycle", meta.match_id, meta[:user_id])
+
+    {:noreply, %{state | lobby_event_counter: new_counter}}
+  end
+
+  def handle_info({:emit, [:teiserver, :lobby, :start_match], _, meta, _opts}, state) do
+    new_count = Map.get(state.lobby_event_counter, :start_match, 0) + 1
+    new_counter = Map.put(state.lobby_event_counter, :start_match, new_count)
+
+    :ok = Telemetry.log_simple_lobby_event("start_match", meta.match_id, meta[:user_id])
 
     {:noreply, %{state | lobby_event_counter: new_counter}}
   end

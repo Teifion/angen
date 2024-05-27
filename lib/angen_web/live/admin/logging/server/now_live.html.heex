@@ -1,6 +1,45 @@
+<%
+  mode_items = ~w(graphs table this_minute)
+    |> Enum.map(fn i ->
+      %{
+        click: "set-mode:#{i}",
+        label: String.capitalize(i) |> String.replace("_", " "),
+        selected: assigns[:mode] == i,
+      }
+    end)
+%>
+
+
 <AngenWeb.Logging.ServerComponents.filter_bar selected="now">
+  <.dropdown
+    items={mode_items}
+    label={@mode |> String.replace("_", " ")}
+  />
 </AngenWeb.Logging.ServerComponents.filter_bar>
 
+<%= if assigns[:logs] != nil and not Enum.empty?(@logs) do %>
+  <%= case @mode do %>
+    <% "this_minute" -> %>
+      <% first_log = hd(@logs) %>
+    
+      <div class="row mt-4">
+        <div class="col">
+          <.card>
+            <textarea rows="2" class="form-control monospace"><%= Jason.encode!(first_log.data) %></textarea>
+            <br />
+
+            <textarea rows="60" class="form-control monospace"><%= Jason.encode!(first_log.data, pretty: true) %></textarea>
+          </.card>
+        </div>
+      </div>
+
+  <% end %>
+<% end %>
+
+
+
+
+<%= if false do %>
 <script src={~p"/js/d3.js"}>
 </script>
 <script src={~p"/js/c3.min.js"}>
@@ -73,7 +112,7 @@
             <div class="card">
               <div class="card-body">
                 <div class="row">
-                  <form action={~p"/logging/server/now"} method="get" class="">
+                  <form action={~p"/admin/logging/server/now"} method="get" class="">
                     <div class="row">
                       <div class="col-lg-5 col-md-12 my-3">
                         <label for="minutes" class="control-label">Minutes</label>
@@ -142,3 +181,4 @@
     </div>
   </div>
 </div>
+<% end %>

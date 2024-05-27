@@ -51,12 +51,12 @@ defmodule Angen.Telemetry.AngenCollectorServer do
   # end
 
   def handle_info({:emit, _event, _measurement, _meta, _opts} = msg, state) do
-    IO.puts "#{__MODULE__}:#{__ENV__.line}"
-    IO.inspect "No telemetry handler for event: #{inspect elem(msg, 1)}"
-    IO.inspect elem(msg, 2), label: "Measurement: "
-    IO.inspect elem(msg, 3), label: "Meta: "
-    IO.inspect elem(msg, 4), label: "Opts: "
-    IO.puts ""
+    # IO.puts "#{__MODULE__}:#{__ENV__.line}"
+    # IO.inspect "No telemetry handler for event: #{inspect elem(msg, 1)}"
+    # IO.inspect elem(msg, 2), label: "Measurement: "
+    # IO.inspect elem(msg, 3), label: "Meta: "
+    # IO.inspect elem(msg, 4), label: "Opts: "
+    # IO.puts ""
 
     {:noreply, state}
   end

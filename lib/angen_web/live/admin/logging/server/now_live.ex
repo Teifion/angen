@@ -10,13 +10,17 @@ defmodule AngenWeb.Admin.Logging.Server.NowLive do
       |> assign(:site_menu_active, "logging")
       |> assign(:resolution, Map.get(params, "resolution", "1") |> String.to_integer())
       |> assign(:minutes, Map.get(params, "minutes", "30") |> String.to_integer())
-      |> generate_graph_data
+      |> assign(:mode, "this_minute")
+      |> get_logs
+      # |> generate_graph_data
 
     {:ok, socket}
   end
 
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, socket
+      |> assign(:mode, "this_minute")
+    }
   end
 
   @impl true
@@ -29,20 +33,25 @@ defmodule AngenWeb.Admin.Logging.Server.NowLive do
     {:noreply, socket}
   end
 
-  defp generate_graph_data(%{assigns: %{resolution: resolution, minutes: minutes}} = socket) do
+  defp get_logs(%{assigns: %{minutes: _minutes}} = socket) do
     start_timestamp = nil
 
     logs =
       Logging.list_server_minute_logs(
-        order: "Oldest first",
+        order: "Newest first",
         where: [
           # node: "all",
           after: start_timestamp
         ],
         limit: 10
       )
-      |> Enum.group_by(fn log -> log.node end)
+      |> Enum.reverse
 
+    socket
+      |> assign(:logs, logs)
+  end
+
+  defp generate_graph_data(%{assigns: %{logs: logs}} = socket) do
     socket
       |> assign(column_clients: GraphMinuteLogsTask.perform_clients(logs, 1))
       # |> assign(columns_matches: GraphMinuteLogsTask.perform_matches(logs, 1))

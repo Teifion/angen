@@ -22,14 +22,6 @@ defmodule Angen.Telemetry.SimpleClientappEventLib do
     case create_simple_clientapp_event(attrs) do
       {:ok, _event} -> :ok
       {:error, changeset} ->
-        IO.puts "#{__MODULE__}:#{__ENV__.line}"
-        IO.inspect attrs
-        IO.puts ""
-
-        IO.puts "#{__MODULE__}:#{__ENV__.line}"
-        IO.inspect changeset
-        IO.puts ""
-
         {:error,
           changeset.errors
           |> Enum.map_join(", ", fn {key, {message, _}} ->

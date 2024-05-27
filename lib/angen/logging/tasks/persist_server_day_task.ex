@@ -11,7 +11,7 @@ defmodule Angen.Logging.PersistServerDayTask do
 
   @log_keep_days 30
 
-  @client_states ~w(lobby bot menu player spectator total)a
+  @client_states ~w(lobby bot menu player spectator total_non_bot total_inc_bot)a
 
   # [] List means 1 hour segments
   # %{} Dict means total for the day for that key
@@ -39,7 +39,8 @@ defmodule Angen.Logging.PersistServerDayTask do
       lobby: 0,
       menu: 0,
       bot: 0,
-      total: 0
+      total_non_bot: 0,
+      total_inc_bot: 0
     },
 
     # The number of minutes users (combined) spent in that state during the segment
@@ -49,7 +50,8 @@ defmodule Angen.Logging.PersistServerDayTask do
       spectator: [],
       lobby: [],
       menu: [],
-      total: []
+      total_non_bot: [],
+      total_inc_bot: []
     },
     peak_user_counts: %{
       bot: [],
@@ -57,7 +59,8 @@ defmodule Angen.Logging.PersistServerDayTask do
       spectator: [],
       lobby: [],
       menu: [],
-      total: []
+      total_non_bot: [],
+      total_inc_bot: []
     }
   }
 
@@ -82,7 +85,8 @@ defmodule Angen.Logging.PersistServerDayTask do
       spectator: 0,
       lobby: 0,
       menu: 0,
-      total: 0
+      total_non_bot: 0,
+      total_inc_bot: 0
     },
 
     # The number of minutes users (combined) spent in that state during the segment
@@ -92,7 +96,8 @@ defmodule Angen.Logging.PersistServerDayTask do
       spectator: 0,
       lobby: 0,
       menu: 0,
-      total: 0
+      total_non_bot: 0,
+      total_inc_bot: 0
     },
     peak_user_counts: %{
       bot: 0,
@@ -100,7 +105,8 @@ defmodule Angen.Logging.PersistServerDayTask do
       spectator: 0,
       lobby: 0,
       menu: 0,
-      total: 0
+      total_non_bot: 0,
+      total_inc_bot: 0
     }
   }
 
@@ -196,7 +202,7 @@ defmodule Angen.Logging.PersistServerDayTask do
       search: [
         after: start_time,
         before: end_time,
-        node: node
+        # node: node
       ],
       select: [:data],
       limit: :infinity
@@ -207,6 +213,7 @@ defmodule Angen.Logging.PersistServerDayTask do
   # Given an existing segment and a batch of logs, calculate the segment and add them together
   defp extend_segment(segment, logs) do
     extend = calculate_segment_parts(logs)
+
 
     %{
       # Daily totals
@@ -222,7 +229,9 @@ defmodule Angen.Logging.PersistServerDayTask do
         spectator: segment.minutes.spectator + extend.minutes.spectator,
         lobby: segment.minutes.lobby + extend.minutes.lobby,
         menu: segment.minutes.menu + extend.minutes.menu,
-        total: segment.minutes.total + extend.minutes.total
+        bot: segment.minutes.bot + extend.minutes.bot,
+        total_non_bot: segment.minutes.total_non_bot + extend.minutes.total_non_bot,
+        total_inc_bot: segment.minutes.total_inc_bot + extend.minutes.total_inc_bot
       },
 
       # The number of minutes users (combined) spent in that state during the segment
@@ -232,14 +241,18 @@ defmodule Angen.Logging.PersistServerDayTask do
           segment.average_user_counts.spectator ++ [extend.average_user_counts.spectator],
         lobby: segment.average_user_counts.lobby ++ [extend.average_user_counts.lobby],
         menu: segment.average_user_counts.menu ++ [extend.average_user_counts.menu],
-        total: segment.average_user_counts.total ++ [extend.average_user_counts.total]
+        bot: segment.average_user_counts.bot ++ [extend.average_user_counts.bot],
+        total_non_bot: segment.average_user_counts.total_non_bot ++ [extend.average_user_counts.total_non_bot],
+        total_inc_bot: segment.average_user_counts.total_inc_bot ++ [extend.average_user_counts.total_inc_bot]
       },
       peak_user_counts: %{
         player: segment.peak_user_counts.player ++ [extend.peak_user_counts.player],
         spectator: segment.peak_user_counts.spectator ++ [extend.peak_user_counts.spectator],
         lobby: segment.peak_user_counts.lobby ++ [extend.peak_user_counts.lobby],
         menu: segment.peak_user_counts.menu ++ [extend.peak_user_counts.menu],
-        total: segment.peak_user_counts.total ++ [extend.peak_user_counts.total]
+        bot: segment.peak_user_counts.bot ++ [extend.peak_user_counts.bot],
+        total_non_bot: segment.peak_user_counts.total_non_bot ++ [extend.peak_user_counts.total_non_bot],
+        total_inc_bot: segment.peak_user_counts.total_inc_bot ++ [extend.peak_user_counts.total_inc_bot]
       }
     }
   end
@@ -251,7 +264,8 @@ defmodule Angen.Logging.PersistServerDayTask do
     count = Enum.count(logs)
 
     empty_user_maps = %{
-      total: 0,
+      total_non_bot: 0,
+      total_inc_bot: 0,
       bot: 0,
       player: 0,
       spectator: 0,
@@ -264,7 +278,8 @@ defmodule Angen.Logging.PersistServerDayTask do
       logs
       |> Enum.reduce(empty_user_maps, fn log, acc ->
         %{
-          total: acc.total + Map.get(log["client"], "total", 0),
+          total_non_bot: acc.bot + Map.get(log["client"], "total_non_bot", 0),
+          total_inc_bot: acc.bot + Map.get(log["client"], "total_inc_bot", 0),
           bot: acc.bot + Map.get(log["client"], "bot", 0),
           player: acc.player + Map.get(log["client"], "player", 0),
           spectator: acc.spectator + Map.get(log["client"], "spectator", 0),
@@ -291,7 +306,8 @@ defmodule Angen.Logging.PersistServerDayTask do
         spectator: sum_counts(logs, ~w(client spectator)) / count,
         lobby: sum_counts(logs, ~w(client lobby)) / count,
         menu: sum_counts(logs, ~w(client menu)) / count,
-        total: sum_counts(logs, ~w(client total)) / count
+        total_inc_bot: sum_counts(logs, ~w(client total_inc_bot)) / count,
+        total_non_bot: sum_counts(logs, ~w(client total_non_bot)) / count
       },
       peak_user_counts: %{
         bot: max_counts(logs, ~w(client bot)),
@@ -299,7 +315,8 @@ defmodule Angen.Logging.PersistServerDayTask do
         spectator: max_counts(logs, ~w(client spectator)),
         lobby: max_counts(logs, ~w(client lobby)),
         menu: max_counts(logs, ~w(client menu)),
-        total: max_counts(logs, ~w(client total))
+        total_inc_bot: max_counts(logs, ~w(client total_inc_bot)),
+        total_non_bot: max_counts(logs, ~w(client total_non_bot))
       }
     }
   end
@@ -308,7 +325,9 @@ defmodule Angen.Logging.PersistServerDayTask do
     end_of_day = Timex.shift(date, days: 1)
 
     Map.put(data, :telemetry, %{
-      simple_clientapp: Telemetry.simple_clientapp_events_summary(after: date, before: end_of_day)
+      simple_clientapp: Telemetry.simple_clientapp_events_summary(after: date, before: end_of_day),
+
+      simple_lobby: Telemetry.simple_lobby_events_summary(after: date, before: end_of_day)
     })
   end
 
