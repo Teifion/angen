@@ -2,7 +2,7 @@ defmodule Angen.Logging.PersistServerDayTask do
   @moduledoc false
   use Oban.Worker, queue: :logging
 
-  alias Angen.{Repo, Logging}
+  alias Angen.{Repo, Logging, Telemetry}
   alias Angen.Logging.ServerMinuteLogLib
 
   # Minutes
@@ -304,8 +304,12 @@ defmodule Angen.Logging.PersistServerDayTask do
     }
   end
 
-  defp add_telemetry(data, _date, _node) do
-    data
+  defp add_telemetry(data, date, _node) do
+    end_of_day = Timex.shift(date, days: 1)
+
+    Map.put(data, :telemetry, %{
+      simple_clientapp: Telemetry.simple_clientapp_events_summary(after: date, before: end_of_day)
+    })
   end
 
   # Given a day log, calculate the end of day stats

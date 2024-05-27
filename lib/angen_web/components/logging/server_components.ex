@@ -49,6 +49,7 @@ defmodule AngenWeb.Logging.ServerComponents do
   <AngenWeb.Logging.ServerComponents.overview_detail data={@data} />
   """
   attr :data, :map, required: true
+  attr :events, :map, required: true
   def overview_detail(assigns) do
     ~H"""
     <div class="row mt-4">
@@ -116,6 +117,36 @@ defmodule AngenWeb.Logging.ServerComponents do
               </tr>
             </tbody>
           </table>
+        </.card>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col">
+        <.card>
+          <h4>Simple Clientapp events</h4>
+          <table class="table">
+            <tbody>
+              <tr :for={{event, count} <- @events["simple_clientapp"]}>
+                <td><%= event %></td>
+                <td><%= StringHelper.format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
+        </.card>
+      </div>
+
+      <div class="col">
+        <.card>
+          <h4>...</h4>
+
+        </.card>
+      </div>
+
+      <div class="col">
+        <.card>
+          <h4>...</h4>
+
         </.card>
       </div>
     </div>

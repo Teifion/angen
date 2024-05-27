@@ -12,7 +12,7 @@ defmodule Angen.Telemetry.SimpleServerEvent do
   use TeiserverMacros, :schema
 
   schema "telemetry_simple_anon_events" do
-    belongs_to(:user_id, Teiserver.Account.User)
+    belongs_to(:user, Teiserver.Account.User, type: Ecto.UUID)
     belongs_to(:event_type, Angen.Telemetry.EventType)
     field(:inserted_at, :utc_datetime)
   end

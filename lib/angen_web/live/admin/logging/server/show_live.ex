@@ -51,10 +51,12 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
   end
 
   defp get_log(%{assigns: %{date_str: "today"}} = socket) do
-    data = Angen.Logging.PersistServerDayTask.today_so_far()
+    {data, events} = Angen.Logging.PersistServerDayTask.today_so_far()
+      |> process_data
 
     socket
       |> assign(:data, data)
+      |> assign(:events, events)
   end
 
   defp get_log(%{assigns: %{date: nil}} = socket) do
@@ -63,13 +65,33 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
   end
 
   defp get_log(%{assigns: %{unit: unit, date: date}} = socket) do
-    log = case unit do
+    raw_data = case unit do
       "day" ->
-        Logging.get_server_day_log(date)
+        Logging.get_server_day_log(date) |> Map.get(:data)
 
     end
 
+    {data, events} = process_data(raw_data)
+
     socket
-      |> assign(:data, log.data)
+      |> assign(:data, data)
+      |> assign(:events, events)
+  end
+
+  @spec process_data(map()) :: {map(), map()}
+  defp process_data(raw_data) do
+    events = raw_data["telemetry"]
+      |> Map.new(fn {type, counts} ->
+        sorted_counts = counts
+          |> Enum.map(fn {k, v} -> {k, v} end)
+          |> Enum.sort_by(fn {_, v} -> v end, &<=/2)
+
+        {type, sorted_counts}
+      end)
+
+    {
+      Map.drop(raw_data, ["telemetry"]),
+      events
+    }
   end
 end

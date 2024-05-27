@@ -49,6 +49,12 @@ defmodule Angen.Telemetry.EventTypeQueries do
     )
   end
 
+  def _where(query, :category, category) do
+    from(event_types in query,
+      where: event_types.category == ^category
+    )
+  end
+
   @spec do_order_by(Ecto.Query.t(), list | nil) :: Ecto.Query.t()
   defp do_order_by(query, nil), do: query
 

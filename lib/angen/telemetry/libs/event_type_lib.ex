@@ -5,6 +5,42 @@ defmodule Angen.Telemetry.EventTypeLib do
   use TeiserverMacros, :library
   alias Angen.Telemetry.{EventType, EventTypeQueries}
 
+  defp event_type_key(name, category), do: "#{category}, #{name}"
+
+  @doc """
+  Queries the cache to get the EventType id, if it doesn't exist in the cache
+  it will populate the cache from the DB
+  """
+  @spec get_or_add_event_type_id(String.t(), String.t()) :: EventType.id()
+  def get_or_add_event_type_id(name, category) do
+    key = event_type_key(name, category)
+
+    case Cachex.get(:telemetry_event_types_cache, key) do
+      {:ok, nil} ->
+        event_type = db_get_or_add_event_type(name, category)
+        Cachex.put(:telemetry_event_types_cache, key, event_type.id)
+        event_type.id
+
+      {:ok, value} ->
+        value
+    end
+  end
+
+  # This does the DB stuff to get or create the event type
+  @spec db_get_or_add_event_type(String.t(), String.t()) :: EventType.t()
+  defp db_get_or_add_event_type(name, category) do
+    case get_event_type(nil, where: [name: name, category: category], limit: 1) do
+      nil ->
+        {:ok, event_type} = create_event_type(%{
+          name: name,
+          category: category
+        })
+        event_type
+      event_type ->
+        event_type
+    end
+  end
+
   @doc """
   Returns the list of event_types.
 

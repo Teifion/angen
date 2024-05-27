@@ -27,6 +27,7 @@ defmodule Angen.Application do
       add_cache(:angen_metadata),
       add_cache(:protocol_schemas),
       add_cache(:protocol_command_dispatches),
+      add_cache(:telemetry_event_types_cache, ttl: :timer.minutes(15)),
 
       {Horde.Registry, [keys: :unique, members: :auto, name: Angen.ConnectionRegistry]},
       {Registry, [keys: :unique, members: :auto, name: Angen.LocalConnectionRegistry]},

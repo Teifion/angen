@@ -63,7 +63,7 @@ defmodule AngenWeb do
           mount_require_any: 2
         ]
 
-      alias Angen.Helper.StylingHelper
+      alias Angen.Helper.{StylingHelper, StringHelper}
 
       defguard is_connected?(socket) when socket.transport_pid != nil
       unquote(html_helpers())
@@ -74,7 +74,7 @@ defmodule AngenWeb do
     quote do
       use Phoenix.Component
 
-      alias Angen.Helper.StylingHelper
+      alias Angen.Helper.{StylingHelper, StringHelper}
       unquote(html_helpers())
     end
   end
@@ -83,7 +83,7 @@ defmodule AngenWeb do
     quote do
       use Phoenix.LiveComponent
 
-      alias Angen.Helper.StylingHelper
+      alias Angen.Helper.{StylingHelper, StringHelper}
       unquote(html_helpers())
     end
   end

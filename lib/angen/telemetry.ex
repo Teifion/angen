@@ -31,6 +31,10 @@ defmodule Angen.Telemetry do
   # EventTypes
   alias Angen.Telemetry.{EventType, EventTypeLib, EventTypeQueries}
 
+  @doc section: :event_type
+  @spec get_or_add_event_type_id(name :: String.t(), category :: String.t()) :: EventType.id()
+  defdelegate get_or_add_event_type_id(name, category), to: EventTypeLib
+
   @doc false
   @spec event_type_query(Angen.query_args()) :: Ecto.Query.t()
   defdelegate event_type_query(args), to: EventTypeQueries
@@ -65,4 +69,21 @@ defmodule Angen.Telemetry do
   @spec change_event_type(EventType.t()) :: Ecto.Changeset.t()
   @spec change_event_type(EventType.t(), map) :: Ecto.Changeset.t()
   defdelegate change_event_type(event_type, attrs \\ %{}), to: EventTypeLib
+
+  # SimpleClientappEvents
+  alias Angen.Telemetry.{SimpleClientappEvent, SimpleClientappEventLib, SimpleClientappEventQueries}
+
+  @doc section: :event_type
+  @spec log_simple_clientapp_event(String.t(), Teiserver.user_id()) :: :ok | {:error, String.t()}
+  defdelegate log_simple_clientapp_event(name, user_id), to: SimpleClientappEventLib
+
+  @doc false
+  @spec simple_clientapp_event_query(Angen.query_args()) :: Ecto.Query.t()
+  defdelegate simple_clientapp_event_query(args), to: SimpleClientappEventQueries
+
+  @spec list_simple_clientapp_events(Teiserver.query_args()) :: [SimpleClientappEvent.t()]
+  defdelegate list_simple_clientapp_events(args), to: SimpleClientappEventLib
+
+  @spec simple_clientapp_events_summary(list) :: map()
+  defdelegate simple_clientapp_events_summary(args), to: SimpleClientappEventQueries
 end

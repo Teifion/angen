@@ -14,7 +14,7 @@ defmodule Angen.Telemetry.ComplexLobbyEvent do
   use TeiserverMacros, :schema
 
   schema "telemetry_complex_lobby_events" do
-    belongs_to(:user_id, Teiserver.Account.User)
+    belongs_to(:user, Teiserver.Account.User, type: Ecto.UUID)
     belongs_to(:match_id, Teiserver.Game.Match)
     belongs_to(:event_type, Angen.Telemetry.EventType)
     field(:inserted_at, :utc_datetime)

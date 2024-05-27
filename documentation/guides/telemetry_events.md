@@ -8,7 +8,7 @@
 ## Event categories
 - Server
 - Lobby
-- ClientApp
+- Clientapp
 - Match
 
 ## Limitations
