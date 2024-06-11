@@ -33,7 +33,7 @@ defmodule AngenWeb.Logging.ServerComponents do
           Load
         </.section_menu_button_url>
 
-        <.section_menu_button_url :if={@selected == "show"} colour="info" icon={StylingHelper.icon(:detail)} active={@selected == "show"} url={nil}>
+        <.section_menu_button_url :if={@selected == "show"} colour="info" icon={StylingHelper.icon(:detail)} active={@selected == "show"}>
           Detail
         </.section_menu_button_url>
       </div>
@@ -56,7 +56,7 @@ defmodule AngenWeb.Logging.ServerComponents do
       <div class="col">
         <.card>
           <h4>Stats</h4>
-          <table class="table">
+          <table class="table table-sm">
             <tbody>
               <tr>
                 <td>Unique users</td>
@@ -79,7 +79,7 @@ defmodule AngenWeb.Logging.ServerComponents do
       <div class="col">
         <.card>
           <h4>Peaks</h4>
-          <table class="table">
+          <table class="table table-sm">
             <tbody>
               <tr>
                 <td>Player</td>
@@ -113,7 +113,7 @@ defmodule AngenWeb.Logging.ServerComponents do
       <div class="col">
         <.card>
           <h4>Time</h4>
-          <table class="table">
+          <table class="table table-sm">
             <tbody>
               <tr>
                 <td>Player</td>
@@ -149,23 +149,37 @@ defmodule AngenWeb.Logging.ServerComponents do
       <div class="col">
         <.card>
           <h4>Server events</h4>
-
-        </.card>
-      </div>
-
-      <div class="col">
-        <.card>
-          <h4>Anon events</h4>
-
+          <table class="table table-sm">
+            <tbody>
+              <tr :for={{event, count} <- @events["simple_server"] |> Enum.take(10)}>
+                <td><%= event %></td>
+                <td><%= StringHelper.format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
         </.card>
       </div>
 
       <div class="col">
         <.card>
           <h4>Clientapp events</h4>
-          <table class="table">
+          <table class="table table-sm">
             <tbody>
-              <tr :for={{event, count} <- @events["simple_clientapp"]}>
+              <tr :for={{event, count} <- @events["simple_clientapp"] |> Enum.take(10)}>
+                <td><%= event %></td>
+                <td><%= StringHelper.format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
+        </.card>
+      </div>
+
+      <div class="col">
+        <.card>
+          <h4>Anon events</h4>
+          <table class="table table-sm">
+            <tbody>
+              <tr :for={{event, count} <- @events["simple_anon"] |> Enum.take(10)}>
                 <td><%= event %></td>
                 <td><%= StringHelper.format_number(count) %></td>
               </tr>
@@ -177,9 +191,9 @@ defmodule AngenWeb.Logging.ServerComponents do
       <div class="col">
         <.card>
           <h4>Lobby events</h4>
-          <table class="table">
+          <table class="table table-sm">
             <tbody>
-              <tr :for={{event, count} <- @events["simple_lobby"]}>
+              <tr :for={{event, count} <- @events["simple_lobby"] |> Enum.take(10)}>
                 <td><%= event %></td>
                 <td><%= StringHelper.format_number(count) %></td>
               </tr>
@@ -191,7 +205,14 @@ defmodule AngenWeb.Logging.ServerComponents do
       <div class="col">
         <.card>
           <h4>Match events</h4>
-
+          <table class="table table-sm">
+            <tbody>
+              <tr :for={{event, count} <- @events["simple_match"] |> Enum.take(10)}>
+                <td><%= event %></td>
+                <td><%= StringHelper.format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
         </.card>
       </div>
     </div>

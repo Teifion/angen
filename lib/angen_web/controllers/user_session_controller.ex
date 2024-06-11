@@ -4,6 +4,29 @@ defmodule AngenWeb.UserSessionController do
   alias Angen.Account
   alias AngenWeb.UserAuth
 
+  @spec login_from_code(Plug.Conn.t(), map) :: Plug.Conn.t()
+  def login_from_code(conn, %{"code" => "fakedata_code"}) do
+    # If the token exists, delete it so it no longer exists and make a new one
+    token = Account.get_user_token(1)
+
+    agent = case List.keyfind(conn.req_headers, "user-agent", 0) do
+      {_, agent} -> agent
+      _ -> "fake-data"
+    end
+
+    {:ok, new_token} =
+      Account.create_user_token(
+        token.user_id,
+        token.context,
+        agent,
+        conn.remote_ip |> Tuple.to_list |> Enum.join(".")
+      )
+
+    Account.delete_user_token(token)
+
+    maybe_login_with_token(conn, new_token.id)
+  end
+
   def login_from_code(conn, %{"code" => code}) do
     case Cachex.get(:one_time_login_code, code) do
       {:ok, nil} ->
@@ -16,7 +39,7 @@ defmodule AngenWeb.UserSessionController do
   end
 
   defp maybe_login_with_token(conn, token_id) do
-    token = Account.get_user_token(token_id, preload: [:user])
+    token = Account.get_user_token(token_id, preload: [:user], limit: 1)
 
     case token do
       nil ->

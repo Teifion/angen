@@ -6,7 +6,7 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
 
   @impl true
   def mount(params, _session, socket) when is_connected?(socket) do
-    date = case params["data"] do
+    date = case params["date"] do
       "today" ->
         Timex.today()
       date_str ->
@@ -66,9 +66,20 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
 
   defp get_log(%{assigns: %{unit: unit, date: date}} = socket) do
     raw_data = case unit do
-      "day" ->
-        Logging.get_server_day_log(date) |> Map.get(:data)
+      "week" ->
+        Logging.get_server_week_log(date) |> Map.get(:data)
 
+      "month" ->
+        Logging.get_server_month_log(date) |> Map.get(:data)
+
+      "quarter" ->
+        Logging.get_server_quarter_log(date) |> Map.get(:data)
+
+      "year" ->
+        Logging.get_server_year_log(date) |> Map.get(:data)
+
+      _day ->
+        Logging.get_server_day_log(date) |> Map.get(:data)
     end
 
     {data, events} = process_data(raw_data)
@@ -84,14 +95,31 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
       |> Map.new(fn {type, counts} ->
         sorted_counts = counts
           |> Enum.map(fn {k, v} -> {k, v} end)
-          |> Enum.sort_by(fn {_, v} -> v end, &<=/2)
+          |> Enum.sort_by(fn {_, v} -> v end, &>=/2)
 
         {type, sorted_counts}
       end)
+      |> add_empty_events
 
     {
-      Map.drop(raw_data, ["telemetry"]),
+      raw_data,
       events
     }
+  end
+
+  defp add_empty_events(events) do
+    Map.merge(%{
+      "simple_server" => [],
+      "simple_client" => [],
+      "simple_anon" => [],
+      "simple_lobby" => [],
+      "simple_match" => [],
+
+      "complex_server" => [],
+      "complex_client" => [],
+      "complex_anon" => [],
+      "complex_lobby" => [],
+      "complex_match" => [],
+    }, events)
   end
 end

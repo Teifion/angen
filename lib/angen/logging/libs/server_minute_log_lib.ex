@@ -5,9 +5,6 @@ defmodule Angen.Logging.ServerMinuteLogLib do
   use TeiserverMacros, :library
   alias Angen.Logging.{ServerMinuteLog, ServerMinuteLogQueries}
 
-  @segment_length 60
-  @segment_count div(1440, @segment_length) - 1
-
   @doc """
   Returns the list of server_minute_logs.
 

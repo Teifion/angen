@@ -1,6 +1,8 @@
 defmodule AngenWeb.BootstrapComponents do
+  @moduledoc false
+
   use Phoenix.Component
-  import AngenWeb.NavComponents
+  # import AngenWeb.NavComponents
 
   @doc """
   <AngenWeb.BootstrapComponents.dropdown items={@items} />

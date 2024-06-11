@@ -56,11 +56,13 @@ defmodule AngenWeb.Admin.Logging.Server.IndexLive do
           order: "Newest first",
           limit: limit
         )
+        |> Enum.reverse
       "day" ->
         Logging.list_server_day_logs(
           order: "Newest first",
           limit: limit
         )
+        |> Enum.reverse
 
       _ -> []
     end

@@ -9,12 +9,12 @@ defmodule Mix.Tasks.Angen.Fakedata do
 
   use Mix.Task
 
-  alias Angen.{Logging}
   alias Teiserver.{Account}
   require Logger
 
   @defaults %{
-    days: 7
+    days: 7,
+    detail_days: 3
   }
 
   defp users_per_day, do: :rand.uniform(5) + 2
@@ -26,6 +26,8 @@ defmodule Mix.Tasks.Angen.Fakedata do
       ("days:" <> day_str, acc) ->
         Map.put(acc, :days, String.to_integer(day_str))
 
+      ("detail-days:" <> day_str, acc) ->
+        Map.put(acc, :detail_days, String.to_integer(day_str))
     end)
   end
 
@@ -42,20 +44,20 @@ defmodule Mix.Tasks.Angen.Fakedata do
       # Accounts
       make_accounts(config)
 
+      Angen.FakeData.FakeTelemetry.make_events(config)
       Angen.FakeData.FakeLogging.make_logs(config)
 
       # make_matches(config)
       # make_telemetry(config)
       # make_moderation(config)
-      # make_one_time_code(config)
+      make_one_time_code(config)
 
       :timer.sleep(50)
 
       elapsed = System.system_time(:second) - start_time
 
       IO.puts(
-        "\nFake data insertion complete. You can now login with the email 'root@localhost' and password 'password'.\nTook #{elapsed} seconds."
-        #A one-time link has been created: http://localhost:4000/login/fakedata_code\n"
+        "\nFake data insertion complete. You can now login with the email 'root@localhost' and password 'password'.\nTook #{elapsed} seconds. A one-time link has been created: http://localhost:4000/login/fakedata_code\n"
       )
     else
       Logger.error("Enfys mode is not enabled, you cannot run the fakedata task")
@@ -111,19 +113,20 @@ defmodule Mix.Tasks.Angen.Fakedata do
     |> Angen.Repo.transaction()
   end
 
-  # defp make_one_time_code() do
-  #   root_user = Account.get_user_by_email("root@localhost")
+  defp make_one_time_code(_config) do
+    root_user = Account.get_user_by_email("root@localhost")
 
-  #   Teiserver.Config.update_site_config("user.Enable one time links", "true")
-
-  #   {:ok, _code} =
-  #     Account.create_code(%{
-  #       value: "fakedata_code$127.0.0.1",
-  #       purpose: "one_time_login",
-  #       expires: Timex.now() |> Timex.shift(hours: 24),
-  #       user_id: root_user.id
-  #     })
-  # end
+    {:ok, _code} = Angen.Account.create_user_token(%{
+      user_id: root_user.id,
+      id: Teiserver.deterministic_uuid("root@localhost"),
+      identifier_code: Angen.Account.UserTokenLib.generate_code(),
+      renewal_code: Angen.Account.UserTokenLib.generate_code(),
+      context: "fake-data",
+      user_agent: "fake-data",
+      ip: "127.0.0.1",
+      expires_at: Timex.now() |> Timex.shift(days: 31)
+    })
+  end
 
   def time_convert(t) do
     t
@@ -139,10 +142,21 @@ defmodule Mix.Tasks.Angen.Fakedata do
     end)
   end
 
-  def valid_userids(datetime) do
+  def valid_userids(before_datetime) do
     Teiserver.Account.list_users(
       where: [
-        inserted_after: Timex.to_datetime(datetime)
+        inserted_before: Timex.to_datetime(before_datetime)
+      ],
+      select: [:id]
+    )
+    |> Enum.map(fn %{id: id} -> id end)
+  end
+
+  def valid_userids(before_datetime, after_datetime) do
+    Teiserver.Account.list_users(
+      where: [
+        inserted_after: Timex.to_datetime(after_datetime),
+        inserted_before: Timex.to_datetime(before_datetime),
       ],
       select: [:id]
     )

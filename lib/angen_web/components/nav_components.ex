@@ -248,7 +248,7 @@ defmodule AngenWeb.NavComponents do
   </.section_menu_button_url>
   """
   attr :icon, :string, default: nil
-  attr :url, :string, required: true
+  attr :url, :string, default: nil
   attr :colour, :string, default: "secondary"
   attr :active, :boolean, default: false
   slot :inner_block, required: true
@@ -336,40 +336,4 @@ defmodule AngenWeb.NavComponents do
     """
   end
 
-  @doc """
-  <AngenWeb.NavComponents.ward_nav_item active={active} route={route} icon={icon} />
-  """
-  def ward_nav_item(assigns) do
-    active = if assigns[:active], do: "btn-primary", else: "btn-outline-info"
-
-    assigns =
-      assigns
-      |> assign(:active, active)
-
-    ~H"""
-    <.link
-      patch={@route}
-      class={"btn #{@active}"}
-    >
-      <Fontawesome.icon icon={@icon} style="solid" />
-      <%= @text %>
-    </.link>
-    """
-  end
-
-  @doc """
-  <AngenWeb.NavComponents.ward_navbar game_id={@game_id} active={"string"} />
-  """
-  attr :active, :string, required: true
-  attr :game_id, :string, required: true
-
-  def ward_navbar(assigns) do
-    ~H"""
-    <div class="">
-      <.ward_nav_item text="Ward" active={@active == "ward"} route={~p"/play/ward/#{@game_id}"} icon="stretcher" />
-
-      <.ward_nav_item text="Patients" active={@active == "patients"} route={~p"/play/patients/#{@game_id}"} icon="users-medical" />
-    </div>
-    """
-  end
 end

@@ -5,7 +5,7 @@ defmodule Angen.Telemetry.AngenCollectorServer do
 
   use GenServer
   require Logger
-  alias Phoenix.PubSub
+  # alias Phoenix.PubSub
 
   @default_state %{
     # Counters
@@ -19,6 +19,7 @@ defmodule Angen.Telemetry.AngenCollectorServer do
   # end
 
   # Client events
+  @impl true
   def handle_info({:emit, [:angen, :protocol, :response, :start], _measurement, _meta, _opts}, state) do
     # new_count = Map.get(state.protocol_counter, type, 0) + 1
     # new_counter = Map.put(state.protocol_counter, type, new_count)
@@ -26,7 +27,7 @@ defmodule Angen.Telemetry.AngenCollectorServer do
     {:noreply, state}
   end
 
-  def handle_info({:emit, [:angen, :protocol, :response, :stop], %{duration: duration}, %{name: name} = meta, _opts}, state) do
+  def handle_info({:emit, [:angen, :protocol, :response, :stop], %{duration: duration}, %{name: name} = _meta, _opts}, state) do
     new_count = Map.get(state.protocol_command_count, name, 0) + 1
     new_counter = Map.put(state.protocol_command_count, name, new_count)
 
@@ -50,7 +51,7 @@ defmodule Angen.Telemetry.AngenCollectorServer do
   #   {:noreply, %{state | lobby_event_counter: new_counter}}
   # end
 
-  def handle_info({:emit, _event, _measurement, _meta, _opts} = msg, state) do
+  def handle_info({:emit, _event, _measurement, _meta, _opts} = _msg, state) do
     # IO.puts "#{__MODULE__}:#{__ENV__.line}"
     # IO.inspect "No telemetry handler for event: #{inspect elem(msg, 1)}"
     # IO.inspect elem(msg, 2), label: "Measurement: "

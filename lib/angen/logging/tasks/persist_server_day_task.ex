@@ -1,5 +1,6 @@
 defmodule Angen.Logging.PersistServerDayTask do
   @moduledoc false
+  alias Credo.Code.Charlists
   use Oban.Worker, queue: :logging
 
   alias Angen.{Repo, Logging, Telemetry}
@@ -202,7 +203,7 @@ defmodule Angen.Logging.PersistServerDayTask do
       search: [
         after: start_time,
         before: end_time,
-        # node: node
+        node: node
       ],
       select: [:data],
       limit: :infinity
@@ -348,8 +349,10 @@ defmodule Angen.Logging.PersistServerDayTask do
       )
       |> Repo.aggregate(:count)
 
-    unique_users = accounts_created
-    unique_players = accounts_created
+    unique_users = get_unique_users(date)
+
+    # Need to query match membership to get this
+    unique_players = -1
 
     # Calculate peak users across the day
     peak_user_counts =
@@ -384,12 +387,12 @@ defmodule Angen.Logging.PersistServerDayTask do
     Ecto.Adapters.SQL.query!(Angen.Repo, query, [before_timestamp])
   end
 
-  defp concatenate_lists(items, path) do
-    items
-    |> Enum.reduce([], fn row, acc ->
-      acc ++ (get_in(row, path) || [])
-    end)
-  end
+  # defp concatenate_lists(items, path) do
+  #   items
+  #   |> Enum.reduce([], fn row, acc ->
+  #     acc ++ (get_in(row, path) || [])
+  #   end)
+  # end
 
   defp max_counts(items, path) do
     items
@@ -405,9 +408,32 @@ defmodule Angen.Logging.PersistServerDayTask do
     end)
   end
 
-  defp add_maps(m1, nil), do: m1
+  # defp add_maps(m1, nil), do: m1
 
-  defp add_maps(m1, m2) do
-    Map.merge(m1, m2, fn _k, v1, v2 -> v1 + v2 end)
+  # defp add_maps(m1, m2) do
+  #   Map.merge(m1, m2, fn _k, v1, v2 -> v1 + v2 end)
+  # end
+
+  def get_unique_users(date) do
+    tomorrow = Timex.shift(date, days: 1) |> Timex.to_datetime()
+    date = date |> Timex.to_datetime()
+    event_type_id = Telemetry.get_or_add_event_type_id("connected", "simple_clientapp")
+
+    # We add 1000 because otherwise it comes back as a charlist and borks a bunch of stuff
+    query = """
+      SELECT count(DISTINCT user_id) + 1000
+      FROM telemetry_simple_clientapp_events
+      WHERE event_type_id = $1
+        AND inserted_at >= $2
+        AND inserted_at < $3
+    """
+
+    case Ecto.Adapters.SQL.query(Repo, query, [event_type_id, date, tomorrow]) do
+      {:ok, %{rows: [[result]]}} ->
+        result - 1000
+
+      {a, b} ->
+        raise "ERR: #{a}, #{b}"
+    end
   end
 end

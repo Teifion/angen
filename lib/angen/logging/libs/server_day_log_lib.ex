@@ -69,12 +69,17 @@ defmodule Angen.Logging.ServerDayLogLib do
   """
   @spec get_last_server_day_log_date() :: Date.t() | nil
   def get_last_server_day_log_date() do
-    ServerDayLogQueries.server_day_log_query(
+    log = ServerDayLogQueries.server_day_log_query(
       order_by: "Newest first",
       select: [:date],
       limit: 1
     )
     |> Repo.one()
+
+    case log do
+      nil -> nil
+      %{date: date} -> date
+    end
   end
 
   @doc """

@@ -6,7 +6,7 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
   use GenServer
   require Logger
   alias Angen.Telemetry
-  alias Phoenix.PubSub
+  # alias Phoenix.PubSub
 
   @default_state %{
     # Counters
@@ -22,6 +22,7 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
   # end
 
   # Client events
+  @impl true
   def handle_info({:emit, [:teiserver, :client, :event], %{type: type}, _meta, _opts}, state) do
     new_count = Map.get(state.client_event_counter, type, 0) + 1
     new_counter = Map.put(state.client_event_counter, type, new_count)
@@ -33,7 +34,7 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
     new_count = Map.get(state.client_connect_counter, type, 0) + 1
     new_counter = Map.put(state.client_connect_counter, type, new_count)
 
-    Telemetry.log_simple_clientapp_event("client_connected", meta.user_id)
+    Telemetry.log_simple_clientapp_event("connected", meta.user_id)
 
     {:noreply, %{state | client_connect_counter: new_counter}}
   end
@@ -42,7 +43,7 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
     new_count = Map.get(state.client_disconnect_counter, reason, 0) + 1
     new_counter = Map.put(state.client_disconnect_counter, reason, new_count)
 
-    Telemetry.log_simple_clientapp_event("client_disconnected", meta.user_id)
+    Telemetry.log_simple_clientapp_event("disconnected", meta.user_id)
 
     {:noreply, %{state | client_disconnect_counter: new_counter}}
   end
@@ -55,7 +56,7 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
     {:noreply, %{state | lobby_event_counter: new_counter}}
   end
 
-  def handle_info({:emit, [:teiserver, :lobby, :cycle], data, meta, _opts}, state) do
+  def handle_info({:emit, [:teiserver, :lobby, :cycle], _data, meta, _opts}, state) do
     new_count = Map.get(state.lobby_event_counter, :cycle, 0) + 1
     new_counter = Map.put(state.lobby_event_counter, :cycle, new_count)
 

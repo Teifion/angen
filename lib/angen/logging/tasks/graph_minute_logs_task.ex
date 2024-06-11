@@ -3,42 +3,41 @@ defmodule Angen.Logging.GraphMinuteLogsTask do
 
   alias Angen.Helper.TimexHelper
 
-
-  @example_data %{
-      "client" => %{"lobby" => 10, "menu" => 5, "total" => 15},
-      "lobby" => %{"empty" => 10, "total" => 10},
-      "server_processes" => %{
-        "angen" => 607,
-        "clients" => 15,
-        "connections" => 582,
-        "internal_servers" => 0,
-        "lobbies" => 10
-      },
-      "telemetry_events" => %{
-        "angen" => %{
-          "protocol_command_count" => %{
-            "auth/logged_in" => 106,
-            "system/success" => 108
-          },
-          "protocol_command_time" => %{
-            "auth/logged_in" => 13006086,
-            "system/success" => 2027390
-          }
-        },
-        "teiserver" => %{
-          "client_disconnect_counter" => %{
-            "down_message" => 8,
-            "purposeful" => 108
-          },
-          "client_event_counter" => %{
-            "added_connection" => 85,
-            "new_connection" => 21
-          },
-          "lobby_event_counter" => %{}
-        }
-      },
-      "totals" => %{"nodes" => 2, "unique_users" => 14}
-    }
+  # @example_data %{
+  #     "client" => %{"lobby" => 10, "menu" => 5, "total" => 15},
+  #     "lobby" => %{"empty" => 10, "total" => 10},
+  #     "server_processes" => %{
+  #       "angen" => 607,
+  #       "clients" => 15,
+  #       "connections" => 582,
+  #       "internal_servers" => 0,
+  #       "lobbies" => 10
+  #     },
+  #     "telemetry_events" => %{
+  #       "angen" => %{
+  #         "protocol_command_count" => %{
+  #           "auth/logged_in" => 106,
+  #           "system/success" => 108
+  #         },
+  #         "protocol_command_time" => %{
+  #           "auth/logged_in" => 13006086,
+  #           "system/success" => 2027390
+  #         }
+  #       },
+  #       "teiserver" => %{
+  #         "client_disconnect_counter" => %{
+  #           "down_message" => 8,
+  #           "purposeful" => 108
+  #         },
+  #         "client_event_counter" => %{
+  #           "added_connection" => 85,
+  #           "new_connection" => 21
+  #         },
+  #         "lobby_event_counter" => %{}
+  #       }
+  #     },
+  #     "totals" => %{"nodes" => 2, "unique_users" => 14}
+  #   }
 
   @spec perform_clients(map, non_neg_integer()) :: list()
   def perform_clients(node_logs, chunk_size) do
@@ -278,7 +277,7 @@ defmodule Angen.Logging.GraphMinuteLogsTask do
   @spec perform_axis_key(map, non_neg_integer()) :: list()
   def perform_axis_key(node_logs, chunk_size) do
     node_logs
-    |> Enum.map(fn {node, logs} ->
+    |> Enum.map(fn {_node, logs} ->
       logs
       |> Enum.chunk_every(chunk_size)
       |> Enum.map(fn [log | _] -> log.timestamp |> TimexHelper.date_to_str(format: :ymd_hms) end)
@@ -318,27 +317,27 @@ defmodule Angen.Logging.GraphMinuteLogsTask do
     end)
   end
 
-  defp extract_cost(logs, 1, path, divisors) do
-    Enum.zip(logs, divisors)
-    |> Enum.map(fn {log, d} ->
-      (get_in(log.data, path) || 0) / max(d, 1)
-    end)
-  end
+  # defp extract_cost(logs, 1, path, divisors) do
+  #   Enum.zip(logs, divisors)
+  #   |> Enum.map(fn {log, d} ->
+  #     (get_in(log.data, path) || 0) / max(d, 1)
+  #   end)
+  # end
 
-  defp extract_cost(logs, chunk_size, path, divisors, func \\ fn x -> x end) do
-    Enum.zip(logs, divisors)
-    |> Enum.chunk_every(chunk_size)
-    |> Enum.map(fn chunk ->
-      result =
-        chunk
-        |> Enum.map(fn {log, d} ->
-          (get_in(log.data, path) |> func.() || 0) / max(d, 1)
-        end)
-        |> Enum.sum()
+  # defp extract_cost(logs, chunk_size, path, divisors, func \\ fn x -> x end) do
+  #   Enum.zip(logs, divisors)
+  #   |> Enum.chunk_every(chunk_size)
+  #   |> Enum.map(fn chunk ->
+  #     result =
+  #       chunk
+  #       |> Enum.map(fn {log, d} ->
+  #         (get_in(log.data, path) |> func.() || 0) / max(d, 1)
+  #       end)
+  #       |> Enum.sum()
 
-      NumberHelper.round(result / chunk_size, 2)
-    end)
-  end
+  #     NumberHelper.round(result / chunk_size, 2)
+  #   end)
+  # end
 
   @spec round(number(), non_neg_integer()) :: integer() | float()
   def round(value, decimal_places) do

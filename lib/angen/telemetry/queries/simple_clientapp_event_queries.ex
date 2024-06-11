@@ -37,9 +37,9 @@ defmodule Angen.Telemetry.SimpleClientappEventQueries do
     )
   end
 
-  def _where(query, :type_id, type_id) do
+  def _where(query, :event_type_id, event_type_id) do
     from(simple_clientapp_events in query,
-      where: simple_clientapp_events.type_id in ^List.wrap(type_id)
+      where: simple_clientapp_events.event_type_id in ^List.wrap(event_type_id)
     )
   end
 

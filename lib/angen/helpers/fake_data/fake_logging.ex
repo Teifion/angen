@@ -2,12 +2,12 @@ defmodule Angen.FakeData.FakeLogging do
   @moduledoc false
 
   alias Angen.Logging
-  import Angen.Logging.PersistServerMinuteTask, only: [add_total_key: 1, add_total_key: 3]
-  import Mix.Tasks.Angen.Fakedata, only: [rand_int_sequence: 4, rand_int: 3, valid_userids: 1]
+  import Logging.PersistServerMinuteTask, only: [add_total_key: 1, add_total_key: 3]
+  import Mix.Tasks.Angen.Fakedata, only: [rand_int_sequence: 4, rand_int: 3, valid_userids: 1, valid_userids: 2]
 
   def make_logs(config) do
     # We only want a few days of minute logs
-    Range.new(0, min(config.days, 3))
+    Range.new(0, min(config.days, config.detail_days))
     |> Enum.each(fn day ->
       date = Timex.today() |> Timex.shift(days: -day)
 
@@ -17,6 +17,12 @@ defmodule Angen.FakeData.FakeLogging do
     end)
 
     make_server_days(config)
+
+    # For the days with detail we can generate them using the actual data
+    Range.new(0, min(config.days, config.detail_days))
+    |> Enum.each(fn r ->
+      Angen.Logging.PersistServerDayTask.perform(:ok)
+    end)
 
     # Persist Week, Month, Quarter and Year
     # Range.new(0, config.days)
@@ -33,7 +39,7 @@ defmodule Angen.FakeData.FakeLogging do
         |> Timex.shift(minutes: m)
         |> Timex.set(microsecond: 0, second: 0)
 
-      Angen.Logging.CombineServerMinuteTask.perform(%{now: timestamp})
+      Logging.CombineServerMinuteTask.perform(%{now: timestamp})
     end)
   end
 
@@ -57,7 +63,7 @@ defmodule Angen.FakeData.FakeLogging do
     end)
 
     Ecto.Multi.new()
-    |> Ecto.Multi.insert_all(:insert_all, Angen.Logging.ServerMinuteLog, new_logs)
+    |> Ecto.Multi.insert_all(:insert_all, Logging.ServerMinuteLog, new_logs)
     |> Angen.Repo.transaction()
   end
 
@@ -139,7 +145,7 @@ defmodule Angen.FakeData.FakeLogging do
 
   defp make_server_days(config) do
     # Now do much longer for days
-    {new_logs, _} = Range.new(config.days, 0)
+    {new_logs, _} = Range.new(config.days, config.detail_days)
     |> Enum.map_reduce(%{}, fn (day, last_data) ->
       date = Timex.today() |> Timex.shift(days: -day)
       max_users = Enum.count(valid_userids(date))
@@ -153,19 +159,12 @@ defmodule Angen.FakeData.FakeLogging do
     end)
 
     Ecto.Multi.new()
-    |> Ecto.Multi.insert_all(:insert_all, Angen.Logging.ServerDayLog, new_logs)
+    |> Ecto.Multi.insert_all(:insert_all, Logging.ServerDayLog, new_logs)
     |> Angen.Repo.transaction()
   end
 
   defp make_day_data(config, last_day) do
-    accounts_created = Teiserver.Account.list_users(
-      where: [
-        inserted_after: Timex.to_datetime(config.date),
-        inserted_before: Timex.to_datetime(config.date |> Timex.shift(days: 1))
-      ],
-      select: [:id]
-    )
-    |> Enum.count
+    accounts_created = Enum.count(valid_userids(config.date, config.date |> Timex.shift(days: 1)))
 
     minutes = %{
       "lobby" => rand_int(config.max_users * 20, config.max_users * 600, get_in(last_day, ~w(minutes lobby))),
@@ -198,6 +197,15 @@ defmodule Angen.FakeData.FakeLogging do
         "accounts_created" => accounts_created,
         "unique_users" => rand_int(config.max_users / 10, config.max_users, get_in(last_day, ~w(stats unique_users))),
         "unique_players" => rand_int(config.max_users / 12, config.max_users / 1.5, get_in(last_day, ~w(stats unique_users))),
+      },
+      "telemetry" => %{
+        "simple_clientapp" => %{
+          "connected" => rand_int(config.max_users / 6, config.max_users, get_in(last_day, ~w(telemetry simple_clientapp connected))),
+          "client_disconnected" => rand_int(config.max_users / 6, config.max_users, get_in(last_day, ~w(telemetry simple_clientapp disconnected)))
+        },
+        "simple_lobby" => %{
+          "cycle" => rand_int(config.max_users * 4, config.max_users * 12, get_in(last_day, ~w(telemetry simple_clientapp cycle)))
+        },
       }
     }
   end
