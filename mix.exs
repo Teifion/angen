@@ -114,6 +114,11 @@ defmodule Angen.MixProject do
         "sass dark --no-source-map --style=compressed",
         "sass light --no-source-map --style=compressed",
         "phx.digest"
+      ],
+      "test.ci": [
+        "format --check-formatted",
+        "deps.unlock --check-unused",
+        "test --raise"
       ]
     ]
   end
