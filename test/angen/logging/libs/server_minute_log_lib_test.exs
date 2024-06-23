@@ -9,6 +9,7 @@ defmodule Angen.ServerMinuteLogLibTest do
   defp valid_attrs do
     %{
       timestamp: Timex.now(),
+      node: "test-node",
       data: %{"key" => 1}
     }
   end
@@ -16,6 +17,7 @@ defmodule Angen.ServerMinuteLogLibTest do
   defp update_attrs do
     %{
       timestamp: Timex.now() |> Timex.shift(minutes: 1),
+      node: "updated-test-node",
       data: %{"other-key" => 2}
     }
   end
@@ -23,6 +25,7 @@ defmodule Angen.ServerMinuteLogLibTest do
   defp invalid_attrs do
     %{
       timestamp: nil,
+      node: nil,
       data: nil
     }
   end

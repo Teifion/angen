@@ -1,10 +1,7 @@
 defmodule Angen.Logging.PersistServerDayTask do
   @moduledoc false
-  alias Credo.Code.Charlists
   use Oban.Worker, queue: :logging
-
   alias Angen.{Repo, Logging, Telemetry}
-  alias Angen.Logging.ServerMinuteLogLib
 
   # Minutes
   @segment_length 60

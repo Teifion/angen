@@ -5,17 +5,10 @@ defmodule AngenWeb.General.HomeLiveTest do
   import Phoenix.LiveViewTest
 
   describe "Anon" do
-    # test "index", %{conn: conn} do
-    #   {:error, {:redirect, resp}} = live(conn, ~p"/")
-
-    #   assert resp == %{
-    #            flash: %{"error" => "You must log in to access this page."},
-    #            to: ~p"/login"
-    #          }
-    # end
-
     test "index", %{conn: conn} do
-      {:ok, _index_live, html} = live(conn, ~p"/")
+      {:error, {:redirect, %{to: "/guest"}}} = live(conn, ~p"/")
+
+      {:ok, _index_live, html} = live(conn, ~p"/guest")
 
       assert html =~ "Login"
       refute html =~ "Logout"

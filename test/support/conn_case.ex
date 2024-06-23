@@ -75,7 +75,7 @@ defmodule AngenWeb.ConnCase do
     conn =
       conn
       |> Phoenix.ConnTest.init_test_session(%{})
-      |> Plug.Conn.put_session(:user_token, token)
+      |> Plug.Conn.put_session(:user_token, token.identifier_code)
 
     %{data | conn: conn}
   end
