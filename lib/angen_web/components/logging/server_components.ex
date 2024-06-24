@@ -102,7 +102,7 @@ defmodule AngenWeb.Logging.ServerComponents do
                 <td><%= @data["peak_user_counts"]["bot"] %></td>
               </tr>
               <tr style="font-weight: bold;">
-                <td>Total (no bots)</td>
+                <td>Total (non bot)</td>
                 <td><%= @data["peak_user_counts"]["total_non_bot"] %></td>
               </tr>
             </tbody>
@@ -136,7 +136,7 @@ defmodule AngenWeb.Logging.ServerComponents do
                 <td><%= represent_minutes(@data["minutes"]["bot"]) %></td>
               </tr>
               <tr style="font-weight: bold;">
-                <td>Total (no bots)</td>
+                <td>Total (non bot)</td>
                 <td><%= represent_minutes(@data["minutes"]["total_non_bot"]) %></td>
               </tr>
             </tbody>
