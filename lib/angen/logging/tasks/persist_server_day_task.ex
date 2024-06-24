@@ -322,7 +322,7 @@ defmodule Angen.Logging.PersistServerDayTask do
   defp add_telemetry(data, date, _node) do
     end_of_day = Timex.shift(date, days: 1)
 
-    Map.put(data, :telemetry, %{
+    Map.put(data, :telemetry_events, %{
       simple_clientapp: Telemetry.simple_clientapp_events_summary(after: date, before: end_of_day),
 
       simple_lobby: Telemetry.simple_lobby_events_summary(after: date, before: end_of_day)
