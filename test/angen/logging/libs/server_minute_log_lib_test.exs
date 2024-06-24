@@ -6,10 +6,13 @@ defmodule Angen.ServerMinuteLogLibTest do
 
   alias Angen.LoggingFixtures
 
+  @node "test-node"
+  @updated_node "updated-test-node"
+
   defp valid_attrs do
     %{
       timestamp: Timex.now(),
-      node: "test-node",
+      node: @node,
       data: %{"key" => 1}
     }
   end
@@ -17,7 +20,7 @@ defmodule Angen.ServerMinuteLogLibTest do
   defp update_attrs do
     %{
       timestamp: Timex.now() |> Timex.shift(minutes: 1),
-      node: "updated-test-node",
+      node: @updated_node,
       data: %{"other-key" => 2}
     }
   end
@@ -49,8 +52,7 @@ defmodule Angen.ServerMinuteLogLibTest do
 
     test "get_server_minute_log!/1 and get_server_minute_log/1 returns the server_minute_log with given id" do
       server_minute_log = LoggingFixtures.server_minute_log_fixture()
-      assert Logging.get_server_minute_log!(server_minute_log.timestamp) == server_minute_log
-      assert Logging.get_server_minute_log(server_minute_log.timestamp) == server_minute_log
+      assert Logging.get_server_minute_log(server_minute_log.timestamp, @node) == server_minute_log
     end
 
     test "create_server_minute_log/1 with valid data creates a server_minute_log" do
@@ -79,18 +81,14 @@ defmodule Angen.ServerMinuteLogLibTest do
       assert {:error, %Ecto.Changeset{}} =
                Logging.update_server_minute_log(server_minute_log, invalid_attrs())
 
-      assert server_minute_log == Logging.get_server_minute_log!(server_minute_log.timestamp)
+      assert server_minute_log == Logging.get_server_minute_log(server_minute_log.timestamp, @node)
     end
 
     test "delete_server_minute_log/1 deletes the server_minute_log" do
       server_minute_log = LoggingFixtures.server_minute_log_fixture()
       assert {:ok, %ServerMinuteLog{}} = Logging.delete_server_minute_log(server_minute_log)
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Logging.get_server_minute_log!(server_minute_log.timestamp)
-      end
-
-      assert Logging.get_server_minute_log(server_minute_log.timestamp) == nil
+      assert Logging.get_server_minute_log(server_minute_log.timestamp, @node) == nil
     end
 
     test "change_server_minute_log/1 returns a server_minute_log changeset" do

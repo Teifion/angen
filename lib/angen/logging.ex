@@ -30,14 +30,12 @@ defmodule Angen.Logging do
   defdelegate list_match_minute_logs(args), to: MatchMinuteLogLib
 
   @doc section: :match_minute_log
-  @spec get_match_minute_log!(DateTime.t()) :: MatchMinuteLog.t()
-  @spec get_match_minute_log!(DateTime.t(), Angen.query_args()) :: MatchMinuteLog.t()
-  defdelegate get_match_minute_log!(timestamp, query_args \\ []), to: MatchMinuteLogLib
+  @spec get_match_minute_log(DateTime.t(), String.t() | [String.t()], Angen.query_args()) :: MatchMinuteLog.t() | nil
+  defdelegate get_match_minute_log(timestamp, node, query_args \\ []), to: MatchMinuteLogLib
 
   @doc section: :match_minute_log
-  @spec get_match_minute_log(DateTime.t()) :: MatchMinuteLog.t() | nil
-  @spec get_match_minute_log(DateTime.t(), Angen.query_args()) :: MatchMinuteLog.t() | nil
-  defdelegate get_match_minute_log(timestamp, query_args \\ []), to: MatchMinuteLogLib
+  @spec get_first_match_minute_datetime() :: DateTime.t() | nil
+  defdelegate get_first_match_minute_datetime(), to: MatchMinuteLogLib
 
   @doc section: :match_minute_log
   @spec create_match_minute_log(map) :: {:ok, MatchMinuteLog.t()} | {:error, Ecto.Changeset.t()}

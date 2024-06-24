@@ -2,7 +2,7 @@ defmodule AngenWeb.Admin.Logging.Server.NowLive do
   @moduledoc false
   use AngenWeb, :live_view
   alias Angen.Logging
-  alias Angen.Logging.GraphMinuteLogsTask
+  # alias Angen.Logging.GraphMinuteLogsTask
 
   @impl true
   def mount(params, _session, socket) when is_connected?(socket) do

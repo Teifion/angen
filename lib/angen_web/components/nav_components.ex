@@ -140,6 +140,7 @@ defmodule AngenWeb.NavComponents do
   attr :dynamic_attrs, :map, default: []
   attr :col_classes, :string, default: nil
   slot :inner_block, required: true
+  attr :disabled, :boolean, default: false
 
   def menu_card(assigns) do
     style =

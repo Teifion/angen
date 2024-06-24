@@ -86,6 +86,7 @@ defmodule Angen.TextProtocol.SocketTest do
                    "player_colour" => nil,
                    "player_number" => nil,
                    "ready?" => false,
+                   "bot?" => false,
                    "sync" => nil,
                    "team_number" => nil,
                    "update_id" => 0

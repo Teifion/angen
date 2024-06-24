@@ -9,7 +9,7 @@ defmodule Angen.TextProtocol.Auth.LoginResponse do
 
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
-  def do_generate(user, state) do
+  def do_generate(%Teiserver.Account.User{} = user, state) do
     client = Teiserver.Api.get_client(user.id)
 
     result = %{
@@ -25,5 +25,9 @@ defmodule Angen.TextProtocol.Auth.LoginResponse do
          lobby_id: client.lobby_id,
          in_game?: client.in_game?
      })}
+  end
+
+  def do_generate(user_id, state) do
+    do_generate(Teiserver.Account.get_user_by_id(user_id), state)
   end
 end

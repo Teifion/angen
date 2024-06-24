@@ -20,7 +20,7 @@ defmodule Angen.FakeData.FakeLogging do
 
     # For the days with detail we can generate them using the actual data
     Range.new(0, min(config.days, config.detail_days))
-    |> Enum.each(fn r ->
+    |> Enum.each(fn _ ->
       Angen.Logging.PersistServerDayTask.perform(:ok)
     end)
 

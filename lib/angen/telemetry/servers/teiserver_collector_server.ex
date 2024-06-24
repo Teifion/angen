@@ -9,6 +9,8 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
   # alias Phoenix.PubSub
 
   @default_state %{
+    db_persist: true,
+
     # Counters
     client_event_counter: %{},
     client_connect_counter: %{},
@@ -23,6 +25,10 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
 
   # Client events
   @impl true
+  def handle_info({:set_db_persist, new_value}, state) do
+    {:noreply, %{state | db_persist: new_value}}
+  end
+
   def handle_info({:emit, [:teiserver, :client, :event], %{type: type}, _meta, _opts}, state) do
     new_count = Map.get(state.client_event_counter, type, 0) + 1
     new_counter = Map.put(state.client_event_counter, type, new_count)
@@ -34,7 +40,9 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
     new_count = Map.get(state.client_connect_counter, type, 0) + 1
     new_counter = Map.put(state.client_connect_counter, type, new_count)
 
-    Telemetry.log_simple_clientapp_event("connected", meta.user_id)
+    if state.db_persist do
+      :ok = Telemetry.log_simple_clientapp_event("connected", meta.user_id)
+    end
 
     {:noreply, %{state | client_connect_counter: new_counter}}
   end
@@ -43,7 +51,9 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
     new_count = Map.get(state.client_disconnect_counter, reason, 0) + 1
     new_counter = Map.put(state.client_disconnect_counter, reason, new_count)
 
-    Telemetry.log_simple_clientapp_event("disconnected", meta.user_id)
+    if state.db_persist do
+      :ok = Telemetry.log_simple_clientapp_event("disconnected", meta.user_id)
+    end
 
     {:noreply, %{state | client_disconnect_counter: new_counter}}
   end
@@ -60,7 +70,9 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
     new_count = Map.get(state.lobby_event_counter, :cycle, 0) + 1
     new_counter = Map.put(state.lobby_event_counter, :cycle, new_count)
 
-    :ok = Telemetry.log_simple_lobby_event("cycle", meta.match_id, meta[:user_id])
+    if state.db_persist do
+      :ok = Telemetry.log_simple_lobby_event("cycle", meta.match_id, meta[:user_id])
+    end
 
     {:noreply, %{state | lobby_event_counter: new_counter}}
   end
@@ -69,7 +81,9 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
     new_count = Map.get(state.lobby_event_counter, :start_match, 0) + 1
     new_counter = Map.put(state.lobby_event_counter, :start_match, new_count)
 
-    :ok = Telemetry.log_simple_lobby_event("start_match", meta.match_id, meta[:user_id])
+    if state.db_persist do
+      :ok = Telemetry.log_simple_lobby_event("start_match", meta.match_id, meta[:user_id])
+    end
 
     {:noreply, %{state | lobby_event_counter: new_counter}}
   end

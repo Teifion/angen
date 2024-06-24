@@ -6,9 +6,13 @@ defmodule Angen.MatchMinuteLogLibTest do
 
   alias Angen.LoggingFixtures
 
+  @node "test-node"
+  @updated_node "updated-test-node"
+
   defp valid_attrs do
     %{
       timestamp: Timex.now(),
+      node: @node,
       data: %{"key" => 1}
     }
   end
@@ -16,6 +20,7 @@ defmodule Angen.MatchMinuteLogLibTest do
   defp update_attrs do
     %{
       timestamp: Timex.now() |> Timex.shift(minutes: 1),
+      node: @updated_node,
       data: %{"other-key" => 2}
     }
   end
@@ -23,6 +28,7 @@ defmodule Angen.MatchMinuteLogLibTest do
   defp invalid_attrs do
     %{
       timestamp: nil,
+      node: nil,
       data: nil
     }
   end
@@ -46,8 +52,7 @@ defmodule Angen.MatchMinuteLogLibTest do
 
     test "get_match_minute_log!/1 and get_match_minute_log/1 returns the match_minute_log with given id" do
       match_minute_log = LoggingFixtures.match_minute_log_fixture()
-      assert Logging.get_match_minute_log!(match_minute_log.timestamp) == match_minute_log
-      assert Logging.get_match_minute_log(match_minute_log.timestamp) == match_minute_log
+      assert Logging.get_match_minute_log(match_minute_log.timestamp, @node) == match_minute_log
     end
 
     test "create_match_minute_log/1 with valid data creates a match_minute_log" do
@@ -76,18 +81,14 @@ defmodule Angen.MatchMinuteLogLibTest do
       assert {:error, %Ecto.Changeset{}} =
                Logging.update_match_minute_log(match_minute_log, invalid_attrs())
 
-      assert match_minute_log == Logging.get_match_minute_log!(match_minute_log.timestamp)
+      assert match_minute_log == Logging.get_match_minute_log(match_minute_log.timestamp, @node)
     end
 
     test "delete_match_minute_log/1 deletes the match_minute_log" do
       match_minute_log = LoggingFixtures.match_minute_log_fixture()
       assert {:ok, %MatchMinuteLog{}} = Logging.delete_match_minute_log(match_minute_log)
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Logging.get_match_minute_log!(match_minute_log.timestamp)
-      end
-
-      assert Logging.get_match_minute_log(match_minute_log.timestamp) == nil
+      assert Logging.get_match_minute_log(match_minute_log.timestamp, @node) == nil
     end
 
     test "change_match_minute_log/1 returns a match_minute_log changeset" do

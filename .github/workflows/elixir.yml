@@ -35,8 +35,8 @@ jobs:
         image: postgres:15
         ports: ['5432:5432']
         env:
-          POSTGRES_DB: teiserver_test
-          POSTGRES_USER: teiserver_test
+          POSTGRES_DB: angen_test
+          POSTGRES_USER: angen_test
           POSTGRES_PASSWORD: 123456789
         options: >-
           --health-cmd pg_isready

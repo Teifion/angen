@@ -8,6 +8,8 @@ defmodule Angen.Telemetry.AngenCollectorServer do
   # alias Phoenix.PubSub
 
   @default_state %{
+    db_persist: true,
+
     # Counters
     protocol_command_count: %{},
     protocol_command_time: %{}
@@ -20,6 +22,10 @@ defmodule Angen.Telemetry.AngenCollectorServer do
 
   # Client events
   @impl true
+  def handle_info({:set_db_persist, new_value}, state) do
+    {:noreply, %{state | db_persist: new_value}}
+  end
+
   def handle_info({:emit, [:angen, :protocol, :response, :start], _measurement, _meta, _opts}, state) do
     # new_count = Map.get(state.protocol_counter, type, 0) + 1
     # new_counter = Map.put(state.protocol_counter, type, new_count)

@@ -2,7 +2,7 @@ defmodule Angen.FakeData.FakeTelemetry do
   @moduledoc false
 
   alias Angen.Telemetry
-  import Mix.Tasks.Angen.Fakedata, only: [valid_userids: 1, valid_userids: 2]
+  import Mix.Tasks.Angen.Fakedata, only: [valid_userids: 1]
 
   def make_events(config) do
     Range.new(0, config.days)
@@ -23,7 +23,7 @@ defmodule Angen.FakeData.FakeTelemetry do
     }
   end
 
-  def make_simple_lobby(_config, date) do
+  def make_simple_lobby(_config, _date) do
     %{
       # "cycle" => insert_simple_lobby("cycle", user_ids, [0, 1, 2, 3], date)
     }

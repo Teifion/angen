@@ -24,28 +24,6 @@ defmodule Angen.Logging.MatchMinuteLogLib do
   @doc """
   Gets a single match_minute_log.
 
-  Raises `Ecto.NoResultsError` if the MatchMinuteLog does not exist.
-
-  ## Examples
-
-      iex> get_match_minute_log!(123)
-      %MatchMinuteLog{}
-
-      iex> get_match_minute_log!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  @spec get_match_minute_log!(DateTime.t()) :: MatchMinuteLog.t()
-  @spec get_match_minute_log!(DateTime.t(), Teiserver.query_args()) :: MatchMinuteLog.t()
-  def get_match_minute_log!(timestamp, query_args \\ []) do
-    (query_args ++ [timestamp: timestamp])
-    |> MatchMinuteLogQueries.match_minute_log_query()
-    |> Repo.one!()
-  end
-
-  @doc """
-  Gets a single match_minute_log.
-
   Returns nil if the MatchMinuteLog does not exist.
 
   ## Examples
@@ -57,12 +35,26 @@ defmodule Angen.Logging.MatchMinuteLogLib do
       nil
 
   """
-  @spec get_match_minute_log(DateTime.t()) :: MatchMinuteLog.t() | nil
-  @spec get_match_minute_log(DateTime.t(), Teiserver.query_args()) :: MatchMinuteLog.t() | nil
-  def get_match_minute_log(timestamp, query_args \\ []) do
-    (query_args ++ [timestamp: timestamp])
+  @spec get_match_minute_log(DateTime.t(), String.t() | [String.t()], Teiserver.query_args()) :: MatchMinuteLog.t() | nil
+  def get_match_minute_log(timestamp, node, query_args \\ []) do
+    (query_args ++ [timestamp: timestamp, node: node])
     |> MatchMinuteLogQueries.match_minute_log_query()
     |> Repo.one()
+  end
+
+  @doc """
+  Gets the datetime of the first MatchMinuteLog in the database, returns nil if there are none.
+  """
+  @spec get_first_match_minute_datetime() :: DateTime.t() | nil
+  def get_first_match_minute_datetime() do
+    log = MatchMinuteLogQueries.match_minute_log_query(
+      order_by: "Oldest first",
+      select: [:timestamp],
+      limit: 1
+    )
+    |> Repo.one()
+
+    if log, do: log.timestamp, else: nil
   end
 
   @doc """

@@ -10,6 +10,7 @@ defmodule Angen.LoggingFixtures do
       %Logging.MatchMinuteLog{},
       %{
         timestamp: data[:timestamp] || Timex.now(),
+        node: data[:node] || "test-node",
         data: data[:data] || %{}
       }
     )
@@ -96,6 +97,7 @@ defmodule Angen.LoggingFixtures do
       %Logging.ServerMinuteLog{},
       %{
         timestamp: data[:timestamp] || Timex.now(),
+        node: data[:node] || "test-node",
         data: data[:data] || %{}
       }
     )
