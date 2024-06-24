@@ -1,4 +1,4 @@
-FROM elixir:1.15.7
+FROM elixir:1.17.1
 ARG env=dev
 ENV LANG=en_US.UTF-8 \
     TERM=xterm \
