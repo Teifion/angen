@@ -57,7 +57,7 @@ defmodule Angen.MixProject do
       {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.3"},
       {:finch, "~> 0.13"},
-      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
@@ -68,7 +68,6 @@ defmodule Angen.MixProject do
       {:telemetry, "~> 1.2.1"},
       {:ecto_psql_extras, "~> 0.7"},
       {:timex, "~> 3.7.5"},
-      {:argon2_elixir, "~> 3.0"},
       {:oban, "~> 2.17"},
       {:phoenix_pubsub, "~> 2.0"},
       {:dart_sass, "~> 0.6"},
@@ -78,7 +77,7 @@ defmodule Angen.MixProject do
       {:thousand_island, "~> 1.3"},
       {:cachex, "~> 3.6"},
       {:ex_json_schema, "~> 0.10.2"},
-      {:excoveralls, "~> 0.15.3", only: :test, runtime: false},
+      {:excoveralls, "~> 0.18.1", only: :test, runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
 
       # We're pointing it at a specific git branch most of the time but
@@ -87,7 +86,7 @@ defmodule Angen.MixProject do
       # {:teiserver, "~> 0.0.5"}
       # {:teiserver,
       #  git: "https://github.com/teifion/teiserver.git",
-      #  ref: "a339fb95125aed59a8371dfbd64950edad3170ab"
+      #  ref: "a321e9f807b03030ec733a43568c453c8746a924"
       # }
       {:teiserver, path: "../teiserver"}
     ]

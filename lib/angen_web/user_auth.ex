@@ -79,6 +79,8 @@ defmodule AngenWeb.UserAuth do
   #     end
   #
   defp renew_session(conn) do
+    delete_csrf_token()
+
     conn
     |> configure_session(renew: true)
     |> clear_session()
