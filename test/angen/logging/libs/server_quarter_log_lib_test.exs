@@ -4,7 +4,7 @@ defmodule Angen.ServerQuarterLogLibTest do
   alias Angen.Logging
   use Angen.DataCase, async: true
 
-  alias Angen.LoggingFixtures
+  alias Angen.Fixtures.LoggingFixtures
 
   defp valid_attrs do
     %{

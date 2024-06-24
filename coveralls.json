@@ -1,6 +1,8 @@
 {
   "skip_files": [
     "^test/.*",
+    "lib/angen/dev_support/.*",
+    "lib/angen/helpers/fake_data/.*",
     "lib/mix/tasks/*"
   ],
   

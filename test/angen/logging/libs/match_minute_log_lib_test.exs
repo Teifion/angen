@@ -4,7 +4,7 @@ defmodule Angen.MatchMinuteLogLibTest do
   alias Angen.Logging
   use Angen.DataCase, async: true
 
-  alias Angen.LoggingFixtures
+  alias Angen.Fixtures.LoggingFixtures
 
   @node "test-node"
   @updated_node "updated-test-node"

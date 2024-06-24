@@ -79,7 +79,7 @@ defmodule Angen.Telemetry.AngenCollectorServer do
 
   @spec get_totals(Map.t()) :: Map.t()
   defp get_totals(state) do
-    state
+    Map.drop(state, [:db_persist])
   end
 
   # Startup

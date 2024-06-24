@@ -1,4 +1,4 @@
-defmodule Angen.LoggingFixtures do
+defmodule Angen.Fixtures.LoggingFixtures do
   @moduledoc false
   alias Angen.Logging
 
