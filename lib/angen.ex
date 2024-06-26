@@ -35,5 +35,5 @@ defmodule Angen do
 
   # Cluster cache delegation
   @spec invalidate_cache(atom, any) :: :ok
-  defdelegate invalidate_cache(table, key_or_keys), to: Teiserver.System.CacheClusterServer
+  defdelegate invalidate_cache(table, key_or_keys), to: Teiserver.Helpers.CacheHelper
 end

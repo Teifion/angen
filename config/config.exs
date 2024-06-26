@@ -8,6 +8,7 @@
 import Config
 
 config :angen,
+  persist_telemetry_events: true,
   ecto_repos: [Angen.Repo],
   site_title: "Angen DEV",
   json_schema_path: "priv/static/schema"

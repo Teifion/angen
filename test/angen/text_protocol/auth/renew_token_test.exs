@@ -45,7 +45,13 @@ defmodule Angen.TextProtocol.Auth.RenewTokenTest do
     })
 
     response = listen(socket)
-    new_token = Angen.Account.get_user_token(nil, where: [user_id: user.id])
+
+    new_token =
+      Angen.Account.get_user_token(nil,
+        where: [user_id: user.id, identifier_code: response["identifier_code"]]
+      )
+
+    assert new_token
 
     assert response == %{
              "name" => "auth/token",

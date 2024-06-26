@@ -59,7 +59,6 @@ defmodule Angen.Logging.PersistServerMinuteTask do
         1
       end
     )
-    |> IO.inspect()
     |> Map.drop([nil])
     |> Map.new(fn {key, values} ->
       {key, Enum.count(values)}

@@ -41,6 +41,7 @@ config :angen,
   dev_routes: true,
   test_mode: true,
   tls_port: 9201,
+  persist_telemetry_events: false,
   certs: [
     keyfile: "priv/certs/localhost.key",
     certfile: "priv/certs/localhost.crt",

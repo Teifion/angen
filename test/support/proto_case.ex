@@ -29,12 +29,6 @@ defmodule Angen.ProtoCase do
   setup tags do
     Angen.DataCase.setup_sandbox(tags)
 
-    # By default we don't want to persist the telemetry data in the DB
-    # as it will cause a bunch of issues with teardown. The db_persist can be re-enabled
-    # for tests needing them
-    send(Angen.Telemetry.AngenCollectorServer, {:set_db_persist, false})
-    send(Angen.Telemetry.TeiserverCollectorServer, {:set_db_persist, false})
-
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 

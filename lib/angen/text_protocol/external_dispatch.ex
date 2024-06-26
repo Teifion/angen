@@ -143,14 +143,14 @@ defmodule Angen.TextProtocol.ExternalDispatch do
       |> Enum.filter(fn m ->
         Code.ensure_loaded(m)
 
-        case m.__info__(:attributes)[:behaviour] do
-          [] -> false
-          nil -> false
-          b -> Enum.member?(b, Angen.TextProtocol.CommandHandlerMacro)
-        end
-      end)
-      |> Enum.filter(fn m ->
-        function_exported?(m, :name, 0)
+        command_macro? =
+          case m.__info__(:attributes)[:behaviour] do
+            [] -> false
+            nil -> false
+            b -> Enum.member?(b, Angen.TextProtocol.CommandHandlerMacro)
+          end
+
+        command_macro? and function_exported?(m, :name, 0)
       end)
       |> Map.new(fn m ->
         {m.name(), m}

@@ -22,12 +22,12 @@ defmodule Angen.Application do
       Angen.DevSupport.IntegrationSupervisor,
 
       # Caches
-      add_cache(:one_time_login_code, ttl: :timer.seconds(30)),
-      add_cache(:user_token_identifier_cache, ttl: :timer.minutes(5)),
-      add_cache(:angen_metadata),
-      add_cache(:protocol_schemas),
-      add_cache(:protocol_command_dispatches),
-      add_cache(:telemetry_event_types_cache, ttl: :timer.minutes(15)),
+      Teiserver.Caches.MetadataCache,
+      Teiserver.Caches.UserLoginCache,
+      Teiserver.Caches.ProtocolCache,
+      Teiserver.Caches.TelemetryEventCache,
+
+      # Client connections
       {Horde.Registry, [keys: :unique, members: :auto, name: Angen.ConnectionRegistry]},
       {Registry, [keys: :unique, members: :auto, name: Angen.LocalConnectionRegistry]},
       {ThousandIsland,
@@ -58,25 +58,20 @@ defmodule Angen.Application do
   end
 
   defp startup() do
-    Angen.Helpers.JsonSchemaHelper.load()
-    Angen.TextProtocol.ExternalDispatch.cache_dispatches()
     Angen.Settings.ServerSettings.create_server_settings()
     Angen.DevSupport.IntegrationSupervisor.start_integration_supervisor_children()
-
-    teiserver_events = Teiserver.Telemetry.event_list()
-    angen_events = Angen.Telemetry.event_list()
 
     # Collector server
     :telemetry.attach_many(
       "teiserver-collector",
-      teiserver_events,
+      Teiserver.Telemetry.event_list(),
       &Angen.Telemetry.TeiserverCollectorServer.handle_event/4,
       []
     )
 
     :telemetry.attach_many(
       "angen-collector",
-      angen_events,
+      Angen.Telemetry.event_list(),
       &Angen.Telemetry.AngenCollectorServer.handle_event/4,
       []
     )
@@ -94,20 +89,6 @@ defmodule Angen.Application do
 
     # Straight to logs
     # :telemetry.attach_many("teiserver-logger", teiserver_events, &Angen.Telemetry.TelemetryHelper.handle_event/4, [])
-  end
-
-  @spec add_cache(atom) :: map()
-  @spec add_cache(atom, list) :: map()
-  defp add_cache(name, opts \\ []) when is_atom(name) do
-    %{
-      id: name,
-      start:
-        {Cachex, :start_link,
-         [
-           name,
-           opts
-         ]}
-    }
   end
 
   defp oban_config do

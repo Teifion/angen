@@ -9,7 +9,7 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
   # alias Phoenix.PubSub
 
   @default_state %{
-    db_persist: true,
+    db_persist: false,
 
     # Counters
     client_event_counter: %{},
@@ -138,6 +138,8 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
 
   @impl true
   def init(_opts) do
-    {:ok, @default_state}
+    {:ok,
+     @default_state
+     |> Map.put(:db_persist, Application.get_env(:angen, :persist_telemetry_events))}
   end
 end

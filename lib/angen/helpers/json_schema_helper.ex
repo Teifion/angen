@@ -2,21 +2,27 @@ defmodule Angen.Helpers.JsonSchemaHelper do
   @moduledoc false
   require Logger
 
-  @spec load() :: list()
+  @spec load() :: :ok
   def load() do
     base_path = Application.get_env(:angen, :json_schema_path)
 
-    [
-      # Types we have to load in a certain order
-      "#{base_path}/types/account/user.json",
-      "#{base_path}/types/*.json",
-      "#{base_path}/types/*/*.json",
-      "#{base_path}/commands/*/*.json",
-      "#{base_path}/messages/*/*.json",
-      "#{base_path}/*.json"
-    ]
-    |> Enum.map(&load_path/1)
-    |> List.flatten()
+    schema_count =
+      [
+        # Types we have to load in a certain order
+        "#{base_path}/types/account/user.json",
+        "#{base_path}/types/*.json",
+        "#{base_path}/types/*/*.json",
+        "#{base_path}/commands/*/*.json",
+        "#{base_path}/messages/*/*.json",
+        "#{base_path}/*.json"
+      ]
+      |> Enum.map(&load_path/1)
+      |> List.flatten()
+      |> Enum.count()
+
+    Logger.info("Loaded #{schema_count} json schemas")
+
+    :ok
   end
 
   defp load_path(path) do
