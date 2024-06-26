@@ -151,6 +151,7 @@ defmodule Mix.Tasks.Angen.Fakedata do
       where: [
         inserted_before: Timex.to_datetime(before_datetime)
       ],
+      limit: :infinity,
       select: [:id]
     )
     |> Enum.map(fn %{id: id} -> id end)
@@ -162,6 +163,7 @@ defmodule Mix.Tasks.Angen.Fakedata do
         inserted_after: Timex.to_datetime(after_datetime),
         inserted_before: Timex.to_datetime(before_datetime)
       ],
+      limit: :infinity,
       select: [:id]
     )
     |> Enum.map(fn %{id: id} -> id end)

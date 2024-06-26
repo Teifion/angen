@@ -163,26 +163,6 @@ defmodule Angen.Helper.TimexHelper do
     end
   end
 
-  @spec datetime_min(DateTime.t(), DateTime.t()) :: DateTime.t()
-  @spec datetime_min(Date.t(), Date.t()) :: Date.t()
-  def datetime_min(dt1, dt2) do
-    if Timex.compare(dt1, dt2) == -1 do
-      dt1
-    else
-      dt2
-    end
-  end
-
-  @spec datetime_max(DateTime.t(), DateTime.t()) :: DateTime.t()
-  @spec datetime_max(Date.t(), Date.t()) :: Date.t()
-  def datetime_max(dt1, dt2) do
-    if Timex.compare(dt1, dt2) == 1 do
-      dt1
-    else
-      dt2
-    end
-  end
-
   @spec _hms_or_hmsdmy(DateTime.t(), DateTime.t()) :: String.t()
   defp _hms_or_hmsdmy(the_time, today) do
     if Timex.compare(the_time |> Timex.to_date(), today) == 0 do
@@ -292,103 +272,6 @@ defmodule Angen.Helper.TimexHelper do
       String.contains?(s, "-") -> parse_ymd(s)
       true -> parse_dmy(s)
     end
-  end
-
-  # def duration(start_tick, end_tick) do
-  #   s = Timex.diff(end_tick, start_tick, :duration)
-  #   |> Timex.Duration.to_seconds()
-
-  #   days = :math.floor(s/86400) |> round
-  #   s = s - days * 86400
-  #   hours = :math.floor(s/3600) |> round
-  #   s = s - hours * 3600
-  #   mins = :math.floor(s/60) |> round
-  #   s = s - mins * 60
-  #   s = round(s)
-
-  #   cond do
-  #     days > 0 -> "#{days} days"
-  #     hours > 0 -> "#{hours} hours"
-  #     mins > 0 -> "#{mins}:#{s}"
-  #     true -> "#{s}s"
-  #   end
-  # end
-
-  def duration_to_str(nil, _), do: ""
-  def duration_to_str(_, nil), do: ""
-
-  def duration_to_str(t1, t2) do
-    Timex.diff(t1, t2, :second)
-    |> abs
-    |> duration_to_str
-  end
-
-  @minute 60
-  @hour 60 * 60
-  @day 60 * 60 * 24
-  def duration_to_str(seconds) do
-    cond do
-      seconds >= @day ->
-        days = (seconds / @day) |> :math.floor() |> round
-
-        if days == 1 do
-          "#{days} day"
-        else
-          "#{days} days"
-        end
-
-      seconds >= @hour ->
-        hours = (seconds / @hour) |> :math.floor() |> round
-
-        if hours == 1 do
-          "#{hours} hour"
-        else
-          "#{hours} hours"
-        end
-
-      true ->
-        "#{seconds} seconds"
-    end
-  end
-
-  def duration_to_str_short(nil), do: nil
-
-  def duration_to_str_short(seconds) do
-    {days, remaining} =
-      if seconds >= @day do
-        days = (seconds / @day) |> :math.floor() |> round
-        {days, seconds - days * @day}
-      else
-        {0, seconds}
-      end
-
-    {hours, remaining} =
-      if remaining >= @hour do
-        hours = (remaining / @hour) |> :math.floor() |> round
-        {hours, remaining - hours * @hour}
-      else
-        {0, remaining}
-      end
-
-    {minutes, remaining} =
-      if remaining >= @minute do
-        minutes = (remaining / @minute) |> :math.floor() |> round
-        {minutes, remaining - minutes * @minute}
-      else
-        {0, remaining}
-      end
-
-    minutes = if minutes < 10, do: "0#{minutes}", else: minutes
-    remaining = if remaining < 10, do: "0#{remaining}", else: remaining
-
-    [
-      if(days > 0, do: "#{days}d "),
-      if(hours > 0, do: "#{hours}:"),
-      "#{minutes}:",
-      "#{remaining}"
-    ]
-    |> Enum.reject(fn v -> v == nil end)
-    |> Enum.join("")
   end
 
   def make_date_series(:days, start_date, end_date) do

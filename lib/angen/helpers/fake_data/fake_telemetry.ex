@@ -5,7 +5,7 @@ defmodule Angen.FakeData.FakeTelemetry do
   import Mix.Tasks.Angen.Fakedata, only: [valid_userids: 1, random_time_in_day: 1]
 
   def make_events(config) do
-    Range.new(0, config.days)
+    Range.new(0, min(config.days, 90))
     |> Enum.each(fn day ->
       date = Timex.today() |> Timex.shift(days: -day)
 
@@ -17,10 +17,15 @@ defmodule Angen.FakeData.FakeTelemetry do
   def make_simple_client(_config, date) do
     user_ids = valid_userids(date)
 
-    %{
-      "connected" => insert_simple_client("connected", user_ids, [0, 1, 2, 3], date),
-      "disconnected" => insert_simple_client("disconnected", user_ids, [0, 1, 2, 3], date)
-    }
+    events = [
+      create_simple_client("connected", user_ids, [0, 1, 2, 3], date),
+      create_simple_client("disconnected", user_ids, [0, 1, 2, 3], date)
+    ]
+    |> List.flatten()
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert_all(:insert_all, Telemetry.SimpleClientappEvent, events)
+    |> Angen.Repo.transaction()
   end
 
   def make_simple_lobby(_config, _date) do
@@ -29,32 +34,26 @@ defmodule Angen.FakeData.FakeTelemetry do
     }
   end
 
-  defp insert_simple_client(event_name, user_ids, event_count, date) do
+  defp create_simple_client(event_name, user_ids, event_count, date) do
     type_id = Telemetry.get_or_add_event_type_id(event_name, "simple_clientapp")
 
-    events =
-      user_ids
-      |> Enum.map(fn user_id ->
-        actual_count = evaluate_count(event_count)
+    user_ids
+    |> Enum.map(fn user_id ->
+      actual_count = evaluate_count(event_count)
 
-        if actual_count > 0 do
-          Range.new(0, actual_count)
-          |> Enum.map(fn _ ->
-            %{
-              event_type_id: type_id,
-              user_id: user_id,
-              inserted_at: random_time_in_day(date)
-            }
-          end)
-        else
-          []
-        end
-      end)
-      |> List.flatten()
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.insert_all(:insert_all, Telemetry.SimpleClientappEvent, events)
-    |> Angen.Repo.transaction()
+      if actual_count > 0 do
+        Range.new(0, actual_count)
+        |> Enum.map(fn _ ->
+          %{
+            event_type_id: type_id,
+            user_id: user_id,
+            inserted_at: random_time_in_day(date)
+          }
+        end)
+      else
+        []
+      end
+    end)
   end
 
   # Allows us to have counts of various types

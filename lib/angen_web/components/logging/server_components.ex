@@ -178,7 +178,7 @@ defmodule AngenWeb.Logging.ServerComponents do
             <tbody>
               <tr :for={{event, count} <- @events["simple_server"] |> Enum.take(10)}>
                 <td><%= event %></td>
-                <td><%= StringHelper.format_number(count) %></td>
+                <td><%= format_number(count) %></td>
               </tr>
             </tbody>
           </table>
@@ -192,7 +192,7 @@ defmodule AngenWeb.Logging.ServerComponents do
             <tbody>
               <tr :for={{event, count} <- @events["simple_clientapp"] |> Enum.take(10)}>
                 <td><%= event %></td>
-                <td><%= StringHelper.format_number(count) %></td>
+                <td><%= format_number(count) %></td>
               </tr>
             </tbody>
           </table>
@@ -206,7 +206,7 @@ defmodule AngenWeb.Logging.ServerComponents do
             <tbody>
               <tr :for={{event, count} <- @events["simple_anon"] |> Enum.take(10)}>
                 <td><%= event %></td>
-                <td><%= StringHelper.format_number(count) %></td>
+                <td><%= format_number(count) %></td>
               </tr>
             </tbody>
           </table>
@@ -220,7 +220,7 @@ defmodule AngenWeb.Logging.ServerComponents do
             <tbody>
               <tr :for={{event, count} <- @events["simple_lobby"] |> Enum.take(10)}>
                 <td><%= event %></td>
-                <td><%= StringHelper.format_number(count) %></td>
+                <td><%= format_number(count) %></td>
               </tr>
             </tbody>
           </table>
@@ -234,7 +234,7 @@ defmodule AngenWeb.Logging.ServerComponents do
             <tbody>
               <tr :for={{event, count} <- @events["simple_match"] |> Enum.take(10)}>
                 <td><%= event %></td>
-                <td><%= StringHelper.format_number(count) %></td>
+                <td><%= format_number(count) %></td>
               </tr>
             </tbody>
           </table>

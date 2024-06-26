@@ -68,6 +68,34 @@ defmodule AngenWeb.Admin.Logging.Server.IndexLive do
           )
           |> Enum.reverse()
 
+        "week" ->
+          Logging.list_server_week_logs(
+            order: "Newest first",
+            limit: limit
+          )
+          |> Enum.reverse()
+
+        "month" ->
+          Logging.list_server_month_logs(
+            order: "Newest first",
+            limit: limit
+          )
+          |> Enum.reverse()
+
+        "quarter" ->
+          Logging.list_server_quarter_logs(
+            order: "Newest first",
+            limit: limit
+          )
+          |> Enum.reverse()
+
+        "year" ->
+          Logging.list_server_year_logs(
+            order: "Newest first",
+            limit: limit
+          )
+          |> Enum.reverse()
+
         _ ->
           []
       end

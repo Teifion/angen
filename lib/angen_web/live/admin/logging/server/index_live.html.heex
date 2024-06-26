@@ -28,13 +28,13 @@ mode_items =
   <% "table" -> %>
     <.table id="logs" rows={@logs} table_class="table-sm table-hover">
       <:col :let={log} label="Date"><%= log.date %></:col>
-      <:col :let={log} label="Unique users"><%= log.data["stats"]["unique_users"] %></:col>
+      <:col :let={log} label="Unique users"><%= format_number(log.data["stats"]["unique_users"]) %></:col>
       <:col :let={log} label="Peak non-bot clients">
-        <%= log.data["peak_user_counts"]["total_non_bot"] %>
+        <%= format_number(log.data["peak_user_counts"]["total_non_bot"]) %>
       </:col>
-      <:col :let={log} label="Peak players"><%= log.data["peak_user_counts"]["player"] %></:col>
+      <:col :let={log} label="Peak players"><%= format_number(log.data["peak_user_counts"]["player"]) %></:col>
       <:col :let={log} label="Accounts created">
-        <%= log.data["stats"]["accounts_created"] %>
+        <%= format_number(log.data["stats"]["accounts_created"]) %>
       </:col>
       <:col :let={log} label="Total non bot time">
         <%= represent_minutes(log.data["minutes"]["total_non_bot"]) %>

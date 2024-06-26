@@ -63,7 +63,8 @@ defmodule AngenWeb do
           mount_require_any: 2
         ]
 
-      alias Angen.Helper.{StylingHelper, StringHelper}
+      alias Angen.Helper.StylingHelper
+      import Angen.Helper.StringHelper, only: [format_number: 1]
 
       defguard is_connected?(socket) when socket.transport_pid != nil
       unquote(html_helpers())
@@ -75,7 +76,8 @@ defmodule AngenWeb do
       use Phoenix.Component
       import AngenWeb.CoreComponents
 
-      alias Angen.Helper.{StylingHelper, StringHelper}
+      alias Angen.Helper.StylingHelper
+      import Angen.Helper.StringHelper, only: [format_number: 1]
       unquote(html_helpers())
     end
   end
@@ -84,7 +86,8 @@ defmodule AngenWeb do
     quote do
       use Phoenix.LiveComponent
 
-      alias Angen.Helper.{StylingHelper, StringHelper}
+      alias Angen.Helper.StylingHelper
+      import Angen.Helper.StringHelper, only: [format_number: 1]
       unquote(html_helpers())
     end
   end
@@ -115,7 +118,7 @@ defmodule AngenWeb do
       alias Phoenix.LiveView.JS
 
       import Angen.Helper.TimexHelper,
-        only: [duration_to_str_short: 1, represent_minutes: 1, date_to_str: 1, date_to_str: 2]
+        only: [represent_minutes: 1, date_to_str: 1, date_to_str: 2]
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
