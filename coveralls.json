@@ -3,6 +3,7 @@
     "^test/.*",
     "lib/angen/dev_support/.*",
     "lib/angen/helpers/fake_data/.*",
+    "lib/angen/release.ex",
     "lib/mix/tasks/*"
   ],
   

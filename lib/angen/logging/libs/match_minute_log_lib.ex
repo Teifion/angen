@@ -35,7 +35,8 @@ defmodule Angen.Logging.MatchMinuteLogLib do
       nil
 
   """
-  @spec get_match_minute_log(DateTime.t(), String.t() | [String.t()], Teiserver.query_args()) :: MatchMinuteLog.t() | nil
+  @spec get_match_minute_log(DateTime.t(), String.t() | [String.t()], Teiserver.query_args()) ::
+          MatchMinuteLog.t() | nil
   def get_match_minute_log(timestamp, node, query_args \\ []) do
     (query_args ++ [timestamp: timestamp, node: node])
     |> MatchMinuteLogQueries.match_minute_log_query()
@@ -47,12 +48,13 @@ defmodule Angen.Logging.MatchMinuteLogLib do
   """
   @spec get_first_match_minute_datetime() :: DateTime.t() | nil
   def get_first_match_minute_datetime() do
-    log = MatchMinuteLogQueries.match_minute_log_query(
-      order_by: "Oldest first",
-      select: [:timestamp],
-      limit: 1
-    )
-    |> Repo.one()
+    log =
+      MatchMinuteLogQueries.match_minute_log_query(
+        order_by: "Oldest first",
+        select: [:timestamp],
+        limit: 1
+      )
+      |> Repo.one()
 
     if log, do: log.timestamp, else: nil
   end

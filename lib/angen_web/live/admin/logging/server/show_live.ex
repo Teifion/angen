@@ -6,14 +6,17 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
 
   @impl true
   def mount(params, _session, socket) when is_connected?(socket) do
-    date = case params["date"] do
-      "today" ->
-        Timex.today()
-      date_str ->
-        TimexHelper.parse_ymd(date_str)
-    end
+    date =
+      case params["date"] do
+        "today" ->
+          Timex.today()
 
-    socket = socket
+        date_str ->
+          TimexHelper.parse_ymd(date_str)
+      end
+
+    socket =
+      socket
       |> assign(:unit, params["unit"])
       |> assign(:date_str, params["date"])
       |> assign(:date, date)
@@ -25,12 +28,12 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
   end
 
   def mount(params, _session, socket) do
-    {:ok, socket
-      |> assign(:unit, params["unit"])
-      |> assign(:date_str, params["date"])
-      |> assign(:mode, Map.get(params, "mode", "overview"))
-      |> assign(:site_menu_active, "logging")
-    }
+    {:ok,
+     socket
+     |> assign(:unit, params["unit"])
+     |> assign(:date_str, params["date"])
+     |> assign(:mode, Map.get(params, "mode", "overview"))
+     |> assign(:site_menu_active, "logging")}
   end
 
   @impl true
@@ -40,7 +43,8 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
 
   @impl true
   def handle_event("set-mode:" <> mode, _event_data, socket) do
-    socket = socket
+    socket =
+      socket
       |> assign(:mode, mode)
 
     {:noreply, socket}
@@ -50,50 +54,73 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
     {:noreply, socket}
   end
 
-  defp get_log(%{assigns: %{date_str: "today"}} = socket) do
-    {data, events} = Angen.Logging.PersistServerDayTask.today_so_far()
-      |> process_data
+  defp get_log(%{assigns: %{date_str: "today", unit: unit}} = socket) do
+    {data, events} =
+      case unit do
+        "week" ->
+          Angen.Logging.PersistServerWeekTask.week_so_far()
+          |> process_data
+
+        "month" ->
+          Angen.Logging.PersistServerMonthTask.month_so_far()
+          |> process_data
+
+        "quarter" ->
+          Angen.Logging.PersistServerQuarterTask.quarter_so_far()
+          |> process_data
+
+        "year" ->
+          Angen.Logging.PersistServerYearTask.year_so_far()
+          |> process_data
+
+        _day ->
+          Angen.Logging.PersistServerDayTask.today_so_far()
+          |> process_data
+      end
 
     socket
-      |> assign(:data, data)
-      |> assign(:events, events)
+    |> assign(:data, data)
+    |> assign(:events, events)
   end
 
   defp get_log(%{assigns: %{date: nil}} = socket) do
     socket
-      |> assign(:data, nil)
+    |> assign(:data, nil)
   end
 
   defp get_log(%{assigns: %{unit: unit, date: date}} = socket) do
-    raw_data = case unit do
-      "week" ->
-        Logging.get_server_week_log(date) |> Map.get(:data)
+    raw_data =
+      case unit do
+        "week" ->
+          Logging.get_server_week_log(date) |> Map.get(:data)
 
-      "month" ->
-        Logging.get_server_month_log(date) |> Map.get(:data)
+        "month" ->
+          Logging.get_server_month_log(date) |> Map.get(:data)
 
-      "quarter" ->
-        Logging.get_server_quarter_log(date) |> Map.get(:data)
+        "quarter" ->
+          Logging.get_server_quarter_log(date) |> Map.get(:data)
 
-      "year" ->
-        Logging.get_server_year_log(date) |> Map.get(:data)
+        "year" ->
+          Logging.get_server_year_log(date) |> Map.get(:data)
 
-      _day ->
-        Logging.get_server_day_log(date) |> Map.get(:data)
-    end
+        _day ->
+          Logging.get_server_day_log(date) |> Map.get(:data)
+      end
 
     {data, events} = process_data(raw_data)
 
     socket
-      |> assign(:data, data)
-      |> assign(:events, events)
+    |> assign(:data, data)
+    |> assign(:events, events)
   end
 
   @spec process_data(map()) :: {map(), map()}
   defp process_data(raw_data) do
-    events = raw_data["telemetry"]
+    events =
+      raw_data["telemetry_events"]
       |> Map.new(fn {type, counts} ->
-        sorted_counts = counts
+        sorted_counts =
+          counts
           |> Enum.map(fn {k, v} -> {k, v} end)
           |> Enum.sort_by(fn {_, v} -> v end, &>=/2)
 
@@ -108,18 +135,20 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
   end
 
   defp add_empty_events(events) do
-    Map.merge(%{
-      "simple_server" => [],
-      "simple_client" => [],
-      "simple_anon" => [],
-      "simple_lobby" => [],
-      "simple_match" => [],
-
-      "complex_server" => [],
-      "complex_client" => [],
-      "complex_anon" => [],
-      "complex_lobby" => [],
-      "complex_match" => [],
-    }, events)
+    Map.merge(
+      %{
+        "simple_server" => [],
+        "simple_client" => [],
+        "simple_anon" => [],
+        "simple_lobby" => [],
+        "simple_match" => [],
+        "complex_server" => [],
+        "complex_client" => [],
+        "complex_anon" => [],
+        "complex_lobby" => [],
+        "complex_match" => []
+      },
+      events
+    )
   end
 end

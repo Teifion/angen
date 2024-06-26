@@ -28,10 +28,8 @@ defmodule Angen.Application do
       add_cache(:protocol_schemas),
       add_cache(:protocol_command_dispatches),
       add_cache(:telemetry_event_types_cache, ttl: :timer.minutes(15)),
-
       {Horde.Registry, [keys: :unique, members: :auto, name: Angen.ConnectionRegistry]},
       {Registry, [keys: :unique, members: :auto, name: Angen.LocalConnectionRegistry]},
-
       {ThousandIsland,
        port: Application.get_env(:angen, :tls_port),
        handler_module: Angen.TextProtocol.TextHandlerServer,
@@ -42,8 +40,7 @@ defmodule Angen.Application do
          # certfile: Application.get_env(:angen, :certs)[:cacertfile]
        ]},
       {Angen.TaskServer, name: Angen.TaskServer},
-
-      {Oban, oban_config()},
+      {Oban, oban_config()}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -70,8 +67,19 @@ defmodule Angen.Application do
     angen_events = Angen.Telemetry.event_list()
 
     # Collector server
-    :telemetry.attach_many("teiserver-collector", teiserver_events, &Angen.Telemetry.TeiserverCollectorServer.handle_event/4, [])
-    :telemetry.attach_many("angen-collector", angen_events, &Angen.Telemetry.AngenCollectorServer.handle_event/4, [])
+    :telemetry.attach_many(
+      "teiserver-collector",
+      teiserver_events,
+      &Angen.Telemetry.TeiserverCollectorServer.handle_event/4,
+      []
+    )
+
+    :telemetry.attach_many(
+      "angen-collector",
+      angen_events,
+      &Angen.Telemetry.AngenCollectorServer.handle_event/4,
+      []
+    )
 
     # For when we want to track Oban events
     # oban_events = [

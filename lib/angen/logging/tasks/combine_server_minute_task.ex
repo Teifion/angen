@@ -13,11 +13,10 @@ defmodule Angen.Logging.CombineServerMinuteTask do
     # For fake data and other similar things we want to define when "now" is
     now = args[:now] || Timex.now() |> Timex.set(microsecond: 0, second: 0)
 
-    logs = Logging.list_server_minute_logs(
-      where: [timestamp: now]
-    )
+    logs = Logging.list_server_minute_logs(where: [timestamp: now])
 
-    combined_data = logs
+    combined_data =
+      logs
       |> prune_logs
       |> add_all_maps
       |> prune_result

@@ -10,7 +10,7 @@ defmodule Angen.DevSupport.LobbyChatEchoBotTest do
       close_all_lobbies()
 
       host_user = BotLib.get_or_create_bot_account("LobbyHostBot")
-      %{socket: hsocket, lobby_id: lobby_id} = lobby_host_connection(host_user)
+      %{socket: hsocket, lobby_id: lobby_id} = lobby_host_connection(user: host_user)
 
       # Create it, give it time to join the lobby
       {:ok, p} = ManagerServer.start_bot(LobbyChatEchoBot, %{})
@@ -46,8 +46,8 @@ defmodule Angen.DevSupport.LobbyChatEchoBotTest do
                self_msg["message"]["message"]["match_id"]
 
       # Stop the bot manually to prevent it doing something while we tear down the test
-      send(p, :stop)
-      :timer.sleep(100)
+      ManagerServer.stop_bot(p)
+      :timer.sleep(500)
     end
   end
 end

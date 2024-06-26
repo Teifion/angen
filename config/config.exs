@@ -33,8 +33,8 @@ config :angen, Angen.Mailer, adapter: Swoosh.Adapters.Local
 
 config :teiserver,
   repo: Angen.Repo,
-  fn_lobby_name_acceptor: &Angen.Helpers.OverrideHelpers.lobby_name_acceptor/1,
-  fn_user_name_acceptor: &Angen.Helpers.OverrideHelpers.user_name_acceptor/1
+  fn_lobby_name_acceptor: &Angen.Helpers.OverrideHelper.lobby_name_acceptor/1,
+  fn_user_name_acceptor: &Angen.Helpers.OverrideHelper.user_name_acceptor/1
 
 # Configure esbuild (the version is required)
 config :esbuild,
@@ -75,23 +75,22 @@ config :angen, Oban,
     {Oban.Plugins.Pruner, max_age: 3600},
     {Oban.Plugins.Cron,
      crontab: [
-      # Every minute
-      {"* * * * *", Angen.Logging.TriggerPersistServerMinuteTask},
+       # Every minute
+       {"* * * * *", Angen.Logging.TriggerPersistServerMinuteTask}
 
-      # 2am, to help prevent any issues when clocks move an hour
-      #  {"1 2 * * *", Teiserver.Logging.PersistServerDayTask},
+       # 2am, to help prevent any issues when clocks move an hour
+       #  {"1 2 * * *", Teiserver.Logging.PersistServerDayTask},
 
-      #  {"2 2 * * *", Teiserver.Logging.Tasks.PersistServerWeekTask},
-      #  {"3 2 * * *", Teiserver.Logging.Tasks.PersistServerMonthTask},
-      #  {"4 2 * * *", Teiserver.Logging.Tasks.PersistServerQuarterTask},
-      #  {"5 2 * * *", Teiserver.Logging.Tasks.PersistServerYearTask},
-      #  {"6 2 * * *", Teiserver.Logging.Tasks.PersistMatchDayTask},
-      #  {"7 2 * * *", Teiserver.Logging.Tasks.PersistMatchMonthTask},
-      #  {"9 2 * * *", Teiserver.Logging.Tasks.PersistUserActivityDayTask},
+       #  {"2 2 * * *", Teiserver.Logging.Tasks.PersistServerWeekTask},
+       #  {"3 2 * * *", Teiserver.Logging.Tasks.PersistServerMonthTask},
+       #  {"4 2 * * *", Teiserver.Logging.Tasks.PersistServerQuarterTask},
+       #  {"5 2 * * *", Teiserver.Logging.Tasks.PersistServerYearTask},
+       #  {"6 2 * * *", Teiserver.Logging.Tasks.PersistMatchDayTask},
+       #  {"7 2 * * *", Teiserver.Logging.Tasks.PersistMatchMonthTask},
+       #  {"9 2 * * *", Teiserver.Logging.Tasks.PersistUserActivityDayTask},
      ]}
   ],
   queues: [logging: 1, cleanup: 1, teiserver: 10]
-
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -20,14 +20,15 @@ defmodule Angen.Telemetry.SimpleClientappEventLib do
     }
 
     case create_simple_clientapp_event(attrs) do
-      {:ok, _event} -> :ok
+      {:ok, _event} ->
+        :ok
+
       {:error, changeset} ->
         {:error,
-          changeset.errors
-          |> Enum.map_join(", ", fn {key, {message, _}} ->
-            "#{key}: #{message}"
-          end)
-        }
+         changeset.errors
+         |> Enum.map_join(", ", fn {key, {message, _}} ->
+           "#{key}: #{message}"
+         end)}
     end
   end
 
@@ -62,7 +63,8 @@ defmodule Angen.Telemetry.SimpleClientappEventLib do
 
   """
   @spec get_simple_clientapp_event!(SimpleClientappEvent.id()) :: SimpleClientappEvent.t()
-  @spec get_simple_clientapp_event!(SimpleClientappEvent.id(), Teiserver.query_args()) :: SimpleClientappEvent.t()
+  @spec get_simple_clientapp_event!(SimpleClientappEvent.id(), Teiserver.query_args()) ::
+          SimpleClientappEvent.t()
   def get_simple_clientapp_event!(simple_clientapp_event_id, query_args \\ []) do
     (query_args ++ [id: simple_clientapp_event_id])
     |> SimpleClientappEventQueries.simple_clientapp_event_query()
@@ -84,7 +86,8 @@ defmodule Angen.Telemetry.SimpleClientappEventLib do
 
   """
   @spec get_simple_clientapp_event(SimpleClientappEvent.id()) :: SimpleClientappEvent.t() | nil
-  @spec get_simple_clientapp_event(SimpleClientappEvent.id(), Teiserver.query_args()) :: SimpleClientappEvent.t() | nil
+  @spec get_simple_clientapp_event(SimpleClientappEvent.id(), Teiserver.query_args()) ::
+          SimpleClientappEvent.t() | nil
   def get_simple_clientapp_event(simple_clientapp_event_id, query_args \\ []) do
     (query_args ++ [id: simple_clientapp_event_id])
     |> SimpleClientappEventQueries.simple_clientapp_event_query()
@@ -103,7 +106,8 @@ defmodule Angen.Telemetry.SimpleClientappEventLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_simple_clientapp_event(map) :: {:ok, SimpleClientappEvent.t()} | {:error, Ecto.Changeset.t()}
+  @spec create_simple_clientapp_event(map) ::
+          {:ok, SimpleClientappEvent.t()} | {:error, Ecto.Changeset.t()}
   def create_simple_clientapp_event(attrs) do
     %SimpleClientappEvent{}
     |> SimpleClientappEvent.changeset(attrs)
@@ -142,7 +146,8 @@ defmodule Angen.Telemetry.SimpleClientappEventLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec delete_simple_clientapp_event(SimpleClientappEvent.t()) :: {:ok, SimpleClientappEvent.t()} | {:error, Ecto.Changeset.t()}
+  @spec delete_simple_clientapp_event(SimpleClientappEvent.t()) ::
+          {:ok, SimpleClientappEvent.t()} | {:error, Ecto.Changeset.t()}
   def delete_simple_clientapp_event(%SimpleClientappEvent{} = simple_clientapp_event) do
     Repo.delete(simple_clientapp_event)
   end
@@ -157,7 +162,10 @@ defmodule Angen.Telemetry.SimpleClientappEventLib do
 
   """
   @spec change_simple_clientapp_event(SimpleClientappEvent.t(), map) :: Ecto.Changeset.t()
-  def change_simple_clientapp_event(%SimpleClientappEvent{} = simple_clientapp_event, attrs \\ %{}) do
+  def change_simple_clientapp_event(
+        %SimpleClientappEvent{} = simple_clientapp_event,
+        attrs \\ %{}
+      ) do
     SimpleClientappEvent.changeset(simple_clientapp_event, attrs)
   end
 end

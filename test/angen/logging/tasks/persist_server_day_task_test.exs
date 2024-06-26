@@ -10,9 +10,9 @@ defmodule Angen.PersistServerDayTaskTest do
     Ecto.Adapters.SQL.query(Repo, query, [])
 
     now = Timex.now() |> Timex.shift(days: -1) |> Timex.set(microsecond: 0, second: 0)
-    assert :ok == PersistServerMinuteTask.perform(now: Timex.shift(now, minutes: -1))
-    assert :ok == PersistServerMinuteTask.perform(now: Timex.shift(now, minutes: -2))
-    assert :ok == PersistServerMinuteTask.perform(now: Timex.shift(now, minutes: -3))
+    {:ok, _returned_log} = PersistServerMinuteTask.perform(now: Timex.shift(now, minutes: -1))
+    {:ok, _returned_log} = PersistServerMinuteTask.perform(now: Timex.shift(now, minutes: -2))
+    {:ok, _returned_log} = PersistServerMinuteTask.perform(now: Timex.shift(now, minutes: -3))
 
     # Set all of them to "all"
     query = "UPDATE logging_server_minute_logs SET node = 'all';"
@@ -25,5 +25,8 @@ defmodule Angen.PersistServerDayTaskTest do
     assert Map.has_key?(log.data, "telemetry_events")
     assert Map.has_key?(log.data, "stats")
     assert Map.has_key?(log.data, "peak_user_counts")
+
+    # Run again so we know it won't error if one already exists
+    assert :ok == PersistServerDayTask.perform(:ok)
   end
 end

@@ -66,6 +66,25 @@ defmodule Angen.Logging.ServerMonthLogLib do
   end
 
   @doc """
+  Gets the date of the last ServerMinuteLog in the database, returns nil if there are none.
+  """
+  @spec get_last_server_month_log_date() :: Date.t() | nil
+  def get_last_server_month_log_date() do
+    log =
+      ServerMonthLogQueries.server_month_log_query(
+        order_by: "Newest first",
+        select: [:date],
+        limit: 1
+      )
+      |> Repo.one()
+
+    case log do
+      nil -> nil
+      %{date: date} -> date
+    end
+  end
+
+  @doc """
   Creates a server_month_log.
 
   ## Examples

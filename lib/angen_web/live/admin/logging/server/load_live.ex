@@ -4,7 +4,8 @@ defmodule AngenWeb.Admin.Logging.Server.LoadLive do
 
   @impl true
   def mount(_params, _session, socket) when is_connected?(socket) do
-    socket = socket
+    socket =
+      socket
       |> assign(:site_menu_active, "logging")
 
     {:ok, socket}

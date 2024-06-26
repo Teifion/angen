@@ -6,7 +6,8 @@ defmodule AngenWeb.Admin.Logging.Server.IndexLive do
 
   @impl true
   def mount(params, _session, socket) when is_connected?(socket) do
-    socket = socket
+    socket =
+      socket
       |> assign(:site_menu_active, "logging")
       |> assign(:unit, Map.get(params, "unit", "day"))
       |> assign(:limit, 31)
@@ -17,13 +18,13 @@ defmodule AngenWeb.Admin.Logging.Server.IndexLive do
   end
 
   def mount(params, _session, socket) do
-    {:ok, socket
-      |> assign(:site_menu_active, "logging")
-      |> assign(:unit, Map.get(params, "unit", "day"))
-      |> assign(:limit, 31)
-      |> assign(:mode, "table")
-      |> assign(:logs, [])
-    }
+    {:ok,
+     socket
+     |> assign(:site_menu_active, "logging")
+     |> assign(:unit, Map.get(params, "unit", "day"))
+     |> assign(:limit, 31)
+     |> assign(:mode, "table")
+     |> assign(:logs, [])}
   end
 
   @impl true
@@ -33,7 +34,8 @@ defmodule AngenWeb.Admin.Logging.Server.IndexLive do
 
   @impl true
   def handle_event("set-unit:" <> unit, _event_data, socket) do
-    socket = socket
+    socket =
+      socket
       |> assign(:unit, unit)
       |> get_logs
 
@@ -49,25 +51,28 @@ defmodule AngenWeb.Admin.Logging.Server.IndexLive do
     unit = assigns.unit
     limit = assigns.limit
 
-    logs = case unit do
-      "minute" ->
-        Logging.list_server_minute_logs(
-          where: [node: "all"],
-          order: "Newest first",
-          limit: limit
-        )
-        |> Enum.reverse
-      "day" ->
-        Logging.list_server_day_logs(
-          order: "Newest first",
-          limit: limit
-        )
-        |> Enum.reverse
+    logs =
+      case unit do
+        "minute" ->
+          Logging.list_server_minute_logs(
+            where: [node: "all"],
+            order: "Newest first",
+            limit: limit
+          )
+          |> Enum.reverse()
 
-      _ -> []
-    end
+        "day" ->
+          Logging.list_server_day_logs(
+            order: "Newest first",
+            limit: limit
+          )
+          |> Enum.reverse()
+
+        _ ->
+          []
+      end
 
     socket
-      |> assign(:logs, logs)
+    |> assign(:logs, logs)
   end
 end

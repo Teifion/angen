@@ -28,8 +28,8 @@ defmodule Angen.TextProtocol.DisconnectTest do
 
     test "auth'd - 2 connections" do
       user = create_test_user()
-      %{socket: socket1} = auth_connection(user)
-      %{socket: socket2} = auth_connection(user)
+      %{socket: socket1} = auth_connection(user: user)
+      %{socket: socket2} = auth_connection(user: user)
 
       speak(socket1, %{name: "connections/disconnect", command: %{}})
       msg = listen(socket1)

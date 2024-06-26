@@ -66,6 +66,14 @@ defmodule Angen.DevSupport.ManagerServer do
     )
   end
 
+  @spec stop_bot(pid()) :: :ok | {:error, :not_found}
+  def stop_bot(pid) do
+    DynamicSupervisor.terminate_child(
+      DevSupport.IntegrationSupervisor,
+      pid
+    )
+  end
+
   @spec integration_active?() :: boolean
   def integration_active?() do
     if Application.get_env(:angen, :test_mode) == true do

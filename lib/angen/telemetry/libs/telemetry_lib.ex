@@ -24,7 +24,7 @@ defmodule Angen.Telemetry.TelemetryLib do
   def get_all_totals(reset \\ false) do
     %{
       angen: get_angen_totals(reset),
-      teiserver: get_teiserver_totals(reset),
+      teiserver: get_teiserver_totals(reset)
     }
   end
 
@@ -41,6 +41,5 @@ defmodule Angen.Telemetry.TelemetryLib do
       :exit, _ ->
         %{}
     end
-
   end
 end

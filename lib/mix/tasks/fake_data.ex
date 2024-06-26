@@ -23,10 +23,10 @@ defmodule Mix.Tasks.Angen.Fakedata do
   defp parse_args(args) do
     args
     |> Enum.reduce(@defaults, fn
-      ("days:" <> day_str, acc) ->
+      "days:" <> day_str, acc ->
         Map.put(acc, :days, String.to_integer(day_str))
 
-      ("detail-days:" <> day_str, acc) ->
+      "detail-days:" <> day_str, acc ->
         Map.put(acc, :detail_days, String.to_integer(day_str))
     end)
   end
@@ -84,11 +84,12 @@ defmodule Mix.Tasks.Angen.Fakedata do
       Range.new(0, config.days)
       |> Enum.map(fn day ->
         # Make an extra 50 users for the first day
-        users_to_make = if day == config.days do
-          50
-        else
-          users_per_day()
-        end
+        users_to_make =
+          if day == config.days do
+            50
+          else
+            users_per_day()
+          end
 
         Range.new(0, users_to_make)
         |> Enum.map(fn _ ->
@@ -116,16 +117,17 @@ defmodule Mix.Tasks.Angen.Fakedata do
   defp make_one_time_code(_config) do
     root_user = Account.get_user_by_email("root@localhost")
 
-    {:ok, _code} = Angen.Account.create_user_token(%{
-      user_id: root_user.id,
-      id: Teiserver.deterministic_uuid("root@localhost"),
-      identifier_code: Angen.Account.UserTokenLib.generate_code(),
-      renewal_code: Angen.Account.UserTokenLib.generate_code(),
-      context: "fake-data",
-      user_agent: "fake-data",
-      ip: "127.0.0.1",
-      expires_at: Timex.now() |> Timex.shift(days: 31)
-    })
+    {:ok, _code} =
+      Angen.Account.create_user_token(%{
+        user_id: root_user.id,
+        id: Teiserver.deterministic_uuid("root@localhost"),
+        identifier_code: Angen.Account.UserTokenLib.generate_code(),
+        renewal_code: Angen.Account.UserTokenLib.generate_code(),
+        context: "fake-data",
+        user_agent: "fake-data",
+        ip: "127.0.0.1",
+        expires_at: Timex.now() |> Timex.shift(days: 31)
+      })
   end
 
   def time_convert(t) do
@@ -156,7 +158,7 @@ defmodule Mix.Tasks.Angen.Fakedata do
     Teiserver.Account.list_users(
       where: [
         inserted_after: Timex.to_datetime(after_datetime),
-        inserted_before: Timex.to_datetime(before_datetime),
+        inserted_before: Timex.to_datetime(before_datetime)
       ],
       select: [:id]
     )
@@ -166,27 +168,28 @@ defmodule Mix.Tasks.Angen.Fakedata do
   @spec rand_int(integer(), integer(), integer()) :: integer()
   def rand_int(lower_bound, upper_bound, existing) do
     range = upper_bound - lower_bound
-    max_change = round(range/3)
+    max_change = round(range / 3)
 
-    existing = existing || ((lower_bound + upper_bound) / 2)
+    existing = existing || (lower_bound + upper_bound) / 2
 
     # Create a random +/- change
-    change = if max_change < 1 do
-      0
-    else
-      (:rand.uniform(max_change * 2) - max_change)
-    end
+    change =
+      if max_change < 1 do
+        0
+      else
+        :rand.uniform(max_change * 2) - max_change
+      end
 
     (existing + change)
-      |> min(upper_bound)
-      |> max(lower_bound)
-      |> round()
+    |> min(upper_bound)
+    |> max(lower_bound)
+    |> round()
   end
 
   @spec rand_int_sequence(number(), number(), number(), non_neg_integer()) :: list
   def rand_int_sequence(lower_bound, upper_bound, start_point, iterations) do
     Range.new(1, iterations)
-    |> Enum.reduce([start_point], fn (_, acc) ->
+    |> Enum.reduce([start_point], fn _, acc ->
       last_value = hd(acc)
       v = rand_int(lower_bound, upper_bound, last_value)
 

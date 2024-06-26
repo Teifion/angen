@@ -9,11 +9,16 @@ defmodule Angen.DevSupport.LobbyHostBot do
 
   def handle_info(:startup, state) do
     user = BotLib.get_or_create_bot_account("LobbyHostBot")
-    Api.connect_user(user.id)
+    client = Api.connect_user(user.id)
 
-    send(self(), :tick)
-    :timer.send_interval(@interval, :tick)
-    {:noreply, %{state | user: user, connected: true, lobby_id: nil}}
+    if client do
+      send(self(), :tick)
+      :timer.send_interval(@interval, :tick)
+      {:noreply, %{state | user: user, connected: true, lobby_id: nil}}
+    else
+      :timer.send_after(500, :startup)
+      {:noreply, state}
+    end
   end
 
   def handle_info(:tick, %{lobby_id: nil} = state) do

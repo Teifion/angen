@@ -16,8 +16,7 @@ defmodule AngenWeb.UserRegistrationLive do
                 height="42"
                 style="margin-right: 5px;"
                 class="d-inline align-top"
-              />
-              Register for an account
+              /> Register for an account
               <:subtitle>
                 Already registered?
                 <.link navigate={~p"/login"} class="font-semibold text-brand hover:underline">
@@ -40,13 +39,20 @@ defmodule AngenWeb.UserRegistrationLive do
                 Oops, something went wrong! Please check the errors below.
               </.error>
 
-              <.input field={@form[:email]} type="email" label="Email" class={"mt-2"} required autofocus />
+              <.input
+                field={@form[:email]}
+                type="email"
+                label="Email"
+                class="mt-2"
+                required
+                autofocus
+              />
               <br />
 
-              <.input field={@form[:name]} type="text" label="Display name" class={"mt-2"} required />
+              <.input field={@form[:name]} type="text" label="Display name" class="mt-2" required />
               <br />
 
-              <.input field={@form[:password]} type="password" label="Password" class={"mt-2"} required />
+              <.input field={@form[:password]} type="password" label="Password" class="mt-2" required />
               <br />
 
               <:actions>
@@ -55,8 +61,7 @@ defmodule AngenWeb.UserRegistrationLive do
 
               <:actions>
                 <.button phx-disable-with="Creating account..." class="btn-primary float-end w-40">
-                  Create an account
-                  <span aria-hidden="true">→</span>
+                  Create an account <span aria-hidden="true">→</span>
                 </.button>
               </:actions>
             </.simple_form>

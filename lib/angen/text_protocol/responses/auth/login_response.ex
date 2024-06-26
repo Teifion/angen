@@ -18,12 +18,12 @@ defmodule Angen.TextProtocol.Auth.LoginResponse do
 
     {result,
      struct(state, %{
-         user_id: user.id,
-         user: user,
-         lobby_host?: client.lobby_host?,
-         party_id: client.party_id,
-         lobby_id: client.lobby_id,
-         in_game?: client.in_game?
+       user_id: user.id,
+       user: user,
+       lobby_host?: client.lobby_host?,
+       party_id: client.party_id,
+       lobby_id: client.lobby_id,
+       in_game?: client.in_game?
      })}
   end
 

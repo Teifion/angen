@@ -66,18 +66,12 @@ defmodule Angen.ProtoCase do
     %{socket: socket}
   end
 
-  @spec auth_connection() :: %{socket: any(), user: Teiserver.Account.User.t()}
-  def auth_connection() do
-    user = create_test_user()
-
-    auth_connection(user)
-  end
-
-  @spec auth_connection(Teiserver.Account.User.t()) :: %{
+  @spec auth_connection(list) :: %{
           socket: any(),
           user: Teiserver.Account.User.t()
         }
-  def auth_connection(user) do
+  def auth_connection(opts \\ []) do
+    user = opts[:user] || create_test_user()
     host = ~c"127.0.0.1"
     port = Application.get_env(:angen, :tls_port)
 
@@ -93,7 +87,8 @@ defmodule Angen.ProtoCase do
       name: "auth/login",
       command: %{
         token: token.identifier_code,
-        user_agent: "UnitTest"
+        user_agent: "UnitTest",
+        bot?: opts[:bot?] || false
       }
     })
 
@@ -135,18 +130,15 @@ defmodule Angen.ProtoCase do
     end
   end
 
-  @spec lobby_host_connection() :: %{
+  @spec lobby_host_connection(list()) :: %{
           socket: any(),
           user: Teiserver.Account.User.t(),
           lobby: Teiserver.Game.Lobby.t()
         }
-  def lobby_host_connection(user \\ nil) do
-    %{socket: socket, user: user} =
-      if user do
-        auth_connection(user)
-      else
-        auth_connection()
-      end
+  def lobby_host_connection(opts \\ []) do
+    user = opts[:user] || create_test_user()
+
+    %{socket: socket, user: user} = auth_connection(user: user)
 
     # # For some reason the login can happen fast enough the client isn't registered
     # # so we call this just to ensure it is

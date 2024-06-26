@@ -1,47 +1,4 @@
 <div>
-  <% view_colour_value = assigns[:view_colour] || :primary
-  {fg, bg, _bsname} = Angen.Helper.StylingHelper.colours(view_colour_value) %>
-  <style type="text/css">
-    @media print {
-      #menu, #header, #navigation {
-        display: none;
-      }
-    }
-
-    #breadcrumb-wrapper {
-      border-bottom: 1px solid <%= fg %> !important;
-      background-color: <%= bg %> !important;
-    }
-    #breadcrumb {
-      background-color: <%= bg %> !important;
-    }
-
-    .nav-tabs .nav-item .active {
-      color: <%= fg %> !important;
-      border-bottom-color: <%= fg %> !important;
-    }
-
-    .line-card a {
-      color: <%= fg %> !important;
-    }
-    .line-card a:hover {
-      background-color: <%= bg %> !important;
-    }
-
-    .sub-menu-icon a:hover {
-      border-bottom: 5px solid <%= fg %>;
-      color: <%= fg %>;
-    }
-
-    .sub-menu-icon .active {
-      border-bottom-color: <%= fg %>;
-    }
-
-    .sub-menu .active, .sub-menu .active:hover {
-      color: <%= fg %>;
-    }
-  </style>
-
   <AngenWeb.NavComponents.top_navbar
     active={assigns[:site_menu_active]}
     current_user={@current_user}

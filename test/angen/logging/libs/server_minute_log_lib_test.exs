@@ -52,7 +52,9 @@ defmodule Angen.ServerMinuteLogLibTest do
 
     test "get_server_minute_log!/1 and get_server_minute_log/1 returns the server_minute_log with given id" do
       server_minute_log = LoggingFixtures.server_minute_log_fixture()
-      assert Logging.get_server_minute_log(server_minute_log.timestamp, @node) == server_minute_log
+
+      assert Logging.get_server_minute_log(server_minute_log.timestamp, @node) ==
+               server_minute_log
     end
 
     test "create_server_minute_log/1 with valid data creates a server_minute_log" do
@@ -81,7 +83,8 @@ defmodule Angen.ServerMinuteLogLibTest do
       assert {:error, %Ecto.Changeset{}} =
                Logging.update_server_minute_log(server_minute_log, invalid_attrs())
 
-      assert server_minute_log == Logging.get_server_minute_log(server_minute_log.timestamp, @node)
+      assert server_minute_log ==
+               Logging.get_server_minute_log(server_minute_log.timestamp, @node)
     end
 
     test "delete_server_minute_log/1 deletes the server_minute_log" do

@@ -1,4 +1,4 @@
-defmodule Angen.Helpers.OverrideHelpers do
+defmodule Angen.Helpers.OverrideHelper do
   @moduledoc """
   Overrides for Teiserver functions
   """

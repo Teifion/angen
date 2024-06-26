@@ -1,29 +1,26 @@
-<%
-  mode_items = ~w(overview raw_data)
-    |> Enum.map(fn i ->
-      %{
-        click: "set-mode:#{i}",
-        label: String.capitalize(i) |> String.replace("_", " "),
-        selected: assigns[:mode] == i,
-      }
-    end)
-%>
+<% mode_items =
+  ~w(overview raw_data)
+  |> Enum.map(fn i ->
+    %{
+      click: "set-mode:#{i}",
+      label: String.capitalize(i) |> String.replace("_", " "),
+      selected: assigns[:mode] == i
+    }
+  end) %>
 
-
-<AngenWeb.Logging.ServerComponents.filter_bar unit={@unit} mode={@mode} selected={if @date_str == "today", do: "today", else: "show"}>
-  <.dropdown
-    items={mode_items}
-    label={@mode}
-  />
+<AngenWeb.Logging.ServerComponents.filter_bar
+  unit={@unit}
+  mode={@mode}
+  selected={if @date_str == "today", do: "today", else: "show"}
+>
+  <.dropdown items={mode_items} label={@mode} />
 </AngenWeb.Logging.ServerComponents.filter_bar>
 
 <%= if assigns[:data] do %>
   <%= case @mode do %>
     <% "overview" -> %>
       <AngenWeb.Logging.ServerComponents.overview_detail data={@data} events={@events} />
-
     <% "raw_data" -> %>
       <AngenWeb.Logging.ServerComponents.data_detail data={@data} />
-
   <% end %>
 <% end %>

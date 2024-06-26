@@ -10,16 +10,11 @@
   >
     Register
   </.menu_card>
-  
-  <.menu_card
-    icon="fa-sign-in-alt"
-    icon_class="fa-duotone"
-    col_classes="col"
-    url={~p"/login"}
-  >
+
+  <.menu_card icon="fa-sign-in-alt" icon_class="fa-duotone" col_classes="col" url={~p"/login"}>
     Login
   </.menu_card>
-  
+
   <.menu_card
     :if={@allow_guests}
     icon="fa-user-secret"

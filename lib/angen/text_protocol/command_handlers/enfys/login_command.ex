@@ -10,21 +10,26 @@ defmodule Angen.TextProtocol.Enfys.LoginCommand do
   @impl true
   @spec handle(Angen.json_message(), Angen.ConnState.t()) :: Angen.handler_response()
   def handle(%{"name" => name}, state) do
-    user = case Api.get_user_by_name(name) do
-      nil ->
-        {:ok, user} = Teiserver.Account.register_user(%{
-          "name" => name,
-          "password" => Teiserver.Account.generate_password(),
-          "email" => "#{Teiserver.uuid()}@enfys"
-        })
-        user
-      user ->
-        user
-    end
+    user =
+      case Api.get_user_by_name(name) do
+        nil ->
+          {:ok, user} =
+            Teiserver.Account.register_user(%{
+              "name" => name,
+              "password" => Teiserver.Account.generate_password(),
+              "email" => "#{Teiserver.uuid()}@enfys"
+            })
+
+          user
+
+        user ->
+          user
+      end
 
     case Teiserver.Api.connect_user(user.id) do
       nil ->
-       FailureResponse.generate({name(), "No clint created, please retry"}, state)
+        FailureResponse.generate({name(), "No clint created, please retry"}, state)
+
       _ ->
         TextProtocol.Auth.LoginResponse.generate(user, state)
     end

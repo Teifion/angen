@@ -31,11 +31,14 @@ defmodule Angen.Telemetry.EventTypeLib do
   defp db_get_or_add_event_type(name, category) do
     case get_event_type(nil, where: [name: name, category: category], limit: 1) do
       nil ->
-        {:ok, event_type} = create_event_type(%{
-          name: name,
-          category: category
-        })
+        {:ok, event_type} =
+          create_event_type(%{
+            name: name,
+            category: category
+          })
+
         event_type
+
       event_type ->
         event_type
     end

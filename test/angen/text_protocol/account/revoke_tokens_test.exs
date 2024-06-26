@@ -15,8 +15,8 @@ defmodule Angen.TextProtocol.Account.RevokeTokensTest do
 
   test "revoke" do
     user = create_test_user()
-    %{socket: socket1} = auth_connection(user)
-    %{socket: socket2} = auth_connection(user)
+    %{socket: socket1} = auth_connection(user: user)
+    %{socket: socket2} = auth_connection(user: user)
 
     {:ok, _extra_token} = Account.create_user_token(user.id, "text-protocol", "test", "127.0.0.1")
 

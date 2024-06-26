@@ -2,6 +2,7 @@ defmodule Angen.Logging.GraphMinuteLogsTask do
   @moduledoc false
 
   alias Angen.Helper.TimexHelper
+  # import Angen.Helpers.NumberHelper, only: [round: 2]
 
   # @example_data %{
   #     "client" => %{"lobby" => 10, "menu" => 5, "total" => 15},
@@ -282,9 +283,9 @@ defmodule Angen.Logging.GraphMinuteLogsTask do
       |> Enum.chunk_every(chunk_size)
       |> Enum.map(fn [log | _] -> log.timestamp |> TimexHelper.date_to_str(format: :ymd_hms) end)
     end)
-    |> List.flatten
-    |> Enum.uniq
-    |> Enum.sort
+    |> List.flatten()
+    |> Enum.uniq()
+    |> Enum.sort()
   end
 
   # def get_raw_player_count(logs, chunk_size) do
@@ -338,10 +339,4 @@ defmodule Angen.Logging.GraphMinuteLogsTask do
   #     NumberHelper.round(result / chunk_size, 2)
   #   end)
   # end
-
-  @spec round(number(), non_neg_integer()) :: integer() | float()
-  def round(value, decimal_places) do
-    dp_mult = :math.pow(10, decimal_places)
-    round(value * dp_mult) / dp_mult
-  end
 end

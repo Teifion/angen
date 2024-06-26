@@ -16,6 +16,7 @@ defmodule Angen.Repo.Migrations.CreateTelemetryEventTables do
       add(:user_id, references(:account_users, on_delete: :nothing, type: :uuid), type: :uuid)
       add(:inserted_at, :utc_datetime)
     end
+
     create_if_not_exists(index(:telemetry_simple_clientapp_events, [:event_type_id]))
     create_if_not_exists(index(:telemetry_simple_clientapp_events, [:user_id]))
 
@@ -25,6 +26,7 @@ defmodule Angen.Repo.Migrations.CreateTelemetryEventTables do
       add(:inserted_at, :utc_datetime)
       add(:details, :jsonb)
     end
+
     create_if_not_exists(index(:telemetry_complex_clientapp_events, [:event_type_id]))
     create_if_not_exists(index(:telemetry_complex_clientapp_events, [:user_id]))
 
@@ -35,6 +37,7 @@ defmodule Angen.Repo.Migrations.CreateTelemetryEventTables do
       add(:match_id, references(:game_matches, on_delete: :nothing, type: :uuid), type: :uuid)
       add(:inserted_at, :utc_datetime)
     end
+
     create_if_not_exists(index(:telemetry_simple_lobby_events, [:event_type_id]))
     create_if_not_exists(index(:telemetry_simple_lobby_events, [:user_id]))
 
@@ -45,6 +48,7 @@ defmodule Angen.Repo.Migrations.CreateTelemetryEventTables do
       add(:inserted_at, :utc_datetime)
       add(:details, :jsonb)
     end
+
     create_if_not_exists(index(:telemetry_complex_lobby_events, [:event_type_id]))
     create_if_not_exists(index(:telemetry_complex_lobby_events, [:user_id]))
   end

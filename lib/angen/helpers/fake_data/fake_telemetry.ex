@@ -32,31 +32,30 @@ defmodule Angen.FakeData.FakeTelemetry do
   defp insert_simple_client(event_name, user_ids, event_count, date) do
     type_id = Telemetry.get_or_add_event_type_id(event_name, "simple_clientapp")
 
-    events = user_ids
-    |> Enum.map(fn user_id ->
-      actual_count = evaluate_count(event_count)
+    events =
+      user_ids
+      |> Enum.map(fn user_id ->
+        actual_count = evaluate_count(event_count)
 
-      if actual_count > 0 do
-        Range.new(0, actual_count)
-        |> Enum.map(fn _ ->
-          %{
-            event_type_id: type_id,
-            user_id: user_id,
-            inserted_at: random_time_in_day(date)
-          }
-        end)
-      else
-        []
-      end
-    end)
-    |> List.flatten
+        if actual_count > 0 do
+          Range.new(0, actual_count)
+          |> Enum.map(fn _ ->
+            %{
+              event_type_id: type_id,
+              user_id: user_id,
+              inserted_at: random_time_in_day(date)
+            }
+          end)
+        else
+          []
+        end
+      end)
+      |> List.flatten()
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:insert_all, Telemetry.SimpleClientappEvent, events)
     |> Angen.Repo.transaction()
   end
-
-
 
   # Allows us to have counts of various types
   defp evaluate_count(c) when is_list(c), do: Enum.random(c)
@@ -70,6 +69,7 @@ defmodule Angen.FakeData.FakeTelemetry do
       hour: :rand.uniform(24) - 1,
       minute: :rand.uniform(60) - 1,
       second: :rand.uniform(60) - 1,
-      microsecond: 0)
+      microsecond: 0
+    )
   end
 end

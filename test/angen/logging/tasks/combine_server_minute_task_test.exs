@@ -15,15 +15,17 @@ defmodule Angen.CombineServerMinuteTaskTest do
     now = Timex.now() |> Timex.set(microsecond: 0, second: 0)
 
     # Create our logs
-    assert :ok == PersistServerMinuteTask.perform(now: now)
+    {:ok, _returned_log} = PersistServerMinuteTask.perform(now: now)
     log = Logging.get_server_minute_log(now, node)
+
     Logging.update_server_minute_log(log, %{
       node: "node1",
       data: put_in(log.data, ["lobby", "total"], 3)
     })
 
-    assert :ok == PersistServerMinuteTask.perform(now: now)
+    {:ok, _returned_log} = PersistServerMinuteTask.perform(now: now)
     log = Logging.get_server_minute_log(now, node)
+
     Logging.update_server_minute_log(log, %{
       node: "node2",
       data: put_in(log.data, ["lobby", "total"], 3)

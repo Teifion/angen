@@ -20,8 +20,6 @@ defmodule Angen.Telemetry do
   - `Angen.Telemetry.ComplexAnonEvent`
   """
 
-
-
   alias Angen.Telemetry.TelemetryLib
 
   @doc false
@@ -71,7 +69,11 @@ defmodule Angen.Telemetry do
   defdelegate change_event_type(event_type, attrs \\ %{}), to: EventTypeLib
 
   # SimpleClientappEvents
-  alias Angen.Telemetry.{SimpleClientappEvent, SimpleClientappEventLib, SimpleClientappEventQueries}
+  alias Angen.Telemetry.{
+    SimpleClientappEvent,
+    SimpleClientappEventLib,
+    SimpleClientappEventQueries
+  }
 
   @doc section: :simple_clientapp_event
   @spec log_simple_clientapp_event(String.t(), Teiserver.user_id()) :: :ok | {:error, String.t()}
@@ -89,12 +91,12 @@ defmodule Angen.Telemetry do
   @spec simple_clientapp_events_summary(list) :: map()
   defdelegate simple_clientapp_events_summary(args), to: SimpleClientappEventQueries
 
-
   # SimpleLobbyEvents
   alias Angen.Telemetry.{SimpleLobbyEvent, SimpleLobbyEventLib, SimpleLobbyEventQueries}
 
   @doc section: :simple_lobby_event
-  @spec log_simple_lobby_event(String.t(), Teiserver.match_id(), Teiserver.user_id()) :: :ok | {:error, String.t()}
+  @spec log_simple_lobby_event(String.t(), Teiserver.match_id(), Teiserver.user_id()) ::
+          :ok | {:error, String.t()}
   defdelegate log_simple_lobby_event(name, match_id, user_id \\ nil), to: SimpleLobbyEventLib
 
   @doc false

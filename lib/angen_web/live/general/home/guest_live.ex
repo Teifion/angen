@@ -24,11 +24,12 @@ defmodule AngenWeb.General.GuestLive do
     if Application.get_env(:angen, :allow_guest_accounts) do
       name = Account.generate_guest_name()
 
-      {:ok, user} = Angen.Account.create_user(%{
-        "name" => name,
-        "email" => "#{String.replace(name, " ", "")}@somedomain",
-        "password" => Angen.Account.generate_password()
-      })
+      {:ok, user} =
+        Angen.Account.create_user(%{
+          "name" => name,
+          "email" => "#{String.replace(name, " ", "")}@somedomain",
+          "password" => Angen.Account.generate_password()
+        })
 
       user_agent = socket.assigns.user_agent
       ip = socket.assigns.address |> Tuple.to_list() |> Enum.join(".")

@@ -81,6 +81,7 @@ defmodule Angen.Account.UserTokenLib do
   """
   @spec get_user_token_by_identifier(UserToken.identifier_code()) :: UserToken.t() | nil
   def get_user_token_by_identifier(nil), do: nil
+
   def get_user_token_by_identifier(identifier_code) do
     case Cachex.get(:user_token_identifier_cache, identifier_code) do
       {:ok, nil} ->

@@ -176,7 +176,7 @@ defmodule AngenWeb.NavComponents do
       |> assign(:extra_classes, extra_classes)
       |> assign(:icon_size, icon_size)
       |> assign(:style, style)
-      |> assign(:url, (if assigns[:disabled], do: nil, else: assigns[:url]))
+      |> assign(:url, if(assigns[:disabled], do: nil, else: assigns[:url]))
 
     ~H"""
     <div class={"#{@col_classes} menu-card #{@extra_classes}"} {@dynamic_attrs}>
@@ -336,5 +336,4 @@ defmodule AngenWeb.NavComponents do
     </nav>
     """
   end
-
 end

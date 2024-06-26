@@ -2,6 +2,7 @@ defmodule Angen.Logging.PersistServerDayTask do
   @moduledoc false
   use Oban.Worker, queue: :logging
   alias Angen.{Repo, Logging, Telemetry}
+  alias Angen.Logging.ServerDayLogLib
 
   # Minutes
   @segment_length 60
@@ -63,12 +64,6 @@ defmodule Angen.Logging.PersistServerDayTask do
   }
 
   @empty_segment %{
-    # Used to make calculating the end of day stats easier, this will not appear in the final result
-    tmp_reduction: %{
-      unique_users: [],
-      unique_players: []
-    },
-
     # Daily totals
     stats: %{
       accounts_created: 0,
@@ -107,7 +102,6 @@ defmodule Angen.Logging.PersistServerDayTask do
       total_inc_bot: 0
     }
   }
-
 
   @impl Oban.Worker
   @spec perform(any()) :: :ok
@@ -212,7 +206,6 @@ defmodule Angen.Logging.PersistServerDayTask do
   defp extend_segment(segment, logs) do
     extend = calculate_segment_parts(logs)
 
-
     %{
       # Daily totals
       stats: %{
@@ -240,8 +233,10 @@ defmodule Angen.Logging.PersistServerDayTask do
         lobby: segment.average_user_counts.lobby ++ [extend.average_user_counts.lobby],
         menu: segment.average_user_counts.menu ++ [extend.average_user_counts.menu],
         bot: segment.average_user_counts.bot ++ [extend.average_user_counts.bot],
-        total_non_bot: segment.average_user_counts.total_non_bot ++ [extend.average_user_counts.total_non_bot],
-        total_inc_bot: segment.average_user_counts.total_inc_bot ++ [extend.average_user_counts.total_inc_bot]
+        total_non_bot:
+          segment.average_user_counts.total_non_bot ++ [extend.average_user_counts.total_non_bot],
+        total_inc_bot:
+          segment.average_user_counts.total_inc_bot ++ [extend.average_user_counts.total_inc_bot]
       },
       peak_user_counts: %{
         player: segment.peak_user_counts.player ++ [extend.peak_user_counts.player],
@@ -249,8 +244,10 @@ defmodule Angen.Logging.PersistServerDayTask do
         lobby: segment.peak_user_counts.lobby ++ [extend.peak_user_counts.lobby],
         menu: segment.peak_user_counts.menu ++ [extend.peak_user_counts.menu],
         bot: segment.peak_user_counts.bot ++ [extend.peak_user_counts.bot],
-        total_non_bot: segment.peak_user_counts.total_non_bot ++ [extend.peak_user_counts.total_non_bot],
-        total_inc_bot: segment.peak_user_counts.total_inc_bot ++ [extend.peak_user_counts.total_inc_bot]
+        total_non_bot:
+          segment.peak_user_counts.total_non_bot ++ [extend.peak_user_counts.total_non_bot],
+        total_inc_bot:
+          segment.peak_user_counts.total_inc_bot ++ [extend.peak_user_counts.total_inc_bot]
       }
     }
   end
@@ -323,8 +320,8 @@ defmodule Angen.Logging.PersistServerDayTask do
     end_of_day = Timex.shift(date, days: 1)
 
     Map.put(data, :telemetry_events, %{
-      simple_clientapp: Telemetry.simple_clientapp_events_summary(after: date, before: end_of_day),
-
+      simple_clientapp:
+        Telemetry.simple_clientapp_events_summary(after: date, before: end_of_day),
       simple_lobby: Telemetry.simple_lobby_events_summary(after: date, before: end_of_day)
     })
   end
@@ -332,24 +329,6 @@ defmodule Angen.Logging.PersistServerDayTask do
   # Given a day log, calculate the end of day stats
   defp calculate_day_statistics(data, date, _node) do
     tomorrow = Timex.shift(date, days: 1)
-
-    accounts_created =
-      Teiserver.Account.user_query(
-        where: [
-          inserted_after: date |> Timex.to_datetime(),
-          inserted_before: tomorrow |> Timex.to_datetime(),
-          smurf_of: false,
-          not_has_group: "guest",
-          not_has_restriction: "login"
-        ],
-        limit: :infinity
-      )
-      |> Repo.aggregate(:count)
-
-    unique_users = get_unique_users(date)
-
-    # Need to query match membership to get this
-    unique_players = -1
 
     # Calculate peak users across the day
     peak_user_counts =
@@ -359,16 +338,9 @@ defmodule Angen.Logging.PersistServerDayTask do
         {state_key, Enum.max(counts)}
       end)
 
-    stats = %{
-      unique_users: unique_users,
-      unique_players: unique_players,
-      accounts_created: accounts_created,
-    }
-
     data
-    |> put_in(~w(stats)a, stats)
+    |> put_in(~w(stats)a, ServerDayLogLib.calculate_period_statistics(date, tomorrow))
     |> put_in(~w(peak_user_counts)a, peak_user_counts)
-    |> Map.delete(:tmp_reduction)
   end
 
   @spec clean_up_logs(Date.t()) :: :ok
@@ -381,20 +353,14 @@ defmodule Angen.Logging.PersistServerDayTask do
     query = """
       DELETE FROM #{Angen.Logging.ServerMinuteLog.__schema__(:source)} WHERE timestamp < $1
     """
+
     Ecto.Adapters.SQL.query!(Angen.Repo, query, [before_timestamp])
   end
-
-  # defp concatenate_lists(items, path) do
-  #   items
-  #   |> Enum.reduce([], fn row, acc ->
-  #     acc ++ (get_in(row, path) || [])
-  #   end)
-  # end
 
   defp max_counts(items, path) do
     items
     |> Enum.reduce(0, fn row, acc ->
-      max(acc, (get_in(row, path) || 0))
+      max(acc, get_in(row, path) || 0)
     end)
   end
 
@@ -404,12 +370,6 @@ defmodule Angen.Logging.PersistServerDayTask do
       acc + (get_in(row, path) || 0)
     end)
   end
-
-  # defp add_maps(m1, nil), do: m1
-
-  # defp add_maps(m1, m2) do
-  #   Map.merge(m1, m2, fn _k, v1, v2 -> v1 + v2 end)
-  # end
 
   def get_unique_users(date) do
     tomorrow = Timex.shift(date, days: 1) |> Timex.to_datetime()

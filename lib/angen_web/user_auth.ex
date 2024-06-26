@@ -97,7 +97,9 @@ defmodule AngenWeb.UserAuth do
     user_token = cached_user_token && Account.get_user_token(cached_user_token.id)
 
     user_token && Account.delete_user_token(user_token)
-    cached_user_token && Angen.invalidate_cache(:user_token_identifier_cache, cached_user_token.identifier_code)
+
+    cached_user_token &&
+      Angen.invalidate_cache(:user_token_identifier_cache, cached_user_token.identifier_code)
 
     if live_socket_id = get_session(conn, :live_socket_id) do
       AngenWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})

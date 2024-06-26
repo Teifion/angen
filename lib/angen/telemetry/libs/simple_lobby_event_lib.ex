@@ -9,7 +9,8 @@ defmodule Angen.Telemetry.SimpleLobbyEventLib do
   @doc """
   A wrapper around create_simple_lobby_event which handles grabbing the event_type_id
   """
-  @spec log_simple_lobby_event(String.t(), Teiserver.match_id(), Teiserver.user_id()) :: :ok | {:error, String.t()}
+  @spec log_simple_lobby_event(String.t(), Teiserver.match_id(), Teiserver.user_id()) ::
+          :ok | {:error, String.t()}
   def log_simple_lobby_event(name, match_id, user_id \\ nil) do
     type_id = Telemetry.get_or_add_event_type_id(name, "simple_lobby")
 
@@ -21,14 +22,15 @@ defmodule Angen.Telemetry.SimpleLobbyEventLib do
     }
 
     case create_simple_lobby_event(attrs) do
-      {:ok, _event} -> :ok
+      {:ok, _event} ->
+        :ok
+
       {:error, changeset} ->
         {:error,
-          changeset.errors
-          |> Enum.map_join(", ", fn {key, {message, _}} ->
-            "#{key}: #{message}"
-          end)
-        }
+         changeset.errors
+         |> Enum.map_join(", ", fn {key, {message, _}} ->
+           "#{key}: #{message}"
+         end)}
     end
   end
 
@@ -63,7 +65,8 @@ defmodule Angen.Telemetry.SimpleLobbyEventLib do
 
   """
   @spec get_simple_lobby_event!(SimpleLobbyEvent.id()) :: SimpleLobbyEvent.t()
-  @spec get_simple_lobby_event!(SimpleLobbyEvent.id(), Teiserver.query_args()) :: SimpleLobbyEvent.t()
+  @spec get_simple_lobby_event!(SimpleLobbyEvent.id(), Teiserver.query_args()) ::
+          SimpleLobbyEvent.t()
   def get_simple_lobby_event!(simple_lobby_event_id, query_args \\ []) do
     (query_args ++ [id: simple_lobby_event_id])
     |> SimpleLobbyEventQueries.simple_lobby_event_query()
@@ -85,7 +88,8 @@ defmodule Angen.Telemetry.SimpleLobbyEventLib do
 
   """
   @spec get_simple_lobby_event(SimpleLobbyEvent.id()) :: SimpleLobbyEvent.t() | nil
-  @spec get_simple_lobby_event(SimpleLobbyEvent.id(), Teiserver.query_args()) :: SimpleLobbyEvent.t() | nil
+  @spec get_simple_lobby_event(SimpleLobbyEvent.id(), Teiserver.query_args()) ::
+          SimpleLobbyEvent.t() | nil
   def get_simple_lobby_event(simple_lobby_event_id, query_args \\ []) do
     (query_args ++ [id: simple_lobby_event_id])
     |> SimpleLobbyEventQueries.simple_lobby_event_query()
@@ -104,7 +108,8 @@ defmodule Angen.Telemetry.SimpleLobbyEventLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_simple_lobby_event(map) :: {:ok, SimpleLobbyEvent.t()} | {:error, Ecto.Changeset.t()}
+  @spec create_simple_lobby_event(map) ::
+          {:ok, SimpleLobbyEvent.t()} | {:error, Ecto.Changeset.t()}
   def create_simple_lobby_event(attrs) do
     %SimpleLobbyEvent{}
     |> SimpleLobbyEvent.changeset(attrs)
@@ -143,7 +148,8 @@ defmodule Angen.Telemetry.SimpleLobbyEventLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec delete_simple_lobby_event(SimpleLobbyEvent.t()) :: {:ok, SimpleLobbyEvent.t()} | {:error, Ecto.Changeset.t()}
+  @spec delete_simple_lobby_event(SimpleLobbyEvent.t()) ::
+          {:ok, SimpleLobbyEvent.t()} | {:error, Ecto.Changeset.t()}
   def delete_simple_lobby_event(%SimpleLobbyEvent{} = simple_lobby_event) do
     Repo.delete(simple_lobby_event)
   end

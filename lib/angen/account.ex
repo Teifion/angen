@@ -35,8 +35,12 @@ defmodule Angen.Account do
   @spec generate_guest_name() :: String.t()
   defdelegate generate_guest_name(), to: UserLib
 
-  @spec deliver_user_confirmation_instructions(Teiserver.Account.User.t(), function()) :: {:ok, map()}
-  def deliver_user_confirmation_instructions(%Teiserver.Account.User{} = _user, _confirmation_url_fun) do
+  @spec deliver_user_confirmation_instructions(Teiserver.Account.User.t(), function()) ::
+          {:ok, map()}
+  def deliver_user_confirmation_instructions(
+        %Teiserver.Account.User{} = _user,
+        _confirmation_url_fun
+      ) do
     {:ok, %{}}
   end
 

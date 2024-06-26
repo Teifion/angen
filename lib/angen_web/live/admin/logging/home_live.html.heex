@@ -9,7 +9,7 @@
   >
     Server activity
   </.menu_card>
-  
+
   <.menu_card
     :if={allow?(@current_user, ~w(admin))}
     icon={StylingHelper.icon(:game_activity)}
@@ -19,7 +19,7 @@
   >
     Game activity
   </.menu_card>
-  
+
   <.menu_card
     :if={allow?(@current_user, ~w(admin))}
     icon={StylingHelper.icon(:audit)}

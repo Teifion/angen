@@ -6,21 +6,23 @@ defmodule AngenWeb.Admin.Logging.Server.NowLive do
 
   @impl true
   def mount(params, _session, socket) when is_connected?(socket) do
-    socket = socket
+    socket =
+      socket
       |> assign(:site_menu_active, "logging")
       |> assign(:resolution, Map.get(params, "resolution", "1") |> String.to_integer())
       |> assign(:minutes, Map.get(params, "minutes", "30") |> String.to_integer())
       |> assign(:mode, "this_minute")
       |> get_logs
-      # |> generate_graph_data
+
+    # |> generate_graph_data
 
     {:ok, socket}
   end
 
   def mount(_params, _session, socket) do
-    {:ok, socket
-      |> assign(:mode, "this_minute")
-    }
+    {:ok,
+     socket
+     |> assign(:mode, "this_minute")}
   end
 
   @impl true
@@ -45,10 +47,10 @@ defmodule AngenWeb.Admin.Logging.Server.NowLive do
         ],
         limit: 10
       )
-      |> Enum.reverse
+      |> Enum.reverse()
 
     socket
-      |> assign(:logs, logs)
+    |> assign(:logs, logs)
   end
 
   # defp generate_graph_data(%{assigns: %{logs: logs}} = socket) do

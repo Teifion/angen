@@ -47,7 +47,10 @@ defmodule Angen.Telemetry.TeiserverCollectorServer do
     {:noreply, %{state | client_connect_counter: new_counter}}
   end
 
-  def handle_info({:emit, [:teiserver, :client, :disconnect], %{reason: reason}, meta, _opts}, state) do
+  def handle_info(
+        {:emit, [:teiserver, :client, :disconnect], %{reason: reason}, meta, _opts},
+        state
+      ) do
     new_count = Map.get(state.client_disconnect_counter, reason, 0) + 1
     new_counter = Map.put(state.client_disconnect_counter, reason, new_count)
 

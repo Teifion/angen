@@ -9,17 +9,18 @@ defmodule AngenWeb.UserSessionController do
     # If the token exists, delete it so it no longer exists and make a new one
     token = Account.get_user_token(1)
 
-    agent = case List.keyfind(conn.req_headers, "user-agent", 0) do
-      {_, agent} -> agent
-      _ -> "fake-data"
-    end
+    agent =
+      case List.keyfind(conn.req_headers, "user-agent", 0) do
+        {_, agent} -> agent
+        _ -> "fake-data"
+      end
 
     {:ok, new_token} =
       Account.create_user_token(
         token.user_id,
         token.context,
         agent,
-        conn.remote_ip |> Tuple.to_list |> Enum.join(".")
+        conn.remote_ip |> Tuple.to_list() |> Enum.join(".")
       )
 
     Account.delete_user_token(token)
@@ -31,8 +32,10 @@ defmodule AngenWeb.UserSessionController do
     case Cachex.get(:one_time_login_code, code) do
       {:ok, nil} ->
         redirect(conn, to: ~p"/guest")
+
       {:ok, token_id} ->
         maybe_login_with_token(conn, token_id)
+
       _ ->
         redirect(conn, to: ~p"/guest")
     end

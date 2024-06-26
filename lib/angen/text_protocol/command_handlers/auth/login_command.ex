@@ -26,13 +26,18 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.Login do
         if bad_ip do
           FailureResponse.generate({name(), "Bad token"}, state)
         else
-          case Teiserver.Api.connect_user(token.user_id, bot: Map.get(cmd, "bot?", false)) do
-            nil ->
-              FailureResponse.generate({name(), "No clint created, please retry"}, state)
-            _ ->
-              TextProtocol.Auth.LoginResponse.generate(token.user_id, state)
-          end
+          perform_connection(token, cmd, state)
         end
+    end
+  end
+
+  defp perform_connection(token, cmd, state) do
+    case Teiserver.Api.connect_user(token.user_id, bot?: Map.get(cmd, "bot?", false)) do
+      nil ->
+        FailureResponse.generate({name(), "No clint created, please retry"}, state)
+
+      _ ->
+        TextProtocol.Auth.LoginResponse.generate(token.user_id, state)
     end
   end
 end

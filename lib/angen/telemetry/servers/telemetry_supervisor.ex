@@ -100,19 +100,20 @@ defmodule Angen.TelemetrySupervisor do
   defp teiserver_metrics() do
     [
       counter("teiserver.user.failed_login.reason"),
-
       counter("teiserver.client.event.type", description: "ClientServer events"),
       counter("teiserver.client.disconnect.reason"),
-
       counter("teiserver.lobby.event.type"),
-
       summary("teiserver.logging.add_audit_log.action")
     ]
   end
 
   defp angen_metrics() do
     [
-      distribution("angen.protocol.response.stop.duration", buckets: [500, 1000, 3000, 7500, 15000], unit: {:native, :microsecond}, description: "Resp dist"),
+      distribution("angen.protocol.response.stop.duration",
+        buckets: [500, 1000, 3000, 7500, 15000],
+        unit: {:native, :microsecond},
+        description: "Resp dist"
+      ),
       summary("angen.protocol.response.stop.duration", description: "Resp summary"),
       counter("angen.protocol.response.stop.duration", description: "Resp span"),
       counter("angen.proto.response.name", description: "Resp emit")

@@ -15,7 +15,12 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.GetToken do
         do_handle(user, user_agent, state)
 
       {:error, :no_user} ->
-        Api.create_anonymous_audit_log(state.ip, "auth/get_token", %{reason: "no_user", name: name, user_agent: user_agent})
+        Api.create_anonymous_audit_log(state.ip, "auth/get_token", %{
+          reason: "no_user",
+          name: name,
+          user_agent: user_agent
+        })
+
         FailureResponse.generate({name(), "Bad authentication"}, state)
 
       {:error, _} ->
@@ -29,7 +34,12 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.GetToken do
         do_handle(user, user_agent, state)
 
       {:error, :no_user} ->
-        Api.create_anonymous_audit_log(state.ip, "auth/get_token", %{reason: "no_user", email: email, user_agent: user_agent})
+        Api.create_anonymous_audit_log(state.ip, "auth/get_token", %{
+          reason: "no_user",
+          email: email,
+          user_agent: user_agent
+        })
+
         FailureResponse.generate({name(), "Bad authentication"}, state)
 
       {:error, _} ->
@@ -43,7 +53,12 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.GetToken do
         do_handle(user, user_agent, state)
 
       {:error, :no_user} ->
-        Api.create_anonymous_audit_log(state.ip, "auth/get_token", %{reason: "no_user", id: id, user_agent: user_agent})
+        Api.create_anonymous_audit_log(state.ip, "auth/get_token", %{
+          reason: "no_user",
+          id: id,
+          user_agent: user_agent
+        })
+
         FailureResponse.generate({name(), "Bad authentication"}, state)
 
       {:error, _} ->

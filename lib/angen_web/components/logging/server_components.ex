@@ -17,23 +17,48 @@ defmodule AngenWeb.Logging.ServerComponents do
     ~H"""
     <div class="row section-menu">
       <div class="col">
-        <.section_menu_button_url colour="info" icon="clock" active={@selected == "now"} url={~p"/admin/logging/server/now"}>
+        <.section_menu_button_url
+          colour="info"
+          icon="clock"
+          active={@selected == "now"}
+          url={~p"/admin/logging/server/now"}
+        >
           Now
         </.section_menu_button_url>
 
-        <.section_menu_button_url colour="info" icon="waveform" active={@selected == "today"} url={~p"/admin/logging/server/show/day/today"}>
+        <.section_menu_button_url
+          colour="info"
+          icon="waveform"
+          active={@selected == "today"}
+          url={~p"/admin/logging/server/show/day/today"}
+        >
           Today
         </.section_menu_button_url>
 
-        <.section_menu_button_url colour="info" icon="list" active={@selected == "history"} url={~p"/admin/logging/server"}>
+        <.section_menu_button_url
+          colour="info"
+          icon="list"
+          active={@selected == "history"}
+          url={~p"/admin/logging/server"}
+        >
           History
         </.section_menu_button_url>
 
-        <.section_menu_button_url colour="info" icon="server" active={@selected == "load"} url={~p"/admin/logging/server/load"}>
+        <.section_menu_button_url
+          colour="info"
+          icon="server"
+          active={@selected == "load"}
+          url={~p"/admin/logging/server/load"}
+        >
           Load
         </.section_menu_button_url>
 
-        <.section_menu_button_url :if={@selected == "show"} colour="info" icon={StylingHelper.icon(:detail)} active={@selected == "show"}>
+        <.section_menu_button_url
+          :if={@selected == "show"}
+          colour="info"
+          icon={StylingHelper.icon(:detail)}
+          active={@selected == "show"}
+        >
           Detail
         </.section_menu_button_url>
       </div>
@@ -50,6 +75,7 @@ defmodule AngenWeb.Logging.ServerComponents do
   """
   attr :data, :map, required: true
   attr :events, :map, required: true
+
   def overview_detail(assigns) do
     ~H"""
     <div class="row mt-4">
@@ -70,7 +96,6 @@ defmodule AngenWeb.Logging.ServerComponents do
                 <td>Accounts created</td>
                 <td><%= @data["stats"]["accounts_created"] %></td>
               </tr>
-
             </tbody>
           </table>
         </.card>
@@ -223,6 +248,7 @@ defmodule AngenWeb.Logging.ServerComponents do
   <AngenWeb.Logging.ServerComponents.data_detail data={@data} />
   """
   attr :data, :map, required: true
+
   def data_detail(assigns) do
     ~H"""
     <div class="row mt-4">

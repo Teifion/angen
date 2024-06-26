@@ -9,9 +9,14 @@ defmodule Angen.DevSupport.DMEchoBot do
 
   def handle_info(:startup, state) do
     user = BotLib.get_or_create_bot_account("DMEchoBot")
-    Api.connect_user(user.id)
+    client = Api.connect_user(user.id)
 
-    {:noreply, %{state | user: user, connected: true}}
+    if client do
+      {:noreply, %{state | user: user, connected: true}}
+    else
+      :timer.send_after(500, :startup)
+      {:noreply, state}
+    end
   end
 
   def handle_info(

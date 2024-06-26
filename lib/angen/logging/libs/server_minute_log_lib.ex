@@ -35,7 +35,8 @@ defmodule Angen.Logging.ServerMinuteLogLib do
       nil
 
   """
-  @spec get_server_minute_log(DateTime.t(), String.t() | [String.t()], Teiserver.query_args()) :: ServerMinuteLog.t() | nil
+  @spec get_server_minute_log(DateTime.t(), String.t() | [String.t()], Teiserver.query_args()) ::
+          ServerMinuteLog.t() | nil
   def get_server_minute_log(timestamp, node, query_args \\ []) do
     (query_args ++ [timestamp: timestamp, node: node])
     |> ServerMinuteLogQueries.server_minute_log_query()
@@ -47,12 +48,13 @@ defmodule Angen.Logging.ServerMinuteLogLib do
   """
   @spec get_first_server_minute_datetime() :: DateTime.t() | nil
   def get_first_server_minute_datetime() do
-    log = ServerMinuteLogQueries.server_minute_log_query(
-      order_by: "Oldest first",
-      select: [:timestamp],
-      limit: 1
-    )
-    |> Repo.one()
+    log =
+      ServerMinuteLogQueries.server_minute_log_query(
+        order_by: "Oldest first",
+        select: [:timestamp],
+        limit: 1
+      )
+      |> Repo.one()
 
     if log, do: log.timestamp, else: nil
   end

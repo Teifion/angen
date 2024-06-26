@@ -5,7 +5,7 @@ defmodule AngenWeb.Admin.HomeLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-        |> assign(:site_menu_active, "admin")
+      |> assign(:site_menu_active, "admin")
 
     {:ok, socket}
   end
