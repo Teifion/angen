@@ -24,6 +24,7 @@ defmodule Angen.Helper.StylingHelper do
   def icon(:overview), do: "fa-expand-alt"
   def icon(:detail), do: "fa-file-alt"
   def icon(:user), do: "fa-user"
+  def icon(:accounts), do: "fa-users"
 
   def icon(:filter), do: "fa-filter"
 
@@ -42,6 +43,7 @@ defmodule Angen.Helper.StylingHelper do
   def icon(:server_activity), do: "fa-monitor-heart-rate"
   def icon(:game_activity), do: "fa-swords"
   def icon(:audit), do: "fa-archive"
+  def icon(:settings), do: "fa-gears"
 
   @spec icon(atom, String.t()) :: String.t()
   def icon(icon_atom, fa_type), do: "fa-#{fa_type} #{icon(icon_atom)}"

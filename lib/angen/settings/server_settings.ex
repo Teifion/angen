@@ -6,13 +6,14 @@ defmodule Angen.Settings.ServerSettings do
   def create_server_settings do
     data_retention()
 
-    add_server_setting_type(%{
-      key: "allow_manual_user_registration",
-      label: "Allow manual user registration",
-      section: "Registration",
-      type: "boolean",
-      default: true
-    })
+    # add_server_setting_type(%{
+    #   key: "allow_manual_user_registration",
+    #   label: "Allow manual user registration",
+    #   section: "Registration",
+    #   type: "boolean",
+    #   default: true,
+    #   description: "Allows creation of accounts via "
+    # })
 
     add_server_setting_type(%{
       key: "require_tokens_to_persist_ip",

@@ -12,11 +12,29 @@
 
   <.menu_card
     :if={allow?(@current_user, ~w(admin))}
+    icon={StylingHelper.icon(:accounts)}
+    icon_class="fa-duotone"
+    url={~p"/admin/accounts"}
+  >
+    Accounts
+  </.menu_card>
+  
+  <.menu_card
+    :if={allow?(@current_user, ~w(admin))}
     icon={StylingHelper.icon(:logging)}
     icon_class="fa-duotone"
     url={~p"/admin/logging"}
   >
     Logging
+  </.menu_card>
+  
+  <.menu_card
+    :if={allow?(@current_user, ~w(admin))}
+    icon={StylingHelper.icon(:settings)}
+    icon_class="fa-duotone"
+    url={~p"/admin/settings"}
+  >
+    Settings
   </.menu_card>
 </div>
 

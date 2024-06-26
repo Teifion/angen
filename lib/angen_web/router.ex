@@ -68,6 +68,18 @@ defmodule AngenWeb.Router do
     end
   end
 
+  scope "/admin/settings", AngenWeb.Admin do
+    pipe_through [:browser]
+
+    live_session :settings_index,
+      on_mount: [
+        {AngenWeb.UserAuth, :ensure_authenticated},
+        {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
+      ] do
+      live "/", SettingsLive.Index, :index
+    end
+  end
+
   scope "/", AngenWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
