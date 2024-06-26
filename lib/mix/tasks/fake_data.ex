@@ -17,8 +17,6 @@ defmodule Mix.Tasks.Angen.Fakedata do
     detail_days: 3
   }
 
-  defp users_per_day, do: :rand.uniform(5) + 2
-
   @spec parse_args(list()) :: map()
   defp parse_args(args) do
     args
@@ -41,15 +39,15 @@ defmodule Mix.Tasks.Angen.Fakedata do
       # Start by rebuilding the database
       Mix.Task.run("ecto.reset")
 
-      # Accounts
-      make_accounts(config)
+      _root_user = add_root_user()
 
+      Angen.FakeData.FakeAccounts.make_accounts(config)
       Angen.FakeData.FakeTelemetry.make_events(config)
       Angen.FakeData.FakeLogging.make_logs(config)
 
       # make_matches(config)
-      # make_telemetry(config)
       # make_moderation(config)
+
       make_one_time_code(config)
 
       :timer.sleep(50)
@@ -75,45 +73,6 @@ defmodule Mix.Tasks.Angen.Fakedata do
       })
 
     user
-  end
-
-  defp make_accounts(config) do
-    root_user = add_root_user()
-
-    new_users =
-      Range.new(0, config.days)
-      |> Enum.map(fn day ->
-        # Make an extra 50 users for the first day
-        users_to_make =
-          if day == config.days do
-            50
-          else
-            users_per_day()
-          end
-
-        date = Timex.today() |> Timex.shift(days: -day)
-
-        Range.new(0, users_to_make)
-        |> Enum.map(fn _ ->
-          random_time = random_time_in_day(date)
-
-          %{
-            id: Teiserver.uuid(),
-            name: Account.generate_guest_name(),
-            email: Teiserver.uuid(),
-            password: root_user.password,
-            groups: ["admin"],
-            permissions: ["admin"],
-            inserted_at: random_time,
-            updated_at: random_time
-          }
-        end)
-      end)
-      |> List.flatten()
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.insert_all(:insert_all, Teiserver.Account.User, new_users)
-    |> Angen.Repo.transaction()
   end
 
   defp make_one_time_code(_config) do
