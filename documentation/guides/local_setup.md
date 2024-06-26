@@ -81,7 +81,25 @@ openssl s_client -connect localhost:8201
 ### config/dev.secret.exs
 If you want to do things like have a discord bot in development you don't want these details going into git. You can create a file `config/dev.secret.exs` where you can put these config details; the file must act like any other config file though is already ignored by gitignore.
 
-## Creating your admin account
+# Populating the database
+Working on a server is difficult if you don't have historic data. As such we have a command for generating fake data.
+
+```
+mix angen.fakedata
+```
+
+You can generate more days of data with something like:
+
+```
+mix angen.fakedata days:60
+```
+
+Please consult `Mix.Tasks.Angen.Fakedata` (located in `fake_data.ex`) for more information.
+
+
+## Manually creating your admin account
+The fake data task will create an admin account but if you need to do it manually from the command line (`iex -S mix phx.server`), open up a running instance of the server and input:
+
 ```elixir
 Teiserver.Account.create_user(%{
   name: "root",
