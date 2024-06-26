@@ -1,0 +1,13 @@
+<.header>
+  Audit Log #<%= @audit_log.id %>
+  <:subtitle>This is a audit_log record from your database.</:subtitle>
+</.header>
+
+<.list>
+  <:item title="Action"><%= @audit_log.action %></:item>
+  <:item title="Details"><%= Jason.encode!(@audit_log.details) %></:item>
+  <:item title="Ip"><%= @audit_log.ip %></:item>
+  <:item title="User"><%= @audit_log.user_id %></:item>
+</.list>
+
+<.back navigate={~p"/admin/logging/audit"}>Back to audit logs</.back>

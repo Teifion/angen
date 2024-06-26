@@ -15,7 +15,7 @@ defmodule Angen.Repo.Migrations.CreateUserTokens do
       add :expires_at, :utc_datetime
       add :last_used_at, :utc_datetime
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create index(:account_user_tokens, [:identifier_code])

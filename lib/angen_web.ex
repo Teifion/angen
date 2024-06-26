@@ -73,6 +73,7 @@ defmodule AngenWeb do
   def component do
     quote do
       use Phoenix.Component
+      import AngenWeb.CoreComponents
 
       alias Angen.Helper.{StylingHelper, StringHelper}
       unquote(html_helpers())
@@ -91,6 +92,7 @@ defmodule AngenWeb do
   def html do
     quote do
       use Phoenix.Component
+      import AngenWeb.CoreComponents
 
       # Import convenience functions from controllers
       import Phoenix.Controller,

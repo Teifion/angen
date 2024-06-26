@@ -5,7 +5,7 @@ defmodule Angen.FakeData.FakeLogging do
   import Logging.PersistServerMinuteTask, only: [add_total_key: 1, add_total_key: 3]
 
   import Mix.Tasks.Angen.Fakedata,
-    only: [rand_int_sequence: 4, rand_int: 3, valid_userids: 1, valid_userids: 2]
+    only: [rand_int_sequence: 4, rand_int: 3, valid_userids: 1, valid_userids: 2, random_time_in_day: 1]
 
   def make_logs(config) do
     # We only want a few days of minute logs
@@ -15,7 +15,8 @@ defmodule Angen.FakeData.FakeLogging do
 
       make_server_minutes(Map.put(config, :node, "node1"), date)
       make_server_minutes(Map.put(config, :node, "node2"), date)
-      combine_minutes(config, date)
+      make_server_minutes(Map.put(config, :node, "all"), date)
+      # combine_minutes(config, date)
     end)
 
     make_server_days(config)
@@ -27,24 +28,29 @@ defmodule Angen.FakeData.FakeLogging do
     end)
 
     # Persist Week, Month, Quarter and Year
-    # Range.new(0, config.days)
-    # |> Enum.each(fn _ ->
-
-    # end)
-  end
-
-  defp combine_minutes(_config, date) do
-    Range.new(0, 1439)
-    |> Enum.each(fn m ->
-      timestamp =
-        date
-        |> Timex.to_datetime()
-        |> Timex.shift(minutes: m)
-        |> Timex.set(microsecond: 0, second: 0)
-
-      Logging.CombineServerMinuteTask.perform(%{now: timestamp})
+    Range.new(0, round(config.days / 7))
+    |> Enum.each(fn _ ->
+      Logging.PersistServerWeekTask.perform(:ok)
+      Logging.PersistServerMonthTask.perform(:ok)
+      Logging.PersistServerQuarterTask.perform(:ok)
+      Logging.PersistServerYearTask.perform(:ok)
     end)
+
+    make_audit_logs(config)
   end
+
+  # defp combine_minutes(_config, date) do
+  #   Range.new(0, 1439)
+  #   |> Enum.each(fn m ->
+  #     timestamp =
+  #       date
+  #       |> Timex.to_datetime()
+  #       |> Timex.shift(minutes: m)
+  #       |> Timex.set(microsecond: 0, second: 0)
+
+  #     Logging.CombineServerMinuteTask.perform(%{now: timestamp})
+  #   end)
+  # end
 
   defp make_server_minutes(config, date) do
     max_users = Enum.count(valid_userids(date))
@@ -73,21 +79,23 @@ defmodule Angen.FakeData.FakeLogging do
   end
 
   defp make_minute_data(config, last_minute) do
+    mu = config.max_users
+
     client =
       %{
-        "bot" => rand_int(0, config.max_users / 5, get_in(last_minute, ~w(client bot))),
-        "menu" => rand_int(0, config.max_users / 2, 10),
-        "lobby" => rand_int(0, config.max_users / 2, 10),
-        "spectator" => rand_int(0, config.max_users / 2, 10),
-        "player" => rand_int(0, config.max_users / 3, 10)
+        "bot" => rand_int(0, mu / 5, get_in(last_minute, ~w(client bot))),
+        "menu" => rand_int(0, mu / 2, 10),
+        "lobby" => rand_int(0, mu / 2, 10),
+        "spectator" => rand_int(0, mu / 2, 10),
+        "player" => rand_int(0, mu / 3, 10)
       }
       |> add_bot_totals
 
     lobby =
       %{
-        "in_progress" => rand_int(0, config.max_users / 2, 10),
-        "empty" => rand_int(0, config.max_users / 2, 10),
-        "setup" => rand_int(0, config.max_users / 2, 10)
+        "in_progress" => rand_int(0, mu / 2, 10),
+        "empty" => rand_int(0, mu / 2, 10),
+        "setup" => rand_int(0, mu / 2, 10)
       }
       |> add_total_key()
 
@@ -121,20 +129,20 @@ defmodule Angen.FakeData.FakeLogging do
       "telemetry_events" => %{
         "angen" => %{
           "protocol_command_count" => %{
-            "auth/logged_in" => 49,
-            "connections/client_updated" => 3,
-            "connections/youare" => 6,
-            "lobby/opened" => 2,
-            "system/failure" => 6,
-            "system/success" => 41
+            "auth/logged_in" => rand_int(mu, mu * 4, nil),
+            "connections/client_updated" => rand_int(mu * 12, mu * 4, nil),
+            "connections/youare" => rand_int(mu, mu * 4, nil),
+            "lobby/opened" => rand_int(mu, mu * 4, nil),
+            "system/failure" => rand_int(mu, mu * 4, nil),
+            "system/success" => rand_int(mu, mu * 4, nil)
           },
           "protocol_command_time" => %{
-            "auth/logged_in" => 7_091_908,
-            "connections/client_updated" => 42330,
-            "connections/youare" => 479_896,
-            "lobby/opened" => 26161,
-            "system/failure" => 211_741,
-            "system/success" => 1_704_927
+            "auth/logged_in" => rand_int(1024, 64_000, nil),
+            "connections/client_updated" => rand_int(1024, 64_000, nil),
+            "connections/youare" => rand_int(1024, 64_000, nil),
+            "lobby/opened" => rand_int(1024, 64_000, nil),
+            "system/failure" => rand_int(1024, 64_000, nil),
+            "system/success" => rand_int(1024, 64_000, nil)
           }
         },
         "teiserver" => %{
@@ -289,5 +297,34 @@ defmodule Angen.FakeData.FakeLogging do
     m
     |> add_total_key("total_non_bot", ["bot"])
     |> add_total_key("total_inc_bot", ["total_non_bot"])
+  end
+
+  @audit_log_reasons ["Failed login", "Permissions failure", "Account updated"]
+
+  defp make_audit_logs(config) do
+    log_data = Range.new(0, config.days - 1)
+    |> Enum.map(fn day ->
+      date = Timex.today() |> Timex.shift(days: -day)
+      user_ids = valid_userids(date)
+
+      0..3
+      |> Enum.map(fn _ ->
+        random_time = random_time_in_day(date)
+
+        %{
+          action: Enum.random(@audit_log_reasons),
+          details: %{key: "value"},
+          ip: "#{:rand.uniform(600)+270}.#{:rand.uniform(256)}.#{:rand.uniform(256)}.#{:rand.uniform(256)}",
+          user_id: Enum.random(user_ids),
+          inserted_at: random_time,
+          updated_at: random_time
+        }
+      end)
+    end)
+    |> List.flatten
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert_all(:insert_all, Teiserver.Logging.AuditLog, log_data)
+    |> Angen.Repo.transaction()
   end
 end

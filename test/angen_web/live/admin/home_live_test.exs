@@ -15,16 +15,6 @@ defmodule AngenWeb.Admin.HomeLiveTest do
     end
   end
 
-  describe "Admin Auth" do
-    setup [:admin_auth]
-
-    test "index", %{conn: conn} do
-      {:ok, _index_live, html} = live(conn, ~p"/admin")
-
-      assert html =~ "Live dashboard"
-    end
-  end
-
   describe "Standard Auth" do
     setup [:auth]
 
@@ -35,6 +25,16 @@ defmodule AngenWeb.Admin.HomeLiveTest do
                flash: %{"error" => "You do not have permission to view that page."},
                to: ~p"/"
              }
+    end
+  end
+
+  describe "Admin Auth" do
+    setup [:admin_auth]
+
+    test "index", %{conn: conn} do
+      {:ok, _index_live, html} = live(conn, ~p"/admin")
+
+      assert html =~ "Live dashboard"
     end
   end
 end

@@ -2,7 +2,7 @@ defmodule Angen.FakeData.FakeTelemetry do
   @moduledoc false
 
   alias Angen.Telemetry
-  import Mix.Tasks.Angen.Fakedata, only: [valid_userids: 1]
+  import Mix.Tasks.Angen.Fakedata, only: [valid_userids: 1, random_time_in_day: 1]
 
   def make_events(config) do
     Range.new(0, config.days)
@@ -61,15 +61,4 @@ defmodule Angen.FakeData.FakeTelemetry do
   defp evaluate_count(c) when is_list(c), do: Enum.random(c)
   defp evaluate_count(c) when is_function(c), do: c.()
   defp evaluate_count(c), do: c
-
-  defp random_time_in_day(date) do
-    date
-    |> Timex.to_datetime()
-    |> Timex.set(
-      hour: :rand.uniform(24) - 1,
-      minute: :rand.uniform(60) - 1,
-      second: :rand.uniform(60) - 1,
-      microsecond: 0
-    )
-  end
 end

@@ -1,6 +1,41 @@
 defmodule Angen.Fixtures.LoggingFixtures do
   @moduledoc false
   alias Angen.Logging
+  alias Teiserver.Logging.AuditLog
+  import Angen.Fixtures.AccountFixtures, only: [user_fixture: 0]
+
+  # Copied straight from Teiserver repo
+  @spec audit_log_fixture(map) :: AuditLog.t()
+  def audit_log_fixture(data \\ %{}) do
+    r = :rand.uniform(999_999_999)
+
+    AuditLog.changeset(
+      %AuditLog{},
+      %{
+        action: data[:action] || "action_#{r}",
+        details: data[:details] || %{},
+        ip: data[:ip] || "ip_#{r}",
+        user_id: data[:user_id] || user_fixture().id
+      }
+    )
+    |> Angen.Repo.insert!()
+  end
+
+  @spec anonymous_audit_log_fixture(map) :: AuditLog.t()
+  def anonymous_audit_log_fixture(data \\ %{}) do
+    r = :rand.uniform(999_999_999)
+
+    AuditLog.changeset(
+      %AuditLog{},
+      %{
+        action: data[:action] || "action_#{r}",
+        details: data[:details] || %{},
+        ip: data[:ip] || "ip_#{r}",
+        user_id: nil
+      }
+    )
+    |> Angen.Repo.insert!()
+  end
 
   # Match logs
   @spec match_minute_log_fixture() :: Logging.MatchMinuteLog.t()

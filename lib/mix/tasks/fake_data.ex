@@ -91,9 +91,11 @@ defmodule Mix.Tasks.Angen.Fakedata do
             users_per_day()
           end
 
+        date = Timex.today() |> Timex.shift(days: -day)
+
         Range.new(0, users_to_make)
         |> Enum.map(fn _ ->
-          minutes = :rand.uniform(24 * 60)
+          random_time = random_time_in_day(date)
 
           %{
             id: Teiserver.uuid(),
@@ -102,8 +104,8 @@ defmodule Mix.Tasks.Angen.Fakedata do
             password: root_user.password,
             groups: ["admin"],
             permissions: ["admin"],
-            inserted_at: Timex.shift(Timex.now(), days: -day, minutes: -minutes) |> time_convert,
-            updated_at: Timex.shift(Timex.now(), days: -day, minutes: -minutes) |> time_convert
+            inserted_at: random_time,
+            updated_at: random_time
           }
         end)
       end)
@@ -130,7 +132,7 @@ defmodule Mix.Tasks.Angen.Fakedata do
       })
   end
 
-  def time_convert(t) do
+  def naive_time(t) do
     t
     |> Timex.to_unix()
     |> Timex.from_unix()
@@ -196,5 +198,16 @@ defmodule Mix.Tasks.Angen.Fakedata do
       [v | acc]
     end)
     |> Enum.reverse()
+  end
+
+  def random_time_in_day(date) do
+    date
+    |> Timex.to_datetime()
+    |> Timex.set(
+      hour: :rand.uniform(24) - 1,
+      minute: :rand.uniform(60) - 1,
+      second: :rand.uniform(60) - 1
+    )
+    |> DateTime.truncate(:second)
   end
 end

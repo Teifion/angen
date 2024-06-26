@@ -481,7 +481,7 @@ defmodule AngenWeb.CoreComponents do
         <thead class="">
           <tr>
             <th :for={col <- @col} class=""><%= col[:label] %></th>
-            <th class="visually-hidden"><span><%= gettext("Actions") %></span></th>
+            <th :if={@action != []} colspan={Enum.count(@action)}><span class="visually-hidden"><%= gettext("Actions") %></span></th>
           </tr>
         </thead>
         <tbody

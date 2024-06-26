@@ -1,0 +1,22 @@
+<.header>
+  Listing Audit logs
+</.header>
+
+<.table
+  id="audit_logs"
+  rows={@streams.audit_logs}
+  row_click={fn {_id, audit_log} -> JS.navigate(~p"/admin/logging/audit/#{audit_log}") end}
+  table_class="table table-sm"
+>
+  <:col :let={{_id, audit_log}} label="Action"><%= audit_log.action %></:col>
+  <:col :let={{_id, audit_log}} label="User"><%= audit_log.user && audit_log.user.name %></:col>
+  <:col :let={{_id, audit_log}} label="DateTime"><%= date_to_str(audit_log.inserted_at, :ymd_hms) %></:col>
+  
+  <:col :let={{_id, audit_log}} label="Details"><%= Jason.encode!(audit_log.details) %></:col>
+  <:col :let={{_id, audit_log}} label="Ip"><%= audit_log.ip %></:col>
+  <:action :let={{_id, audit_log}}>
+    <div class="sr-only">
+      <.link navigate={~p"/admin/logging/audit/#{audit_log}"}>Show</.link>
+    </div>
+  </:action>
+</.table>
