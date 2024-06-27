@@ -40,16 +40,3 @@ Angen makes use of Fontawesome for its icons. By default it will only display th
 ```elixir
 Application.put_env(:fontawesome, :free_only, true | false)
 ```
-
-# ANGEN_ALLOW_WEB_REGISTER
-Defaults to "FALSE". It allows creation of accounts via the web interface.
-```elixir
-Application.put_env(:angen, :allow_web_register, true | false)
-```
-
-# ANGEN_ALLOW_GUEST_ACCOUNTS="FALSE"
-Defaults to "FALSE". It allows use of guest accounts (both through the web interface and any protocol interfaces)
-```elixir
-Application.put_env(:angen, :allow_guest_accounts, true | false)
-```
-

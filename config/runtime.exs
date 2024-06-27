@@ -139,8 +139,6 @@ if config_env() == :prod do
       certfile: "#{cert_root}/cert.pem",
       cacertfile: "#{cert_root}/fullchain.pem"
     ],
-    allow_web_register: System.get_env("ANGEN_ALLOW_WEB_REGISTER", "FALSE") == "TRUE",
-    allow_guest_accounts: System.get_env("ANGEN_ALLOW_GUEST_ACCOUNTS", "FALSE") == "TRUE",
 
     # Website
     site_title: System.get_env("ANGEN_SITE_TITLE", "Angen"),

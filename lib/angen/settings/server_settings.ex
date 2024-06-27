@@ -5,15 +5,7 @@ defmodule Angen.Settings.ServerSettings do
   @spec create_server_settings() :: any()
   def create_server_settings do
     data_retention()
-
-    # add_server_setting_type(%{
-    #   key: "allow_manual_user_registration",
-    #   label: "Allow manual user registration",
-    #   section: "Registration",
-    #   type: "boolean",
-    #   default: true,
-    #   description: "Allows creation of accounts via "
-    # })
+    account_creation()
 
     add_server_setting_type(%{
       key: "require_tokens_to_persist_ip",
@@ -23,6 +15,26 @@ defmodule Angen.Settings.ServerSettings do
       default: false,
       description:
         "When a token is created the IP used is tracked. If this option is enabled then the IP used to login via the token must match the token stored in the database. When enabled this can help prevent token theft but at the cost of needing users to re-acquire a token every time they change IP address."
+    })
+  end
+
+  defp account_creation() do
+    add_server_setting_type(%{
+      key: "allow_registration_via_website",
+      label: "Allow registration via website",
+      section: "Registration",
+      type: "boolean",
+      default: false,
+      description: "Allows creation of accounts via the website."
+    })
+
+    add_server_setting_type(%{
+      key: "allow_guest_accounts",
+      label: "Allow guest accounts",
+      section: "Registration",
+      type: "boolean",
+      default: false,
+      description: "Allows creation of temporary (guest) accounts."
     })
   end
 
@@ -46,12 +58,12 @@ defmodule Angen.Settings.ServerSettings do
     })
 
     add_server_setting_type(%{
-      key: "max_age_user_events",
-      label: "Max user event age",
+      key: "max_age_clientapp_events",
+      label: "Max client event age",
       section: "Data retention",
       type: "integer",
       default: 90,
-      description: "The maximum age (in days) for user telemetry events."
+      description: "The maximum age (in days) for client application telemetry events."
     })
 
     add_server_setting_type(%{

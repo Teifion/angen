@@ -73,7 +73,7 @@ defmodule AngenWeb.UserRegistrationLive do
   end
 
   def mount(_params, _session, socket) do
-    if Application.get_env(:angen, :allow_web_register) do
+    if Teiserver.Settings.get_server_setting_value("allow_registration_via_website") do
       changeset = Account.change_user(%User{})
 
       socket =
