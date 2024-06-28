@@ -9,7 +9,7 @@ defmodule Angen.FakeData.FakeLogging do
 
   def make_logs(config) do
     # We only want a few days of minute logs
-    Range.new(0, min(config.days, config.detail_days))
+    0..min(config.days, config.detail_days)
     |> Enum.each(fn day ->
       date = Timex.today() |> Timex.shift(days: -day)
 
@@ -22,13 +22,13 @@ defmodule Angen.FakeData.FakeLogging do
     make_server_days(config)
 
     # For the days with detail we can generate them using the actual data
-    Range.new(0, min(config.days, config.detail_days))
+    0..min(config.days, config.detail_days)
     |> Enum.each(fn _ ->
       Angen.Logging.PersistServerDayTask.perform(:ok)
     end)
 
     # Persist Week, Month, Quarter and Year
-    Range.new(0, round(config.days / 7))
+    0..round(config.days / 7)
     |> Enum.each(fn _ ->
       Logging.PersistServerWeekTask.perform(:ok)
       Logging.PersistServerMonthTask.perform(:ok)
@@ -40,7 +40,7 @@ defmodule Angen.FakeData.FakeLogging do
   end
 
   # defp combine_minutes(_config, date) do
-  #   Range.new(0, 1439)
+  #   0..1439
   #   |> Enum.each(fn m ->
   #     timestamp =
   #       date
@@ -56,7 +56,7 @@ defmodule Angen.FakeData.FakeLogging do
     max_users = Enum.count(valid_userids(date))
 
     {new_logs, _} =
-      Range.new(0, 1439)
+      0..1439
       |> Enum.map_reduce(%{}, fn m, last_data ->
         timestamp =
           date
@@ -161,7 +161,7 @@ defmodule Angen.FakeData.FakeLogging do
   def make_server_days(config) do
     # Now do much longer for days
     {new_logs, _} =
-      Range.new(config.days, config.detail_days)
+      config.days..config.detail_days
       |> Enum.map_reduce(%{}, fn day, last_data ->
         date = Timex.today() |> Timex.shift(days: -day)
         max_users = Enum.count(valid_userids(date))
@@ -302,7 +302,7 @@ defmodule Angen.FakeData.FakeLogging do
   @audit_log_reasons ["Failed login", "Permissions failure", "Account updated"]
 
   defp make_audit_logs(config) do
-    log_data = Range.new(0, config.days - 1)
+    log_data = 0..(config.days - 1)
     |> Enum.map(fn day ->
       date = Timex.today() |> Timex.shift(days: -day)
       user_ids = valid_userids(date)

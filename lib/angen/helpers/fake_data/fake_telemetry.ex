@@ -5,7 +5,7 @@ defmodule Angen.FakeData.FakeTelemetry do
   import Mix.Tasks.Angen.Fakedata, only: [valid_userids: 1, random_time_in_day: 1]
 
   def make_events(config) do
-    Range.new(0, min(config.days, 90))
+    0..min(config.days, 90)
     |> Enum.each(fn day ->
       date = Timex.today() |> Timex.shift(days: -day)
 
@@ -42,7 +42,7 @@ defmodule Angen.FakeData.FakeTelemetry do
       actual_count = evaluate_count(event_count)
 
       if actual_count > 0 do
-        Range.new(0, actual_count)
+        0..actual_count
         |> Enum.map(fn _ ->
           %{
             event_type_id: type_id,

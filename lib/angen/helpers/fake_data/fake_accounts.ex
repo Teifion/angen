@@ -9,11 +9,11 @@ defmodule Angen.FakeData.FakeAccounts do
     root_user = Account.get_user_by_email("root@localhost")
 
     new_users =
-      Range.new(0, config.days)
+      0..(config.days + 1)
       |> Enum.map(fn day ->
         # Make an extra 50 users for the first day
         users_to_make =
-          if day == config.days do
+          if day == (config.days + 1) do
             50
           else
             users_per_day()
@@ -21,7 +21,7 @@ defmodule Angen.FakeData.FakeAccounts do
 
         date = Timex.today() |> Timex.shift(days: -day)
 
-        Range.new(0, users_to_make)
+        0..users_to_make
         |> Enum.map(fn _ ->
           random_time = random_time_in_day(date)
 

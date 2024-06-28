@@ -32,6 +32,10 @@ defmodule Mix.Tasks.Angen.Fakedata do
   @spec run(list()) :: :ok
   def run(args) do
     if Application.get_env(:angen, :enfys_mode) do
+      # Not sure but this appears not to be working
+      # TODO: Fix this
+      Logger.configure(level: :warning)
+
       config = parse_args(args)
 
       start_time = System.system_time(:second)
@@ -42,20 +46,36 @@ defmodule Mix.Tasks.Angen.Fakedata do
       _root_user = add_root_user()
 
       Angen.FakeData.FakeAccounts.make_accounts(config)
+      Angen.FakeData.FakeMatches.make_matches(config)
       Angen.FakeData.FakeTelemetry.make_events(config)
       Angen.FakeData.FakeLogging.make_logs(config)
 
-      # make_matches(config)
-      # make_moderation(config)
-
       make_one_time_code(config)
-
-      :timer.sleep(50)
 
       elapsed = System.system_time(:second) - start_time
 
+      sizes = get_table_sizes()
+      :timer.sleep(50)
+
+      {target_size, total_rows} = sizes
+        |> Enum.reduce({0, 0}, fn ([name, row_count], {size_acc, count_acc}) ->
+          {
+            max(String.length(name), size_acc),
+            count_acc + row_count
+          }
+        end)
+
+      IO.puts "#{String.pad_trailing("Table", target_size)} | Rows"
+      sizes
+      |> Enum.each(fn [table, row_count] ->
+        padded_name = String.pad_trailing(table, target_size)
+
+        IO.puts "#{padded_name} | #{Angen.Helper.StringHelper.format_number(row_count)}"
+      end)
+      IO.puts ""
+
       IO.puts(
-        "\nFake data insertion complete. You can now login with the email 'root@localhost' and password 'password'.\nTook #{elapsed} seconds. A one-time link has been created: http://localhost:4000/login/fakedata_code\n"
+        "\nFake data insertion complete.\nTook #{elapsed} seconds, inserted #{Angen.Helper.StringHelper.format_number(total_rows)} rows for #{config.days} days of data. You can now login with the email 'root@localhost' and password 'password'.\nA one-time link has been created: http://localhost:4000/login/fakedata_code\n"
       )
     else
       Logger.error("Enfys mode is not enabled, you cannot run the fakedata task")
@@ -151,7 +171,7 @@ defmodule Mix.Tasks.Angen.Fakedata do
 
   @spec rand_int_sequence(number(), number(), number(), non_neg_integer()) :: list
   def rand_int_sequence(lower_bound, upper_bound, start_point, iterations) do
-    Range.new(1, iterations)
+    1..iterations
     |> Enum.reduce([start_point], fn _, acc ->
       last_value = hd(acc)
       v = rand_int(lower_bound, upper_bound, last_value)
@@ -170,5 +190,31 @@ defmodule Mix.Tasks.Angen.Fakedata do
       second: :rand.uniform(60) - 1
     )
     |> DateTime.truncate(:second)
+  end
+
+  defp get_table_sizes() do
+    query = """
+      WITH tbl AS
+        (SELECT table_schema,
+                TABLE_NAME
+        FROM information_schema.tables
+        WHERE TABLE_NAME not like 'pg_%'
+          AND table_schema in ('public'))
+      SELECT TABLE_NAME,
+            (xpath('/row/c/text()', query_to_xml(format('select count(*) as c from %I.%I', table_schema, TABLE_NAME), FALSE, TRUE, '')))[1]::text::int AS rows_n
+      FROM tbl
+      ORDER BY rows_n DESC;
+    """
+
+    results = case Ecto.Adapters.SQL.query(Angen.Repo, query, []) do
+      {:ok, results} ->
+        results.rows
+        |> Enum.reject(fn [_, row_count] -> row_count <= 0 end)
+
+      {a, b} ->
+        raise "ERR: #{a}, #{b}"
+    end
+
+    results
   end
 end
