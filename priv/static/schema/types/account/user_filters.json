@@ -14,7 +14,8 @@
       "description": "Selects users whose ID appears in this list of IDs",
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "format": "uuid"
       }
     }
   }

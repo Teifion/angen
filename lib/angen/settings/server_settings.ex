@@ -6,7 +6,23 @@ defmodule Angen.Settings.ServerSettings do
   def create_server_settings do
     data_retention()
     account_creation()
+    security()
+    telemetry()
+  end
 
+  defp telemetry do
+    add_server_setting_type(%{
+      key: "pure_collector_mode",
+      label: "Pure collector mode",
+      section: "Telemetry",
+      type: "boolean",
+      default: false,
+      description:
+        "When enabled the server will allow creation of functionality described in the Collector mode guide (documentation/guides/admin/collector_mode.md)."
+    })
+  end
+
+  defp security() do
     add_server_setting_type(%{
       key: "require_tokens_to_persist_ip",
       label: "Require tokens to consistently use the same IP",

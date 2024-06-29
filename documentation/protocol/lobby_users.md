@@ -136,6 +136,36 @@ Sent when the state of a lobby changes.
 }
 ```
 
+## Match start
+[Response](/priv/static/schema/messages/lobby/match_start.json)
+
+When a match is started, in addition to a `lobby/updated` message you will also be sent this message.
+
+```json
+{
+  "name": "lobby/match_start",
+  "message": {
+    "lobby_id": "55997933-ff6c-48fd-b2db-173b0ce3f21e",
+    "match_id": "36249281-5ca4-41f9-b690-0ba442323ac8"
+  }
+}
+```
+
+## Match end
+[Response](/priv/static/schema/messages/lobby/match_end.json)
+
+When a match is ended, in addition to a `lobby/updated` message you will also be sent this message.
+
+```json
+{
+  "name": "lobby/match_end",
+  "message": {
+    "lobby_id": "326d61a5-0a42-446c-9e84-a00aefa148c3",
+    "match_id": "b4205880-2af5-43db-8065-5c6824732b17"
+  }
+}
+```
+
 ## Subscribe to lobby updates
 
 ## Unsubscribe from lobby updates

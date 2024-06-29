@@ -12,10 +12,12 @@
   ],
   "properties": {
     "sender_id": {
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "to_id": {
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "content": {
       "type": "string"

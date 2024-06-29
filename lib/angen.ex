@@ -5,7 +5,7 @@ defmodule Angen do
 
   defmodule ConnState do
     @moduledoc false
-    defstruct ~w(ip socket conn_id user_id user lobby_host? party_id lobby_id in_game?)a
+    defstruct ~w(ip socket conn_id user_id user lobby_host? party_id lobby_id match_id in_game?)a
   end
 
   @spec startup_complete?() :: boolean

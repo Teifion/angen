@@ -42,10 +42,22 @@ defmodule AngenWeb.Router do
     end
   end
 
+  scope "/admin/accounts", AngenWeb.Admin.Account do
+    pipe_through [:browser]
+
+    live_session :admin_accounts,
+      on_mount: [
+        {AngenWeb.UserAuth, :ensure_authenticated},
+        {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
+      ] do
+      live "/", HomeLive
+    end
+  end
+
   scope "/admin/logging", AngenWeb.Admin.Logging do
     pipe_through [:browser]
 
-    live_session :logging_index,
+    live_session :admin_logging,
       on_mount: [
         {AngenWeb.UserAuth, :ensure_authenticated},
         {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
@@ -71,7 +83,7 @@ defmodule AngenWeb.Router do
   scope "/admin/settings", AngenWeb.Admin do
     pipe_through [:browser]
 
-    live_session :settings_index,
+    live_session :admin_settings,
       on_mount: [
         {AngenWeb.UserAuth, :ensure_authenticated},
         {AngenWeb.UserAuth, {:authorise, ~w(admin)}}

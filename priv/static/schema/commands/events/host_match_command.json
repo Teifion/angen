@@ -1,0 +1,27 @@
+{
+  "$id": "events/host_match_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Events - Host_match command",
+  "description": "An event taking place during an instance of a game, it is linked both against the player in question and the instance of the game. This variant is submitted by the host of the game (sometimes on behalf of a different member).",
+  "type": "object",
+  "required": [
+    "user_id",
+    "event",
+    "game_seconds"
+  ],
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event": {
+      "type": "string"
+    },
+    "game_seconds": {
+      "type": "integer"
+    },
+    "details": {
+      "type": "object"
+    }
+  }
+}

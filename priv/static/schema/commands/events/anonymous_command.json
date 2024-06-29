@@ -1,0 +1,23 @@
+{
+  "$id": "events/anonymous_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Events - Anonymous command",
+  "description": "An event taking place in the client application but which we do not want to attach to a profile.",
+  "type": "object",
+  "required": [
+    "hash_id",
+    "event"
+  ],
+  "properties": {
+    "hash_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event": {
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    }
+  }
+}

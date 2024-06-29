@@ -14,10 +14,12 @@
   ],
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "party_id": {
-      "type": ["string", "null"]
+      "type": ["string", "null"],
+      "format": "uuid"
     },
     "connected?": {
       "type": "boolean"
@@ -32,7 +34,8 @@
       "type": "boolean"
     },
     "lobby_id": {
-      "type": ["string", "null"]
+      "type": ["string", "null"],
+      "format": "uuid"
     },
     "updated_id": {
       "type": "integer"

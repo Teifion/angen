@@ -1,0 +1,21 @@
+{
+  "$id": "lobby/match_start_message.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby - Match_start message",
+  "description": "",
+  "type": "object",
+  "required": [
+    "lobby_id",
+    "match_id"
+  ],
+  "properties": {
+    "match_id": {
+      "type": "string",
+      "format": "UUID"
+    },
+    "lobby_id": {
+      "type": "string",
+      "format": "UUID"
+    }
+  }
+}

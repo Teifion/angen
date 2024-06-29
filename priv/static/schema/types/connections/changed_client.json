@@ -8,8 +8,13 @@
     
   ],
   "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
     "party_id": {
-      "type": ["string", "null"]
+      "type": ["string", "null"],
+      "format": "uuid"
     },
     "connected?": {
       "type": "boolean"
@@ -25,7 +30,8 @@
     },
 
     "lobby_id": {
-      "type": ["string", "null"]
+      "type": ["string", "null"],
+      "format": "uuid"
     },
     "ready?": {
       "type": "boolean"

@@ -7,8 +7,13 @@
   "required": [
   ],
   "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
     "host_id": {
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "host_data": {
       "type": "object"

@@ -43,6 +43,7 @@ defmodule Angen.TextProtocol.TextHandlerServer do
        lobby_host?: false,
        party_id: nil,
        lobby_id: nil,
+       match_id: nil,
        in_game?: false
      }}
   end

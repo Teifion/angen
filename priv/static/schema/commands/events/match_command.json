@@ -1,0 +1,22 @@
+{
+  "$id": "events/match_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Events - Match command",
+  "description": "An event taking place during an instance of a game, it is linked both against the player in question and the instance of the game.",
+  "type": "object",
+  "required": [
+    "event",
+    "game_seconds"
+  ],
+  "properties": {
+    "event": {
+      "type": "string"
+    },
+    "game_seconds": {
+      "type": "integer"
+    },
+    "details": {
+      "type": "object"
+    }
+  }
+}

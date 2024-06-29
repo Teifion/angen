@@ -76,8 +76,8 @@ defmodule Angen.Telemetry do
   }
 
   @doc section: :simple_anon_event
-  @spec log_simple_anon_event(String.t(), Teiserver.user_id()) :: :ok | {:error, String.t()}
-  defdelegate log_simple_anon_event(name, user_id), to: SimpleAnonEventLib
+  @spec log_simple_anon_event(String.t(), Ecto.UUID.t()) :: :ok | {:error, String.t()}
+  defdelegate log_simple_anon_event(name, hash_id), to: SimpleAnonEventLib
 
   @doc false
   @spec simple_anon_event_query(Teiserver.query_args()) :: Ecto.Query.t()
@@ -186,8 +186,8 @@ defmodule Angen.Telemetry do
   }
 
   @doc section: :complex_anon_event
-  @spec log_complex_anon_event(String.t(), Teiserver.user_id(), map()) :: :ok | {:error, String.t()}
-  defdelegate log_complex_anon_event(name, user_id, details), to: ComplexAnonEventLib
+  @spec log_complex_anon_event(String.t(), Ecto.UUID.t(), map()) :: :ok | {:error, String.t()}
+  defdelegate log_complex_anon_event(name, hash_id, details), to: ComplexAnonEventLib
 
   @doc false
   @spec complex_anon_event_query(Teiserver.query_args()) :: Ecto.Query.t()

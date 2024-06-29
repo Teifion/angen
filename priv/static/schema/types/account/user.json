@@ -11,7 +11,8 @@
   "properties": {
     "id": {
       "description": "The unique identifier for a user",
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "name": {
       "description": "The name used by this user",

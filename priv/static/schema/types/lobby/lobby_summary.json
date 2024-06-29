@@ -11,10 +11,12 @@
   ],
   "properties": {
     "id": {
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "host_id": {
-      "type": "string"
+      "type": "string",
+      "format": "uuid"
     },
     "name": {
       "type": "string"
