@@ -14,7 +14,7 @@ defmodule Angen.Telemetry.ComplexMatchEvent do
   """
   use TeiserverMacros, :schema
 
-  schema "telemetry_complex_anon_events" do
+  schema "telemetry_complex_match_events" do
     belongs_to(:user, Teiserver.Account.User, type: Ecto.UUID)
     belongs_to(:match, Teiserver.Game.Match, type: Ecto.UUID)
     belongs_to(:event_type, Angen.Telemetry.EventType)

@@ -53,7 +53,8 @@ defmodule Mix.Tasks.Angen.Fakedata do
 
       Angen.FakeData.FakeAccounts.make_accounts(config)
       Angen.FakeData.FakeMatches.make_matches(config)
-      Angen.FakeData.FakeTelemetry.make_events(config)
+      Angen.FakeData.FakeSimpleTelemetry.make_simple_events(config)
+      Angen.FakeData.FakeComplexTelemetry.make_complex_events(config)
       Angen.FakeData.FakeLogging.make_logs(config)
 
       make_one_time_code(config)

@@ -1,7 +1,7 @@
 defmodule Angen.Telemetry.SimpleServerEvent do
   @moduledoc """
   # SimpleServerEvent
-  A simple event taking place on a Client application with a user attached
+  A simple event taking place on the server
 
   ### Attributes
 
@@ -11,7 +11,7 @@ defmodule Angen.Telemetry.SimpleServerEvent do
   """
   use TeiserverMacros, :schema
 
-  schema "telemetry_simple_anon_events" do
+  schema "telemetry_simple_server_events" do
     belongs_to(:user, Teiserver.Account.User, type: Ecto.UUID)
     belongs_to(:event_type, Angen.Telemetry.EventType)
     field(:inserted_at, :utc_datetime)
@@ -31,6 +31,6 @@ defmodule Angen.Telemetry.SimpleServerEvent do
   def changeset(struct, attrs \\ %{}) do
     struct
     |> cast(attrs, ~w(user_id event_type_id inserted_at)a)
-    |> validate_required(~w(user_id event_type_id inserted_at)a)
+    |> validate_required(~w(event_type_id inserted_at)a)
   end
 end

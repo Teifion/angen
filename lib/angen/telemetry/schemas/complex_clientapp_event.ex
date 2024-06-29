@@ -12,7 +12,7 @@ defmodule Angen.Telemetry.ComplexClientappEvent do
   """
   use TeiserverMacros, :schema
 
-  schema "telemetry_complex_anon_events" do
+  schema "telemetry_complex_clientapp_events" do
     belongs_to(:user, Teiserver.Account.User, type: Ecto.UUID)
     belongs_to(:event_type, Angen.Telemetry.EventType)
     field(:inserted_at, :utc_datetime)

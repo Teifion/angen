@@ -173,7 +173,7 @@ defmodule AngenWeb.Logging.ServerComponents do
     <div class="row mt-4">
       <div class="col">
         <.card>
-          <h4>Server events</h4>
+          <h4>Server - simple</h4>
           <table class="table table-sm">
             <tbody>
               <tr :for={{event, count} <- @events["simple_server"] |> Enum.take(10)}>
@@ -187,7 +187,7 @@ defmodule AngenWeb.Logging.ServerComponents do
 
       <div class="col">
         <.card>
-          <h4>Clientapp events</h4>
+          <h4>Clientapp - simple</h4>
           <table class="table table-sm">
             <tbody>
               <tr :for={{event, count} <- @events["simple_clientapp"] |> Enum.take(10)}>
@@ -201,7 +201,7 @@ defmodule AngenWeb.Logging.ServerComponents do
 
       <div class="col">
         <.card>
-          <h4>Anon events</h4>
+          <h4>Anon - simple</h4>
           <table class="table table-sm">
             <tbody>
               <tr :for={{event, count} <- @events["simple_anon"] |> Enum.take(10)}>
@@ -215,7 +215,7 @@ defmodule AngenWeb.Logging.ServerComponents do
 
       <div class="col">
         <.card>
-          <h4>Lobby events</h4>
+          <h4>Lobby - simple</h4>
           <table class="table table-sm">
             <tbody>
               <tr :for={{event, count} <- @events["simple_lobby"] |> Enum.take(10)}>
@@ -229,10 +229,82 @@ defmodule AngenWeb.Logging.ServerComponents do
 
       <div class="col">
         <.card>
-          <h4>Match events</h4>
+          <h4>Match - simple</h4>
           <table class="table table-sm">
             <tbody>
               <tr :for={{event, count} <- @events["simple_match"] |> Enum.take(10)}>
+                <td><%= event %></td>
+                <td><%= format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
+        </.card>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col">
+        <.card>
+          <h4>Server - complex</h4>
+          <table class="table table-sm">
+            <tbody>
+              <tr :for={{event, count} <- @events["complex_server"] |> Enum.take(10)}>
+                <td><%= event %></td>
+                <td><%= format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
+        </.card>
+      </div>
+
+      <div class="col">
+        <.card>
+          <h4>Clientapp - complex</h4>
+          <table class="table table-sm">
+            <tbody>
+              <tr :for={{event, count} <- @events["complex_clientapp"] |> Enum.take(10)}>
+                <td><%= event %></td>
+                <td><%= format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
+        </.card>
+      </div>
+
+      <div class="col">
+        <.card>
+          <h4>Anon - complex</h4>
+          <table class="table table-sm">
+            <tbody>
+              <tr :for={{event, count} <- @events["complex_anon"] |> Enum.take(10)}>
+                <td><%= event %></td>
+                <td><%= format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
+        </.card>
+      </div>
+
+      <div class="col">
+        <.card>
+          <h4>Lobby - complex</h4>
+          <table class="table table-sm">
+            <tbody>
+              <tr :for={{event, count} <- @events["complex_lobby"] |> Enum.take(10)}>
+                <td><%= event %></td>
+                <td><%= format_number(count) %></td>
+              </tr>
+            </tbody>
+          </table>
+        </.card>
+      </div>
+
+      <div class="col">
+        <.card>
+          <h4>Match - complex</h4>
+          <table class="table table-sm">
+            <tbody>
+              <tr :for={{event, count} <- @events["complex_match"] |> Enum.take(10)}>
                 <td><%= event %></td>
                 <td><%= format_number(count) %></td>
               </tr>
