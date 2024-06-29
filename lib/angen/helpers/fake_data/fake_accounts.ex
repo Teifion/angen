@@ -3,7 +3,7 @@ defmodule Angen.FakeData.FakeAccounts do
 
   alias Teiserver.Account
 
-  import Mix.Tasks.Angen.Fakedata, only: [random_time_in_day: 1]
+  import Angen.Helpers.FakeDataHelper, only: [random_time_in_day: 1]
 
   def make_accounts(config) do
     root_user = Account.get_user_by_email("root@localhost")

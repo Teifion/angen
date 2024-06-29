@@ -2,7 +2,7 @@ defmodule Angen.FakeData.FakeTelemetry do
   @moduledoc false
 
   alias Angen.Telemetry
-  import Mix.Tasks.Angen.Fakedata, only: [valid_userids: 1, random_time_in_day: 1]
+  import Angen.Helpers.FakeDataHelper, only: [valid_userids: 1, random_time_in_day: 1]
 
   def make_events(config) do
     0..min(config.days, 90)

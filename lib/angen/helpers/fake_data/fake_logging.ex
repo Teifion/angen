@@ -4,7 +4,7 @@ defmodule Angen.FakeData.FakeLogging do
   alias Angen.Logging
   import Logging.PersistServerMinuteTask, only: [add_total_key: 1, add_total_key: 3]
 
-  import Mix.Tasks.Angen.Fakedata,
+  import Angen.Helpers.FakeDataHelper,
     only: [rand_int_sequence: 4, rand_int: 3, valid_userids: 1, valid_userids: 2, random_time_in_day: 1]
 
   def make_logs(config) do

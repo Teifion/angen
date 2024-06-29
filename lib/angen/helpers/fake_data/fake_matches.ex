@@ -1,7 +1,7 @@
 defmodule Angen.FakeData.FakeMatches do
   @moduledoc false
 
-  import Mix.Tasks.Angen.Fakedata, only: [valid_userids: 1, random_time_in_day: 1]
+  import Angen.Helpers.FakeDataHelper, only: [valid_userids: 1, random_time_in_day: 1]
   alias Angen.Helper.TimexHelper
   alias Teiserver.Game
   alias Teiserver.Game.MatchTypeLib
