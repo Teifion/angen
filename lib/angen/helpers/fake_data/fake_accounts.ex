@@ -13,7 +13,7 @@ defmodule Angen.FakeData.FakeAccounts do
       |> Enum.map(fn day ->
         # Make an extra 50 users for the first day
         users_to_make =
-          if day == (config.days + 1) do
+          if day == config.days + 1 do
             50
           else
             users_per_day()

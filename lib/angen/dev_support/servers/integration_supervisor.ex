@@ -21,7 +21,11 @@ defmodule Angen.DevSupport.IntegrationSupervisor do
   @spec start_integration_supervisor_children() ::
           :ok | {:error, :start_failure}
   def start_integration_supervisor_children() do
-    start_integration()
+    if Angen.DevSupport.ManagerServer.integration_active?() do
+      start_integration()
+    else
+      :integration_inactive
+    end
   end
 
   @spec start_integration() :: :ok | {:error, :start_failure}

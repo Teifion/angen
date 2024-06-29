@@ -1,105 +1,103 @@
 <div class="row mt-4 mb-3">
   <div class="col">
     <AngenWeb.BootstrapComponents.card>
-  
-    <div :for={{group_name, group_keys} <- @setting_groups}>
-      <h4><%= group_name %></h4>
-      <table class="table table-hover" style="cursor: pointer;">
-        <tbody>
-          <tr :for={setting_key <- group_keys} id={"setting-row-#{setting_key}"}>
-            <% the_setting = @setting_types[setting_key] %>
-            <td id={"row-#{setting_key}"} phx-click="open-form" phx-value-key={the_setting.key}>
-              <strong>
-                <%= the_setting.label %>
-              </strong>
+      <div :for={{group_name, group_keys} <- @setting_groups}>
+        <h4><%= group_name %></h4>
+        <table class="table table-hover" style="cursor: pointer;">
+          <tbody>
+            <tr :for={setting_key <- group_keys} id={"setting-row-#{setting_key}"}>
+              <% the_setting = @setting_types[setting_key] %>
+              <td id={"row-#{setting_key}"} phx-click="open-form" phx-value-key={the_setting.key}>
+                <strong>
+                  <%= the_setting.label %>
+                </strong>
 
-              <%= if setting_key == @selected_key do %>
-                <br />
-                <em>
-                  <%= raw(the_setting.description) %>
-                </em>
-              <% else %>
-                &nbsp;&nbsp;&nbsp;
-                <em>
-                  <%= (the_setting.description || "") |> String.slice(0..90) |> raw %>
-                </em>
-              <% end %>
-            </td>
+                <%= if setting_key == @selected_key do %>
+                  <br />
+                  <em>
+                    <%= raw(the_setting.description) %>
+                  </em>
+                <% else %>
+                  &nbsp;&nbsp;&nbsp;
+                  <em>
+                    <%= (the_setting.description || "") |> String.slice(0..90) |> raw %>
+                  </em>
+                <% end %>
+              </td>
 
-            <td
-              :if={setting_key != @selected_key}
-              style="width:250px;"
-              phx-click="open-form"
-              phx-value-key={setting_key}
-            >
-              <%= @setting_values[setting_key] ||
-                raw("#{the_setting.default} <em>(default)</em>") %>
-            </td>
+              <td
+                :if={setting_key != @selected_key}
+                style="width:250px;"
+                phx-click="open-form"
+                phx-value-key={setting_key}
+              >
+                <%= @setting_values[setting_key] ||
+                  raw("#{the_setting.default} <em>(default)</em>") %>
+              </td>
 
-            <td :if={setting_key == @selected_key} style="width:700px; text-align: right;">
-              <%= case the_setting.type do %>
-                <% "integer" -> %>
-                  <.form
-                    for={to_form(%{}, as: :temp_form)}
-                    id="setting-temp-form"
-                    phx-submit="set-to"
-                  >
-                    <.input
+              <td :if={setting_key == @selected_key} style="width:700px; text-align: right;">
+                <%= case the_setting.type do %>
+                  <% "integer" -> %>
+                    <.form
+                      for={to_form(%{}, as: :temp_form)}
+                      id="setting-temp-form"
+                      phx-submit="set-to"
+                    >
+                      <.input
+                        id="setting-input"
+                        type="number"
+                        name="setting[value]"
+                        value={@setting_values[setting_key] || the_setting.default}
+                      />
+                    </.form>
+                  <% "select" -> %>
+                    <.form
+                      for={to_form(%{}, as: :temp_form)}
+                      phx-change="set-to"
+                      phx-submit="set-to"
+                    >
+                      <.input
+                        id="setting-input"
+                        type="select"
+                        name="setting[value]"
+                        value={@setting_values[setting_key] || the_setting.default}
+                        options={the_setting.opts}
+                      />
+                    </.form>
+                  <% "boolean" -> %>
+                    <span
                       id="setting-input"
-                      type="number"
-                      name="setting[value]"
-                      value={@setting_values[setting_key] || the_setting.default}
-                    />
-                  </.form>
-                <% "select" -> %>
-                  <.form
-                    for={to_form(%{}, as: :temp_form)}
-                    phx-change="set-to"
-                    phx-submit="set-to"
-                  >
-                    <.input
-                      id="setting-input"
-                      type="select"
-                      name="setting[value]"
-                      value={@setting_values[setting_key] || the_setting.default}
-                      options={the_setting.opts}
-                    />
-                  </.form>
-                <% "boolean" -> %>
-                  <span
-                    id="setting-input"
-                    class="btn btn-secondary"
-                    phx-click="open-form"
-                    phx-value-key={setting_key}
-                  >
-                    <Fontawesome.icon icon="cancel" style="regular" size="2x" /><br /> Cancel
-                  </span>
-                  &nbsp;&nbsp;&nbsp;
-                  <span class="btn btn-secondary" phx-click="reset-value">
-                    <Fontawesome.icon icon="arrow-rotate-left" style="regular" size="2x" /><br />
-                    Default
-                  </span>
-                  &nbsp;&nbsp;&nbsp;
+                      class="btn btn-secondary"
+                      phx-click="open-form"
+                      phx-value-key={setting_key}
+                    >
+                      <Fontawesome.icon icon="cancel" style="regular" size="2x" /><br /> Cancel
+                    </span>
+                    &nbsp;&nbsp;&nbsp;
+                    <span class="btn btn-secondary" phx-click="reset-value">
+                      <Fontawesome.icon icon="arrow-rotate-left" style="regular" size="2x" /><br />
+                      Default
+                    </span>
+                    &nbsp;&nbsp;&nbsp;
 
-                  &nbsp;&nbsp;&nbsp;
-                  <span class="btn btn-danger" phx-click="set-false">
-                    <Fontawesome.icon icon="times" style="solid" size="2x" /><br /> No
-                  </span>
-                  &nbsp;&nbsp;&nbsp;
-                  <span class="btn btn-success" phx-click="set-true">
-                    <Fontawesome.icon icon="check" style="solid" size="2x" /><br /> Yes
-                  </span>
-                <% _ -> %>
-                  <div class="alert alert-danger monospace" style="text-align: center;">
-                    No handler for setting type of '<%= the_setting.type %>' for setting key '<%= setting_key %>'
-                  </div>
-              <% end %>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    
+                    &nbsp;&nbsp;&nbsp;
+                    <span class="btn btn-danger" phx-click="set-false">
+                      <Fontawesome.icon icon="times" style="solid" size="2x" /><br /> No
+                    </span>
+                    &nbsp;&nbsp;&nbsp;
+                    <span class="btn btn-success" phx-click="set-true">
+                      <Fontawesome.icon icon="check" style="solid" size="2x" /><br /> Yes
+                    </span>
+                  <% _ -> %>
+                    <div class="alert alert-danger monospace" style="text-align: center;">
+                      No handler for setting type of '<%= the_setting.type %>' for setting key '<%= setting_key %>'
+                    </div>
+                <% end %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </AngenWeb.BootstrapComponents.card>
   </div>
 </div>

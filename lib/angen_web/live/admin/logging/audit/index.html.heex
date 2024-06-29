@@ -10,8 +10,10 @@
 >
   <:col :let={{_id, audit_log}} label="Action"><%= audit_log.action %></:col>
   <:col :let={{_id, audit_log}} label="User"><%= audit_log.user && audit_log.user.name %></:col>
-  <:col :let={{_id, audit_log}} label="DateTime"><%= date_to_str(audit_log.inserted_at, :ymd_hms) %></:col>
-  
+  <:col :let={{_id, audit_log}} label="DateTime">
+    <%= date_to_str(audit_log.inserted_at, :ymd_hms) %>
+  </:col>
+
   <:col :let={{_id, audit_log}} label="Details"><%= Jason.encode!(audit_log.details) %></:col>
   <:col :let={{_id, audit_log}} label="Ip"><%= audit_log.ip %></:col>
   <:action :let={{_id, audit_log}}>

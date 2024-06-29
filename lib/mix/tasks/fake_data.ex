@@ -47,7 +47,7 @@ defmodule Mix.Tasks.Angen.Fakedata do
 
       # We have to start Angen to change the logger config
       Application.ensure_all_started(:angen)
-      Logger.configure([level: :info])
+      Logger.configure(level: :info)
 
       _root_user = add_root_user()
 
@@ -110,16 +110,18 @@ defmodule Mix.Tasks.Angen.Fakedata do
       ORDER BY rows_n DESC;
     """
 
-    results = case Ecto.Adapters.SQL.query(Angen.Repo, query, []) do
-      {:ok, results} ->
-        results.rows
-        |> Enum.reject(fn [table, row_count] ->
-          (row_count <= 0) or Enum.member?(~w(oban_peers teiserver_cluster_members account_user_tokens), table)
-        end)
+    results =
+      case Ecto.Adapters.SQL.query(Angen.Repo, query, []) do
+        {:ok, results} ->
+          results.rows
+          |> Enum.reject(fn [table, row_count] ->
+            row_count <= 0 or
+              Enum.member?(~w(oban_peers teiserver_cluster_members account_user_tokens), table)
+          end)
 
-      {a, b} ->
-        raise "ERR: #{a}, #{b}"
-    end
+        {a, b} ->
+          raise "ERR: #{a}, #{b}"
+      end
 
     results
   end
@@ -128,22 +130,26 @@ defmodule Mix.Tasks.Angen.Fakedata do
     elapsed = System.system_time(:second) - start_time
     sizes = get_table_sizes()
 
-    {target_size, total_rows} = sizes
-      |> Enum.reduce({0, 0}, fn ([name, row_count], {size_acc, count_acc}) ->
+    {target_size, total_rows} =
+      sizes
+      |> Enum.reduce({0, 0}, fn [name, row_count], {size_acc, count_acc} ->
         {
           max(String.length(name), size_acc),
           count_acc + row_count
         }
       end)
 
-    IO.puts "\n\n#{String.pad_trailing("Table", target_size)} | Rows"
+    IO.puts("\n\n#{String.pad_trailing("Table", target_size)} | Rows")
+
     sizes
     |> Enum.each(fn [table, row_count] ->
       padded_name = String.pad_trailing(table, target_size)
 
-      IO.puts "#{padded_name} | #{Angen.Helper.StringHelper.format_number(row_count)}"
+      IO.puts("#{padded_name} | #{Angen.Helper.StringHelper.format_number(row_count)}")
     end)
 
-    IO.puts "\nFake data insertion complete.\nTook #{elapsed} seconds, inserted #{Angen.Helper.StringHelper.format_number(total_rows)} rows for #{config.days} days of data. "
+    IO.puts(
+      "\nFake data insertion complete.\nTook #{elapsed} seconds, inserted #{Angen.Helper.StringHelper.format_number(total_rows)} rows for #{config.days} days of data. "
+    )
   end
 end

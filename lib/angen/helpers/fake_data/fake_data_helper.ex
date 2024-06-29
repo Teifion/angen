@@ -1,15 +1,8 @@
 defmodule Angen.Helpers.FakeDataHelper do
   @moduledoc false
 
-
-  def random_pick_from(list, chance \\ 0.5) do
-    list
-    |> Enum.filter(fn _ ->
-      :rand.uniform() < chance
-    end)
-  end
-
-  def valid_userids(before_datetime) do
+  @spec valid_user_ids(Date.t() | DateTime.t()) :: [Teiserver.user_id()]
+  def valid_user_ids(before_datetime) do
     Teiserver.Account.list_users(
       where: [
         inserted_before: Timex.to_datetime(before_datetime)
@@ -20,11 +13,28 @@ defmodule Angen.Helpers.FakeDataHelper do
     |> Enum.map(fn %{id: id} -> id end)
   end
 
-  def valid_userids(before_datetime, after_datetime) do
+  @spec valid_user_ids(Date.t() | DateTime.t(), Date.t() | DateTime.t()) :: [Teiserver.user_id()]
+  def valid_user_ids(before_datetime, after_datetime) do
     Teiserver.Account.list_users(
       where: [
         inserted_after: Timex.to_datetime(after_datetime),
         inserted_before: Timex.to_datetime(before_datetime)
+      ],
+      limit: :infinity,
+      select: [:id]
+    )
+    |> Enum.map(fn %{id: id} -> id end)
+  end
+
+  @spec matches_this_day(Date.t() | DateTime.t()) :: [Teiserver.match_id()]
+  def matches_this_day(date) do
+    start_date = Timex.beginning_of_day(date)
+    end_date = Timex.shift(start_date, days: 1)
+
+    Teiserver.Game.list_matches(
+      where: [
+        started_after: Timex.to_datetime(start_date),
+        started_before: Timex.to_datetime(end_date)
       ],
       limit: :infinity,
       select: [:id]
@@ -65,6 +75,7 @@ defmodule Angen.Helpers.FakeDataHelper do
     |> Enum.reverse()
   end
 
+  @spec random_time_in_day(Date.t() | DateTime.t()) :: DateTime.t()
   def random_time_in_day(date) do
     date
     |> Timex.to_datetime()

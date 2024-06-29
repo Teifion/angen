@@ -48,6 +48,9 @@ defmodule Angen.Application do
     opts = [strategy: :one_for_one, name: Angen.Supervisor]
     start_result = Supervisor.start_link(children, opts)
 
+    # We use this log line to know the supervisor tree started without issues
+    # if you don't see this it means one of the processes above has had an issue
+    # starting up
     Logger.info("Angen.Supervisor start result: #{Kernel.inspect(start_result)}")
 
     startup()

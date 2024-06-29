@@ -65,11 +65,19 @@ defmodule AngenWeb.NavComponents do
             <%= if allow?(@current_user, ~w(admin)) do %>
               <.top_nav_item text="Admin" active={@active == "admin"} route={~p"/admin"} />
 
-              <.top_nav_item text="Accounts" active={@active == "accounts"} route={~p"/admin/accounts"} />
+              <.top_nav_item
+                text="Accounts"
+                active={@active == "accounts"}
+                route={~p"/admin/accounts"}
+              />
 
               <.top_nav_item text="Logging" active={@active == "logging"} route={~p"/admin/logging"} />
 
-              <.top_nav_item text="Settings" active={@active == "settings"} route={~p"/admin/settings"} />
+              <.top_nav_item
+                text="Settings"
+                active={@active == "settings"}
+                route={~p"/admin/settings"}
+              />
             <% end %>
           </ul>
           <!-- Left links -->

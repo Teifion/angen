@@ -7,8 +7,14 @@ defmodule AngenWeb.General.GuestLive do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(:allow_guests, Teiserver.Settings.get_server_setting_value("allow_guest_accounts"))
-      |> assign(:allow_registration, Teiserver.Settings.get_server_setting_value("allow_registration_via_website"))
+      |> assign(
+        :allow_guests,
+        Teiserver.Settings.get_server_setting_value("allow_guest_accounts")
+      )
+      |> assign(
+        :allow_registration,
+        Teiserver.Settings.get_server_setting_value("allow_registration_via_website")
+      )
       |> assign(user_agent: get_connect_info(socket, :user_agent))
       |> assign(address: get_connect_info(socket, :peer_data) |> Map.get(:address))
 

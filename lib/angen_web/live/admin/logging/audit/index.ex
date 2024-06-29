@@ -5,17 +5,17 @@ defmodule AngenWeb.Admin.Logging.AuditLogLive.Index do
 
   @impl true
   def mount(_params, _session, socket) when is_connected?(socket) do
-    {:ok, socket
-      |> stream(:audit_logs, Logging.list_audit_logs(order_by: "Newest first", preload: [:user]))
-      |> assign(:site_menu_active, "logging")
-    }
+    {:ok,
+     socket
+     |> stream(:audit_logs, Logging.list_audit_logs(order_by: "Newest first", preload: [:user]))
+     |> assign(:site_menu_active, "logging")}
   end
 
   def mount(_params, _session, socket) do
-    {:ok, socket
-      |> stream(:audit_logs, [])
-      |> assign(:site_menu_active, "logging")
-    }
+    {:ok,
+     socket
+     |> stream(:audit_logs, [])
+     |> assign(:site_menu_active, "logging")}
   end
 
   @impl true

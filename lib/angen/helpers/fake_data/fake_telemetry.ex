@@ -2,7 +2,7 @@ defmodule Angen.FakeData.FakeTelemetry do
   @moduledoc false
 
   alias Angen.Telemetry
-  import Angen.Helpers.FakeDataHelper, only: [valid_userids: 1, random_time_in_day: 1]
+  import Angen.Helpers.FakeDataHelper, only: [valid_user_ids: 1, random_time_in_day: 1]
 
   def make_events(config) do
     0..min(config.days, 90)
@@ -15,13 +15,14 @@ defmodule Angen.FakeData.FakeTelemetry do
   end
 
   def make_simple_client(_config, date) do
-    user_ids = valid_userids(date)
+    user_ids = valid_user_ids(date)
 
-    events = [
-      create_simple_client("connected", user_ids, [0, 1, 2, 3], date),
-      create_simple_client("disconnected", user_ids, [0, 1, 2, 3], date)
-    ]
-    |> List.flatten()
+    events =
+      [
+        create_simple_client("connected", user_ids, [0, 1, 2, 3], date),
+        create_simple_client("disconnected", user_ids, [0, 1, 2, 3], date)
+      ]
+      |> List.flatten()
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:insert_all, Telemetry.SimpleClientappEvent, events)

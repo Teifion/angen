@@ -18,7 +18,7 @@
   >
     Accounts
   </.menu_card>
-  
+
   <.menu_card
     :if={allow?(@current_user, ~w(admin))}
     icon={StylingHelper.icon(:logging)}
@@ -27,7 +27,7 @@
   >
     Logging
   </.menu_card>
-  
+
   <.menu_card
     :if={allow?(@current_user, ~w(admin))}
     icon={StylingHelper.icon(:settings)}

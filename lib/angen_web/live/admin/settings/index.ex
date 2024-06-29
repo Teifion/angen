@@ -103,7 +103,6 @@ defmodule AngenWeb.Admin.SettingsLive.Index do
         %{"setting" => %{"value" => new_value}},
         %{assigns: %{selected_key: key}} = socket
       ) do
-
     Settings.set_server_setting_value(key, new_value)
 
     new_setting_values = Map.put(socket.assigns.setting_values, key, new_value)
@@ -116,18 +115,22 @@ defmodule AngenWeb.Admin.SettingsLive.Index do
   end
 
   defp load_setting_types(socket) do
-    setting_types = Settings.list_server_setting_type_keys()
-    |> Settings.list_server_setting_types()
-    |> Map.new(fn t -> {t.key, t} end)
+    setting_types =
+      Settings.list_server_setting_type_keys()
+      |> Settings.list_server_setting_types()
+      |> Map.new(fn t -> {t.key, t} end)
 
-    setting_groups = setting_types
-    |> Map.values
-    |> Enum.group_by(fn s ->
-      s.section
-    end,
-    fn
-      s -> s.key
-    end)
+    setting_groups =
+      setting_types
+      |> Map.values()
+      |> Enum.group_by(
+        fn s ->
+          s.section
+        end,
+        fn
+          s -> s.key
+        end
+      )
 
     socket
     |> assign(:setting_types, setting_types)
@@ -135,10 +138,11 @@ defmodule AngenWeb.Admin.SettingsLive.Index do
   end
 
   defp load_server_settings(socket) do
-    setting_values = Settings.list_server_settings(limit: :infinity)
-    |> Map.new(fn s ->
-      {s.key, s.value}
-    end)
+    setting_values =
+      Settings.list_server_settings(limit: :infinity)
+      |> Map.new(fn s ->
+        {s.key, s.value}
+      end)
 
     socket
     |> assign(:setting_values, setting_values)

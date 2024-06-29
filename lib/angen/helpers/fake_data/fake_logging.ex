@@ -5,7 +5,13 @@ defmodule Angen.FakeData.FakeLogging do
   import Logging.PersistServerMinuteTask, only: [add_total_key: 1, add_total_key: 3]
 
   import Angen.Helpers.FakeDataHelper,
-    only: [rand_int_sequence: 4, rand_int: 3, valid_userids: 1, valid_userids: 2, random_time_in_day: 1]
+    only: [
+      rand_int_sequence: 4,
+      rand_int: 3,
+      valid_user_ids: 1,
+      valid_user_ids: 2,
+      random_time_in_day: 1
+    ]
 
   def make_logs(config) do
     # We only want a few days of minute logs
@@ -53,7 +59,7 @@ defmodule Angen.FakeData.FakeLogging do
   # end
 
   defp make_server_minutes(config, date) do
-    max_users = Enum.count(valid_userids(date))
+    max_users = Enum.count(valid_user_ids(date))
 
     {new_logs, _} =
       0..1439
@@ -164,7 +170,7 @@ defmodule Angen.FakeData.FakeLogging do
       config.days..config.detail_days
       |> Enum.map_reduce(%{}, fn day, last_data ->
         date = Timex.today() |> Timex.shift(days: -day)
-        max_users = Enum.count(valid_userids(date))
+        max_users = Enum.count(valid_user_ids(date))
 
         data = make_day_data(Map.merge(config, %{max_users: max_users, date: date}), last_data)
 
@@ -180,7 +186,8 @@ defmodule Angen.FakeData.FakeLogging do
   end
 
   defp make_day_data(config, last_day) do
-    accounts_created = Enum.count(valid_userids(config.date, config.date |> Timex.shift(days: 1)))
+    accounts_created =
+      Enum.count(valid_user_ids(config.date, config.date |> Timex.shift(days: 1)))
 
     minutes =
       %{
@@ -302,26 +309,28 @@ defmodule Angen.FakeData.FakeLogging do
   @audit_log_reasons ["Failed login", "Permissions failure", "Account updated"]
 
   defp make_audit_logs(config) do
-    log_data = 0..(config.days - 1)
-    |> Enum.map(fn day ->
-      date = Timex.today() |> Timex.shift(days: -day)
-      user_ids = valid_userids(date)
+    log_data =
+      0..(config.days - 1)
+      |> Enum.map(fn day ->
+        date = Timex.today() |> Timex.shift(days: -day)
+        user_ids = valid_user_ids(date)
 
-      0..3
-      |> Enum.map(fn _ ->
-        random_time = random_time_in_day(date)
+        0..3
+        |> Enum.map(fn _ ->
+          random_time = random_time_in_day(date)
 
-        %{
-          action: Enum.random(@audit_log_reasons),
-          details: %{key: "value"},
-          ip: "#{:rand.uniform(600)+270}.#{:rand.uniform(256)}.#{:rand.uniform(256)}.#{:rand.uniform(256)}",
-          user_id: Enum.random(user_ids),
-          inserted_at: random_time,
-          updated_at: random_time
-        }
+          %{
+            action: Enum.random(@audit_log_reasons),
+            details: %{key: "value"},
+            ip:
+              "#{:rand.uniform(600) + 270}.#{:rand.uniform(256)}.#{:rand.uniform(256)}.#{:rand.uniform(256)}",
+            user_id: Enum.random(user_ids),
+            inserted_at: random_time,
+            updated_at: random_time
+          }
+        end)
       end)
-    end)
-    |> List.flatten
+      |> List.flatten()
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:insert_all, Teiserver.Logging.AuditLog, log_data)
