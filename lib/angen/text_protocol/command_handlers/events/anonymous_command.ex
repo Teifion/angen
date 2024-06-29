@@ -17,7 +17,7 @@ defmodule Angen.TextProtocol.Events.AnonymousCommand do
         SuccessResponse.generate(name(), state)
 
       {:error, _reason} ->
-        FailureResponse.generate({name(), "error storing event"}, state)
+        FailureResponse.generate({name(), "Error storing event"}, state)
     end
   end
 
@@ -29,7 +29,7 @@ defmodule Angen.TextProtocol.Events.AnonymousCommand do
         SuccessResponse.generate(name(), state)
 
       {:error, _reason} ->
-        FailureResponse.generate({name(), "error storing event"}, state)
+        FailureResponse.generate({name(), "Error storing event"}, state)
     end
   end
 end

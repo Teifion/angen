@@ -37,7 +37,7 @@ This is the preferred way to submit events. Events are submitted one at a time v
 - [events/anonymous](/documentation/protocol/events.md#anonymous)
 - [events/client](/documentation/protocol/events.md#client)
 - [events/match](/documentation/protocol/events.md#match)
-- [events/host_match](/documentation/protocol/events.md#match_host)
+- [events/host_match](/documentation/protocol/events.md#host-match)
 
 ## HTTP Interface
 A slower interface but the expected one if using collector mode as outlined below.

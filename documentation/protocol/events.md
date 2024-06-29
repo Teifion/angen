@@ -31,6 +31,11 @@ Extra detail is optional
 }
 ```
 
+Error codes:
+```
+"Error storing event"
+```
+
 
 ## Client
 [Request](/priv/static/schema/commands/events/client_command.json)
@@ -58,6 +63,12 @@ Extra detail is optional
     }
   }
 }
+```
+
+Error codes:
+```
+"Must be logged in"
+"Error storing event"
 ```
 
 
@@ -91,13 +102,20 @@ Extra detail is optional
 }
 ```
 
-## Match host
+Error codes:
+```
+"Must be logged in"
+"Must be in an ongoing match"
+"Error storing event"
+```
+
+## Host match
 [Request](/priv/static/schema/commands/events/match_command.json)
 
 Registers the happening of an event within an ongoing match on behalf of a player in said match; must be sent while said match is ongoing and can only be sent by the host of the match in question. If successful returns a standard success response.
 ```json
 {
-  "name": "events/match_host",
+  "name": "events/host_match",
   "command": {
     "event": "some event",
     "user_id": "507afab9-46ea-4273-a987-a7b095a1b69d",
@@ -109,7 +127,7 @@ Registers the happening of an event within an ongoing match on behalf of a playe
 Extra detail is optional
 ```json
 {
-  "name": "events/match",
+  "name": "events/host_match",
   "command": {
     "event": "some event",
     "user_id": "507afab9-46ea-4273-a987-a7b095a1b69d",
@@ -121,4 +139,12 @@ Extra detail is optional
     }
   }
 }
+```
+
+Error codes:
+```
+"Must be logged in"
+"Must be in an ongoing match"
+"Must be the host of the lobby"
+"Error storing event"
 ```
