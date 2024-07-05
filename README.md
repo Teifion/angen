@@ -19,3 +19,7 @@ Angen can be used purely as a telemetry event collector server. For full details
 
 ## Cost
 Angen is free software under the [Apache license](LICENSE.txt), the only cost to using it is the servers you spin up. Angen is currently still in development but the expectation is for up to 200 concurrent users it can be run from a single small VPS for around $10-15 a month.
+
+## Deployment
+<!-- TODO: Improve this bit -->
+Run `scripts/build_container.sh` to generate the container and build the artefact, it will place said artefact in `rel/artifacts/angen.tar.gz` which you can then upload. There is an ansible script to setup the server(s) and another to perform deployments.
