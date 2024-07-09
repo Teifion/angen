@@ -6,6 +6,8 @@ defmodule Angen.FakeData.FakeMatches do
   alias Teiserver.Game
   alias Teiserver.Game.MatchTypeLib
 
+  @tags ~w(tag1 tag2 tag2 tag3 tag3 tag3 tag4 tag4 tag4 tag4)
+
   defp matches_per_day(), do: :rand.uniform(5) + 2
 
   def make_matches(config) do
@@ -66,7 +68,7 @@ defmodule Angen.FakeData.FakeMatches do
       %{
         id: Ecto.UUID.generate(),
         name: nil,
-        tags: [],
+        tags: Enum.take_random(@tags, 3) |> Enum.uniq,
         public?: :rand.uniform() < 0.8,
         rated?: :rand.uniform() < 0.8,
         game_name: "MyGame",
@@ -74,7 +76,7 @@ defmodule Angen.FakeData.FakeMatches do
         winning_team: nil,
         team_count: Enum.random([1, 1, 2, 2, 2, 2, 3, 4]),
         team_size: Enum.random([1, 1, 1, 1, 2, 3, 4, 5, 8]),
-        processed?: false,
+        processed?: true,
         ended_normally?: :rand.uniform() < 0.8,
         lobby_opened_at: t1,
         match_started_at: t2,
@@ -110,17 +112,17 @@ defmodule Angen.FakeData.FakeMatches do
 
     settings = [
       %{
-        type_id: Game.get_or_create_match_setting_type("map"),
+        type_id: Game.get_or_create_match_setting_type_id("map"),
         match_id: match.id,
         value: Enum.random(["Honeycomb", "Blueberries", "Chaddington", "Scary Scandals"])
       },
       %{
-        type_id: Game.get_or_create_match_setting_type("win-condition"),
+        type_id: Game.get_or_create_match_setting_type_id("win-condition"),
         match_id: match.id,
         value: Enum.random(["Regicide", "Annihilation", "Score"])
       },
       %{
-        type_id: Game.get_or_create_match_setting_type("starting-resources"),
+        type_id: Game.get_or_create_match_setting_type_id("starting-resources"),
         match_id: match.id,
         value: Enum.random(["Broke", "Low", "Normal", "High", "Infinite"])
       }
@@ -172,51 +174,4 @@ defmodule Angen.FakeData.FakeMatches do
   defp generate_winning_team(data) do
     %{data | winning_team: :rand.uniform(data.team_count)}
   end
-
-  # def make_simple_client(_config, date) do
-  #   user_ids = valid_user_ids(date)
-
-  #   events = [
-  #     create_simple_client("connected", user_ids, [0, 1, 2, 3], date),
-  #     create_simple_client("disconnected", user_ids, [0, 1, 2, 3], date)
-  #   ]
-  #   |> List.flatten()
-
-  #   Ecto.Multi.new()
-  #   |> Ecto.Multi.insert_all(:insert_all, Telemetry.SimpleClientappEvent, events)
-  #   |> Angen.Repo.transaction()
-  # end
-
-  # def make_simple_lobby(_config, _date) do
-  #   %{
-  #     # "cycle" => insert_simple_lobby("cycle", user_ids, [0, 1, 2, 3], date)
-  #   }
-  # end
-
-  # defp create_simple_client(event_name, user_ids, event_count, date) do
-  #   type_id = Telemetry.get_or_add_event_type_id(event_name, "simple_clientapp")
-
-  #   user_ids
-  #   |> Enum.map(fn user_id ->
-  #     actual_count = evaluate_count(event_count)
-
-  #     if actual_count > 0 do
-  #       0..actual_count
-  #       |> Enum.map(fn _ ->
-  #         %{
-  #           event_type_id: type_id,
-  #           user_id: user_id,
-  #           inserted_at: random_time_in_day(date)
-  #         }
-  #       end)
-  #     else
-  #       []
-  #     end
-  #   end)
-  # end
-
-  # # Allows us to have counts of various types
-  # defp evaluate_count(c) when is_list(c), do: Enum.random(c)
-  # defp evaluate_count(c) when is_function(c), do: c.()
-  # defp evaluate_count(c), do: c
 end

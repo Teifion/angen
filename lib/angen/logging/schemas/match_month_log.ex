@@ -1,6 +1,6 @@
-defmodule Angen.Logging.MatchMonthLog do
+defmodule Angen.Logging.GameMonthLog do
   @moduledoc """
-  # MatchMonthLog
+  # GameMonthLog
   A log of the activity for that month on the match.
 
   ### Attributes
@@ -13,7 +13,7 @@ defmodule Angen.Logging.MatchMonthLog do
   use TeiserverMacros, :schema
 
   @primary_key false
-  schema "logging_match_month_logs" do
+  schema "logging_game_month_logs" do
     field(:year, :integer, primary_key: true)
     field(:month, :integer, primary_key: true)
     field(:date, :date)

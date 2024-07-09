@@ -1,138 +1,138 @@
-defmodule Angen.Logging.MatchQuarterLogLib do
+defmodule Angen.Logging.GameQuarterLogLib do
   @moduledoc """
-  Library of match_quarter_log related functions.
+  Library of game_quarter_log related functions.
   """
   use TeiserverMacros, :library
-  alias Angen.Logging.{MatchQuarterLog, MatchQuarterLogQueries}
+  alias Angen.Logging.{GameQuarterLog, GameQuarterLogQueries}
 
   @doc """
-  Returns the list of match_quarter_logs.
+  Returns the list of game_quarter_logs.
 
   ## Examples
 
-      iex> list_match_quarter_logs()
-      [%MatchQuarterLog{}, ...]
+      iex> list_game_quarter_logs()
+      [%GameQuarterLog{}, ...]
 
   """
-  @spec list_match_quarter_logs(Teiserver.query_args()) :: [MatchQuarterLog.t()]
-  def list_match_quarter_logs(query_args) do
+  @spec list_game_quarter_logs(Teiserver.query_args()) :: [GameQuarterLog.t()]
+  def list_game_quarter_logs(query_args) do
     query_args
-    |> MatchQuarterLogQueries.match_quarter_log_query()
+    |> GameQuarterLogQueries.game_quarter_log_query()
     |> Repo.all()
   end
 
   @doc """
-  Gets a single match_quarter_log.
+  Gets a single game_quarter_log.
 
-  Raises `Ecto.NoResultsError` if the MatchQuarterLog does not exist.
+  Raises `Ecto.NoResultsError` if the GameQuarterLog does not exist.
 
   ## Examples
 
-      iex> get_match_quarter_log!(123)
-      %MatchQuarterLog{}
+      iex> get_game_quarter_log!(123)
+      %GameQuarterLog{}
 
-      iex> get_match_quarter_log!(456)
+      iex> get_game_quarter_log!(456)
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_match_quarter_log!(Date.t()) :: MatchQuarterLog.t()
-  @spec get_match_quarter_log!(Date.t(), Teiserver.query_args()) :: MatchQuarterLog.t()
-  def get_match_quarter_log!(date, query_args \\ []) do
+  @spec get_game_quarter_log!(Date.t()) :: GameQuarterLog.t()
+  @spec get_game_quarter_log!(Date.t(), Teiserver.query_args()) :: GameQuarterLog.t()
+  def get_game_quarter_log!(date, query_args \\ []) do
     (query_args ++ [date: date])
-    |> MatchQuarterLogQueries.match_quarter_log_query()
+    |> GameQuarterLogQueries.game_quarter_log_query()
     |> Repo.one!()
   end
 
   @doc """
-  Gets a single match_quarter_log.
+  Gets a single game_quarter_log.
 
-  Returns nil if the MatchQuarterLog does not exist.
+  Returns nil if the GameQuarterLog does not exist.
 
   ## Examples
 
-      iex> get_match_quarter_log(123)
-      %MatchQuarterLog{}
+      iex> get_game_quarter_log(123)
+      %GameQuarterLog{}
 
-      iex> get_match_quarter_log(456)
+      iex> get_game_quarter_log(456)
       nil
 
   """
-  @spec get_match_quarter_log(Date.t()) :: MatchQuarterLog.t() | nil
-  @spec get_match_quarter_log(Date.t(), Teiserver.query_args()) :: MatchQuarterLog.t() | nil
-  def get_match_quarter_log(date, query_args \\ []) do
+  @spec get_game_quarter_log(Date.t()) :: GameQuarterLog.t() | nil
+  @spec get_game_quarter_log(Date.t(), Teiserver.query_args()) :: GameQuarterLog.t() | nil
+  def get_game_quarter_log(date, query_args \\ []) do
     (query_args ++ [date: date])
-    |> MatchQuarterLogQueries.match_quarter_log_query()
+    |> GameQuarterLogQueries.game_quarter_log_query()
     |> Repo.one()
   end
 
   @doc """
-  Creates a match_quarter_log.
+  Creates a game_quarter_log.
 
   ## Examples
 
-      iex> create_match_quarter_log(%{field: value})
-      {:ok, %MatchQuarterLog{}}
+      iex> create_game_quarter_log(%{field: value})
+      {:ok, %GameQuarterLog{}}
 
-      iex> create_match_quarter_log(%{field: bad_value})
+      iex> create_game_quarter_log(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_match_quarter_log(map) :: {:ok, MatchQuarterLog.t()} | {:error, Ecto.Changeset.t()}
-  def create_match_quarter_log(attrs) do
-    %MatchQuarterLog{}
-    |> MatchQuarterLog.changeset(attrs)
+  @spec create_game_quarter_log(map) :: {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
+  def create_game_quarter_log(attrs) do
+    %GameQuarterLog{}
+    |> GameQuarterLog.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a match_quarter_log.
+  Updates a game_quarter_log.
 
   ## Examples
 
-      iex> update_match_quarter_log(match_quarter_log, %{field: new_value})
-      {:ok, %MatchQuarterLog{}}
+      iex> update_game_quarter_log(game_quarter_log, %{field: new_value})
+      {:ok, %GameQuarterLog{}}
 
-      iex> update_match_quarter_log(match_quarter_log, %{field: bad_value})
+      iex> update_game_quarter_log(game_quarter_log, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec update_match_quarter_log(MatchQuarterLog.t(), map) ::
-          {:ok, MatchQuarterLog.t()} | {:error, Ecto.Changeset.t()}
-  def update_match_quarter_log(%MatchQuarterLog{} = match_quarter_log, attrs) do
-    match_quarter_log
-    |> MatchQuarterLog.changeset(attrs)
+  @spec update_game_quarter_log(GameQuarterLog.t(), map) ::
+          {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
+  def update_game_quarter_log(%GameQuarterLog{} = game_quarter_log, attrs) do
+    game_quarter_log
+    |> GameQuarterLog.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a match_quarter_log.
+  Deletes a game_quarter_log.
 
   ## Examples
 
-      iex> delete_match_quarter_log(match_quarter_log)
-      {:ok, %MatchQuarterLog{}}
+      iex> delete_game_quarter_log(game_quarter_log)
+      {:ok, %GameQuarterLog{}}
 
-      iex> delete_match_quarter_log(match_quarter_log)
+      iex> delete_game_quarter_log(game_quarter_log)
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec delete_match_quarter_log(MatchQuarterLog.t()) ::
-          {:ok, MatchQuarterLog.t()} | {:error, Ecto.Changeset.t()}
-  def delete_match_quarter_log(%MatchQuarterLog{} = match_quarter_log) do
-    Repo.delete(match_quarter_log)
+  @spec delete_game_quarter_log(GameQuarterLog.t()) ::
+          {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
+  def delete_game_quarter_log(%GameQuarterLog{} = game_quarter_log) do
+    Repo.delete(game_quarter_log)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking match_quarter_log changes.
+  Returns an `%Ecto.Changeset{}` for tracking game_quarter_log changes.
 
   ## Examples
 
-      iex> change_match_quarter_log(match_quarter_log)
-      %Ecto.Changeset{data: %MatchQuarterLog{}}
+      iex> change_game_quarter_log(game_quarter_log)
+      %Ecto.Changeset{data: %GameQuarterLog{}}
 
   """
-  @spec change_match_quarter_log(MatchQuarterLog.t(), map) :: Ecto.Changeset.t()
-  def change_match_quarter_log(%MatchQuarterLog{} = match_quarter_log, attrs \\ %{}) do
-    MatchQuarterLog.changeset(match_quarter_log, attrs)
+  @spec change_game_quarter_log(GameQuarterLog.t(), map) :: Ecto.Changeset.t()
+  def change_game_quarter_log(%GameQuarterLog{} = game_quarter_log, attrs \\ %{}) do
+    GameQuarterLog.changeset(game_quarter_log, attrs)
   end
 end

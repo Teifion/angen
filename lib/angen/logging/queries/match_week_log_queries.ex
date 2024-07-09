@@ -1,12 +1,12 @@
-defmodule Angen.Logging.MatchWeekLogQueries do
+defmodule Angen.Logging.GameWeekLogQueries do
   @moduledoc false
   use TeiserverMacros, :queries
-  alias Angen.Logging.MatchWeekLog
+  alias Angen.Logging.GameWeekLog
   require Logger
 
-  @spec match_week_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  def match_week_log_query(args) do
-    query = from(match_week_logs in MatchWeekLog)
+  @spec game_week_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  def game_week_log_query(args) do
+    query = from(game_week_logs in GameWeekLog)
 
     query
     |> do_where(date: args[:date])
@@ -32,32 +32,32 @@ defmodule Angen.Logging.MatchWeekLogQueries do
   def _where(query, _, nil), do: query
 
   def _where(query, :date, date) do
-    from(match_week_logs in query,
-      where: match_week_logs.date == ^date
+    from(game_week_logs in query,
+      where: game_week_logs.date == ^date
     )
   end
 
   def _where(query, :year, year) do
-    from(match_week_logs in query,
-      where: match_week_logs.year == ^year
+    from(game_week_logs in query,
+      where: game_week_logs.year == ^year
     )
   end
 
   def _where(query, :week, week) do
-    from(match_week_logs in query,
-      where: match_week_logs.week == ^week
+    from(game_week_logs in query,
+      where: game_week_logs.week == ^week
     )
   end
 
   def _where(query, :after, timestamp) do
-    from(match_week_logs in query,
-      where: match_week_logs.date >= ^timestamp
+    from(game_week_logs in query,
+      where: game_week_logs.date >= ^timestamp
     )
   end
 
   def _where(query, :before, timestamp) do
-    from(match_week_logs in query,
-      where: match_week_logs.date < ^timestamp
+    from(game_week_logs in query,
+      where: game_week_logs.date < ^timestamp
     )
   end
 
@@ -74,14 +74,14 @@ defmodule Angen.Logging.MatchWeekLogQueries do
 
   @spec _order_by(Ecto.Query.t(), any()) :: Ecto.Query.t()
   def _order_by(query, "Newest first") do
-    from(match_week_logs in query,
-      order_by: [desc: match_week_logs.date]
+    from(game_week_logs in query,
+      order_by: [desc: game_week_logs.date]
     )
   end
 
   def _order_by(query, "Oldest first") do
-    from(match_week_logs in query,
-      order_by: [asc: match_week_logs.date]
+    from(game_week_logs in query,
+      order_by: [asc: game_week_logs.date]
     )
   end
 end

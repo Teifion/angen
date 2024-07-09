@@ -1,11 +1,10 @@
 defmodule Angen.Logging do
   @moduledoc """
   The contextual module for:
-  - `Angen.Logging.MatchMinuteLog`
-  - `Angen.Logging.MatchDayLog`
-  - `Angen.Logging.MatchWeekLog`
-  - `Angen.Logging.MatchQuarterLog`
-  - `Angen.Logging.MatchYearLog`
+  - `Angen.Logging.GameDayLog`
+  - `Angen.Logging.GameWeekLog`
+  - `Angen.Logging.GameQuarterLog`
+  - `Angen.Logging.GameYearLog`
   - `Angen.Logging.ServerMinuteLog`
   - `Angen.Logging.ServerDayLog`
   - `Angen.Logging.ServerWeekLog`
@@ -18,244 +17,205 @@ defmodule Angen.Logging do
   Minute to minute logs are deleted periodically to save space but Day logs and beyond are designed to be kept.
   """
 
-  # MatchMinuteLogs
-  alias Angen.Logging.{MatchMinuteLog, MatchMinuteLogLib, MatchMinuteLogQueries}
+  # GameDayLogs
+  alias Angen.Logging.{GameDayLog, GameDayLogLib, GameDayLogQueries}
 
   @doc false
-  @spec match_minute_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  defdelegate match_minute_log_query(args), to: MatchMinuteLogQueries
+  @spec game_day_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  defdelegate game_day_log_query(args), to: GameDayLogQueries
 
-  @doc section: :match_minute_log
-  @spec list_match_minute_logs(Teiserver.query_args()) :: [MatchMinuteLog.t()]
-  defdelegate list_match_minute_logs(args), to: MatchMinuteLogLib
+  @doc section: :game_day_log
+  @spec list_game_day_logs(Teiserver.query_args()) :: [GameDayLog.t()]
+  defdelegate list_game_day_logs(args), to: GameDayLogLib
 
-  @doc section: :match_minute_log
-  @spec get_match_minute_log(DateTime.t(), String.t() | [String.t()], Teiserver.query_args()) ::
-          MatchMinuteLog.t() | nil
-  defdelegate get_match_minute_log(timestamp, node, query_args \\ []), to: MatchMinuteLogLib
+  @doc section: :game_day_log
+  @spec get_game_day_log!(Date.t()) :: GameDayLog.t()
+  @spec get_game_day_log!(Date.t(), Teiserver.query_args()) :: GameDayLog.t()
+  defdelegate get_game_day_log!(date, query_args \\ []), to: GameDayLogLib
 
-  @doc section: :match_minute_log
-  @spec get_first_match_minute_datetime() :: DateTime.t() | nil
-  defdelegate get_first_match_minute_datetime(), to: MatchMinuteLogLib
+  @doc section: :game_day_log
+  @spec get_game_day_log(Date.t()) :: GameDayLog.t() | nil
+  @spec get_game_day_log(Date.t(), Teiserver.query_args()) :: GameDayLog.t() | nil
+  defdelegate get_game_day_log(date, query_args \\ []), to: GameDayLogLib
 
-  @doc section: :match_minute_log
-  @spec create_match_minute_log(map) :: {:ok, MatchMinuteLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate create_match_minute_log(attrs), to: MatchMinuteLogLib
+  @doc section: :game_day_log
+  @spec create_game_day_log(map) :: {:ok, GameDayLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate create_game_day_log(attrs), to: GameDayLogLib
 
-  @doc section: :match_minute_log
-  @spec update_match_minute_log(MatchMinuteLog, map) ::
-          {:ok, MatchMinuteLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate update_match_minute_log(match_minute_log, attrs), to: MatchMinuteLogLib
+  @doc section: :game_day_log
+  @spec update_game_day_log(GameDayLog, map) ::
+          {:ok, GameDayLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate update_game_day_log(game_day_log, attrs), to: GameDayLogLib
 
-  @doc section: :match_minute_log
-  @spec delete_match_minute_log(MatchMinuteLog.t()) ::
-          {:ok, MatchMinuteLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate delete_match_minute_log(match_minute_log), to: MatchMinuteLogLib
+  @doc section: :game_day_log
+  @spec delete_game_day_log(GameDayLog.t()) ::
+          {:ok, GameDayLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate delete_game_day_log(game_day_log), to: GameDayLogLib
 
-  @doc section: :match_minute_log
-  @spec change_match_minute_log(MatchMinuteLog.t()) :: Ecto.Changeset.t()
-  @spec change_match_minute_log(MatchMinuteLog.t(), map) :: Ecto.Changeset.t()
-  defdelegate change_match_minute_log(match_minute_log, attrs \\ %{}), to: MatchMinuteLogLib
+  @doc section: :game_day_log
+  @spec change_game_day_log(GameDayLog.t()) :: Ecto.Changeset.t()
+  @spec change_game_day_log(GameDayLog.t(), map) :: Ecto.Changeset.t()
+  defdelegate change_game_day_log(game_day_log, attrs \\ %{}), to: GameDayLogLib
 
-  # MatchDayLogs
-  alias Angen.Logging.{MatchDayLog, MatchDayLogLib, MatchDayLogQueries}
-
-  @doc false
-  @spec match_day_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  defdelegate match_day_log_query(args), to: MatchDayLogQueries
-
-  @doc section: :match_day_log
-  @spec list_match_day_logs(Teiserver.query_args()) :: [MatchDayLog.t()]
-  defdelegate list_match_day_logs(args), to: MatchDayLogLib
-
-  @doc section: :match_day_log
-  @spec get_match_day_log!(Date.t()) :: MatchDayLog.t()
-  @spec get_match_day_log!(Date.t(), Teiserver.query_args()) :: MatchDayLog.t()
-  defdelegate get_match_day_log!(date, query_args \\ []), to: MatchDayLogLib
-
-  @doc section: :match_day_log
-  @spec get_match_day_log(Date.t()) :: MatchDayLog.t() | nil
-  @spec get_match_day_log(Date.t(), Teiserver.query_args()) :: MatchDayLog.t() | nil
-  defdelegate get_match_day_log(date, query_args \\ []), to: MatchDayLogLib
-
-  @doc section: :match_day_log
-  @spec create_match_day_log(map) :: {:ok, MatchDayLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate create_match_day_log(attrs), to: MatchDayLogLib
-
-  @doc section: :match_day_log
-  @spec update_match_day_log(MatchDayLog, map) ::
-          {:ok, MatchDayLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate update_match_day_log(match_day_log, attrs), to: MatchDayLogLib
-
-  @doc section: :match_day_log
-  @spec delete_match_day_log(MatchDayLog.t()) ::
-          {:ok, MatchDayLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate delete_match_day_log(match_day_log), to: MatchDayLogLib
-
-  @doc section: :match_day_log
-  @spec change_match_day_log(MatchDayLog.t()) :: Ecto.Changeset.t()
-  @spec change_match_day_log(MatchDayLog.t(), map) :: Ecto.Changeset.t()
-  defdelegate change_match_day_log(match_day_log, attrs \\ %{}), to: MatchDayLogLib
-
-  # MatchWeekLogs
-  alias Angen.Logging.{MatchWeekLog, MatchWeekLogLib, MatchWeekLogQueries}
+  # GameWeekLogs
+  alias Angen.Logging.{GameWeekLog, GameWeekLogLib, GameWeekLogQueries}
 
   @doc false
-  @spec match_week_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  defdelegate match_week_log_query(args), to: MatchWeekLogQueries
+  @spec game_week_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  defdelegate game_week_log_query(args), to: GameWeekLogQueries
 
-  @doc section: :match_week_log
-  @spec list_match_week_logs(Teiserver.query_args()) :: [MatchWeekLog.t()]
-  defdelegate list_match_week_logs(args), to: MatchWeekLogLib
+  @doc section: :game_week_log
+  @spec list_game_week_logs(Teiserver.query_args()) :: [GameWeekLog.t()]
+  defdelegate list_game_week_logs(args), to: GameWeekLogLib
 
-  @doc section: :match_week_log
-  @spec get_match_week_log!(Date.t()) :: MatchWeekLog.t()
-  @spec get_match_week_log!(Date.t(), Teiserver.query_args()) :: MatchWeekLog.t()
-  defdelegate get_match_week_log!(date, query_args \\ []), to: MatchWeekLogLib
+  @doc section: :game_week_log
+  @spec get_game_week_log!(Date.t()) :: GameWeekLog.t()
+  @spec get_game_week_log!(Date.t(), Teiserver.query_args()) :: GameWeekLog.t()
+  defdelegate get_game_week_log!(date, query_args \\ []), to: GameWeekLogLib
 
-  @doc section: :match_week_log
-  @spec get_match_week_log(Date.t()) :: MatchWeekLog.t() | nil
-  @spec get_match_week_log(Date.t(), Teiserver.query_args()) :: MatchWeekLog.t() | nil
-  defdelegate get_match_week_log(date, query_args \\ []), to: MatchWeekLogLib
+  @doc section: :game_week_log
+  @spec get_game_week_log(Date.t()) :: GameWeekLog.t() | nil
+  @spec get_game_week_log(Date.t(), Teiserver.query_args()) :: GameWeekLog.t() | nil
+  defdelegate get_game_week_log(date, query_args \\ []), to: GameWeekLogLib
 
-  @doc section: :match_week_log
-  @spec create_match_week_log(map) :: {:ok, MatchWeekLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate create_match_week_log(attrs), to: MatchWeekLogLib
+  @doc section: :game_week_log
+  @spec create_game_week_log(map) :: {:ok, GameWeekLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate create_game_week_log(attrs), to: GameWeekLogLib
 
-  @doc section: :match_week_log
-  @spec update_match_week_log(MatchWeekLog, map) ::
-          {:ok, MatchWeekLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate update_match_week_log(match_week_log, attrs), to: MatchWeekLogLib
+  @doc section: :game_week_log
+  @spec update_game_week_log(GameWeekLog, map) ::
+          {:ok, GameWeekLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate update_game_week_log(game_week_log, attrs), to: GameWeekLogLib
 
-  @doc section: :match_week_log
-  @spec delete_match_week_log(MatchWeekLog.t()) ::
-          {:ok, MatchWeekLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate delete_match_week_log(match_week_log), to: MatchWeekLogLib
+  @doc section: :game_week_log
+  @spec delete_game_week_log(GameWeekLog.t()) ::
+          {:ok, GameWeekLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate delete_game_week_log(game_week_log), to: GameWeekLogLib
 
-  @doc section: :match_week_log
-  @spec change_match_week_log(MatchWeekLog.t()) :: Ecto.Changeset.t()
-  @spec change_match_week_log(MatchWeekLog.t(), map) :: Ecto.Changeset.t()
-  defdelegate change_match_week_log(match_week_log, attrs \\ %{}), to: MatchWeekLogLib
+  @doc section: :game_week_log
+  @spec change_game_week_log(GameWeekLog.t()) :: Ecto.Changeset.t()
+  @spec change_game_week_log(GameWeekLog.t(), map) :: Ecto.Changeset.t()
+  defdelegate change_game_week_log(game_week_log, attrs \\ %{}), to: GameWeekLogLib
 
-  # MatchMonthLogs
-  alias Angen.Logging.{MatchMonthLog, MatchMonthLogLib, MatchMonthLogQueries}
-
-  @doc false
-  @spec match_month_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  defdelegate match_month_log_query(args), to: MatchMonthLogQueries
-
-  @doc section: :match_month_log
-  @spec list_match_month_logs(Teiserver.query_args()) :: [MatchMonthLog.t()]
-  defdelegate list_match_month_logs(args), to: MatchMonthLogLib
-
-  @doc section: :match_month_log
-  @spec get_match_month_log!(Date.t()) :: MatchMonthLog.t()
-  @spec get_match_month_log!(Date.t(), Teiserver.query_args()) :: MatchMonthLog.t()
-  defdelegate get_match_month_log!(date, query_args \\ []), to: MatchMonthLogLib
-
-  @doc section: :match_month_log
-  @spec get_match_month_log(Date.t()) :: MatchMonthLog.t() | nil
-  @spec get_match_month_log(Date.t(), Teiserver.query_args()) :: MatchMonthLog.t() | nil
-  defdelegate get_match_month_log(date, query_args \\ []), to: MatchMonthLogLib
-
-  @doc section: :match_month_log
-  @spec create_match_month_log(map) :: {:ok, MatchMonthLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate create_match_month_log(attrs), to: MatchMonthLogLib
-
-  @doc section: :match_month_log
-  @spec update_match_month_log(MatchMonthLog, map) ::
-          {:ok, MatchMonthLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate update_match_month_log(match_month_log, attrs), to: MatchMonthLogLib
-
-  @doc section: :match_month_log
-  @spec delete_match_month_log(MatchMonthLog.t()) ::
-          {:ok, MatchMonthLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate delete_match_month_log(match_month_log), to: MatchMonthLogLib
-
-  @doc section: :match_month_log
-  @spec change_match_month_log(MatchMonthLog.t()) :: Ecto.Changeset.t()
-  @spec change_match_month_log(MatchMonthLog.t(), map) :: Ecto.Changeset.t()
-  defdelegate change_match_month_log(match_month_log, attrs \\ %{}), to: MatchMonthLogLib
-
-  # MatchQuarterLogs
-  alias Angen.Logging.{MatchQuarterLog, MatchQuarterLogLib, MatchQuarterLogQueries}
+  # GameMonthLogs
+  alias Angen.Logging.{GameMonthLog, GameMonthLogLib, GameMonthLogQueries}
 
   @doc false
-  @spec match_quarter_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  defdelegate match_quarter_log_query(args), to: MatchQuarterLogQueries
+  @spec game_month_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  defdelegate game_month_log_query(args), to: GameMonthLogQueries
 
-  @doc section: :match_quarter_log
-  @spec list_match_quarter_logs(Teiserver.query_args()) :: [MatchQuarterLog.t()]
-  defdelegate list_match_quarter_logs(args), to: MatchQuarterLogLib
+  @doc section: :game_month_log
+  @spec list_game_month_logs(Teiserver.query_args()) :: [GameMonthLog.t()]
+  defdelegate list_game_month_logs(args), to: GameMonthLogLib
 
-  @doc section: :match_quarter_log
-  @spec get_match_quarter_log!(Date.t()) :: MatchQuarterLog.t()
-  @spec get_match_quarter_log!(Date.t(), Teiserver.query_args()) :: MatchQuarterLog.t()
-  defdelegate get_match_quarter_log!(date, query_args \\ []), to: MatchQuarterLogLib
+  @doc section: :game_month_log
+  @spec get_game_month_log!(Date.t()) :: GameMonthLog.t()
+  @spec get_game_month_log!(Date.t(), Teiserver.query_args()) :: GameMonthLog.t()
+  defdelegate get_game_month_log!(date, query_args \\ []), to: GameMonthLogLib
 
-  @doc section: :match_quarter_log
-  @spec get_match_quarter_log(Date.t()) :: MatchQuarterLog.t() | nil
-  @spec get_match_quarter_log(Date.t(), Teiserver.query_args()) :: MatchQuarterLog.t() | nil
-  defdelegate get_match_quarter_log(date, query_args \\ []), to: MatchQuarterLogLib
+  @doc section: :game_month_log
+  @spec get_game_month_log(Date.t()) :: GameMonthLog.t() | nil
+  @spec get_game_month_log(Date.t(), Teiserver.query_args()) :: GameMonthLog.t() | nil
+  defdelegate get_game_month_log(date, query_args \\ []), to: GameMonthLogLib
 
-  @doc section: :match_quarter_log
-  @spec create_match_quarter_log(map) :: {:ok, MatchQuarterLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate create_match_quarter_log(attrs), to: MatchQuarterLogLib
+  @doc section: :game_month_log
+  @spec create_game_month_log(map) :: {:ok, GameMonthLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate create_game_month_log(attrs), to: GameMonthLogLib
 
-  @doc section: :match_quarter_log
-  @spec update_match_quarter_log(MatchQuarterLog, map) ::
-          {:ok, MatchQuarterLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate update_match_quarter_log(match_quarter_log, attrs), to: MatchQuarterLogLib
+  @doc section: :game_month_log
+  @spec update_game_month_log(GameMonthLog, map) ::
+          {:ok, GameMonthLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate update_game_month_log(game_month_log, attrs), to: GameMonthLogLib
 
-  @doc section: :match_quarter_log
-  @spec delete_match_quarter_log(MatchQuarterLog.t()) ::
-          {:ok, MatchQuarterLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate delete_match_quarter_log(match_quarter_log), to: MatchQuarterLogLib
+  @doc section: :game_month_log
+  @spec delete_game_month_log(GameMonthLog.t()) ::
+          {:ok, GameMonthLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate delete_game_month_log(game_month_log), to: GameMonthLogLib
 
-  @doc section: :match_quarter_log
-  @spec change_match_quarter_log(MatchQuarterLog.t()) :: Ecto.Changeset.t()
-  @spec change_match_quarter_log(MatchQuarterLog.t(), map) :: Ecto.Changeset.t()
-  defdelegate change_match_quarter_log(match_quarter_log, attrs \\ %{}), to: MatchQuarterLogLib
+  @doc section: :game_month_log
+  @spec change_game_month_log(GameMonthLog.t()) :: Ecto.Changeset.t()
+  @spec change_game_month_log(GameMonthLog.t(), map) :: Ecto.Changeset.t()
+  defdelegate change_game_month_log(game_month_log, attrs \\ %{}), to: GameMonthLogLib
 
-  # MatchYearLogs
-  alias Angen.Logging.{MatchYearLog, MatchYearLogLib, MatchYearLogQueries}
+  # GameQuarterLogs
+  alias Angen.Logging.{GameQuarterLog, GameQuarterLogLib, GameQuarterLogQueries}
 
   @doc false
-  @spec match_year_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  defdelegate match_year_log_query(args), to: MatchYearLogQueries
+  @spec game_quarter_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  defdelegate game_quarter_log_query(args), to: GameQuarterLogQueries
 
-  @doc section: :match_year_log
-  @spec list_match_year_logs(Teiserver.query_args()) :: [MatchYearLog.t()]
-  defdelegate list_match_year_logs(args), to: MatchYearLogLib
+  @doc section: :game_quarter_log
+  @spec list_game_quarter_logs(Teiserver.query_args()) :: [GameQuarterLog.t()]
+  defdelegate list_game_quarter_logs(args), to: GameQuarterLogLib
 
-  @doc section: :match_year_log
-  @spec get_match_year_log!(Date.t()) :: MatchYearLog.t()
-  @spec get_match_year_log!(Date.t(), Teiserver.query_args()) :: MatchYearLog.t()
-  defdelegate get_match_year_log!(date, query_args \\ []), to: MatchYearLogLib
+  @doc section: :game_quarter_log
+  @spec get_game_quarter_log!(Date.t()) :: GameQuarterLog.t()
+  @spec get_game_quarter_log!(Date.t(), Teiserver.query_args()) :: GameQuarterLog.t()
+  defdelegate get_game_quarter_log!(date, query_args \\ []), to: GameQuarterLogLib
 
-  @doc section: :match_year_log
-  @spec get_match_year_log(Date.t()) :: MatchYearLog.t() | nil
-  @spec get_match_year_log(Date.t(), Teiserver.query_args()) :: MatchYearLog.t() | nil
-  defdelegate get_match_year_log(date, query_args \\ []), to: MatchYearLogLib
+  @doc section: :game_quarter_log
+  @spec get_game_quarter_log(Date.t()) :: GameQuarterLog.t() | nil
+  @spec get_game_quarter_log(Date.t(), Teiserver.query_args()) :: GameQuarterLog.t() | nil
+  defdelegate get_game_quarter_log(date, query_args \\ []), to: GameQuarterLogLib
 
-  @doc section: :match_year_log
-  @spec create_match_year_log(map) :: {:ok, MatchYearLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate create_match_year_log(attrs), to: MatchYearLogLib
+  @doc section: :game_quarter_log
+  @spec create_game_quarter_log(map) :: {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate create_game_quarter_log(attrs), to: GameQuarterLogLib
 
-  @doc section: :match_year_log
-  @spec update_match_year_log(MatchYearLog, map) ::
-          {:ok, MatchYearLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate update_match_year_log(match_year_log, attrs), to: MatchYearLogLib
+  @doc section: :game_quarter_log
+  @spec update_game_quarter_log(GameQuarterLog, map) ::
+          {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate update_game_quarter_log(game_quarter_log, attrs), to: GameQuarterLogLib
 
-  @doc section: :match_year_log
-  @spec delete_match_year_log(MatchYearLog.t()) ::
-          {:ok, MatchYearLog.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate delete_match_year_log(match_year_log), to: MatchYearLogLib
+  @doc section: :game_quarter_log
+  @spec delete_game_quarter_log(GameQuarterLog.t()) ::
+          {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate delete_game_quarter_log(game_quarter_log), to: GameQuarterLogLib
 
-  @doc section: :match_year_log
-  @spec change_match_year_log(MatchYearLog.t()) :: Ecto.Changeset.t()
-  @spec change_match_year_log(MatchYearLog.t(), map) :: Ecto.Changeset.t()
-  defdelegate change_match_year_log(match_year_log, attrs \\ %{}), to: MatchYearLogLib
+  @doc section: :game_quarter_log
+  @spec change_game_quarter_log(GameQuarterLog.t()) :: Ecto.Changeset.t()
+  @spec change_game_quarter_log(GameQuarterLog.t(), map) :: Ecto.Changeset.t()
+  defdelegate change_game_quarter_log(game_quarter_log, attrs \\ %{}), to: GameQuarterLogLib
+
+  # GameYearLogs
+  alias Angen.Logging.{GameYearLog, GameYearLogLib, GameYearLogQueries}
+
+  @doc false
+  @spec game_year_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  defdelegate game_year_log_query(args), to: GameYearLogQueries
+
+  @doc section: :game_year_log
+  @spec list_game_year_logs(Teiserver.query_args()) :: [GameYearLog.t()]
+  defdelegate list_game_year_logs(args), to: GameYearLogLib
+
+  @doc section: :game_year_log
+  @spec get_game_year_log!(Date.t()) :: GameYearLog.t()
+  @spec get_game_year_log!(Date.t(), Teiserver.query_args()) :: GameYearLog.t()
+  defdelegate get_game_year_log!(date, query_args \\ []), to: GameYearLogLib
+
+  @doc section: :game_year_log
+  @spec get_game_year_log(Date.t()) :: GameYearLog.t() | nil
+  @spec get_game_year_log(Date.t(), Teiserver.query_args()) :: GameYearLog.t() | nil
+  defdelegate get_game_year_log(date, query_args \\ []), to: GameYearLogLib
+
+  @doc section: :game_year_log
+  @spec create_game_year_log(map) :: {:ok, GameYearLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate create_game_year_log(attrs), to: GameYearLogLib
+
+  @doc section: :game_year_log
+  @spec update_game_year_log(GameYearLog, map) ::
+          {:ok, GameYearLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate update_game_year_log(game_year_log, attrs), to: GameYearLogLib
+
+  @doc section: :game_year_log
+  @spec delete_game_year_log(GameYearLog.t()) ::
+          {:ok, GameYearLog.t()} | {:error, Ecto.Changeset.t()}
+  defdelegate delete_game_year_log(game_year_log), to: GameYearLogLib
+
+  @doc section: :game_year_log
+  @spec change_game_year_log(GameYearLog.t()) :: Ecto.Changeset.t()
+  @spec change_game_year_log(GameYearLog.t(), map) :: Ecto.Changeset.t()
+  defdelegate change_game_year_log(game_year_log, attrs \\ %{}), to: GameYearLogLib
 
   # ServerMinuteLogs
   alias Angen.Logging.{ServerMinuteLog, ServerMinuteLogLib, ServerMinuteLogQueries}

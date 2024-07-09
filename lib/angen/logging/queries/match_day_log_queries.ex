@@ -1,12 +1,12 @@
-defmodule Angen.Logging.MatchDayLogQueries do
+defmodule Angen.Logging.GameDayLogQueries do
   @moduledoc false
   use TeiserverMacros, :queries
-  alias Angen.Logging.MatchDayLog
+  alias Angen.Logging.GameDayLog
   require Logger
 
-  @spec match_day_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  def match_day_log_query(args) do
-    query = from(match_day_logs in MatchDayLog)
+  @spec game_day_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  def game_day_log_query(args) do
+    query = from(game_day_logs in GameDayLog)
 
     query
     |> do_where(date: args[:date])
@@ -32,20 +32,20 @@ defmodule Angen.Logging.MatchDayLogQueries do
   def _where(query, _, nil), do: query
 
   def _where(query, :date, date) do
-    from(match_day_logs in query,
-      where: match_day_logs.date == ^date
+    from(game_day_logs in query,
+      where: game_day_logs.date == ^date
     )
   end
 
   def _where(query, :after, timestamp) do
-    from(match_day_logs in query,
-      where: match_day_logs.date >= ^timestamp
+    from(game_day_logs in query,
+      where: game_day_logs.date >= ^timestamp
     )
   end
 
   def _where(query, :before, timestamp) do
-    from(match_day_logs in query,
-      where: match_day_logs.date < ^timestamp
+    from(game_day_logs in query,
+      where: game_day_logs.date < ^timestamp
     )
   end
 
@@ -62,14 +62,14 @@ defmodule Angen.Logging.MatchDayLogQueries do
 
   @spec _order_by(Ecto.Query.t(), any()) :: Ecto.Query.t()
   def _order_by(query, "Newest first") do
-    from(match_day_logs in query,
-      order_by: [desc: match_day_logs.date]
+    from(game_day_logs in query,
+      order_by: [desc: game_day_logs.date]
     )
   end
 
   def _order_by(query, "Oldest first") do
-    from(match_day_logs in query,
-      order_by: [asc: match_day_logs.date]
+    from(game_day_logs in query,
+      order_by: [asc: game_day_logs.date]
     )
   end
 end

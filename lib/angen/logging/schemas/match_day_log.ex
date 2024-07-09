@@ -1,6 +1,6 @@
-defmodule Angen.Logging.MatchDayLog do
+defmodule Angen.Logging.GameDayLog do
   @moduledoc """
-  # MatchDayLog
+  # GameDayLog
   A log of the activity for that day on the match.
 
   ### Attributes
@@ -11,7 +11,7 @@ defmodule Angen.Logging.MatchDayLog do
   use TeiserverMacros, :schema
 
   @primary_key false
-  schema "logging_match_day_logs" do
+  schema "logging_game_day_logs" do
     field(:date, :date, primary_key: true)
     field(:data, :map)
   end

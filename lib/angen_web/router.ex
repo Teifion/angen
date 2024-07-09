@@ -74,6 +74,12 @@ defmodule AngenWeb.Router do
       live "/server/show/:unit/:date", Server.ShowLive, :index
       live "/server/show/:unit/:date/:mode", Server.ShowLive, :index
 
+      # Generic log views
+      live "/game", Game.IndexLive
+      live "/game/:unit", Game.IndexLive
+      live "/game/show/:unit/:date", Game.ShowLive, :index
+      live "/game/show/:unit/:date/:mode", Game.ShowLive, :index
+
       # Audit
       live "/audit", AuditLogLive.Index, :index
       live "/audit/:id", AuditLogLive.Show, :show

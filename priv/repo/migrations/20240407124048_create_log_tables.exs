@@ -42,39 +42,33 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
     end
 
     # Logging - Match logs
-    create_if_not_exists table(:logging_match_minute_logs, primary_key: false) do
-      add(:timestamp, :utc_datetime, primary_key: true)
-      add(:node, :string, primary_key: true)
-      add(:data, :jsonb)
-    end
-
-    create_if_not_exists table(:logging_match_day_logs, primary_key: false) do
+    create_if_not_exists table(:logging_game_day_logs, primary_key: false) do
       add(:date, :date, primary_key: true)
       add(:data, :jsonb)
     end
 
-    create_if_not_exists table(:logging_match_week_logs, primary_key: false) do
+    create_if_not_exists table(:logging_game_week_logs, primary_key: false) do
       add(:year, :integer, primary_key: true)
       add(:week, :integer, primary_key: true)
       add(:date, :date)
       add(:data, :jsonb)
     end
 
-    create_if_not_exists table(:logging_match_month_logs, primary_key: false) do
+    create_if_not_exists table(:logging_game_month_logs, primary_key: false) do
       add(:year, :integer, primary_key: true)
       add(:month, :integer, primary_key: true)
       add(:date, :date)
       add(:data, :jsonb)
     end
 
-    create_if_not_exists table(:logging_match_quarter_logs, primary_key: false) do
+    create_if_not_exists table(:logging_game_quarter_logs, primary_key: false) do
       add(:year, :integer, primary_key: true)
       add(:quarter, :integer, primary_key: true)
       add(:date, :date)
       add(:data, :jsonb)
     end
 
-    create_if_not_exists table(:logging_match_year_logs, primary_key: false) do
+    create_if_not_exists table(:logging_game_year_logs, primary_key: false) do
       add(:year, :integer, primary_key: true)
       add(:date, :date)
       add(:data, :jsonb)

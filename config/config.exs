@@ -84,7 +84,14 @@ config :angen, Oban,
       {"3 2 * * *", Angen.Logging.PersistServerWeekTask},
       {"5 2 * * *", Angen.Logging.PersistServerMonthTask},
       {"7 2 * * *", Angen.Logging.PersistServerQuarterTask},
-      {"9 2 * * *", Angen.Logging.PersistServerYearTask}
+      {"9 2 * * *", Angen.Logging.PersistServerYearTask},
+
+      # Now the same but for matches
+      {"1 2 * * *", Angen.Logging.PersistGameDayTask},
+      {"3 2 * * *", Angen.Logging.PersistGameWeekTask},
+      {"5 2 * * *", Angen.Logging.PersistGameMonthTask},
+      {"7 2 * * *", Angen.Logging.PersistGameQuarterTask},
+      {"9 2 * * *", Angen.Logging.PersistGameYearTask}
      ]}
   ],
   queues: [logging: 1, cleanup: 1, teiserver: 10]

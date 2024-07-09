@@ -1,16 +1,16 @@
-defmodule Angen.MatchQuarterLogQueriesTest do
+defmodule Angen.GameQuarterLogQueriesTest do
   @moduledoc false
   use Angen.DataCase, async: true
 
-  alias Angen.Logging.MatchQuarterLogQueries
+  alias Angen.Logging.GameQuarterLogQueries
 
   describe "queries" do
-    @empty_query MatchQuarterLogQueries.match_quarter_log_query([])
+    @empty_query GameQuarterLogQueries.game_quarter_log_query([])
 
     test "clauses" do
       # Null values, shouldn't error but shouldn't generate a query
       null_values =
-        MatchQuarterLogQueries.match_quarter_log_query(
+        GameQuarterLogQueries.game_quarter_log_query(
           where: [
             key1: "",
             key2: nil
@@ -22,12 +22,12 @@ defmodule Angen.MatchQuarterLogQueriesTest do
 
       # If a key is not present in the query library it should error
       assert_raise(FunctionClauseError, fn ->
-        MatchQuarterLogQueries.match_quarter_log_query(where: [not_a_key: 1])
+        GameQuarterLogQueries.game_quarter_log_query(where: [not_a_key: 1])
       end)
 
       # we expect the query to run though it won't produce meaningful results
       all_values =
-        MatchQuarterLogQueries.match_quarter_log_query(
+        GameQuarterLogQueries.game_quarter_log_query(
           where: [
             date: Timex.today(),
             year: 123,

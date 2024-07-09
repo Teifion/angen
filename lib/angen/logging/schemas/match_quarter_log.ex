@@ -1,6 +1,6 @@
-defmodule Angen.Logging.MatchQuarterLog do
+defmodule Angen.Logging.GameQuarterLog do
   @moduledoc """
-  # MatchQuarterLog
+  # GameQuarterLog
   A log of the activity for that quarter on the match.
 
   ### Attributes
@@ -13,7 +13,7 @@ defmodule Angen.Logging.MatchQuarterLog do
   use TeiserverMacros, :schema
 
   @primary_key false
-  schema "logging_match_quarter_logs" do
+  schema "logging_game_quarter_logs" do
     field(:year, :integer, primary_key: true)
     field(:quarter, :integer, primary_key: true)
     field(:date, :date)

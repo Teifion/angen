@@ -1,138 +1,138 @@
-defmodule Angen.Logging.MatchMonthLogLib do
+defmodule Angen.Logging.GameMonthLogLib do
   @moduledoc """
-  Library of match_month_log related functions.
+  Library of game_month_log related functions.
   """
   use TeiserverMacros, :library
-  alias Angen.Logging.{MatchMonthLog, MatchMonthLogQueries}
+  alias Angen.Logging.{GameMonthLog, GameMonthLogQueries}
 
   @doc """
-  Returns the list of match_month_logs.
+  Returns the list of game_month_logs.
 
   ## Examples
 
-      iex> list_match_month_logs()
-      [%MatchMonthLog{}, ...]
+      iex> list_game_month_logs()
+      [%GameMonthLog{}, ...]
 
   """
-  @spec list_match_month_logs(Teiserver.query_args()) :: [MatchMonthLog.t()]
-  def list_match_month_logs(query_args) do
+  @spec list_game_month_logs(Teiserver.query_args()) :: [GameMonthLog.t()]
+  def list_game_month_logs(query_args) do
     query_args
-    |> MatchMonthLogQueries.match_month_log_query()
+    |> GameMonthLogQueries.game_month_log_query()
     |> Repo.all()
   end
 
   @doc """
-  Gets a single match_month_log.
+  Gets a single game_month_log.
 
-  Raises `Ecto.NoResultsError` if the MatchMonthLog does not exist.
+  Raises `Ecto.NoResultsError` if the GameMonthLog does not exist.
 
   ## Examples
 
-      iex> get_match_month_log!(123)
-      %MatchMonthLog{}
+      iex> get_game_month_log!(123)
+      %GameMonthLog{}
 
-      iex> get_match_month_log!(456)
+      iex> get_game_month_log!(456)
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_match_month_log!(Date.t()) :: MatchMonthLog.t()
-  @spec get_match_month_log!(Date.t(), Teiserver.query_args()) :: MatchMonthLog.t()
-  def get_match_month_log!(date, query_args \\ []) do
+  @spec get_game_month_log!(Date.t()) :: GameMonthLog.t()
+  @spec get_game_month_log!(Date.t(), Teiserver.query_args()) :: GameMonthLog.t()
+  def get_game_month_log!(date, query_args \\ []) do
     (query_args ++ [date: date])
-    |> MatchMonthLogQueries.match_month_log_query()
+    |> GameMonthLogQueries.game_month_log_query()
     |> Repo.one!()
   end
 
   @doc """
-  Gets a single match_month_log.
+  Gets a single game_month_log.
 
-  Returns nil if the MatchMonthLog does not exist.
+  Returns nil if the GameMonthLog does not exist.
 
   ## Examples
 
-      iex> get_match_month_log(123)
-      %MatchMonthLog{}
+      iex> get_game_month_log(123)
+      %GameMonthLog{}
 
-      iex> get_match_month_log(456)
+      iex> get_game_month_log(456)
       nil
 
   """
-  @spec get_match_month_log(Date.t()) :: MatchMonthLog.t() | nil
-  @spec get_match_month_log(Date.t(), Teiserver.query_args()) :: MatchMonthLog.t() | nil
-  def get_match_month_log(date, query_args \\ []) do
+  @spec get_game_month_log(Date.t()) :: GameMonthLog.t() | nil
+  @spec get_game_month_log(Date.t(), Teiserver.query_args()) :: GameMonthLog.t() | nil
+  def get_game_month_log(date, query_args \\ []) do
     (query_args ++ [date: date])
-    |> MatchMonthLogQueries.match_month_log_query()
+    |> GameMonthLogQueries.game_month_log_query()
     |> Repo.one()
   end
 
   @doc """
-  Creates a match_month_log.
+  Creates a game_month_log.
 
   ## Examples
 
-      iex> create_match_month_log(%{field: value})
-      {:ok, %MatchMonthLog{}}
+      iex> create_game_month_log(%{field: value})
+      {:ok, %GameMonthLog{}}
 
-      iex> create_match_month_log(%{field: bad_value})
+      iex> create_game_month_log(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_match_month_log(map) :: {:ok, MatchMonthLog.t()} | {:error, Ecto.Changeset.t()}
-  def create_match_month_log(attrs) do
-    %MatchMonthLog{}
-    |> MatchMonthLog.changeset(attrs)
+  @spec create_game_month_log(map) :: {:ok, GameMonthLog.t()} | {:error, Ecto.Changeset.t()}
+  def create_game_month_log(attrs) do
+    %GameMonthLog{}
+    |> GameMonthLog.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a match_month_log.
+  Updates a game_month_log.
 
   ## Examples
 
-      iex> update_match_month_log(match_month_log, %{field: new_value})
-      {:ok, %MatchMonthLog{}}
+      iex> update_game_month_log(game_month_log, %{field: new_value})
+      {:ok, %GameMonthLog{}}
 
-      iex> update_match_month_log(match_month_log, %{field: bad_value})
+      iex> update_game_month_log(game_month_log, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec update_match_month_log(MatchMonthLog.t(), map) ::
-          {:ok, MatchMonthLog.t()} | {:error, Ecto.Changeset.t()}
-  def update_match_month_log(%MatchMonthLog{} = match_month_log, attrs) do
-    match_month_log
-    |> MatchMonthLog.changeset(attrs)
+  @spec update_game_month_log(GameMonthLog.t(), map) ::
+          {:ok, GameMonthLog.t()} | {:error, Ecto.Changeset.t()}
+  def update_game_month_log(%GameMonthLog{} = game_month_log, attrs) do
+    game_month_log
+    |> GameMonthLog.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a match_month_log.
+  Deletes a game_month_log.
 
   ## Examples
 
-      iex> delete_match_month_log(match_month_log)
-      {:ok, %MatchMonthLog{}}
+      iex> delete_game_month_log(game_month_log)
+      {:ok, %GameMonthLog{}}
 
-      iex> delete_match_month_log(match_month_log)
+      iex> delete_game_month_log(game_month_log)
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec delete_match_month_log(MatchMonthLog.t()) ::
-          {:ok, MatchMonthLog.t()} | {:error, Ecto.Changeset.t()}
-  def delete_match_month_log(%MatchMonthLog{} = match_month_log) do
-    Repo.delete(match_month_log)
+  @spec delete_game_month_log(GameMonthLog.t()) ::
+          {:ok, GameMonthLog.t()} | {:error, Ecto.Changeset.t()}
+  def delete_game_month_log(%GameMonthLog{} = game_month_log) do
+    Repo.delete(game_month_log)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking match_month_log changes.
+  Returns an `%Ecto.Changeset{}` for tracking game_month_log changes.
 
   ## Examples
 
-      iex> change_match_month_log(match_month_log)
-      %Ecto.Changeset{data: %MatchMonthLog{}}
+      iex> change_game_month_log(game_month_log)
+      %Ecto.Changeset{data: %GameMonthLog{}}
 
   """
-  @spec change_match_month_log(MatchMonthLog.t(), map) :: Ecto.Changeset.t()
-  def change_match_month_log(%MatchMonthLog{} = match_month_log, attrs \\ %{}) do
-    MatchMonthLog.changeset(match_month_log, attrs)
+  @spec change_game_month_log(GameMonthLog.t(), map) :: Ecto.Changeset.t()
+  def change_game_month_log(%GameMonthLog{} = game_month_log, attrs \\ %{}) do
+    GameMonthLog.changeset(game_month_log, attrs)
   end
 end

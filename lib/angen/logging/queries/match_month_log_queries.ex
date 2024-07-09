@@ -1,12 +1,12 @@
-defmodule Angen.Logging.MatchMonthLogQueries do
+defmodule Angen.Logging.GameMonthLogQueries do
   @moduledoc false
   use TeiserverMacros, :queries
-  alias Angen.Logging.MatchMonthLog
+  alias Angen.Logging.GameMonthLog
   require Logger
 
-  @spec match_month_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  def match_month_log_query(args) do
-    query = from(match_month_logs in MatchMonthLog)
+  @spec game_month_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  def game_month_log_query(args) do
+    query = from(game_month_logs in GameMonthLog)
 
     query
     |> do_where(date: args[:date])
@@ -32,32 +32,32 @@ defmodule Angen.Logging.MatchMonthLogQueries do
   def _where(query, _, nil), do: query
 
   def _where(query, :date, date) do
-    from(match_month_logs in query,
-      where: match_month_logs.date == ^date
+    from(game_month_logs in query,
+      where: game_month_logs.date == ^date
     )
   end
 
   def _where(query, :year, year) do
-    from(match_month_logs in query,
-      where: match_month_logs.year == ^year
+    from(game_month_logs in query,
+      where: game_month_logs.year == ^year
     )
   end
 
   def _where(query, :month, month) do
-    from(match_month_logs in query,
-      where: match_month_logs.month == ^month
+    from(game_month_logs in query,
+      where: game_month_logs.month == ^month
     )
   end
 
   def _where(query, :after, timestamp) do
-    from(match_month_logs in query,
-      where: match_month_logs.date >= ^timestamp
+    from(game_month_logs in query,
+      where: game_month_logs.date >= ^timestamp
     )
   end
 
   def _where(query, :before, timestamp) do
-    from(match_month_logs in query,
-      where: match_month_logs.date < ^timestamp
+    from(game_month_logs in query,
+      where: game_month_logs.date < ^timestamp
     )
   end
 
@@ -74,14 +74,14 @@ defmodule Angen.Logging.MatchMonthLogQueries do
 
   @spec _order_by(Ecto.Query.t(), any()) :: Ecto.Query.t()
   def _order_by(query, "Newest first") do
-    from(match_month_logs in query,
-      order_by: [desc: match_month_logs.date]
+    from(game_month_logs in query,
+      order_by: [desc: game_month_logs.date]
     )
   end
 
   def _order_by(query, "Oldest first") do
-    from(match_month_logs in query,
-      order_by: [asc: match_month_logs.date]
+    from(game_month_logs in query,
+      order_by: [asc: game_month_logs.date]
     )
   end
 end

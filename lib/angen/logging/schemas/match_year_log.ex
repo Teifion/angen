@@ -1,6 +1,6 @@
-defmodule Angen.Logging.MatchYearLog do
+defmodule Angen.Logging.GameYearLog do
   @moduledoc """
-  # MatchYearLog
+  # GameYearLog
   A log of the activity for that year on the match.
 
   ### Attributes
@@ -12,7 +12,7 @@ defmodule Angen.Logging.MatchYearLog do
   use TeiserverMacros, :schema
 
   @primary_key false
-  schema "logging_match_year_logs" do
+  schema "logging_game_year_logs" do
     field(:year, :integer, primary_key: true)
     field(:date, :date)
     field(:data, :map)

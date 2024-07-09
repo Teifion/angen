@@ -1,6 +1,6 @@
-defmodule Angen.Logging.MatchWeekLog do
+defmodule Angen.Logging.GameWeekLog do
   @moduledoc """
-  # MatchWeekLog
+  # GameWeekLog
   A log of the activity for that week on the match.
 
   ### Attributes
@@ -13,7 +13,7 @@ defmodule Angen.Logging.MatchWeekLog do
   use TeiserverMacros, :schema
 
   @primary_key false
-  schema "logging_match_week_logs" do
+  schema "logging_game_week_logs" do
     field(:year, :integer, primary_key: true)
     field(:week, :integer, primary_key: true)
     field(:date, :date)

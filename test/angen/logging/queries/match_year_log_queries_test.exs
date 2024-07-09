@@ -1,16 +1,16 @@
-defmodule Angen.MatchYearLogQueriesTest do
+defmodule Angen.GameYearLogQueriesTest do
   @moduledoc false
   use Angen.DataCase, async: true
 
-  alias Angen.Logging.MatchYearLogQueries
+  alias Angen.Logging.GameYearLogQueries
 
   describe "queries" do
-    @empty_query MatchYearLogQueries.match_year_log_query([])
+    @empty_query GameYearLogQueries.game_year_log_query([])
 
     test "clauses" do
       # Null values, shouldn't error but shouldn't generate a query
       null_values =
-        MatchYearLogQueries.match_year_log_query(
+        GameYearLogQueries.game_year_log_query(
           where: [
             key1: "",
             key2: nil
@@ -22,12 +22,12 @@ defmodule Angen.MatchYearLogQueriesTest do
 
       # If a key is not present in the query library it should error
       assert_raise(FunctionClauseError, fn ->
-        MatchYearLogQueries.match_year_log_query(where: [not_a_key: 1])
+        GameYearLogQueries.game_year_log_query(where: [not_a_key: 1])
       end)
 
       # we expect the query to run though it won't produce meaningful results
       all_values =
-        MatchYearLogQueries.match_year_log_query(
+        GameYearLogQueries.game_year_log_query(
           where: [
             date: Timex.today(),
             year: 123,

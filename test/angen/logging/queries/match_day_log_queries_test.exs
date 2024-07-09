@@ -1,16 +1,16 @@
-defmodule Angen.MatchDayLogQueriesTest do
+defmodule Angen.GameDayLogQueriesTest do
   @moduledoc false
   use Angen.DataCase, async: true
 
-  alias Angen.Logging.MatchDayLogQueries
+  alias Angen.Logging.GameDayLogQueries
 
   describe "queries" do
-    @empty_query MatchDayLogQueries.match_day_log_query([])
+    @empty_query GameDayLogQueries.game_day_log_query([])
 
     test "clauses" do
       # Null values, shouldn't error but shouldn't generate a query
       null_values =
-        MatchDayLogQueries.match_day_log_query(
+        GameDayLogQueries.game_day_log_query(
           where: [
             key1: "",
             key2: nil
@@ -22,12 +22,12 @@ defmodule Angen.MatchDayLogQueriesTest do
 
       # If a key is not present in the query library it should error
       assert_raise(FunctionClauseError, fn ->
-        MatchDayLogQueries.match_day_log_query(where: [not_a_key: 1])
+        GameDayLogQueries.game_day_log_query(where: [not_a_key: 1])
       end)
 
       # we expect the query to run though it won't produce meaningful results
       all_values =
-        MatchDayLogQueries.match_day_log_query(
+        GameDayLogQueries.game_day_log_query(
           where: [
             date: Timex.today(),
             after: Timex.today(),

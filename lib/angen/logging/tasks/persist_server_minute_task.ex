@@ -127,9 +127,16 @@ defmodule Angen.Logging.PersistServerMinuteTask do
     Telemetry.TelemetryLib.get_all_totals(true)
   end
 
-  # Given a map where the values are integers, add them up and create a new key `:total`
-  # with the sum of said values
-  @spec add_total_key(map, atom, list) :: map
+
+  @doc """
+  Given a map where the values are integers, add them up and create a new key `:total`
+  with the sum of said values.
+
+  Takes a map of values but can optionally also take:
+  - key: The key which the total value is placed
+  - dropping: keys which are ignored for the calculation of the total
+  """
+  @spec add_total_key(map, atom | String.t(), list) :: map
   def add_total_key(m, key \\ :total, dropping \\ []) do
     total = m |> Map.drop(dropping) |> Map.values() |> Enum.sum()
     Map.put(m, key, total)

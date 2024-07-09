@@ -38,25 +38,11 @@ defmodule Angen.Fixtures.LoggingFixtures do
   end
 
   # Match logs
-  @spec match_minute_log_fixture() :: Logging.MatchMinuteLog.t()
-  @spec match_minute_log_fixture(map) :: Logging.MatchMinuteLog.t()
-  def match_minute_log_fixture(data \\ %{}) do
-    Logging.MatchMinuteLog.changeset(
-      %Logging.MatchMinuteLog{},
-      %{
-        timestamp: data[:timestamp] || Timex.now(),
-        node: data[:node] || "test-node",
-        data: data[:data] || %{}
-      }
-    )
-    |> Angen.Repo.insert!()
-  end
-
-  @spec match_day_log_fixture() :: Logging.MatchDayLog.t()
-  @spec match_day_log_fixture(map) :: Logging.MatchDayLog.t()
-  def match_day_log_fixture(data \\ %{}) do
-    Logging.MatchDayLog.changeset(
-      %Logging.MatchDayLog{},
+  @spec game_day_log_fixture() :: Logging.GameDayLog.t()
+  @spec game_day_log_fixture(map) :: Logging.GameDayLog.t()
+  def game_day_log_fixture(data \\ %{}) do
+    Logging.GameDayLog.changeset(
+      %Logging.GameDayLog{},
       %{
         date: data[:date] || Timex.today(),
         data: data[:data] || %{}
@@ -65,11 +51,11 @@ defmodule Angen.Fixtures.LoggingFixtures do
     |> Angen.Repo.insert!()
   end
 
-  @spec match_week_log_fixture() :: Logging.MatchWeekLog.t()
-  @spec match_week_log_fixture(map) :: Logging.MatchWeekLog.t()
-  def match_week_log_fixture(data \\ %{}) do
-    Logging.MatchWeekLog.changeset(
-      %Logging.MatchWeekLog{},
+  @spec game_week_log_fixture() :: Logging.GameWeekLog.t()
+  @spec game_week_log_fixture(map) :: Logging.GameWeekLog.t()
+  def game_week_log_fixture(data \\ %{}) do
+    Logging.GameWeekLog.changeset(
+      %Logging.GameWeekLog{},
       %{
         date: data[:date] || Timex.today(),
         year: data[:year] || 1,
@@ -80,11 +66,11 @@ defmodule Angen.Fixtures.LoggingFixtures do
     |> Angen.Repo.insert!()
   end
 
-  @spec match_month_log_fixture() :: Logging.MatchMonthLog.t()
-  @spec match_month_log_fixture(map) :: Logging.MatchMonthLog.t()
-  def match_month_log_fixture(data \\ %{}) do
-    Logging.MatchMonthLog.changeset(
-      %Logging.MatchMonthLog{},
+  @spec game_month_log_fixture() :: Logging.GameMonthLog.t()
+  @spec game_month_log_fixture(map) :: Logging.GameMonthLog.t()
+  def game_month_log_fixture(data \\ %{}) do
+    Logging.GameMonthLog.changeset(
+      %Logging.GameMonthLog{},
       %{
         date: data[:date] || Timex.today(),
         year: data[:year] || 1,
@@ -95,11 +81,11 @@ defmodule Angen.Fixtures.LoggingFixtures do
     |> Angen.Repo.insert!()
   end
 
-  @spec match_quarter_log_fixture() :: Logging.MatchQuarterLog.t()
-  @spec match_quarter_log_fixture(map) :: Logging.MatchQuarterLog.t()
-  def match_quarter_log_fixture(data \\ %{}) do
-    Logging.MatchQuarterLog.changeset(
-      %Logging.MatchQuarterLog{},
+  @spec game_quarter_log_fixture() :: Logging.GameQuarterLog.t()
+  @spec game_quarter_log_fixture(map) :: Logging.GameQuarterLog.t()
+  def game_quarter_log_fixture(data \\ %{}) do
+    Logging.GameQuarterLog.changeset(
+      %Logging.GameQuarterLog{},
       %{
         date: data[:date] || Timex.today(),
         year: data[:year] || 1,
@@ -110,11 +96,11 @@ defmodule Angen.Fixtures.LoggingFixtures do
     |> Angen.Repo.insert!()
   end
 
-  @spec match_year_log_fixture() :: Logging.MatchYearLog.t()
-  @spec match_year_log_fixture(map) :: Logging.MatchYearLog.t()
-  def match_year_log_fixture(data \\ %{}) do
-    Logging.MatchYearLog.changeset(
-      %Logging.MatchYearLog{},
+  @spec game_year_log_fixture() :: Logging.GameYearLog.t()
+  @spec game_year_log_fixture(map) :: Logging.GameYearLog.t()
+  def game_year_log_fixture(data \\ %{}) do
+    Logging.GameYearLog.changeset(
+      %Logging.GameYearLog{},
       %{
         date: data[:date] || Timex.today(),
         year: data[:year] || 1,

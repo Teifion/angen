@@ -1,12 +1,12 @@
-defmodule Angen.Logging.MatchYearLogQueries do
+defmodule Angen.Logging.GameYearLogQueries do
   @moduledoc false
   use TeiserverMacros, :queries
-  alias Angen.Logging.MatchYearLog
+  alias Angen.Logging.GameYearLog
   require Logger
 
-  @spec match_year_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  def match_year_log_query(args) do
-    query = from(match_year_logs in MatchYearLog)
+  @spec game_year_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  def game_year_log_query(args) do
+    query = from(game_year_logs in GameYearLog)
 
     query
     |> do_where(date: args[:date])
@@ -32,26 +32,26 @@ defmodule Angen.Logging.MatchYearLogQueries do
   def _where(query, _, nil), do: query
 
   def _where(query, :date, date) do
-    from(match_year_logs in query,
-      where: match_year_logs.date == ^date
+    from(game_year_logs in query,
+      where: game_year_logs.date == ^date
     )
   end
 
   def _where(query, :year, year) do
-    from(match_year_logs in query,
-      where: match_year_logs.year == ^year
+    from(game_year_logs in query,
+      where: game_year_logs.year == ^year
     )
   end
 
   def _where(query, :after, timestamp) do
-    from(match_year_logs in query,
-      where: match_year_logs.date >= ^timestamp
+    from(game_year_logs in query,
+      where: game_year_logs.date >= ^timestamp
     )
   end
 
   def _where(query, :before, timestamp) do
-    from(match_year_logs in query,
-      where: match_year_logs.date < ^timestamp
+    from(game_year_logs in query,
+      where: game_year_logs.date < ^timestamp
     )
   end
 
@@ -68,14 +68,14 @@ defmodule Angen.Logging.MatchYearLogQueries do
 
   @spec _order_by(Ecto.Query.t(), any()) :: Ecto.Query.t()
   def _order_by(query, "Newest first") do
-    from(match_year_logs in query,
-      order_by: [desc: match_year_logs.date]
+    from(game_year_logs in query,
+      order_by: [desc: game_year_logs.date]
     )
   end
 
   def _order_by(query, "Oldest first") do
-    from(match_year_logs in query,
-      order_by: [asc: match_year_logs.date]
+    from(game_year_logs in query,
+      order_by: [asc: game_year_logs.date]
     )
   end
 end

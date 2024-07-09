@@ -1,12 +1,12 @@
-defmodule Angen.Logging.MatchQuarterLogQueries do
+defmodule Angen.Logging.GameQuarterLogQueries do
   @moduledoc false
   use TeiserverMacros, :queries
-  alias Angen.Logging.MatchQuarterLog
+  alias Angen.Logging.GameQuarterLog
   require Logger
 
-  @spec match_quarter_log_query(Teiserver.query_args()) :: Ecto.Query.t()
-  def match_quarter_log_query(args) do
-    query = from(match_quarter_logs in MatchQuarterLog)
+  @spec game_quarter_log_query(Teiserver.query_args()) :: Ecto.Query.t()
+  def game_quarter_log_query(args) do
+    query = from(game_quarter_logs in GameQuarterLog)
 
     query
     |> do_where(date: args[:date])
@@ -32,32 +32,32 @@ defmodule Angen.Logging.MatchQuarterLogQueries do
   def _where(query, _, nil), do: query
 
   def _where(query, :date, date) do
-    from(match_quarter_logs in query,
-      where: match_quarter_logs.date == ^date
+    from(game_quarter_logs in query,
+      where: game_quarter_logs.date == ^date
     )
   end
 
   def _where(query, :year, year) do
-    from(match_quarter_logs in query,
-      where: match_quarter_logs.year == ^year
+    from(game_quarter_logs in query,
+      where: game_quarter_logs.year == ^year
     )
   end
 
   def _where(query, :quarter, quarter) do
-    from(match_quarter_logs in query,
-      where: match_quarter_logs.quarter == ^quarter
+    from(game_quarter_logs in query,
+      where: game_quarter_logs.quarter == ^quarter
     )
   end
 
   def _where(query, :after, timestamp) do
-    from(match_quarter_logs in query,
-      where: match_quarter_logs.date >= ^timestamp
+    from(game_quarter_logs in query,
+      where: game_quarter_logs.date >= ^timestamp
     )
   end
 
   def _where(query, :before, timestamp) do
-    from(match_quarter_logs in query,
-      where: match_quarter_logs.date < ^timestamp
+    from(game_quarter_logs in query,
+      where: game_quarter_logs.date < ^timestamp
     )
   end
 
@@ -74,14 +74,14 @@ defmodule Angen.Logging.MatchQuarterLogQueries do
 
   @spec _order_by(Ecto.Query.t(), any()) :: Ecto.Query.t()
   def _order_by(query, "Newest first") do
-    from(match_quarter_logs in query,
-      order_by: [desc: match_quarter_logs.date]
+    from(game_quarter_logs in query,
+      order_by: [desc: game_quarter_logs.date]
     )
   end
 
   def _order_by(query, "Oldest first") do
-    from(match_quarter_logs in query,
-      order_by: [asc: match_quarter_logs.date]
+    from(game_quarter_logs in query,
+      order_by: [asc: game_quarter_logs.date]
     )
   end
 end
