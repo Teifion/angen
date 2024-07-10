@@ -20,7 +20,7 @@ defmodule AngenWeb.Admin.Logging.Game.ShowLive do
       |> assign(:unit, params["unit"])
       |> assign(:date_str, params["date"])
       |> assign(:date, date)
-      |> assign(:mode, Map.get(params, "mode", "raw_data"))
+      |> assign(:mode, Map.get(params, "mode", "overview"))
       |> assign(:site_menu_active, "logging")
       |> get_log()
 
@@ -32,7 +32,7 @@ defmodule AngenWeb.Admin.Logging.Game.ShowLive do
      socket
      |> assign(:unit, params["unit"])
      |> assign(:date_str, params["date"])
-     |> assign(:mode, Map.get(params, "mode", "raw_data"))
+     |> assign(:mode, Map.get(params, "mode", "overview"))
      |> assign(:site_menu_active, "logging")}
   end
 
@@ -83,7 +83,7 @@ defmodule AngenWeb.Admin.Logging.Game.ShowLive do
   end
 
   defp get_log(%{assigns: %{unit: unit, date: date}} = socket) do
-    raw_data =
+    overview =
       case unit do
         "week" ->
           Logging.get_game_week_log(date) |> Map.get(:data)
@@ -102,6 +102,6 @@ defmodule AngenWeb.Admin.Logging.Game.ShowLive do
       end
 
     socket
-    |> assign(:data, raw_data)
+    |> assign(:data, overview)
   end
 end

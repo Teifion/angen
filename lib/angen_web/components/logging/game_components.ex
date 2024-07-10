@@ -65,95 +65,56 @@ defmodule AngenWeb.Logging.GameComponents do
   <AngenWeb.Logging.GameComponents.overview_detail data={@data} />
   """
   attr :data, :map, required: true
-  attr :events, :map, required: true
 
   def overview_detail(assigns) do
+    assigns = assigns
+      |> assign(:groups, ["rated", "team_count", "team_size", "type"])
+      |> assign(:buckets, 1..12 |> Enum.map(fn v -> v * 5 end))
+
     ~H"""
-    <div class="row mt-4">
-      <div class="col">
+    <div class="row">
+      <div class="mt-4 col-md-6 col-lg-4 col-xl-3">
         <.card>
-          <h4>Stats</h4>
+          <h4>Totals</h4>
           <table class="table table-sm">
             <tbody>
               <tr>
-                <td>Unique users</td>
-                <td><%= @data["stats"]["unique_users"] %></td>
+                <td>Total games</td>
+                <td><%= @data["totals"]["raw_count"] %></td>
               </tr>
               <tr>
-                <td>Unique players</td>
-                <td><%= @data["stats"]["unique_players"] %></td>
+                <td>Total players</td>
+                <td><%= @data["totals"]["player_count"] %></td>
               </tr>
               <tr>
-                <td>Accounts created</td>
-                <td><%= @data["stats"]["accounts_created"] %></td>
+                <td>Player hours</td>
+                <td><%= @data["totals"]["player_hours"] %></td>
               </tr>
             </tbody>
           </table>
         </.card>
       </div>
 
-      <div class="col">
-        <.card>
-          <h4>Peaks</h4>
-          <table class="table table-sm">
-            <tbody>
-              <tr>
-                <td>Player</td>
-                <td><%= @data["peak_user_counts"]["player"] %></td>
-              </tr>
-              <tr>
-                <td>Spectator</td>
-                <td><%= @data["peak_user_counts"]["spectator"] %></td>
-              </tr>
-              <tr>
-                <td>Lobby</td>
-                <td><%= @data["peak_user_counts"]["lobby"] %></td>
-              </tr>
-              <tr>
-                <td>Menu</td>
-                <td><%= @data["peak_user_counts"]["menu"] %></td>
-              </tr>
-              <tr>
-                <td>Bot</td>
-                <td><%= @data["peak_user_counts"]["bot"] %></td>
-              </tr>
-              <tr style="font-weight: bold;">
-                <td>Total (non bot)</td>
-                <td><%= @data["peak_user_counts"]["total_non_bot"] %></td>
-              </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
+      <div class="mt-4 col-md-6 col-lg-4 col-xl-3" :for={group <- @groups}>
+        <% values = Map.keys(@data["matches"]["raw_counts"][group]) %>
 
-      <div class="col">
         <.card>
-          <h4>Time</h4>
+          <h4><%= String.capitalize(group) %></h4>
           <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>Game count</th>
+                <th>Player count</th>
+                <th>Player hours</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr>
-                <td>Player</td>
-                <td><%= represent_minutes(@data["minutes"]["player"]) %></td>
-              </tr>
-              <tr>
-                <td>Spectator</td>
-                <td><%= represent_minutes(@data["minutes"]["spectator"]) %></td>
-              </tr>
-              <tr>
-                <td>Lobby</td>
-                <td><%= represent_minutes(@data["minutes"]["lobby"]) %></td>
-              </tr>
-              <tr>
-                <td>Menu</td>
-                <td><%= represent_minutes(@data["minutes"]["menu"]) %></td>
-              </tr>
-              <tr>
-                <td>Bot</td>
-                <td><%= represent_minutes(@data["minutes"]["bot"]) %></td>
-              </tr>
-              <tr style="font-weight: bold;">
-                <td>Total (non bot)</td>
-                <td><%= represent_minutes(@data["minutes"]["total_non_bot"]) %></td>
+              <tr :for={value <- values}>
+                <td><%= value %></td>
+                <td><%= @data["matches"]["raw_counts"][group][value] %></td>
+                <td><%= @data["matches"]["player_counts"][group][value] %></td>
+                <td><%= @data["matches"]["player_hours"][group][value] %></td>
               </tr>
             </tbody>
           </table>
@@ -161,71 +122,35 @@ defmodule AngenWeb.Logging.GameComponents do
       </div>
     </div>
 
-    <div class="row mt-4">
-      <div class="col">
+    <div class="row">
+      <div class="col mt-4">
         <.card>
-          <h4>Game - simple</h4>
+          <h4>By duration</h4>
           <table class="table table-sm">
-            <tbody>
-              <tr :for={{event, count} <- @events["simple_game"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th :for={b <- @buckets}><%= b %></th>
               </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
-
-      <div class="col">
-        <.card>
-          <h4>Clientapp - simple</h4>
-          <table class="table table-sm">
+            </thead>
             <tbody>
-              <tr :for={{event, count} <- @events["simple_clientapp"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
+              <tr>
+                <td>Game count</td>
+                <td :for={b <- @buckets}>
+                  <%= @data["duration_minutes"]["raw_count"] |> Map.get(to_string(b), 0) %>
+                </td>
               </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
-
-      <div class="col">
-        <.card>
-          <h4>Anon - simple</h4>
-          <table class="table table-sm">
-            <tbody>
-              <tr :for={{event, count} <- @events["simple_anon"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
+              <tr>
+                <td>Player count</td>
+                <td :for={b <- @buckets}>
+                  <%= @data["duration_minutes"]["player_counts"] |> Map.get(to_string(b), 0) %>
+                </td>
               </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
-
-      <div class="col">
-        <.card>
-          <h4>Lobby - simple</h4>
-          <table class="table table-sm">
-            <tbody>
-              <tr :for={{event, count} <- @events["simple_lobby"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
-              </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
-
-      <div class="col">
-        <.card>
-          <h4>Match - simple</h4>
-          <table class="table table-sm">
-            <tbody>
-              <tr :for={{event, count} <- @events["simple_match"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
+              <tr>
+                <td>Player hours</td>
+                <td :for={b <- @buckets}>
+                  <%= @data["duration_minutes"]["player_hours"] |> Map.get(to_string(b), 0) %>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -233,71 +158,27 @@ defmodule AngenWeb.Logging.GameComponents do
       </div>
     </div>
 
-    <div class="row mt-4">
-      <div class="col">
-        <.card>
-          <h4>Game - complex</h4>
-          <table class="table table-sm">
-            <tbody>
-              <tr :for={{event, count} <- @events["complex_game"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
-              </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
+    <div class="row">
+      <div class="mt-4 col-md-6 col-lg-4 col-xl-3" :for={{setting_key, setting_data} <- @data["settings"]}>
+        <% setting_values = Map.keys(setting_data["raw_count"]) %>
 
-      <div class="col">
         <.card>
-          <h4>Clientapp - complex</h4>
+          <h4><%= String.capitalize(setting_key) %></h4>
           <table class="table table-sm">
-            <tbody>
-              <tr :for={{event, count} <- @events["complex_clientapp"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>Game count</th>
+                <th>Player count</th>
+                <th>Player hours</th>
               </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
-
-      <div class="col">
-        <.card>
-          <h4>Anon - complex</h4>
-          <table class="table table-sm">
+            </thead>
             <tbody>
-              <tr :for={{event, count} <- @events["complex_anon"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
-              </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
-
-      <div class="col">
-        <.card>
-          <h4>Lobby - complex</h4>
-          <table class="table table-sm">
-            <tbody>
-              <tr :for={{event, count} <- @events["complex_lobby"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
-              </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
-
-      <div class="col">
-        <.card>
-          <h4>Match - complex</h4>
-          <table class="table table-sm">
-            <tbody>
-              <tr :for={{event, count} <- @events["complex_match"] |> Enum.take(10)}>
-                <td><%= event %></td>
-                <td><%= format_number(count) %></td>
+              <tr :for={value <- setting_values}>
+                <td><%= value %></td>
+                <td><%= setting_data["raw_count"][value] %></td>
+                <td><%= setting_data["player_counts"][value] %></td>
+                <td><%= setting_data["player_hours"][value] %></td>
               </tr>
             </tbody>
           </table>

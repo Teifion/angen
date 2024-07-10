@@ -5,19 +5,17 @@ defmodule Angen.Logging.PersistGameDayTask do
   alias Angen.Logging.GameDayLogLib
   alias Teiserver.Game
 
-  import Angen.Logging.PersistServerMinuteTask, only: [add_total_key: 1]
-
   @match_table Teiserver.Game.Match.__schema__(:source)
   @match_setting_table Teiserver.Game.MatchSetting.__schema__(:source)
 
   @impl Oban.Worker
   @spec perform(any()) :: :ok
   def perform(_) do
-    last_date = Logging.get_last_server_day_log_date()
+    last_date = Logging.get_last_game_day_log_date()
 
     date =
       if last_date == nil do
-        Angen.Logging.get_first_server_minute_datetime()
+        Angen.Logging.get_first_game_minute_datetime()
         |> Timex.to_date()
       else
         last_date
@@ -25,7 +23,7 @@ defmodule Angen.Logging.PersistGameDayTask do
       end
 
     if Timex.compare(date, Timex.today()) == -1 do
-      do_perform(date, cleanup: true)
+      do_perform(date)
 
       new_date = Timex.shift(date, days: 1)
 
@@ -39,21 +37,21 @@ defmodule Angen.Logging.PersistGameDayTask do
     :ok
   end
 
-  @spec do_perform(Date.t(), boolean()) :: :ok
-  def do_perform(date, cleanup) do
+  @spec do_perform(Date.t()) :: :ok
+  def do_perform(date) do
     start_date = Timex.to_date(date)
     end_date = Timex.shift(start_date, days: 1)
 
     data = generate_game_summary_data(start_date, end_date)
 
     # Delete old log if it exists
-    Logging.server_day_log_query(
+    Logging.game_day_log_query(
       where: [date: start_date],
       limit: :infinity
     )
     |> Repo.delete_all()
 
-    Logging.create_server_day_log(%{
+    Logging.create_game_day_log(%{
       date: start_date,
       data: data
     })
@@ -61,6 +59,7 @@ defmodule Angen.Logging.PersistGameDayTask do
     :ok
   end
 
+  @spec today_so_far() :: map()
   def today_so_far() do
     start_date = Timex.today()
     end_date = Timex.shift(start_date, days: 1)
@@ -78,21 +77,26 @@ defmodule Angen.Logging.PersistGameDayTask do
     end_date = Timex.to_datetime(end_date)
 
     %{
+      totals: %{
+        raw_count: get_total_match_count(start_date, end_date),
+        player_count: get_total_player_count(start_date, end_date),
+        player_hours: get_total_player_hours(start_date, end_date)
+      },
       matches: %{
         raw_counts: %{
-          type: match_count_by_grouping(start_date, end_date, "type_id") |> match_type_keyswap,
+          type: match_count_by_grouping(start_date, end_date, "type_id") |> match_type_key_swap,
           rated: match_count_by_grouping(start_date, end_date, "rated?"),
           team_size: match_count_by_grouping(start_date, end_date, "team_size"),
           team_count: match_count_by_grouping(start_date, end_date, "team_count")
         },
         player_counts: %{
-          type: player_count_by_grouping(start_date, end_date, "type_id") |> match_type_keyswap,
+          type: player_count_by_grouping(start_date, end_date, "type_id") |> match_type_key_swap,
           rated: player_count_by_grouping(start_date, end_date, "rated?"),
           team_size: player_count_by_grouping(start_date, end_date, "team_size"),
           team_count: player_count_by_grouping(start_date, end_date, "team_count")
         },
         player_hours: %{
-          type: player_hours_by_grouping(start_date, end_date, "type_id") |> match_type_keyswap,
+          type: player_hours_by_grouping(start_date, end_date, "type_id") |> match_type_key_swap,
           rated: player_hours_by_grouping(start_date, end_date, "rated?"),
           team_size: player_hours_by_grouping(start_date, end_date, "team_size"),
           team_count: player_hours_by_grouping(start_date, end_date, "team_count")
@@ -104,9 +108,67 @@ defmodule Angen.Logging.PersistGameDayTask do
           raw_count: match_count_by_setting_value(start_date, end_date, "map"),
           player_counts: player_count_by_setting_value(start_date, end_date, "map"),
           player_hours: player_hours_by_setting_value(start_date, end_date, "map"),
+        },
+        "win-condition": %{
+          raw_count: match_count_by_setting_value(start_date, end_date, "win-condition"),
+          player_counts: player_count_by_setting_value(start_date, end_date, "win-condition"),
+          player_hours: player_hours_by_setting_value(start_date, end_date, "win-condition"),
+        },
+        "starting-resources": %{
+          raw_count: match_count_by_setting_value(start_date, end_date, "starting-resources"),
+          player_counts: player_count_by_setting_value(start_date, end_date, "starting-resources"),
+          player_hours: player_hours_by_setting_value(start_date, end_date, "starting-resources"),
         }
+      },
+
+      duration_minutes: %{
+        raw_count: match_count_by_duration_buckets(start_date, end_date),
+        player_counts: player_count_by_duration_buckets(start_date, end_date),
+        player_hours: player_hours_by_duration_buckets(start_date, end_date),
       }
     }
+  end
+
+  defp get_total_match_count(start_date, end_date) do
+    query = """
+      SELECT COUNT(m.id)
+      FROM #{@match_table} m
+      WHERE m.match_started_at > $1
+        AND m.match_started_at < $2
+        AND m."processed?" = TRUE
+        AND m."ended_normally?" = TRUE
+    """
+
+    {:ok, %{rows: [[results]]}} = Ecto.Adapters.SQL.query(Repo, query, [start_date, end_date])
+    results
+  end
+
+  defp get_total_player_count(start_date, end_date) do
+    query = """
+      SELECT SUM(m.player_count)
+      FROM #{@match_table} m
+      WHERE m.match_started_at > $1
+        AND m.match_started_at < $2
+        AND m."processed?" = TRUE
+        AND m."ended_normally?" = TRUE
+    """
+
+    {:ok, %{rows: [[results]]}} = Ecto.Adapters.SQL.query(Repo, query, [start_date, end_date])
+    results
+  end
+
+  defp get_total_player_hours(start_date, end_date) do
+    query = """
+      SELECT SUM(m.player_count * m.match_duration_seconds)/3600
+      FROM #{@match_table} m
+      WHERE m.match_started_at > $1
+        AND m.match_started_at < $2
+        AND m."processed?" = TRUE
+        AND m."ended_normally?" = TRUE
+    """
+
+    {:ok, %{rows: [[results]]}} = Ecto.Adapters.SQL.query(Repo, query, [start_date, end_date])
+    results
   end
 
   defp match_count_by_grouping(start_date, end_date, group_by) do
@@ -124,12 +186,11 @@ defmodule Angen.Logging.PersistGameDayTask do
 
     results.rows
     |> Map.new(fn [key, value] -> {key, value} end)
-    |> add_total_key
   end
 
   defp player_count_by_grouping(start_date, end_date, group_by) do
     query = """
-      SELECT m."#{group_by}", SUM(m.team_count * m.team_size)
+      SELECT m."#{group_by}", SUM(m.player_count)
       FROM #{@match_table} m
       WHERE m.match_started_at > $1
         AND m.match_started_at < $2
@@ -142,12 +203,11 @@ defmodule Angen.Logging.PersistGameDayTask do
 
     results.rows
     |> Map.new(fn [key, value] -> {key, value} end)
-    |> add_total_key
   end
 
   defp player_hours_by_grouping(start_date, end_date, group_by) do
     query = """
-      SELECT m."#{group_by}", SUM(m.team_count * m.team_size * m.match_duration_seconds)/3600
+      SELECT m."#{group_by}", SUM(m.player_count * m.match_duration_seconds)/3600
       FROM #{@match_table} m
       WHERE m.match_started_at > $1
         AND m.match_started_at < $2
@@ -160,7 +220,6 @@ defmodule Angen.Logging.PersistGameDayTask do
 
     results.rows
     |> Map.new(fn [key, value] -> {key, value} end)
-    |> add_total_key
   end
 
   defp match_count_by_setting_value(start_date, end_date, setting_key) do
@@ -183,14 +242,13 @@ defmodule Angen.Logging.PersistGameDayTask do
 
     results.rows
     |> Map.new(fn [key, value] -> {key, value} end)
-    |> add_total_key
   end
 
   defp player_count_by_setting_value(start_date, end_date, setting_key) do
     setting_type_id = Game.get_or_create_match_setting_type_id(setting_key)
 
     query = """
-      SELECT ms.value, SUM(m.team_count * m.team_size)
+      SELECT ms.value, SUM(m.player_count)
       FROM #{@match_table} m
       JOIN #{@match_setting_table} ms
         ON ms.match_id = m.id
@@ -206,14 +264,13 @@ defmodule Angen.Logging.PersistGameDayTask do
 
     results.rows
     |> Map.new(fn [key, value] -> {key, value} end)
-    |> add_total_key
   end
 
   defp player_hours_by_setting_value(start_date, end_date, setting_key) do
     setting_type_id = Game.get_or_create_match_setting_type_id(setting_key)
 
     query = """
-      SELECT ms.value, SUM(m.team_count * m.team_size * m.match_duration_seconds)/3600
+      SELECT ms.value, SUM(m.player_count * m.match_duration_seconds)/3600
       FROM #{@match_table} m
       JOIN #{@match_setting_table} ms
         ON ms.match_id = m.id
@@ -229,10 +286,64 @@ defmodule Angen.Logging.PersistGameDayTask do
 
     results.rows
     |> Map.new(fn [key, value] -> {key, value} end)
-    |> add_total_key
   end
 
-  defp match_type_keyswap(m) do
+
+  defp match_count_by_duration_buckets(start_date, end_date) do
+    # 12 buckets in 60 minutes, 5 minutes per bucket
+    query = """
+      SELECT width_bucket(m."match_duration_seconds"/60, 0, 60, 12) * 5 AS bucket, COUNT(m.id)
+      FROM #{@match_table} m
+      WHERE m.match_started_at > $1
+        AND m.match_started_at < $2
+        AND m."processed?" = TRUE
+        AND m."ended_normally?" = TRUE
+      GROUP BY bucket
+    """
+
+    {:ok, results} = Ecto.Adapters.SQL.query(Repo, query, [start_date, end_date])
+
+    results.rows
+    |> Map.new(fn [key, value] -> {key, value} end)
+  end
+
+  defp player_count_by_duration_buckets(start_date, end_date) do
+    # 12 buckets in 60 minutes, 5 minutes per bucket
+    query = """
+      SELECT width_bucket(m."match_duration_seconds"/60, 0, 60, 12) * 5 AS bucket, SUM(m.player_count)
+      FROM #{@match_table} m
+      WHERE m.match_started_at > $1
+        AND m.match_started_at < $2
+        AND m."processed?" = TRUE
+        AND m."ended_normally?" = TRUE
+      GROUP BY bucket
+    """
+
+    {:ok, results} = Ecto.Adapters.SQL.query(Repo, query, [start_date, end_date])
+
+    results.rows
+    |> Map.new(fn [key, value] -> {key, value} end)
+  end
+
+  defp player_hours_by_duration_buckets(start_date, end_date) do
+    # 12 buckets in 60 minutes, 5 minutes per bucket
+    query = """
+      SELECT width_bucket(m."match_duration_seconds"/60, 0, 60, 12) * 5 AS bucket, SUM(m.player_count * m.match_duration_seconds)/3600
+      FROM #{@match_table} m
+      WHERE m.match_started_at > $1
+        AND m.match_started_at < $2
+        AND m."processed?" = TRUE
+        AND m."ended_normally?" = TRUE
+      GROUP BY bucket
+    """
+
+    {:ok, results} = Ecto.Adapters.SQL.query(Repo, query, [start_date, end_date])
+
+    results.rows
+    |> Map.new(fn [key, value] -> {key, value} end)
+  end
+
+  defp match_type_key_swap(m) do
     m
     |> Map.new(fn
       {:total, v} -> {"total", v}

@@ -19,7 +19,7 @@
 <%= if assigns[:data] do %>
   <%= case @mode do %>
     <% "overview" -> %>
-      <AngenWeb.Logging.GameComponents.overview_detail data={@data} events={@events} />
+      <AngenWeb.Logging.GameComponents.overview_detail data={@data} />
     <% "raw_data" -> %>
       <AngenWeb.Logging.GameComponents.data_detail data={@data} />
   <% end %>

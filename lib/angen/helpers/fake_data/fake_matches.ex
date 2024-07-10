@@ -59,10 +59,13 @@ defmodule Angen.FakeData.FakeMatches do
   end
 
   defp make_match(date, _config, user_ids) do
-    [t1, t2, t3] =
-      0..2
-      |> Enum.map(fn _ -> random_time_in_day(date) end)
-      |> Enum.sort_by(fn v -> v end, &TimexHelper.less_than/2)
+    t1 = random_time_in_day(date)
+    t2 = Timex.shift(t1, seconds: :rand.uniform(600)) |> Timex.set(microsecond: 0)
+    t3 = Timex.shift(t2, seconds: :rand.uniform(3900)) |> Timex.set(microsecond: 0)
+
+    team_count = Enum.random([1, 1, 2, 2, 2, 2, 3, 4])
+    team_size = Enum.random([1, 1, 1, 1, 2, 3, 4, 5, 8])
+    player_count = team_count * team_size
 
     match =
       %{
@@ -74,14 +77,15 @@ defmodule Angen.FakeData.FakeMatches do
         game_name: "MyGame",
         game_version: "v1.#{:rand.uniform(6)}",
         winning_team: nil,
-        team_count: Enum.random([1, 1, 2, 2, 2, 2, 3, 4]),
-        team_size: Enum.random([1, 1, 1, 1, 2, 3, 4, 5, 8]),
+        team_count: team_count,
+        team_size: team_size,
         processed?: true,
         ended_normally?: :rand.uniform() < 0.8,
         lobby_opened_at: t1,
         match_started_at: t2,
         match_ended_at: t3,
         match_duration_seconds: Timex.diff(t3, t2, :second),
+        player_count: player_count,
         lobby_id: Ecto.UUID.generate(),
         host_id: Enum.random(user_ids),
         type_id: nil,
@@ -91,11 +95,9 @@ defmodule Angen.FakeData.FakeMatches do
       |> generate_type()
       |> generate_winning_team()
 
-    member_count = match.team_count * match.team_size
-
     {memberships, _} =
       user_ids
-      |> Enum.take_random(member_count)
+      |> Enum.take_random(player_count)
       |> Enum.map_reduce(1, fn user_id, team_number ->
         new_team_number = team_number + 1
         new_team_number = if new_team_number > match.team_count, do: 1, else: new_team_number
