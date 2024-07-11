@@ -1,11 +1,13 @@
 defmodule Angen.FakeData.FakeAccounts do
   @moduledoc false
 
+  require Logger
   alias Teiserver.Account
 
   import Angen.Helpers.FakeDataHelper, only: [random_time_in_day: 1]
 
   def make_accounts(config) do
+    Logger.info("Started accounts")
     root_user = Account.get_user_by_email("root@localhost")
 
     new_users =
@@ -42,6 +44,8 @@ defmodule Angen.FakeData.FakeAccounts do
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:insert_all, Account.User, new_users)
     |> Angen.Repo.transaction()
+
+    Logger.info("Completed accounts")
   end
 
   defp users_per_day, do: :rand.uniform(5) + 2

@@ -2,7 +2,7 @@ defmodule Angen.Logging.PersistGameMonthTask do
   @moduledoc false
   use Oban.Worker, queue: :logging
   alias Angen.Logging
-  alias Angen.Logging.GameDayLogLib
+  import Angen.Logging.PersistGameDayTask, only: [generate_game_summary_data: 2]
 
   @impl Oban.Worker
   @spec perform(any) :: :ok
@@ -20,7 +20,7 @@ defmodule Angen.Logging.PersistGameMonthTask do
 
   @spec do_perform() :: {:ok, Logging.GameMonthLog.t()}
   def do_perform() do
-    case Logging.get_last_server_month_log_date() do
+    case Logging.get_last_game_month_log_date() do
       nil ->
         perform_first_time()
 
@@ -34,8 +34,8 @@ defmodule Angen.Logging.PersistGameMonthTask do
   # we need to ensure the earliest log is from last month, not this month
   defp perform_first_time() do
     first_logs =
-      Logging.list_server_day_logs(
-        order: "Oldest first",
+      Logging.list_game_day_logs(
+        order_by: "Oldest first",
         limit: 1
       )
 
@@ -70,20 +70,10 @@ defmodule Angen.Logging.PersistGameMonthTask do
   end
 
   defp generate_log(start_date, end_date) do
-    stats = GameDayLogLib.calculate_period_statistics(start_date, end_date)
-
-    data =
-      Logging.list_server_day_logs(
-        search: [
-          after: start_date,
-          before: end_date
-        ]
-      )
-      |> GameDayLogLib.aggregate_day_logs()
-      |> Map.put(:stats, stats)
+    data = generate_game_summary_data(start_date, end_date)
 
     {:ok, _} =
-      Logging.create_server_month_log(%{
+      Logging.create_game_month_log(%{
         year: start_date.year,
         month: start_date.month,
         date: Timex.beginning_of_month(start_date),
@@ -96,16 +86,7 @@ defmodule Angen.Logging.PersistGameMonthTask do
     start_date = Timex.beginning_of_month(Timex.now())
     end_date = Timex.shift(start_date, days: 7)
 
-    stats =
-      GameDayLogLib.calculate_period_statistics(start_date, Timex.shift(end_date, days: 1))
-
-    Logging.list_server_day_logs(
-      where: [
-        after: Timex.to_date(start_date)
-      ]
-    )
-    |> Logging.GameDayLogLib.aggregate_day_logs()
-    |> Map.put(:stats, stats)
+    generate_game_summary_data(start_date, end_date)
     |> Jason.encode!()
     |> Jason.decode!()
 

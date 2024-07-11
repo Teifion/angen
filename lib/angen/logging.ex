@@ -29,9 +29,12 @@ defmodule Angen.Logging do
   defdelegate list_game_day_logs(args), to: GameDayLogLib
 
   @doc section: :game_day_log
-  @spec get_game_day_log!(Date.t()) :: GameDayLog.t()
   @spec get_game_day_log!(Date.t(), Teiserver.query_args()) :: GameDayLog.t()
   defdelegate get_game_day_log!(date, query_args \\ []), to: GameDayLogLib
+
+  @doc section: :game_day_log
+  @spec get_last_game_day_log_date() :: DateTime.t() | nil
+  defdelegate get_last_game_day_log_date(), to: GameDayLogLib
 
   @doc section: :game_day_log
   @spec get_game_day_log(Date.t()) :: GameDayLog.t() | nil
@@ -72,6 +75,10 @@ defmodule Angen.Logging do
   @spec get_game_week_log!(Date.t()) :: GameWeekLog.t()
   @spec get_game_week_log!(Date.t(), Teiserver.query_args()) :: GameWeekLog.t()
   defdelegate get_game_week_log!(date, query_args \\ []), to: GameWeekLogLib
+
+  @doc section: :game_week_log
+  @spec get_last_game_week_log_date() :: DateTime.t() | nil
+  defdelegate get_last_game_week_log_date(), to: GameWeekLogLib
 
   @doc section: :game_week_log
   @spec get_game_week_log(Date.t()) :: GameWeekLog.t() | nil
@@ -119,6 +126,10 @@ defmodule Angen.Logging do
   defdelegate get_game_month_log(date, query_args \\ []), to: GameMonthLogLib
 
   @doc section: :game_month_log
+  @spec get_last_game_month_log_date() :: DateTime.t() | nil
+  defdelegate get_last_game_month_log_date(), to: GameMonthLogLib
+
+  @doc section: :game_month_log
   @spec create_game_month_log(map) :: {:ok, GameMonthLog.t()} | {:error, Ecto.Changeset.t()}
   defdelegate create_game_month_log(attrs), to: GameMonthLogLib
 
@@ -159,7 +170,12 @@ defmodule Angen.Logging do
   defdelegate get_game_quarter_log(date, query_args \\ []), to: GameQuarterLogLib
 
   @doc section: :game_quarter_log
-  @spec create_game_quarter_log(map) :: {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
+  @spec get_last_game_quarter_log_date() :: DateTime.t() | nil
+  defdelegate get_last_game_quarter_log_date(), to: GameQuarterLogLib
+
+  @doc section: :game_quarter_log
+  @spec create_game_quarter_log(map) ::
+          {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
   defdelegate create_game_quarter_log(attrs), to: GameQuarterLogLib
 
   @doc section: :game_quarter_log
@@ -197,6 +213,10 @@ defmodule Angen.Logging do
   @spec get_game_year_log(Date.t()) :: GameYearLog.t() | nil
   @spec get_game_year_log(Date.t(), Teiserver.query_args()) :: GameYearLog.t() | nil
   defdelegate get_game_year_log(date, query_args \\ []), to: GameYearLogLib
+
+  @doc section: :game_year_log
+  @spec get_last_game_year_log_date() :: DateTime.t() | nil
+  defdelegate get_last_game_year_log_date(), to: GameYearLogLib
 
   @doc section: :game_year_log
   @spec create_game_year_log(map) :: {:ok, GameYearLog.t()} | {:error, Ecto.Changeset.t()}

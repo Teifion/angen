@@ -66,6 +66,25 @@ defmodule Angen.Logging.GameYearLogLib do
   end
 
   @doc """
+  Gets the date of the last GameMinuteLog in the database, returns nil if there are none.
+  """
+  @spec get_last_game_year_log_date() :: Date.t() | nil
+  def get_last_game_year_log_date() do
+    log =
+      GameYearLogQueries.game_year_log_query(
+        order_by: "Newest first",
+        select: [:date],
+        limit: 1
+      )
+      |> Repo.one()
+
+    case log do
+      nil -> nil
+      %{date: date} -> date
+    end
+  end
+
+  @doc """
   Creates a game_year_log.
 
   ## Examples

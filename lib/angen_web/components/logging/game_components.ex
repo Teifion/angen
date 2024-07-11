@@ -136,21 +136,18 @@ defmodule AngenWeb.Logging.GameComponents do
             <tbody>
               <tr>
                 <td>Game count</td>
-                <td :for={b <- @buckets}>
-                  <%= @data["duration_minutes"]["raw_count"] |> Map.get(to_string(b), 0) %>
-                </td>
+                <% values = for b <- @buckets, do: @data["duration_minutes"]["raw_count"] |> Map.get(to_string(b), 0) %>
+                <AngenWeb.Logging.GameComponents.heatmap_row values={values} />
               </tr>
               <tr>
                 <td>Player count</td>
-                <td :for={b <- @buckets}>
-                  <%= @data["duration_minutes"]["player_counts"] |> Map.get(to_string(b), 0) %>
-                </td>
+                <% values = for b <- @buckets, do: @data["duration_minutes"]["player_counts"] |> Map.get(to_string(b), 0) %>
+                <AngenWeb.Logging.GameComponents.heatmap_row values={values} />
               </tr>
               <tr>
                 <td>Player hours</td>
-                <td :for={b <- @buckets}>
-                  <%= @data["duration_minutes"]["player_hours"] |> Map.get(to_string(b), 0) %>
-                </td>
+                <% values = for b <- @buckets, do: @data["duration_minutes"]["player_hours"] |> Map.get(to_string(b), 0) %>
+                <AngenWeb.Logging.GameComponents.heatmap_row values={values} />
               </tr>
             </tbody>
           </table>
@@ -206,5 +203,61 @@ defmodule AngenWeb.Logging.GameComponents do
       </div>
     </div>
     """
+  end
+
+  @doc """
+  <AngenWeb.Logging.GameComponents.heatmap_row values={@values} />
+
+  <AngenWeb.Logging.GameComponents.heatmap_row values={@values} maximum={123} minimum={0} />
+  """
+
+  attr :values, :list, required: true
+  attr :maximum, :integer, default: nil
+  attr :minimum, :integer, default: nil
+
+  def heatmap_row(assigns) do
+    assigns = assigns
+      |> assign(:maximum, assigns[:maximum] || Enum.max(assigns[:values]))
+      |> assign(:minimum, assigns[:minimum] || Enum.min(assigns[:values]))
+
+    ~H"""
+    <AngenWeb.Logging.GameComponents.heatmap_cell value={v} minimum={@minimum} maximum={@maximum} :for={v <- @values} />
+    """
+  end
+
+  @doc """
+  <AngenWeb.Logging.GameComponents.heatmap_cell value={50} minimum={0} maximum={123} />
+  """
+  attr :value, :integer, required: true
+  attr :maximum, :integer, default: nil
+  attr :minimum, :integer, default: nil
+
+  def heatmap_cell(assigns) do
+    colour = heatmap_cell_colour(assigns[:value], assigns[:minimum], assigns[:maximum])
+
+    assigns = assigns
+      |> assign(:colour, colour)
+
+    ~H"""
+    <td style={"background-color: ##{@colour}"}>
+      <%= format_number(@value) %>
+    </td>
+    """
+  end
+
+  def heatmap_cell_colour(value, minimum, maximum) do
+    percentage = max(value, minimum) / max(maximum, 1)
+
+    [
+      105 + percentage * 150,
+      105 + (150 - percentage * 150),
+      50
+    ]
+    |> Enum.map_join(fn colour ->
+      colour
+      |> round
+      |> Integer.to_string(16)
+      |> to_string
+    end)
   end
 end

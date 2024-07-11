@@ -1,6 +1,7 @@
 defmodule Angen.FakeData.FakeMatches do
   @moduledoc false
 
+  require Logger
   import Angen.Helpers.FakeDataHelper, only: [valid_user_ids: 1, random_time_in_day: 1]
   alias Angen.Helper.TimexHelper
   alias Teiserver.Game
@@ -8,9 +9,11 @@ defmodule Angen.FakeData.FakeMatches do
 
   @tags ~w(tag1 tag2 tag2 tag3 tag3 tag3 tag4 tag4 tag4 tag4)
 
-  defp matches_per_day(), do: :rand.uniform(5) + 2
+  defp matches_per_day(user_count), do: :rand.uniform(30) + :rand.uniform(user_count * 2) + 15
 
   def make_matches(config) do
+    Logger.info("Started matches")
+
     combined_data =
       0..config.days
       |> Enum.map(fn day ->
@@ -27,9 +30,13 @@ defmodule Angen.FakeData.FakeMatches do
     memberships = List.flatten(memberships)
     settings = List.flatten(settings)
 
-    Ecto.Multi.new()
-    |> Ecto.Multi.insert_all(:insert_all, Game.Match, List.flatten(matches))
-    |> Angen.Repo.transaction()
+    matches
+    |> Enum.chunk_every(1_000)
+    |> Enum.each(fn chunk ->
+      Ecto.Multi.new()
+      |> Ecto.Multi.insert_all(:insert_all, Game.Match, List.flatten(chunk))
+      |> Angen.Repo.transaction()
+    end)
 
     memberships
     |> Enum.chunk_every(8_000)
@@ -46,12 +53,15 @@ defmodule Angen.FakeData.FakeMatches do
       |> Ecto.Multi.insert_all(:insert_all, Game.MatchSetting, List.flatten(m_chunk))
       |> Angen.Repo.transaction()
     end)
+
+    Logger.info("Completed matches")
   end
 
   defp make_daily_matches(config, date) do
     user_ids = valid_user_ids(date)
+    match_count = matches_per_day(Enum.count(user_ids))
 
-    0..matches_per_day()
+    0..match_count
     |> Enum.map(fn _ ->
       make_match(date, config, user_ids)
     end)
@@ -62,6 +72,7 @@ defmodule Angen.FakeData.FakeMatches do
     t1 = random_time_in_day(date)
     t2 = Timex.shift(t1, seconds: :rand.uniform(600)) |> Timex.set(microsecond: 0)
     t3 = Timex.shift(t2, seconds: :rand.uniform(3900)) |> Timex.set(microsecond: 0)
+    match_duration = Timex.diff(t3, t2, :second)
 
     team_count = Enum.random([1, 1, 2, 2, 2, 2, 3, 4])
     team_size = Enum.random([1, 1, 1, 1, 2, 3, 4, 5, 8])
@@ -80,11 +91,11 @@ defmodule Angen.FakeData.FakeMatches do
         team_count: team_count,
         team_size: team_size,
         processed?: true,
-        ended_normally?: :rand.uniform() < 0.8,
+        ended_normally?: match_duration < 120,
         lobby_opened_at: t1,
         match_started_at: t2,
         match_ended_at: t3,
-        match_duration_seconds: Timex.diff(t3, t2, :second),
+        match_duration_seconds: match_duration,
         player_count: player_count,
         lobby_id: Ecto.UUID.generate(),
         host_id: Enum.random(user_ids),

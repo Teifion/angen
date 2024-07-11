@@ -34,7 +34,7 @@ defmodule Angen.Logging.PersistServerWeekTask do
   defp perform_first_time() do
     first_logs =
       Logging.list_server_day_logs(
-        order: "Oldest first",
+        order_by: "Oldest first",
         limit: 1
       )
 

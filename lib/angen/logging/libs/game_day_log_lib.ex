@@ -35,7 +35,6 @@ defmodule Angen.Logging.GameDayLogLib do
       ** (Ecto.NoResultsError)
 
   """
-  @spec get_game_day_log!(Date.t()) :: GameDayLog.t()
   @spec get_game_day_log!(Date.t(), Teiserver.query_args()) :: GameDayLog.t()
   def get_game_day_log!(date, query_args \\ []) do
     (query_args ++ [date: date])
@@ -57,12 +56,30 @@ defmodule Angen.Logging.GameDayLogLib do
       nil
 
   """
-  @spec get_game_day_log(Date.t()) :: GameDayLog.t() | nil
   @spec get_game_day_log(Date.t(), Teiserver.query_args()) :: GameDayLog.t() | nil
   def get_game_day_log(date, query_args \\ []) do
     (query_args ++ [date: date])
     |> GameDayLogQueries.game_day_log_query()
     |> Repo.one()
+  end
+
+  @doc """
+  Gets the date of the last GameMinuteLog in the database, returns nil if there are none.
+  """
+  @spec get_last_game_day_log_date() :: Date.t() | nil
+  def get_last_game_day_log_date() do
+    log =
+      GameDayLogQueries.game_day_log_query(
+        order_by: "Newest first",
+        select: [:date],
+        limit: 1
+      )
+      |> Repo.one()
+
+    case log do
+      nil -> nil
+      %{date: date} -> date
+    end
   end
 
   @doc """

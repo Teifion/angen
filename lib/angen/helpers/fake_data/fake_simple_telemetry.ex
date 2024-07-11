@@ -1,10 +1,13 @@
 defmodule Angen.FakeData.FakeSimpleTelemetry do
   @moduledoc false
 
+  require Logger
   alias Angen.Telemetry
   import Angen.Helpers.FakeDataHelper, only: [valid_user_ids: 1, random_time_in_day: 1, matches_this_day: 1]
 
   def make_simple_events(config) do
+    Logger.info("Started Telemetry")
+
     0..min(config.days, 90)
     |> Enum.each(fn day ->
       date = Timex.today() |> Timex.shift(days: -day)
@@ -15,6 +18,8 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
       make_simple_match(config, date)
       make_simple_server(config, date)
     end)
+
+    Logger.info("Completed Telemetry")
   end
 
   def make_simple_anon(_config, date) do

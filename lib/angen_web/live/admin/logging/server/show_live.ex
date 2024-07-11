@@ -138,12 +138,12 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
     Map.merge(
       %{
         "simple_server" => [],
-        "simple_client" => [],
+        "simple_clientapp" => [],
         "simple_anon" => [],
         "simple_lobby" => [],
         "simple_match" => [],
         "complex_server" => [],
-        "complex_client" => [],
+        "complex_clientapp" => [],
         "complex_anon" => [],
         "complex_lobby" => [],
         "complex_match" => []

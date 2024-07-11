@@ -2,7 +2,6 @@ defmodule Angen.Logging.PersistGameDayTask do
   @moduledoc false
   use Oban.Worker, queue: :logging
   alias Angen.{Repo, Logging}
-  alias Angen.Logging.GameDayLogLib
   alias Teiserver.Game
 
   @match_table Teiserver.Game.Match.__schema__(:source)
@@ -15,8 +14,7 @@ defmodule Angen.Logging.PersistGameDayTask do
 
     date =
       if last_date == nil do
-        Angen.Logging.get_first_game_minute_datetime()
-        |> Timex.to_date()
+        get_timestamp_of_first_game()
       else
         last_date
         |> Timex.shift(days: 1)
@@ -35,6 +33,21 @@ defmodule Angen.Logging.PersistGameDayTask do
     end
 
     :ok
+  end
+
+  # This is not a query we want to run often but it should only run when we
+  # have no game_logs in the DB and thus a very small population of matches
+  defp get_timestamp_of_first_game() do
+    result = Game.get_match(nil, where: [ended_normally?: true], limit: 1, order_by: ["Oldest first"], select: [:match_started_at])
+
+    case result do
+      nil ->
+        # We return a date in the future so it doesn't run
+        Timex.today() |> Timex.shift(days: 2)
+
+      %{match_started_at: timestamp} ->
+        timestamp |> Timex.to_date()
+    end
   end
 
   @spec do_perform(Date.t()) :: :ok

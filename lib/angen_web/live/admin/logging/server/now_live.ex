@@ -40,7 +40,7 @@ defmodule AngenWeb.Admin.Logging.Server.NowLive do
 
     logs =
       Logging.list_server_minute_logs(
-        order: "Newest first",
+        order_by: "Newest first",
         where: [
           # node: "all",
           after: start_timestamp

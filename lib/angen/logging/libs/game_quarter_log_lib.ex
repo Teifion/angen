@@ -66,6 +66,25 @@ defmodule Angen.Logging.GameQuarterLogLib do
   end
 
   @doc """
+  Gets the date of the last GameMinuteLog in the database, returns nil if there are none.
+  """
+  @spec get_last_game_quarter_log_date() :: Date.t() | nil
+  def get_last_game_quarter_log_date() do
+    log =
+      GameQuarterLogQueries.game_quarter_log_query(
+        order_by: "Newest first",
+        select: [:date],
+        limit: 1
+      )
+      |> Repo.one()
+
+    case log do
+      nil -> nil
+      %{date: date} -> date
+    end
+  end
+
+  @doc """
   Creates a game_quarter_log.
 
   ## Examples
@@ -77,7 +96,8 @@ defmodule Angen.Logging.GameQuarterLogLib do
       {:error, %Ecto.Changeset{}}
 
   """
-  @spec create_game_quarter_log(map) :: {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
+  @spec create_game_quarter_log(map) ::
+          {:ok, GameQuarterLog.t()} | {:error, Ecto.Changeset.t()}
   def create_game_quarter_log(attrs) do
     %GameQuarterLog{}
     |> GameQuarterLog.changeset(attrs)

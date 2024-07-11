@@ -56,42 +56,42 @@ defmodule AngenWeb.Admin.Logging.Server.IndexLive do
         "minute" ->
           Logging.list_server_minute_logs(
             where: [node: "all"],
-            order: "Newest first",
+            order_by: "Newest first",
             limit: limit
           )
           |> Enum.reverse()
 
         "day" ->
           Logging.list_server_day_logs(
-            order: "Newest first",
+            order_by: "Newest first",
             limit: limit
           )
           |> Enum.reverse()
 
         "week" ->
           Logging.list_server_week_logs(
-            order: "Newest first",
+            order_by: "Newest first",
             limit: limit
           )
           |> Enum.reverse()
 
         "month" ->
           Logging.list_server_month_logs(
-            order: "Newest first",
+            order_by: "Newest first",
             limit: limit
           )
           |> Enum.reverse()
 
         "quarter" ->
           Logging.list_server_quarter_logs(
-            order: "Newest first",
+            order_by: "Newest first",
             limit: limit
           )
           |> Enum.reverse()
 
         "year" ->
           Logging.list_server_year_logs(
-            order: "Newest first",
+            order_by: "Newest first",
             limit: limit
           )
           |> Enum.reverse()

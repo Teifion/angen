@@ -1,6 +1,7 @@
 defmodule Angen.FakeData.FakeLogging do
   @moduledoc false
 
+  require Logger
   alias Angen.Logging
   import Logging.PersistServerMinuteTask, only: [add_total_key: 1, add_total_key: 3]
 
@@ -14,6 +15,8 @@ defmodule Angen.FakeData.FakeLogging do
     ]
 
   def make_logs(config) do
+    Logger.info("Started logging")
+
     # We only want a few days of minute logs
     0..min(config.days, config.detail_days)
     |> Enum.each(fn day ->
@@ -30,7 +33,12 @@ defmodule Angen.FakeData.FakeLogging do
     # For the days with detail we can generate them using the actual data
     0..min(config.days, config.detail_days)
     |> Enum.each(fn _ ->
-      Angen.Logging.PersistServerDayTask.perform(:ok)
+      Logging.PersistServerDayTask.perform(:ok)
+    end)
+
+    0..config.days
+    |> Enum.each(fn _ ->
+      Logging.PersistGameDayTask.perform(:ok)
     end)
 
     # Persist Week, Month, Quarter and Year
@@ -40,9 +48,15 @@ defmodule Angen.FakeData.FakeLogging do
       Logging.PersistServerMonthTask.perform(:ok)
       Logging.PersistServerQuarterTask.perform(:ok)
       Logging.PersistServerYearTask.perform(:ok)
+
+      Logging.PersistGameWeekTask.perform(:ok)
+      Logging.PersistGameMonthTask.perform(:ok)
+      Logging.PersistGameQuarterTask.perform(:ok)
+      Logging.PersistGameYearTask.perform(:ok)
     end)
 
     make_audit_logs(config)
+    Logger.info("Completed logging")
   end
 
   # defp combine_minutes(_config, date) do
