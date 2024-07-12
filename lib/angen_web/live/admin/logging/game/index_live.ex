@@ -58,35 +58,30 @@ defmodule AngenWeb.Admin.Logging.Game.IndexLive do
             order_by: "Newest first",
             limit: limit
           )
-          |> Enum.reverse()
 
         "week" ->
           Logging.list_game_week_logs(
             order_by: "Newest first",
             limit: limit
           )
-          |> Enum.reverse()
 
         "month" ->
           Logging.list_game_month_logs(
             order_by: "Newest first",
             limit: limit
           )
-          |> Enum.reverse()
 
         "quarter" ->
           Logging.list_game_quarter_logs(
             order_by: "Newest first",
             limit: limit
           )
-          |> Enum.reverse()
 
         "year" ->
           Logging.list_game_year_logs(
             order_by: "Newest first",
             limit: limit
           )
-          |> Enum.reverse()
 
         _ ->
           []

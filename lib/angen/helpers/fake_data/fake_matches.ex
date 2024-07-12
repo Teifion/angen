@@ -3,20 +3,22 @@ defmodule Angen.FakeData.FakeMatches do
 
   require Logger
   import Angen.Helpers.FakeDataHelper, only: [valid_user_ids: 1, random_time_in_day: 1]
-  alias Angen.Helper.TimexHelper
   alias Teiserver.Game
   alias Teiserver.Game.MatchTypeLib
 
+  @bar_format [
+    left: [IO.ANSI.green, String.pad_trailing("Matches: ", 20), IO.ANSI.reset, " |"]
+  ]
+
   @tags ~w(tag1 tag2 tag2 tag3 tag3 tag3 tag4 tag4 tag4 tag4)
 
-  defp matches_per_day(user_count), do: :rand.uniform(30) + :rand.uniform(user_count * 2) + 15
+  defp matches_per_day(user_count), do: :rand.uniform(user_count * 2) + 10
 
   def make_matches(config) do
-    Logger.info("Started matches")
-
     combined_data =
       0..config.days
       |> Enum.map(fn day ->
+        ProgressBar.render(day, config.days, @bar_format)
         date = Timex.today() |> Timex.shift(days: -day)
 
         make_daily_matches(config, date)
@@ -26,35 +28,38 @@ defmodule Angen.FakeData.FakeMatches do
     {matches, remaining_data} = Enum.unzip(combined_data)
     {memberships, settings} = Enum.unzip(List.flatten(remaining_data))
 
-    matches = List.flatten(matches)
-    memberships = List.flatten(memberships)
-    settings = List.flatten(settings)
+    ProgressBar.render_spinner [text: "Inserting matches", done: :remove], fn ->
+      matches
+      |> List.flatten
+      |> Enum.chunk_every(1_000)
+      |> Enum.each(fn chunk ->
+        Ecto.Multi.new()
+        |> Ecto.Multi.insert_all(:insert_all, Game.Match, List.flatten(chunk))
+        |> Angen.Repo.transaction()
+      end)
+    end
 
-    matches
-    |> Enum.chunk_every(1_000)
-    |> Enum.each(fn chunk ->
-      Ecto.Multi.new()
-      |> Ecto.Multi.insert_all(:insert_all, Game.Match, List.flatten(chunk))
-      |> Angen.Repo.transaction()
-    end)
+    ProgressBar.render_spinner [text: "Inserting memberships", done: :remove], fn ->
+      memberships
+      |> List.flatten
+      |> Enum.chunk_every(8_000)
+      |> Enum.each(fn chunk ->
+        Ecto.Multi.new()
+        |> Ecto.Multi.insert_all(:insert_all, Game.MatchMembership, List.flatten(chunk))
+        |> Angen.Repo.transaction()
+      end)
+    end
 
-    memberships
-    |> Enum.chunk_every(8_000)
-    |> Enum.each(fn chunk ->
-      Ecto.Multi.new()
-      |> Ecto.Multi.insert_all(:insert_all, Game.MatchMembership, List.flatten(chunk))
-      |> Angen.Repo.transaction()
-    end)
-
-    settings
-    |> Enum.chunk_every(8_000)
-    |> Enum.each(fn m_chunk ->
-      Ecto.Multi.new()
-      |> Ecto.Multi.insert_all(:insert_all, Game.MatchSetting, List.flatten(m_chunk))
-      |> Angen.Repo.transaction()
-    end)
-
-    Logger.info("Completed matches")
+    ProgressBar.render_spinner [text: "Inserting settings", done: :remove], fn ->
+      settings
+      |> List.flatten
+      |> Enum.chunk_every(8_000)
+      |> Enum.each(fn m_chunk ->
+        Ecto.Multi.new()
+        |> Ecto.Multi.insert_all(:insert_all, Game.MatchSetting, List.flatten(m_chunk))
+        |> Angen.Repo.transaction()
+      end)
+    end
   end
 
   defp make_daily_matches(config, date) do
@@ -91,7 +96,7 @@ defmodule Angen.FakeData.FakeMatches do
         team_count: team_count,
         team_size: team_size,
         processed?: true,
-        ended_normally?: match_duration < 120,
+        ended_normally?: match_duration > 120,
         lobby_opened_at: t1,
         match_started_at: t2,
         match_ended_at: t3,

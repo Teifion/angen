@@ -69,7 +69,6 @@ defmodule AngenWeb.Logging.GameComponents do
   def overview_detail(assigns) do
     assigns = assigns
       |> assign(:groups, ["rated", "team_count", "team_size", "type"])
-      |> assign(:buckets, 1..12 |> Enum.map(fn v -> v * 5 end))
 
     ~H"""
     <div class="row">
@@ -80,15 +79,15 @@ defmodule AngenWeb.Logging.GameComponents do
             <tbody>
               <tr>
                 <td>Total games</td>
-                <td><%= @data["totals"]["raw_count"] %></td>
+                <td><%= format_number(@data["totals"]["raw_count"]) %></td>
               </tr>
               <tr>
                 <td>Total players</td>
-                <td><%= @data["totals"]["player_count"] %></td>
+                <td><%= format_number(@data["totals"]["player_count"]) %></td>
               </tr>
               <tr>
                 <td>Player hours</td>
-                <td><%= @data["totals"]["player_hours"] %></td>
+                <td><%= format_number(@data["totals"]["player_hours"]) %></td>
               </tr>
             </tbody>
           </table>
@@ -112,9 +111,9 @@ defmodule AngenWeb.Logging.GameComponents do
             <tbody>
               <tr :for={value <- values}>
                 <td><%= value %></td>
-                <td><%= @data["matches"]["raw_counts"][group][value] %></td>
-                <td><%= @data["matches"]["player_counts"][group][value] %></td>
-                <td><%= @data["matches"]["player_hours"][group][value] %></td>
+                <td><%= format_number(@data["matches"]["raw_counts"][group][value]) %></td>
+                <td><%= format_number(@data["matches"]["player_counts"][group][value]) %></td>
+                <td><%= format_number(@data["matches"]["player_hours"][group][value]) %></td>
               </tr>
             </tbody>
           </table>
@@ -122,38 +121,11 @@ defmodule AngenWeb.Logging.GameComponents do
       </div>
     </div>
 
-    <div class="row">
-      <div class="col mt-4">
-        <.card>
-          <h4>By duration</h4>
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th>&nbsp;</th>
-                <th :for={b <- @buckets}><%= b %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Game count</td>
-                <% values = for b <- @buckets, do: @data["duration_minutes"]["raw_count"] |> Map.get(to_string(b), 0) %>
-                <AngenWeb.Logging.GameComponents.heatmap_row values={values} />
-              </tr>
-              <tr>
-                <td>Player count</td>
-                <% values = for b <- @buckets, do: @data["duration_minutes"]["player_counts"] |> Map.get(to_string(b), 0) %>
-                <AngenWeb.Logging.GameComponents.heatmap_row values={values} />
-              </tr>
-              <tr>
-                <td>Player hours</td>
-                <% values = for b <- @buckets, do: @data["duration_minutes"]["player_hours"] |> Map.get(to_string(b), 0) %>
-                <AngenWeb.Logging.GameComponents.heatmap_row values={values} />
-              </tr>
-            </tbody>
-          </table>
-        </.card>
-      </div>
-    </div>
+    <AngenWeb.Logging.GameComponents.start_times_row data={@data} />
+
+    <AngenWeb.Logging.GameComponents.by_duration_row data={@data} />
+
+
 
     <div class="row">
       <div class="mt-4 col-md-6 col-lg-4 col-xl-3" :for={{setting_key, setting_data} <- @data["settings"]}>
@@ -173,9 +145,91 @@ defmodule AngenWeb.Logging.GameComponents do
             <tbody>
               <tr :for={value <- setting_values}>
                 <td><%= value %></td>
-                <td><%= setting_data["raw_count"][value] %></td>
-                <td><%= setting_data["player_counts"][value] %></td>
-                <td><%= setting_data["player_hours"][value] %></td>
+                <td><%= format_number(setting_data["raw_count"][value]) %></td>
+                <td><%= format_number(setting_data["player_counts"][value]) %></td>
+                <td><%= format_number(setting_data["player_hours"][value]) %></td>
+              </tr>
+            </tbody>
+          </table>
+        </.card>
+      </div>
+    </div>
+    """
+  end
+
+
+  @doc """
+  <AngenWeb.Logging.GameComponents.start_times_row data={@data} />
+  """
+  attr :data, :map, required: true
+
+  def start_times_row(assigns) do
+    assigns = assigns
+      |> assign(:start_buckets, 0..23 |> Enum.map(fn v -> ["#{v}.0", "#{v}.1", "#{v}.2", "#{v}.3"] end) |> List.flatten)
+      |> assign(:short_start_buckets, 0..23)
+
+    ~H"""
+    <div class="row" id="start-times-row">
+      <div class="col mt-4">
+        <.card>
+          Heatmap of start hour (all times are UTC). Each block is 15 minutes.
+          <table class="table table-sm empty-cells">
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th :for={b <- @short_start_buckets} colspan="4" style="border-left: 1px solid #AAA;"><%= b %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Game count</td>
+                <% values = for b <- @start_buckets, do: @data["start_times"]["raw_count"] |> Map.get(to_string(b), 0) %>
+                <AngenWeb.Logging.GameComponents.heatmap_row values={values} minimum={0} print={false} />
+              </tr>
+            </tbody>
+          </table>
+        </.card>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  <AngenWeb.Logging.GameComponents.by_duration_row data={@data} />
+  """
+  attr :data, :map, required: true
+
+  def by_duration_row(assigns) do
+    assigns = assigns
+      |> assign(:duration_buckets, 1..12 |> Enum.map(fn v -> v * 5 end))
+
+    ~H"""
+    <div class="row">
+      <div class="col mt-4">
+        <.card>
+          Counts grouped by duration (rounds downwards), anything larger than the largest value is placed in the largest value. Durations are in minutes.
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th :for={b <- @duration_buckets}><%= b %></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Game count</td>
+                <% values = for b <- @duration_buckets, do: @data["duration_minutes"]["raw_count"] |> Map.get(to_string(b), 0) %>
+                <AngenWeb.Logging.GameComponents.heatmap_row values={values} minimum={0} />
+              </tr>
+              <tr>
+                <td>Player count</td>
+                <% values = for b <- @duration_buckets, do: @data["duration_minutes"]["player_counts"] |> Map.get(to_string(b), 0) %>
+                <AngenWeb.Logging.GameComponents.heatmap_row values={values} minimum={0} />
+              </tr>
+              <tr>
+                <td>Player hours</td>
+                <% values = for b <- @duration_buckets, do: @data["duration_minutes"]["player_hours"] |> Map.get(to_string(b), 0) %>
+                <AngenWeb.Logging.GameComponents.heatmap_row values={values} minimum={0} />
               </tr>
             </tbody>
           </table>
@@ -214,6 +268,7 @@ defmodule AngenWeb.Logging.GameComponents do
   attr :values, :list, required: true
   attr :maximum, :integer, default: nil
   attr :minimum, :integer, default: nil
+  attr :print, :boolean, default: true
 
   def heatmap_row(assigns) do
     assigns = assigns
@@ -221,7 +276,7 @@ defmodule AngenWeb.Logging.GameComponents do
       |> assign(:minimum, assigns[:minimum] || Enum.min(assigns[:values]))
 
     ~H"""
-    <AngenWeb.Logging.GameComponents.heatmap_cell value={v} minimum={@minimum} maximum={@maximum} :for={v <- @values} />
+    <AngenWeb.Logging.GameComponents.heatmap_cell value={v} minimum={@minimum} maximum={@maximum} print={@print} :for={v <- @values} />
     """
   end
 
@@ -231,6 +286,7 @@ defmodule AngenWeb.Logging.GameComponents do
   attr :value, :integer, required: true
   attr :maximum, :integer, default: nil
   attr :minimum, :integer, default: nil
+  attr :print, :boolean, default: true
 
   def heatmap_cell(assigns) do
     colour = heatmap_cell_colour(assigns[:value], assigns[:minimum], assigns[:maximum])
@@ -239,9 +295,7 @@ defmodule AngenWeb.Logging.GameComponents do
       |> assign(:colour, colour)
 
     ~H"""
-    <td style={"background-color: ##{@colour}"}>
-      <%= format_number(@value) %>
-    </td>
+    <td class="heatmap-cell" style={"background-color: ##{@colour};"}><%= if @print, do: format_number(@value) %></td>
     """
   end
 
@@ -249,15 +303,16 @@ defmodule AngenWeb.Logging.GameComponents do
     percentage = max(value, minimum) / max(maximum, 1)
 
     [
-      105 + percentage * 150,
-      105 + (150 - percentage * 150),
-      50
+      percentage * 255,
+      percentage * 25,
+      percentage * 25
     ]
     |> Enum.map_join(fn colour ->
       colour
       |> round
       |> Integer.to_string(16)
       |> to_string
+      |> String.pad_leading(2, "0")
     end)
   end
 end

@@ -79,6 +79,7 @@ defmodule Angen.MixProject do
       {:ex_json_schema, "~> 0.10.2"},
       {:excoveralls, "~> 0.18.1", only: :test, runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:progress_bar, "~> 3.0"},
 
       # We're pointing it at a specific git branch most of the time but
       # when developing locally we'll want to use a relative
@@ -86,7 +87,7 @@ defmodule Angen.MixProject do
       # {:teiserver, "~> 0.0.5"}
       # {:teiserver,
       #  git: "https://github.com/teifion/teiserver.git",
-      #  ref: "a1567ab2b07c853b1e436795ee411f667d486bbd"
+      #  ref: "6c7665f6d51b759760c5b28308171a1a0b9e1666"
       # }
       {:teiserver, path: "../teiserver"}
     ]

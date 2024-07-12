@@ -1,18 +1,23 @@
 defmodule Angen.FakeData.FakeAccounts do
   @moduledoc false
 
-  require Logger
   alias Teiserver.Account
-
   import Angen.Helpers.FakeDataHelper, only: [random_time_in_day: 1]
 
+  @bar_format [
+    left: [IO.ANSI.green, String.pad_trailing("Accounts: ", 20), IO.ANSI.reset, " |"]
+  ]
+
   def make_accounts(config) do
-    Logger.info("Started accounts")
     root_user = Account.get_user_by_email("root@localhost")
 
+    range_max = (config.days + 1)
+
     new_users =
-      0..(config.days + 1)
+      0..range_max
       |> Enum.map(fn day ->
+        ProgressBar.render(day, range_max, @bar_format)
+
         # Make an extra 50 users for the first day
         users_to_make =
           if day == config.days + 1 do
@@ -44,9 +49,7 @@ defmodule Angen.FakeData.FakeAccounts do
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:insert_all, Account.User, new_users)
     |> Angen.Repo.transaction()
-
-    Logger.info("Completed accounts")
   end
 
-  defp users_per_day, do: :rand.uniform(5) + 2
+  defp users_per_day, do: :rand.uniform(3)
 end

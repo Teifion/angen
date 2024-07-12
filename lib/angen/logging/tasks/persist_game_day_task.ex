@@ -138,6 +138,10 @@ defmodule Angen.Logging.PersistGameDayTask do
         raw_count: match_count_by_duration_buckets(start_date, end_date),
         player_counts: player_count_by_duration_buckets(start_date, end_date),
         player_hours: player_hours_by_duration_buckets(start_date, end_date),
+      },
+
+      start_times: %{
+        raw_count: games_by_start_time(start_date, end_date)
       }
     }
   end
@@ -354,6 +358,26 @@ defmodule Angen.Logging.PersistGameDayTask do
 
     results.rows
     |> Map.new(fn [key, value] -> {key, value} end)
+  end
+
+  defp games_by_start_time(start_date, end_date) do
+    # 48 buckets in 24 hours minutes, 30 minutes per bucket
+    query = """
+      SELECT date_part('hour', m."match_started_at") as hour,
+        floor(date_part('minute', m."match_started_at")/15) as quarter_hour,
+        SUM(m.player_count * m.match_duration_seconds)/3600
+      FROM #{@match_table} m
+      WHERE m.match_started_at > $1
+        AND m.match_started_at < $2
+        AND m."processed?" = TRUE
+        AND m."ended_normally?" = TRUE
+      GROUP BY hour, quarter_hour
+    """
+
+    {:ok, results} = Ecto.Adapters.SQL.query(Repo, query, [start_date, end_date])
+
+    results.rows
+    |> Map.new(fn [key1, key2, value] -> {"#{round(key1)}.#{round(key2)}", value} end)
   end
 
   defp match_type_key_swap(m) do

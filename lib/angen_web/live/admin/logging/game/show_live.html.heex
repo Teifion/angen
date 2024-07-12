@@ -8,6 +8,26 @@
     }
   end) %>
 
+<style type="text/css">
+  .heatmap-cell {
+    color: #FFF !important;
+    text-shadow: 0px 0px #000;
+    font-weight: bold;
+    font-size: 0.9em;
+  }
+
+  .xs-cells td {
+    padding-left: 1px;
+    padding-right: 1px;
+    text-align: center;
+  }
+
+  .empty-cells td {
+    padding-left: 0;
+    padding-right: 0;
+  }
+</style>
+
 <AngenWeb.Logging.GameComponents.filter_bar
   unit={@unit}
   mode={@mode}

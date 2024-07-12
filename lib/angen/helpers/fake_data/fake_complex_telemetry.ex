@@ -1,15 +1,17 @@
 defmodule Angen.FakeData.FakeComplexTelemetry do
   @moduledoc false
 
-  require Logger
   alias Angen.Telemetry
   import Angen.Helpers.FakeDataHelper, only: [valid_user_ids: 1, random_time_in_day: 1, matches_this_day: 1]
 
-  def make_complex_events(config) do
-    Logger.info("Started Complex telemetry")
+  @bar_format [
+    left: [IO.ANSI.green, String.pad_trailing("Complex events: ", 20), IO.ANSI.reset, " |"]
+  ]
 
+  def make_complex_events(config) do
     0..min(config.days, 90)
     |> Enum.each(fn day ->
+      ProgressBar.render(day, config.days, @bar_format)
       date = Timex.today() |> Timex.shift(days: -day)
 
       make_complex_anon(config, date)
@@ -18,8 +20,6 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
       make_complex_match(config, date)
       make_complex_server(config, date)
     end)
-
-    Logger.info("Completed Complex telemetry")
   end
 
   def make_complex_anon(_config, date) do

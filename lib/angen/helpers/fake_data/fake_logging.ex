@@ -1,7 +1,6 @@
 defmodule Angen.FakeData.FakeLogging do
   @moduledoc false
 
-  require Logger
   alias Angen.Logging
   import Logging.PersistServerMinuteTask, only: [add_total_key: 1, add_total_key: 3]
 
@@ -14,36 +13,65 @@ defmodule Angen.FakeData.FakeLogging do
       random_time_in_day: 1
     ]
 
+  @bar_detail_format [
+    left: [IO.ANSI.green, String.pad_trailing("Minute logs: ", 20), IO.ANSI.reset, " |"]
+  ]
+
+  @bar_day_format [
+    left: [IO.ANSI.green, String.pad_trailing("Server day logs: ", 20), IO.ANSI.reset, " |"]
+  ]
+
+  @bar_day_detail_format [
+    left: [IO.ANSI.green, String.pad_trailing("Combining minutes: ", 20), IO.ANSI.reset, " |"]
+  ]
+
+  @bar_game_day_format [
+    left: [IO.ANSI.green, String.pad_trailing("Game day logs: ", 20), IO.ANSI.reset, " |"]
+  ]
+
+  @bar_longer_logs_format [
+    left: [IO.ANSI.green, String.pad_trailing("Longer logs: ", 20), IO.ANSI.reset, " |"]
+  ]
+
+  @bar_audit_format [
+    left: [IO.ANSI.green, String.pad_trailing("Audit logs: ", 20), IO.ANSI.reset, " |"]
+  ]
+
   def make_logs(config) do
-    Logger.info("Started logging")
+    range_max = min(config.days, config.detail_days)
 
     # We only want a few days of minute logs
-    0..min(config.days, config.detail_days)
+    0..range_max
     |> Enum.each(fn day ->
+      ProgressBar.render(day, range_max, @bar_detail_format)
       date = Timex.today() |> Timex.shift(days: -day)
 
       make_server_minutes(Map.put(config, :node, "node1"), date)
       make_server_minutes(Map.put(config, :node, "node2"), date)
       make_server_minutes(Map.put(config, :node, "all"), date)
-      # combine_minutes(config, date)
     end)
 
     make_server_days(config)
 
     # For the days with detail we can generate them using the actual data
     0..min(config.days, config.detail_days)
-    |> Enum.each(fn _ ->
+    |> Enum.each(fn d ->
+      ProgressBar.render(d, min(config.days, config.detail_days), @bar_day_detail_format)
       Logging.PersistServerDayTask.perform(:ok)
     end)
 
     0..config.days
-    |> Enum.each(fn _ ->
+    |> Enum.each(fn d ->
+      ProgressBar.render(d, config.days, @bar_game_day_format)
       Logging.PersistGameDayTask.perform(:ok)
     end)
 
     # Persist Week, Month, Quarter and Year
-    0..round(config.days / 7)
-    |> Enum.each(fn _ ->
+    upper_range = round(:math.ceil(config.days / 7))
+    0..upper_range
+    |> Enum.each(fn d ->
+      ProgressBar.render(d, upper_range, @bar_longer_logs_format)
+
       Logging.PersistServerWeekTask.perform(:ok)
       Logging.PersistServerMonthTask.perform(:ok)
       Logging.PersistServerQuarterTask.perform(:ok)
@@ -56,21 +84,7 @@ defmodule Angen.FakeData.FakeLogging do
     end)
 
     make_audit_logs(config)
-    Logger.info("Completed logging")
   end
-
-  # defp combine_minutes(_config, date) do
-  #   0..1439
-  #   |> Enum.each(fn m ->
-  #     timestamp =
-  #       date
-  #       |> Timex.to_datetime()
-  #       |> Timex.shift(minutes: m)
-  #       |> Timex.set(microsecond: 0, second: 0)
-
-  #     Logging.CombineServerMinuteTask.perform(%{now: timestamp})
-  #   end)
-  # end
 
   defp make_server_minutes(config, date) do
     max_users = Enum.count(valid_user_ids(date))
@@ -179,10 +193,15 @@ defmodule Angen.FakeData.FakeLogging do
   end
 
   def make_server_days(config) do
+    int_range = config.days - config.detail_days
+
     # Now do much longer for days
     {new_logs, _} =
       config.days..config.detail_days
       |> Enum.map_reduce(%{}, fn day, last_data ->
+        progress = int_range - day - config.detail_days
+        ProgressBar.render(progress, int_range, @bar_day_format)
+
         date = Timex.today() |> Timex.shift(days: -day)
         max_users = Enum.count(valid_user_ids(date))
 
@@ -326,6 +345,7 @@ defmodule Angen.FakeData.FakeLogging do
     log_data =
       0..(config.days - 1)
       |> Enum.map(fn day ->
+        ProgressBar.render(day, (config.days - 1), @bar_audit_format)
         date = Timex.today() |> Timex.shift(days: -day)
         user_ids = valid_user_ids(date)
 

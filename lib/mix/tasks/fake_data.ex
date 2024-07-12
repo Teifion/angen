@@ -40,14 +40,15 @@ defmodule Mix.Tasks.Angen.Fakedata do
     if Application.get_env(:angen, :enfys_mode) do
       config = parse_args(args)
 
-      start_time = System.system_time(:second)
-
       # Start by rebuilding the database
       Mix.Task.run("ecto.reset")
 
       # We have to start Angen to change the logger config
       Application.ensure_all_started(:angen)
       Logger.configure(level: :info)
+      :timer.sleep(1_000)
+
+      start_time = System.system_time(:second)
 
       _root_user = add_root_user()
 
@@ -117,7 +118,7 @@ defmodule Mix.Tasks.Angen.Fakedata do
           results.rows
           |> Enum.reject(fn [table, row_count] ->
             row_count <= 0 or
-              Enum.member?(~w(oban_peers teiserver_cluster_members account_user_tokens), table)
+              Enum.member?(~w(oban_peers oban_jobs teiserver_cluster_members account_user_tokens schema_migrations), table)
           end)
 
         {a, b} ->
