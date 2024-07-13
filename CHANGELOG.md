@@ -1,5 +1,4 @@
 # TODO for Teiserver 0.0.5
-- Creating of aggregate game match stats
 - Rest API for creating telemetry events
 - Rest API for creating game matches
 - Telemetry event export

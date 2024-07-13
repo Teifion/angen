@@ -50,7 +50,7 @@ defmodule AngenWeb.Router do
         {AngenWeb.UserAuth, :ensure_authenticated},
         {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
       ] do
-      live "/", HomeLive
+      live "/", IndexLive
     end
   end
 
