@@ -305,32 +305,9 @@ defmodule Angen.FakeData.FakeLogging do
             config.max_users / 1.5,
             get_in(last_day, ~w(stats unique_users))
           )
-      },
-      "telemetry_events" => %{
-        "simple_clientapp" => %{
-          "connected" =>
-            rand_int(
-              config.max_users / 6,
-              config.max_users,
-              get_in(last_day, ~w(telemetry simple_clientapp connected))
-            ),
-          "disconnected" =>
-            rand_int(
-              config.max_users / 6,
-              config.max_users,
-              get_in(last_day, ~w(telemetry simple_clientapp disconnected))
-            )
-        },
-        "simple_lobby" => %{
-          "cycle" =>
-            rand_int(
-              config.max_users * 4,
-              config.max_users * 12,
-              get_in(last_day, ~w(telemetry simple_clientapp cycle))
-            )
-        }
       }
     }
+    |> Angen.Logging.PersistServerDayTask.add_telemetry(config.date)
   end
 
   defp add_bot_totals(m) do

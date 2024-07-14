@@ -144,7 +144,7 @@ defmodule Angen.Logging.PersistServerDayTask do
         extend_segment(segment, logs)
       end)
       |> calculate_day_statistics(date, "all")
-      |> add_telemetry(date, "all")
+      |> add_telemetry(date)
 
     if cleanup do
       clean_up_logs(date)
@@ -175,7 +175,7 @@ defmodule Angen.Logging.PersistServerDayTask do
       extend_segment(segment, logs)
     end)
     |> calculate_day_statistics(date, node)
-    |> add_telemetry(date, node)
+    |> add_telemetry(date)
     |> Jason.encode!()
     |> Jason.decode!()
 
@@ -316,7 +316,7 @@ defmodule Angen.Logging.PersistServerDayTask do
     }
   end
 
-  defp add_telemetry(data, date, _node) do
+  def add_telemetry(data, date) do
     end_of_day = Timex.shift(date, days: 1)
 
     Map.put(data, :telemetry_events, %{
