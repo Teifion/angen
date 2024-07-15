@@ -1,4 +1,4 @@
-defmodule Teiserver.Caches.ProtocolCache do
+defmodule Angen.Caches.ProtocolCache do
   @moduledoc """
   Caches for the json schemas used in the protocol.
   """

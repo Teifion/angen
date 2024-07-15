@@ -22,10 +22,10 @@ defmodule Angen.Application do
       Angen.DevSupport.IntegrationSupervisor,
 
       # Caches
-      Teiserver.Caches.MetadataCache,
-      Teiserver.Caches.UserLoginCache,
-      Teiserver.Caches.ProtocolCache,
-      Teiserver.Caches.TelemetryEventCache,
+      Angen.Caches.MetadataCache,
+      Angen.Caches.UserLoginCache,
+      Angen.Caches.ProtocolCache,
+      Angen.Caches.TelemetryEventCache,
 
       # Client connections
       {Horde.Registry, [keys: :unique, members: :auto, name: Angen.ConnectionRegistry]},

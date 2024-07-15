@@ -1,4 +1,4 @@
-defmodule Teiserver.Caches.MetadataCache do
+defmodule Angen.Caches.MetadataCache do
   @moduledoc """
   Cache for global runtime variables
   """

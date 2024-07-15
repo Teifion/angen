@@ -1,4 +1,4 @@
-defmodule Teiserver.Caches.UserLoginCache do
+defmodule Angen.Caches.UserLoginCache do
   @moduledoc """
   Cache for anything related to user logins built in addition to Teiserver functionality
   """

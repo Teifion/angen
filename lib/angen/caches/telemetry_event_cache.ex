@@ -1,4 +1,4 @@
-defmodule Teiserver.Caches.TelemetryEventCache do
+defmodule Angen.Caches.TelemetryEventCache do
   @moduledoc """
   Caches for telemetry event types.
   """
