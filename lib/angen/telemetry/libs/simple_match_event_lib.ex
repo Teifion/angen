@@ -9,7 +9,12 @@ defmodule Angen.Telemetry.SimpleMatchEventLib do
   @doc """
   A wrapper around create_simple_match_event which handles grabbing the event_type_id
   """
-  @spec log_simple_match_event(String.t(), Teiserver.match_id(), Teiserver.user_id(), non_neg_integer()) ::
+  @spec log_simple_match_event(
+          String.t(),
+          Teiserver.match_id(),
+          Teiserver.user_id(),
+          non_neg_integer()
+        ) ::
           :ok | {:error, String.t()}
   def log_simple_match_event(name, match_id, user_id, game_time_seconds) do
     type_id = Telemetry.get_or_add_event_type_id(name, "simple_match")

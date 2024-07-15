@@ -9,7 +9,8 @@ defmodule Angen.Telemetry.ComplexClientappEventLib do
   @doc """
   A wrapper around create_complex_clientapp_event which handles grabbing the event_type_id
   """
-  @spec log_complex_clientapp_event(String.t(), Teiserver.user_id(), map()) :: :ok | {:error, String.t()}
+  @spec log_complex_clientapp_event(String.t(), Teiserver.user_id(), map()) ::
+          :ok | {:error, String.t()}
   def log_complex_clientapp_event(name, user_id, details) do
     type_id = Telemetry.get_or_add_event_type_id(name, "complex_clientapp")
 

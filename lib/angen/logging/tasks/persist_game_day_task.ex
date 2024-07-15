@@ -38,7 +38,13 @@ defmodule Angen.Logging.PersistGameDayTask do
   # This is not a query we want to run often but it should only run when we
   # have no game_logs in the DB and thus a very small population of matches
   defp get_timestamp_of_first_game() do
-    result = Game.get_match(nil, where: [ended_normally?: true], limit: 1, order_by: ["Oldest first"], select: [:match_started_at])
+    result =
+      Game.get_match(nil,
+        where: [ended_normally?: true],
+        limit: 1,
+        order_by: ["Oldest first"],
+        select: [:match_started_at]
+      )
 
     case result do
       nil ->
@@ -84,7 +90,7 @@ defmodule Angen.Logging.PersistGameDayTask do
     # We encode and decode so it's the same format as in the database
   end
 
-  @spec generate_game_summary_data(Date.t, Date.t) :: map
+  @spec generate_game_summary_data(Date.t(), Date.t()) :: map
   def generate_game_summary_data(start_date, end_date) do
     start_date = Timex.to_datetime(start_date)
     end_date = Timex.to_datetime(end_date)
@@ -113,33 +119,31 @@ defmodule Angen.Logging.PersistGameDayTask do
           rated: player_hours_by_grouping(start_date, end_date, "rated?"),
           team_size: player_hours_by_grouping(start_date, end_date, "team_size"),
           team_count: player_hours_by_grouping(start_date, end_date, "team_count")
-        },
+        }
       },
-
       settings: %{
         map: %{
           raw_count: match_count_by_setting_value(start_date, end_date, "map"),
           player_counts: player_count_by_setting_value(start_date, end_date, "map"),
-          player_hours: player_hours_by_setting_value(start_date, end_date, "map"),
+          player_hours: player_hours_by_setting_value(start_date, end_date, "map")
         },
         "win-condition": %{
           raw_count: match_count_by_setting_value(start_date, end_date, "win-condition"),
           player_counts: player_count_by_setting_value(start_date, end_date, "win-condition"),
-          player_hours: player_hours_by_setting_value(start_date, end_date, "win-condition"),
+          player_hours: player_hours_by_setting_value(start_date, end_date, "win-condition")
         },
         "starting-resources": %{
           raw_count: match_count_by_setting_value(start_date, end_date, "starting-resources"),
-          player_counts: player_count_by_setting_value(start_date, end_date, "starting-resources"),
-          player_hours: player_hours_by_setting_value(start_date, end_date, "starting-resources"),
+          player_counts:
+            player_count_by_setting_value(start_date, end_date, "starting-resources"),
+          player_hours: player_hours_by_setting_value(start_date, end_date, "starting-resources")
         }
       },
-
       duration_minutes: %{
         raw_count: match_count_by_duration_buckets(start_date, end_date),
         player_counts: player_count_by_duration_buckets(start_date, end_date),
-        player_hours: player_hours_by_duration_buckets(start_date, end_date),
+        player_hours: player_hours_by_duration_buckets(start_date, end_date)
       },
-
       start_times: %{
         raw_count: games_by_start_time(start_date, end_date)
       }
@@ -304,7 +308,6 @@ defmodule Angen.Logging.PersistGameDayTask do
     results.rows
     |> Map.new(fn [key, value] -> {key, value} end)
   end
-
 
   defp match_count_by_duration_buckets(start_date, end_date) do
     # 12 buckets in 60 minutes, 5 minutes per bucket

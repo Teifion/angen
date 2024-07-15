@@ -24,8 +24,7 @@ defmodule AngenWeb.Admin.Account.ShowLive do
      socket
      |> assign(:site_menu_active, "account")
      |> assign(:user_id, nil)
-     |> assign(:user, nil)
-    }
+     |> assign(:user, nil)}
   end
 
   @impl true
@@ -35,12 +34,13 @@ defmodule AngenWeb.Admin.Account.ShowLive do
 
   @spec get_user(Phoenix.Socket.t()) :: Phoenix.Socket.t()
   defp get_user(%{assigns: %{user_id: user_id}} = socket) do
-    user = try do
-      Account.get_user_by_id(user_id)
-    rescue
-      _ in Ecto.Query.CastError ->
-        nil
-    end
+    user =
+      try do
+        Account.get_user_by_id(user_id)
+      rescue
+        _ in Ecto.Query.CastError ->
+          nil
+      end
 
     socket
     |> assign(:user, user)

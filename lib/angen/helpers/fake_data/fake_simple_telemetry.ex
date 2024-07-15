@@ -2,10 +2,12 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
   @moduledoc false
 
   alias Angen.Telemetry
-  import Angen.Helpers.FakeDataHelper, only: [valid_user_ids: 1, random_time_in_day: 1, matches_this_day: 1]
+
+  import Angen.Helpers.FakeDataHelper,
+    only: [valid_user_ids: 1, random_time_in_day: 1, matches_this_day: 1]
 
   @bar_format [
-    left: [IO.ANSI.green, String.pad_trailing("Simple events: ", 20), IO.ANSI.reset, " |"]
+    left: [IO.ANSI.green(), String.pad_trailing("Simple events: ", 20), IO.ANSI.reset(), " |"]
   ]
 
   def make_simple_events(config) do
@@ -91,7 +93,6 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
           %{
             event_type_id: type_id,
             user_id: user_id,
-
             inserted_at: random_time_in_day(date)
           }
         end)
@@ -105,10 +106,11 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
     match_ids = matches_this_day(date)
     user_ids = valid_user_ids(date)
 
-    events = [
-      create_simple_lobby("cycle", match_ids, user_ids, [0, 1, 2, 3], date)
-    ]
-    |> List.flatten()
+    events =
+      [
+        create_simple_lobby("cycle", match_ids, user_ids, [0, 1, 2, 3], date)
+      ]
+      |> List.flatten()
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:insert_all, Telemetry.SimpleLobbyEvent, events)
@@ -142,11 +144,12 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
     match_ids = matches_this_day(date)
     user_ids = valid_user_ids(date)
 
-    events = [
-      create_simple_match("auto-scout", match_ids, user_ids, [0, 0, 1], date),
-      create_simple_match("ultimate-ability", match_ids, user_ids, [0, 0, 0, 1, 2, 3], date)
-    ]
-    |> List.flatten()
+    events =
+      [
+        create_simple_match("auto-scout", match_ids, user_ids, [0, 0, 1], date),
+        create_simple_match("ultimate-ability", match_ids, user_ids, [0, 0, 0, 1, 2, 3], date)
+      ]
+      |> List.flatten()
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:insert_all, Telemetry.SimpleMatchEvent, events)
@@ -182,7 +185,7 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
 
     events =
       [
-        create_simple_server("banned user denied", user_ids, [0, 0, 0, 0, 0, 1], date),
+        create_simple_server("banned user denied", user_ids, [0, 0, 0, 0, 0, 1], date)
       ]
       |> List.flatten()
 
@@ -204,7 +207,6 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
           %{
             event_type_id: type_id,
             user_id: user_id,
-
             inserted_at: random_time_in_day(date)
           }
         end)

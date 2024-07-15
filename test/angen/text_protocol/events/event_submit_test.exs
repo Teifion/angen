@@ -17,7 +17,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
 
       %{socket: socket} = raw_connection()
 
-      speak(socket, %{name: "events/anonymous", command: %{event: Teiserver.uuid(), hash_id: hash_id}})
+      speak(socket, %{
+        name: "events/anonymous",
+        command: %{event: Teiserver.uuid(), hash_id: hash_id}
+      })
+
       msg = listen(socket)
       assert_success(msg, "events/anonymous")
 
@@ -31,7 +35,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
 
       %{socket: socket} = raw_connection()
 
-      speak(socket, %{name: "events/anonymous", command: %{event: Teiserver.uuid(), hash_id: hash_id, details: @details}})
+      speak(socket, %{
+        name: "events/anonymous",
+        command: %{event: Teiserver.uuid(), hash_id: hash_id, details: @details}
+      })
+
       msg = listen(socket)
       assert_success(msg, "events/anonymous")
 
@@ -67,7 +75,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       %{socket: socket, user_id: user_id} = auth_connection()
       assert Enum.empty?(Telemetry.list_complex_clientapp_events(where: [user_id: user_id]))
 
-      speak(socket, %{name: "events/client", command: %{event: Teiserver.uuid(), details: @details}})
+      speak(socket, %{
+        name: "events/client",
+        command: %{event: Teiserver.uuid(), details: @details}
+      })
+
       msg = listen(socket)
       assert_success(msg, "events/client")
 
@@ -81,7 +93,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "unauth" do
       %{socket: socket} = raw_connection()
 
-      speak(socket, %{name: "events/match", command: %{event: Teiserver.uuid(), game_seconds: 123}})
+      speak(socket, %{
+        name: "events/match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123}
+      })
+
       msg = listen(socket)
 
       assert_auth_failure(msg, "events/match")
@@ -90,7 +106,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "auth - not in lobby" do
       %{socket: socket} = auth_connection()
 
-      speak(socket, %{name: "events/match", command: %{event: Teiserver.uuid(), game_seconds: 123}})
+      speak(socket, %{
+        name: "events/match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123}
+      })
+
       msg = listen(socket)
 
       assert_failure(msg, "events/match", "Must be in an ongoing match")
@@ -102,7 +122,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       Api.add_client_to_lobby(user_id, lobby_id)
       flush_socket(socket)
 
-      speak(socket, %{name: "events/match", command: %{event: Teiserver.uuid(), game_seconds: 123}})
+      speak(socket, %{
+        name: "events/match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123}
+      })
+
       msg = listen(socket)
 
       assert_failure(msg, "events/match", "Must be in an ongoing match")
@@ -117,7 +141,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
 
       assert Enum.empty?(Telemetry.list_simple_match_events(where: [user_id: user_id]))
 
-      speak(socket, %{name: "events/match", command: %{event: Teiserver.uuid(), game_seconds: 123}})
+      speak(socket, %{
+        name: "events/match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123}
+      })
+
       msg = listen(socket)
       assert_success(msg, "events/match")
 
@@ -134,7 +162,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
 
       assert Enum.empty?(Telemetry.list_complex_match_events(where: [user_id: user_id]))
 
-      speak(socket, %{name: "events/match", command: %{event: Teiserver.uuid(), game_seconds: 123, details: @details}})
+      speak(socket, %{
+        name: "events/match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123, details: @details}
+      })
+
       msg = listen(socket)
       assert_success(msg, "events/match")
 
@@ -149,7 +181,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       %{id: user_id} = create_test_user()
       %{socket: socket} = raw_connection()
 
-      speak(socket, %{name: "events/host_match", command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}})
+      speak(socket, %{
+        name: "events/host_match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}
+      })
+
       msg = listen(socket)
 
       assert_auth_failure(msg, "events/host_match")
@@ -158,7 +194,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "auth - not in lobby" do
       %{socket: socket, user_id: user_id} = auth_connection()
 
-      speak(socket, %{name: "events/host_match", command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}})
+      speak(socket, %{
+        name: "events/host_match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}
+      })
+
       msg = listen(socket)
 
       assert_failure(msg, "events/host_match", "Must be in an ongoing match")
@@ -170,7 +210,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       Api.add_client_to_lobby(user_id, lobby_id)
       flush_socket(socket)
 
-      speak(socket, %{name: "events/host_match", command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}})
+      speak(socket, %{
+        name: "events/host_match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}
+      })
+
       msg = listen(socket)
 
       assert_failure(msg, "events/host_match", "Must be in an ongoing match")
@@ -183,7 +227,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       Api.start_match(lobby_id)
       flush_socket(socket)
 
-      speak(socket, %{name: "events/host_match", command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}})
+      speak(socket, %{
+        name: "events/host_match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}
+      })
+
       msg = listen(socket)
 
       assert_failure(msg, "events/host_match", "Must be the host of the lobby")
@@ -198,7 +246,11 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
 
       assert Enum.empty?(Telemetry.list_simple_match_events(where: [user_id: user_id]))
 
-      speak(socket, %{name: "events/host_match", command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}})
+      speak(socket, %{
+        name: "events/host_match",
+        command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id}
+      })
+
       msg = listen(socket)
       assert_success(msg, "events/host_match")
 
@@ -215,7 +267,16 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
 
       assert Enum.empty?(Telemetry.list_complex_match_events(where: [user_id: user_id]))
 
-      speak(socket, %{name: "events/host_match", command: %{event: Teiserver.uuid(), game_seconds: 123, user_id: user_id, details: @details}})
+      speak(socket, %{
+        name: "events/host_match",
+        command: %{
+          event: Teiserver.uuid(),
+          game_seconds: 123,
+          user_id: user_id,
+          details: @details
+        }
+      })
+
       msg = listen(socket)
       assert_success(msg, "events/host_match")
 

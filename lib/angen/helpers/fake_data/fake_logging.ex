@@ -14,23 +14,23 @@ defmodule Angen.FakeData.FakeLogging do
     ]
 
   @bar_detail_format [
-    left: [IO.ANSI.green, String.pad_trailing("Minute logs: ", 20), IO.ANSI.reset, " |"]
+    left: [IO.ANSI.green(), String.pad_trailing("Minute logs: ", 20), IO.ANSI.reset(), " |"]
   ]
 
   @bar_day_detail_format [
-    left: [IO.ANSI.green, String.pad_trailing("Combining minutes: ", 20), IO.ANSI.reset, " |"]
+    left: [IO.ANSI.green(), String.pad_trailing("Combining minutes: ", 20), IO.ANSI.reset(), " |"]
   ]
 
   @bar_game_day_format [
-    left: [IO.ANSI.green, String.pad_trailing("Game day logs: ", 20), IO.ANSI.reset, " |"]
+    left: [IO.ANSI.green(), String.pad_trailing("Game day logs: ", 20), IO.ANSI.reset(), " |"]
   ]
 
   @bar_longer_logs_format [
-    left: [IO.ANSI.green, String.pad_trailing("Longer logs: ", 20), IO.ANSI.reset, " |"]
+    left: [IO.ANSI.green(), String.pad_trailing("Longer logs: ", 20), IO.ANSI.reset(), " |"]
   ]
 
   @bar_audit_format [
-    left: [IO.ANSI.green, String.pad_trailing("Audit logs: ", 20), IO.ANSI.reset, " |"]
+    left: [IO.ANSI.green(), String.pad_trailing("Audit logs: ", 20), IO.ANSI.reset(), " |"]
   ]
 
   def make_logs(config) do
@@ -47,9 +47,9 @@ defmodule Angen.FakeData.FakeLogging do
       make_server_minutes(Map.put(config, :node, "all"), date)
     end)
 
-    ProgressBar.render_spinner [text: "Server days"], fn ->
+    ProgressBar.render_spinner([text: "Server days"], fn ->
       make_server_days(config)
-    end
+    end)
 
     # For the days with detail we can generate them using the actual data
     0..min(config.days, config.detail_days)
@@ -66,6 +66,7 @@ defmodule Angen.FakeData.FakeLogging do
 
     # Persist Week, Month, Quarter and Year
     upper_range = round(:math.ceil(config.days / 7))
+
     0..upper_range
     |> Enum.each(fn d ->
       ProgressBar.render(d, upper_range, @bar_longer_logs_format)
@@ -315,7 +316,7 @@ defmodule Angen.FakeData.FakeLogging do
     log_data =
       0..(config.days - 1)
       |> Enum.map(fn day ->
-        ProgressBar.render(day, (config.days - 1), @bar_audit_format)
+        ProgressBar.render(day, config.days - 1, @bar_audit_format)
         date = Timex.today() |> Timex.shift(days: -day)
         user_ids = valid_user_ids(date)
 

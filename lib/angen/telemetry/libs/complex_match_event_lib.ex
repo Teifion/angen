@@ -9,7 +9,13 @@ defmodule Angen.Telemetry.ComplexMatchEventLib do
   @doc """
   A wrapper around create_complex_match_event which handles grabbing the event_type_id
   """
-  @spec log_complex_match_event(String.t(), Teiserver.match_id(), Teiserver.user_id(), non_neg_integer(), map()) ::
+  @spec log_complex_match_event(
+          String.t(),
+          Teiserver.match_id(),
+          Teiserver.user_id(),
+          non_neg_integer(),
+          map()
+        ) ::
           :ok | {:error, String.t()}
   def log_complex_match_event(name, match_id, user_id, game_time_seconds, details) do
     type_id = Telemetry.get_or_add_event_type_id(name, "complex_match")

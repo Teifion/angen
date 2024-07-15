@@ -138,9 +138,15 @@ defmodule Angen.Telemetry do
   alias Angen.Telemetry.{SimpleMatchEvent, SimpleMatchEventLib, SimpleMatchEventQueries}
 
   @doc section: :simple_match_event
-  @spec log_simple_match_event(String.t(), Teiserver.match_id(), Teiserver.user_id(), non_neg_integer()) ::
+  @spec log_simple_match_event(
+          String.t(),
+          Teiserver.match_id(),
+          Teiserver.user_id(),
+          non_neg_integer()
+        ) ::
           :ok | {:error, String.t()}
-  defdelegate log_simple_match_event(name, match_id, user_id, game_seconds), to: SimpleMatchEventLib
+  defdelegate log_simple_match_event(name, match_id, user_id, game_seconds),
+    to: SimpleMatchEventLib
 
   @doc false
   @spec simple_match_event_query(Teiserver.query_args()) :: Ecto.Query.t()
@@ -177,7 +183,6 @@ defmodule Angen.Telemetry do
   @spec simple_server_events_summary(list) :: map()
   defdelegate simple_server_events_summary(args), to: SimpleServerEventQueries
 
-
   # ComplexAnonEvents
   alias Angen.Telemetry.{
     ComplexAnonEvent,
@@ -209,7 +214,8 @@ defmodule Angen.Telemetry do
   }
 
   @doc section: :complex_clientapp_event
-  @spec log_complex_clientapp_event(String.t(), Teiserver.user_id(), map()) :: :ok | {:error, String.t()}
+  @spec log_complex_clientapp_event(String.t(), Teiserver.user_id(), map()) ::
+          :ok | {:error, String.t()}
   defdelegate log_complex_clientapp_event(name, user_id, details), to: ComplexClientappEventLib
 
   @doc false
@@ -230,7 +236,8 @@ defmodule Angen.Telemetry do
   @doc section: :complex_lobby_event
   @spec log_complex_lobby_event(String.t(), Teiserver.match_id(), Teiserver.user_id(), map()) ::
           :ok | {:error, String.t()}
-  defdelegate log_complex_lobby_event(name, match_id, user_id \\ nil, details), to: ComplexLobbyEventLib
+  defdelegate log_complex_lobby_event(name, match_id, user_id \\ nil, details),
+    to: ComplexLobbyEventLib
 
   @doc false
   @spec complex_lobby_event_query(Teiserver.query_args()) :: Ecto.Query.t()
@@ -248,9 +255,16 @@ defmodule Angen.Telemetry do
   alias Angen.Telemetry.{ComplexMatchEvent, ComplexMatchEventLib, ComplexMatchEventQueries}
 
   @doc section: :complex_match_event
-  @spec log_complex_match_event(String.t(), Teiserver.match_id(), Teiserver.user_id(), non_neg_integer(), map()) ::
+  @spec log_complex_match_event(
+          String.t(),
+          Teiserver.match_id(),
+          Teiserver.user_id(),
+          non_neg_integer(),
+          map()
+        ) ::
           :ok | {:error, String.t()}
-  defdelegate log_complex_match_event(name, match_id, user_id, game_seconds, details), to: ComplexMatchEventLib
+  defdelegate log_complex_match_event(name, match_id, user_id, game_seconds, details),
+    to: ComplexMatchEventLib
 
   @doc false
   @spec complex_match_event_query(Teiserver.query_args()) :: Ecto.Query.t()
@@ -272,7 +286,8 @@ defmodule Angen.Telemetry do
   }
 
   @doc section: :complex_server_event
-  @spec log_complex_server_event(String.t(), Teiserver.user_id(), map()) :: :ok | {:error, String.t()}
+  @spec log_complex_server_event(String.t(), Teiserver.user_id(), map()) ::
+          :ok | {:error, String.t()}
   defdelegate log_complex_server_event(name, user_id, details), to: ComplexServerEventLib
 
   @doc false

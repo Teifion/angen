@@ -19,7 +19,14 @@ defmodule Angen.TextProtocol.Events.MatchCommand do
   end
 
   def handle(%{"details" => _} = cmd, state) do
-    event = Telemetry.log_complex_match_event(cmd["event"], state.match_id, state.user_id, cmd["game_seconds"], cmd["details"])
+    event =
+      Telemetry.log_complex_match_event(
+        cmd["event"],
+        state.match_id,
+        state.user_id,
+        cmd["game_seconds"],
+        cmd["details"]
+      )
 
     case event do
       :ok ->
@@ -31,7 +38,13 @@ defmodule Angen.TextProtocol.Events.MatchCommand do
   end
 
   def handle(cmd, state) do
-    event = Telemetry.log_simple_match_event(cmd["event"], state.match_id, state.user_id, cmd["game_seconds"])
+    event =
+      Telemetry.log_simple_match_event(
+        cmd["event"],
+        state.match_id,
+        state.user_id,
+        cmd["game_seconds"]
+      )
 
     case event do
       :ok ->

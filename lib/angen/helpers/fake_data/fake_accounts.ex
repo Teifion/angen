@@ -7,14 +7,14 @@ defmodule Angen.FakeData.FakeAccounts do
   import Angen.Helper.TimexHelper, only: [date_to_str: 2]
 
   @bar_format [
-    left: [IO.ANSI.green, String.pad_trailing("Accounts: ", 20), IO.ANSI.reset, " |"]
+    left: [IO.ANSI.green(), String.pad_trailing("Accounts: ", 20), IO.ANSI.reset(), " |"]
   ]
 
   @spec make_accounts(map) :: any
   def make_accounts(config) do
     root_user = Account.get_user_by_email("root@localhost")
 
-    range_max = (config.days + 1)
+    range_max = config.days + 1
 
     new_users =
       0..range_max
@@ -69,19 +69,19 @@ defmodule Angen.FakeData.FakeAccounts do
 
     {:ok, %{rows: rows}} = Ecto.Adapters.SQL.query(Repo, query, [])
 
-    updates = rows
-    |> Enum.each(fn [user_id, lobby_opened_at, match_ended_at] ->
-      logout = Timex.shift(match_ended_at, minutes: 3 + :rand.uniform(120))
+    updates =
+      rows
+      |> Enum.each(fn [user_id, lobby_opened_at, match_ended_at] ->
+        logout = Timex.shift(match_ended_at, minutes: 3 + :rand.uniform(120))
 
-      query = """
-        UPDATE account_users
-        SET last_login_at = '#{date_to_str(lobby_opened_at, :ymd_hms)}',
-          last_played_at = '#{date_to_str(match_ended_at, :ymd_hms)}',
-          last_logout_at = '#{date_to_str(logout, :ymd_hms)}'
-      """
-      {:ok, _} = Ecto.Adapters.SQL.query(Repo, query, [])
-    end)
+        query = """
+          UPDATE account_users
+          SET last_login_at = '#{date_to_str(lobby_opened_at, :ymd_hms)}',
+            last_played_at = '#{date_to_str(match_ended_at, :ymd_hms)}',
+            last_logout_at = '#{date_to_str(logout, :ymd_hms)}'
+        """
 
-
+        {:ok, _} = Ecto.Adapters.SQL.query(Repo, query, [])
+      end)
   end
 end

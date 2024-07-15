@@ -127,7 +127,6 @@ defmodule Angen.Logging.PersistServerMinuteTask do
     Telemetry.TelemetryLib.get_all_totals(true)
   end
 
-
   @doc """
   Given a map where the values are integers, add them up and create a new key `:total`
   with the sum of said values.

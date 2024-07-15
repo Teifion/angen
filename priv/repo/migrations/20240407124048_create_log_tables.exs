@@ -13,6 +13,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date, primary_key: true)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_server_day_logs, [:date]))
 
     create_if_not_exists table(:logging_server_week_logs, primary_key: false) do
@@ -21,6 +22,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_server_week_logs, [:date]))
 
     create_if_not_exists table(:logging_server_month_logs, primary_key: false) do
@@ -29,6 +31,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_server_month_logs, [:date]))
 
     create_if_not_exists table(:logging_server_quarter_logs, primary_key: false) do
@@ -37,6 +40,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_server_quarter_logs, [:date]))
 
     create_if_not_exists table(:logging_server_year_logs, primary_key: false) do
@@ -44,6 +48,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_server_year_logs, [:date]))
 
     # Logging - Match logs
@@ -51,6 +56,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date, primary_key: true)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_game_day_logs, [:date]))
 
     create_if_not_exists table(:logging_game_week_logs, primary_key: false) do
@@ -59,6 +65,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_game_week_logs, [:date]))
 
     create_if_not_exists table(:logging_game_month_logs, primary_key: false) do
@@ -67,6 +74,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_game_month_logs, [:date]))
 
     create_if_not_exists table(:logging_game_quarter_logs, primary_key: false) do
@@ -75,6 +83,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_game_quarter_logs, [:date]))
 
     create_if_not_exists table(:logging_game_year_logs, primary_key: false) do
@@ -82,6 +91,7 @@ defmodule Angen.Repo.Migrations.CreateLogTables do
       add(:date, :date)
       add(:data, :jsonb)
     end
+
     create_if_not_exists(index(:logging_game_year_logs, [:date]))
   end
 end

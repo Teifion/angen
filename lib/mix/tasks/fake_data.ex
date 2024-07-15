@@ -120,7 +120,10 @@ defmodule Mix.Tasks.Angen.Fakedata do
           results.rows
           |> Enum.reject(fn [table, row_count] ->
             row_count <= 0 or
-              Enum.member?(~w(oban_peers oban_jobs teiserver_cluster_members account_user_tokens schema_migrations), table)
+              Enum.member?(
+                ~w(oban_peers oban_jobs teiserver_cluster_members account_user_tokens schema_migrations),
+                table
+              )
           end)
 
         {a, b} ->

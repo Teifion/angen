@@ -2,10 +2,12 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
   @moduledoc false
 
   alias Angen.Telemetry
-  import Angen.Helpers.FakeDataHelper, only: [valid_user_ids: 1, random_time_in_day: 1, matches_this_day: 1]
+
+  import Angen.Helpers.FakeDataHelper,
+    only: [valid_user_ids: 1, random_time_in_day: 1, matches_this_day: 1]
 
   @bar_format [
-    left: [IO.ANSI.green, String.pad_trailing("Complex events: ", 20), IO.ANSI.reset, " |"]
+    left: [IO.ANSI.green(), String.pad_trailing("Complex events: ", 20), IO.ANSI.reset(), " |"]
   ]
 
   def make_complex_events(config) do
@@ -27,8 +29,12 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
 
     events =
       [
-        create_complex_anon("rated game", user_ids, [0, 0, 1, 2], date, (fn -> %{"rating" => :rand.uniform(5)} end)),
-        create_complex_anon("specs", user_ids, [0, 1, 2, 3], date, (fn -> %{"VRAM" => Enum.random([1, 2, 4]), "RAM" => Enum.random([4, 8, 16, 32])} end)),
+        create_complex_anon("rated game", user_ids, [0, 0, 1, 2], date, fn ->
+          %{"rating" => :rand.uniform(5)}
+        end),
+        create_complex_anon("specs", user_ids, [0, 1, 2, 3], date, fn ->
+          %{"VRAM" => Enum.random([1, 2, 4]), "RAM" => Enum.random([4, 8, 16, 32])}
+        end)
       ]
       |> List.flatten()
 
@@ -65,7 +71,9 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
 
     events =
       [
-        create_complex_client("client-event", user_ids, [0, 0, 0, 1], date, (fn -> %{"key1" => Enum.random([1, 2, 4]), "key2" => Enum.random([4, 8, 16, 32])} end)),
+        create_complex_client("client-event", user_ids, [0, 0, 0, 1], date, fn ->
+          %{"key1" => Enum.random([1, 2, 4]), "key2" => Enum.random([4, 8, 16, 32])}
+        end)
       ]
       |> List.flatten()
 
@@ -101,10 +109,13 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
     match_ids = matches_this_day(date)
     user_ids = valid_user_ids(date)
 
-    events = [
-      create_complex_lobby("spec command", match_ids, user_ids, [0, 1, 2, 3], date, (fn -> %{"target" => Enum.random(user_ids)} end))
-    ]
-    |> List.flatten()
+    events =
+      [
+        create_complex_lobby("spec command", match_ids, user_ids, [0, 1, 2, 3], date, fn ->
+          %{"target" => Enum.random(user_ids)}
+        end)
+      ]
+      |> List.flatten()
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:insert_all, Telemetry.ComplexLobbyEvent, events)
@@ -139,10 +150,13 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
     match_ids = matches_this_day(date)
     user_ids = valid_user_ids(date)
 
-    events = [
-      create_complex_match("died", match_ids, user_ids, [0, 0, 1], date, (fn -> %{"from" => Enum.random(~w(Bug Robot Gravity FriendlyFire))} end))
-    ]
-    |> List.flatten()
+    events =
+      [
+        create_complex_match("died", match_ids, user_ids, [0, 0, 1], date, fn ->
+          %{"from" => Enum.random(~w(Bug Robot Gravity FriendlyFire))}
+        end)
+      ]
+      |> List.flatten()
 
     Ecto.Multi.new()
     |> Ecto.Multi.insert_all(:insert_all, Telemetry.ComplexMatchEvent, events)
@@ -179,7 +193,9 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
 
     events =
       [
-        create_complex_server("server-event", user_ids, [0, 0, 0, 0, 0, 1], date,  (fn -> %{"key" => Enum.random(~w(opt1 opt2 opt3))} end)),
+        create_complex_server("server-event", user_ids, [0, 0, 0, 0, 0, 1], date, fn ->
+          %{"key" => Enum.random(~w(opt1 opt2 opt3))}
+        end)
       ]
       |> List.flatten()
 

@@ -4,11 +4,13 @@
   <:col :let={user} label="Name"><%= user.name %></:col>
   <:col :let={user} label="Groups"><%= Enum.join(user.groups, ", ") %></:col>
   <:col :let={user} label="Restrictions"><%= Enum.join(user.restrictions, ", ") %></:col>
-  
+
   <:col :let={user} label="Last login"><%= date_to_str(user.last_login_at) %></:col>
   <:col :let={user} label="Last played"><%= date_to_str(user.last_played_at) %></:col>
-  
+
   <:action :let={user}>
-    <.link navigate={~p"/admin/accounts/user/#{user}"} class="btn btn-secondary btn-sm">Show</.link>
+    <.link navigate={~p"/admin/accounts/user/#{user}"} class="btn btn-secondary btn-sm">
+      Show
+    </.link>
   </:action>
 </.table>

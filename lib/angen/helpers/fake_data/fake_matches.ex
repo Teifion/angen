@@ -7,7 +7,7 @@ defmodule Angen.FakeData.FakeMatches do
   alias Teiserver.Game.MatchTypeLib
 
   @bar_format [
-    left: [IO.ANSI.green, String.pad_trailing("Matches: ", 20), IO.ANSI.reset, " |"]
+    left: [IO.ANSI.green(), String.pad_trailing("Matches: ", 20), IO.ANSI.reset(), " |"]
   ]
 
   @tags ~w(tag1 tag2 tag2 tag3 tag3 tag3 tag4 tag4 tag4 tag4)
@@ -28,38 +28,38 @@ defmodule Angen.FakeData.FakeMatches do
     {matches, remaining_data} = Enum.unzip(combined_data)
     {memberships, settings} = Enum.unzip(List.flatten(remaining_data))
 
-    ProgressBar.render_spinner [text: "Inserting matches", done: :remove], fn ->
+    ProgressBar.render_spinner([text: "Inserting matches", done: :remove], fn ->
       matches
-      |> List.flatten
+      |> List.flatten()
       |> Enum.chunk_every(1_000)
       |> Enum.each(fn chunk ->
         Ecto.Multi.new()
         |> Ecto.Multi.insert_all(:insert_all, Game.Match, List.flatten(chunk))
         |> Angen.Repo.transaction()
       end)
-    end
+    end)
 
-    ProgressBar.render_spinner [text: "Inserting memberships", done: :remove], fn ->
+    ProgressBar.render_spinner([text: "Inserting memberships", done: :remove], fn ->
       memberships
-      |> List.flatten
+      |> List.flatten()
       |> Enum.chunk_every(8_000)
       |> Enum.each(fn chunk ->
         Ecto.Multi.new()
         |> Ecto.Multi.insert_all(:insert_all, Game.MatchMembership, List.flatten(chunk))
         |> Angen.Repo.transaction()
       end)
-    end
+    end)
 
-    ProgressBar.render_spinner [text: "Inserting settings", done: :remove], fn ->
+    ProgressBar.render_spinner([text: "Inserting settings", done: :remove], fn ->
       settings
-      |> List.flatten
+      |> List.flatten()
       |> Enum.chunk_every(8_000)
       |> Enum.each(fn m_chunk ->
         Ecto.Multi.new()
         |> Ecto.Multi.insert_all(:insert_all, Game.MatchSetting, List.flatten(m_chunk))
         |> Angen.Repo.transaction()
       end)
-    end
+    end)
   end
 
   defp make_daily_matches(config, date) do
@@ -87,7 +87,7 @@ defmodule Angen.FakeData.FakeMatches do
       %{
         id: Ecto.UUID.generate(),
         name: nil,
-        tags: Enum.take_random(@tags, 3) |> Enum.uniq,
+        tags: Enum.take_random(@tags, 3) |> Enum.uniq(),
         public?: :rand.uniform() < 0.8,
         rated?: :rand.uniform() < 0.8,
         game_name: "MyGame",
