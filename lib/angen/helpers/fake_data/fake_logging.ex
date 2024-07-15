@@ -17,10 +17,6 @@ defmodule Angen.FakeData.FakeLogging do
     left: [IO.ANSI.green, String.pad_trailing("Minute logs: ", 20), IO.ANSI.reset, " |"]
   ]
 
-  @bar_day_format [
-    left: [IO.ANSI.green, String.pad_trailing("Server day logs: ", 20), IO.ANSI.reset, " |"]
-  ]
-
   @bar_day_detail_format [
     left: [IO.ANSI.green, String.pad_trailing("Combining minutes: ", 20), IO.ANSI.reset, " |"]
   ]
@@ -51,7 +47,9 @@ defmodule Angen.FakeData.FakeLogging do
       make_server_minutes(Map.put(config, :node, "all"), date)
     end)
 
-    make_server_days(config)
+    ProgressBar.render_spinner [text: "Server days"], fn ->
+      make_server_days(config)
+    end
 
     # For the days with detail we can generate them using the actual data
     0..min(config.days, config.detail_days)
@@ -193,15 +191,10 @@ defmodule Angen.FakeData.FakeLogging do
   end
 
   def make_server_days(config) do
-    int_range = config.days - config.detail_days
-
     # Now do much longer for days
     {new_logs, _} =
       config.days..config.detail_days
       |> Enum.map_reduce(%{}, fn day, last_data ->
-        # progress = int_range - day - config.detail_days
-        # ProgressBar.render(progress, int_range, @bar_day_format)
-
         date = Timex.today() |> Timex.shift(days: -day)
         max_users = Enum.count(valid_user_ids(date))
 

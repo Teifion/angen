@@ -5,7 +5,7 @@ defmodule AngenWeb.Admin.Account.IndexLive do
   alias Angen.Account
 
   @impl true
-  def mount(params, _session, socket) when is_connected?(socket) do
+  def mount(_params, _session, socket) when is_connected?(socket) do
     socket =
       socket
       |> assign(:site_menu_active, "account")
@@ -14,7 +14,7 @@ defmodule AngenWeb.Admin.Account.IndexLive do
     {:ok, socket}
   end
 
-  def mount(params, _session, socket) do
+  def mount(_params, _session, socket) do
     {:ok,
      socket
      |> assign(:site_menu_active, "account")
@@ -28,7 +28,7 @@ defmodule AngenWeb.Admin.Account.IndexLive do
 
   @spec get_users(Phoenix.Socket.t()) :: Phoenix.Socket.t()
   defp get_users(%{assigns: assigns} = socket) do
-    users = Account.list_users([])
+    users = Account.list_users(order_by: "Newest first")
 
     socket
     |> assign(:users, users)

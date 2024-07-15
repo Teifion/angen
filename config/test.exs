@@ -16,6 +16,9 @@ config :angen, Angen.Repo,
 config :teiserver,
   teiserver_clustering: false
 
+config :db_cluster,
+  enabled: false
+
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :angen, AngenWeb.Endpoint,

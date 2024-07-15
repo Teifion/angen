@@ -1,0 +1,50 @@
+<AngenWeb.Account.UserComponents.filter_bar selected="show" />
+
+<div class="row mt-4">
+  <div class="col">
+    <.card :if={@user}>
+      <h4><%= @user.name %></h4>
+      <table class="table table-sm">
+        <tbody>
+          <tr>
+            <td>Email</td>
+            <td><%= @user.email %></td>
+          </tr>
+          <tr>
+            <td>Groups</td>
+            <td><%= Enum.join(@user.groups, ", ") %></td>
+          </tr>
+          <tr>
+            <td>Permissions</td>
+            <td><%= Enum.join(@user.permissions, ", ") %></td>
+          </tr>
+          <tr>
+            <td>Restrictions</td>
+            <td><%= Enum.join(@user.restrictions, ", ") %></td>
+          </tr>
+        </tbody>
+      </table>
+    </.card>
+  </div>
+  
+  <div class="col">
+    <.card :if={@user}>
+      <table class="table table-sm">
+        <tbody>
+          <tr>
+            <td>Last login</td>
+            <td><%= date_to_str(@user.last_login_at, :hms_or_ymd) %></td>
+          </tr>
+          <tr>
+            <td>Last played</td>
+            <td><%= date_to_str(@user.last_played_at, :hms_or_ymd) %></td>
+          </tr>
+          <tr>
+            <td>Last logout</td>
+            <td><%= date_to_str(@user.last_logout_at, :hms_or_ymd) %></td>
+          </tr>
+        </tbody>
+      </table>
+    </.card>
+  </div>
+</div>

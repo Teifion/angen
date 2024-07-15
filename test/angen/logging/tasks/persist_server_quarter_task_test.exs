@@ -2,7 +2,6 @@ defmodule Angen.PersistServerQuarterTaskTest do
   @moduledoc false
   alias Angen.Logging
   alias Angen.Logging.PersistServerQuarterTask
-  import Angen.Helpers.NumberHelper, only: [round: 2]
   use Angen.DataCase, async: true
 
   test "test basic" do

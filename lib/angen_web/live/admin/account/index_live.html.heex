@@ -1,3 +1,5 @@
+<AngenWeb.Account.UserComponents.filter_bar selected="list" />
+
 <.table id="users" rows={@users} table_class="table-sm table-hover">
   <:col :let={user} label="Name"><%= user.name %></:col>
   <:col :let={user} label="Groups"><%= Enum.join(user.groups, ", ") %></:col>
