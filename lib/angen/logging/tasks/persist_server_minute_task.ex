@@ -77,7 +77,7 @@ defmodule Angen.Logging.PersistServerMinuteTask do
           nil -> nil
           %{match_ongoing?: true} -> :in_progress
           %{players: []} -> :empty
-          true -> :setup
+          _ -> :setup
         end
       end,
       fn _lobby ->

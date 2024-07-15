@@ -9,9 +9,10 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
   ]
 
   def make_simple_events(config) do
+    ProgressBar.render(0, config.days, @bar_format)
+
     0..min(config.days, 90)
     |> Enum.each(fn day ->
-      ProgressBar.render(day, config.days, @bar_format)
       date = Timex.today() |> Timex.shift(days: -day)
 
       make_simple_anon(config, date)
@@ -19,6 +20,8 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
       make_simple_lobby(config, date)
       make_simple_match(config, date)
       make_simple_server(config, date)
+
+      ProgressBar.render(day, config.days, @bar_format)
     end)
   end
 

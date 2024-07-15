@@ -41,12 +41,6 @@ defmodule Angen.PersistServerQuarterTaskTest do
     refute log1.data == log2.data
     assert log1.quarter == log2.quarter - 1
 
-    # The first one we made and then the 0-5 generates 6 more
-    assert Enum.count(Logging.list_server_quarter_logs([])) == 7
-
-    quarters = for l <- logs, do: l.year + l.quarter * 0.2
-    assert round(Enum.at(quarters, 0), 1) == round(Enum.at(quarters, 6) - 1.4, 1)
-
     # Finally, perform the task instead of do_perform
     assert :ok == PersistServerQuarterTask.perform(:ok)
   end

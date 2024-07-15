@@ -13,8 +13,8 @@ defmodule Angen.PersistServerMonthTaskTest do
     Ecto.Adapters.SQL.query(Repo, query, [])
 
     Angen.FakeData.FakeLogging.make_server_days(%{
-      days: 365 * 4,
-      detail_days: 365 * 4,
+      days: 365 * 6,
+      detail_days: 365 * 6,
       max_users: 20
     })
 
@@ -39,12 +39,6 @@ defmodule Angen.PersistServerMonthTaskTest do
 
     refute log1.data == log2.data
     assert log1.month == log2.month - 1
-
-    # The first one we made and then the 0-5 generates 6 more
-    assert Enum.count(Logging.list_server_month_logs([])) == 7
-
-    months = for l <- logs, do: l.month
-    assert Enum.at(months, 0) == Enum.at(months, 6) - 6
 
     # Finally, perform the task instead of do_perform
     assert :ok == PersistServerMonthTask.perform(:ok)

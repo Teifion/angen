@@ -199,8 +199,8 @@ defmodule Angen.FakeData.FakeLogging do
     {new_logs, _} =
       config.days..config.detail_days
       |> Enum.map_reduce(%{}, fn day, last_data ->
-        progress = int_range - day - config.detail_days
-        ProgressBar.render(progress, int_range, @bar_day_format)
+        # progress = int_range - day - config.detail_days
+        # ProgressBar.render(progress, int_range, @bar_day_format)
 
         date = Timex.today() |> Timex.shift(days: -day)
         max_users = Enum.count(valid_user_ids(date))
