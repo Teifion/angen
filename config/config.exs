@@ -37,6 +37,9 @@ config :teiserver,
   fn_lobby_name_acceptor: &Angen.Helpers.OverrideHelper.lobby_name_acceptor/1,
   fn_user_name_acceptor: &Angen.Helpers.OverrideHelper.user_name_acceptor/1
 
+config :db_cluster,
+  repo: Angen.Repo
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.14.41",

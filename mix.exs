@@ -45,16 +45,16 @@ defmodule Angen.MixProject do
   defp deps do
     [
       # These come with Phoenix
-      {:phoenix, "~> 1.7.0"},
-      {:phoenix_ecto, "~> 4.4"},
+      {:phoenix, "~> 1.7.14"},
+      {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 4.0"},
+      {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
       {:phoenix_live_view, "~> 0.20.5"},
       {:floki, ">= 0.34.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8"},
-      {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
+      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.3"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
@@ -79,17 +79,23 @@ defmodule Angen.MixProject do
       {:ex_json_schema, "~> 0.10.2"},
       {:excoveralls, "~> 0.18.1", only: :test, runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:progress_bar, "~> 3.0"},
+      {:progress_bar, "~> 3.0", only: [:dev, :test]},
+      {:db_cluster, "~> 0.0.2"},
+      # {:db_cluster,
+      #  git: "https://github.com/Teifion/db_cluster",
+      #  ref: "04b375e23cb7b7a933eeb3296cb6139ac38f20f9"
+      # },
+      # {:db_cluster, path: "../db_cluster"},
 
       # We're pointing it at a specific git branch most of the time but
       # when developing locally we'll want to use a relative
       # reference or a specific git commit
       # {:teiserver, "~> 0.0.5"}
-      # {:teiserver,
-      #  git: "https://github.com/teifion/teiserver.git",
-      #  ref: "da7db0ba90e3f0bbe8458bb0d0c1c6a6399546ab"
-      # }
-      {:teiserver, path: "../teiserver"}
+      {:teiserver,
+       git: "https://github.com/teifion/teiserver.git",
+       ref: "5c38559ea3d4eedd96758ba257639fddf35b4ccd"
+      }
+      # {:teiserver, path: "../teiserver"}
     ]
   end
 

@@ -1,4 +1,4 @@
-defmodule HelloWorldServer.Repo.Migrations.AddTeiserverTables do
+defmodule Angen.Repo.Migrations.AddTeiserverTables do
   use Ecto.Migration
 
   def up do
