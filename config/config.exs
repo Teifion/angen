@@ -15,6 +15,7 @@ config :angen,
 
 # Configures the endpoint
 config :angen, AngenWeb.Endpoint,
+  adapter: Bandit.PhoenixAdapter,
   url: [host: "localhost"],
   render_errors: [
     formats: [html: AngenWeb.ErrorHTML, json: AngenWeb.ErrorJSON],
