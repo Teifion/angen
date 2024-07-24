@@ -57,7 +57,7 @@ defmodule Angen.FakeData.FakeAccounts do
   defp users_per_day, do: :rand.uniform(3)
 
   @spec update_accounts(map) :: any
-  def update_accounts(config) do
+  def update_accounts(_config) do
     # Get last played for each account
     query = """
       SELECT mm.user_id, MAX(m.lobby_opened_at), MAX(m.match_ended_at)
@@ -69,19 +69,19 @@ defmodule Angen.FakeData.FakeAccounts do
 
     {:ok, %{rows: rows}} = Ecto.Adapters.SQL.query(Repo, query, [])
 
-    updates =
-      rows
-      |> Enum.each(fn [user_id, lobby_opened_at, match_ended_at] ->
-        logout = Timex.shift(match_ended_at, minutes: 3 + :rand.uniform(120))
+    rows
+    |> Enum.each(fn [user_id, lobby_opened_at, match_ended_at] ->
+      logout = Timex.shift(match_ended_at, minutes: 3 + :rand.uniform(120))
 
-        query = """
-          UPDATE account_users
-          SET last_login_at = '#{date_to_str(lobby_opened_at, :ymd_hms)}',
-            last_played_at = '#{date_to_str(match_ended_at, :ymd_hms)}',
-            last_logout_at = '#{date_to_str(logout, :ymd_hms)}'
-        """
+      query = """
+        UPDATE account_users
+        SET last_login_at = '#{date_to_str(lobby_opened_at, :ymd_hms)}',
+          last_played_at = '#{date_to_str(match_ended_at, :ymd_hms)}',
+          last_logout_at = '#{date_to_str(logout, :ymd_hms)}'
+        WHERE id = $1
+      """
 
-        {:ok, _} = Ecto.Adapters.SQL.query(Repo, query, [])
-      end)
+      {:ok, _} = Ecto.Adapters.SQL.query(Repo, query, [user_id])
+    end)
   end
 end
