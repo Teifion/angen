@@ -11,11 +11,15 @@ defmodule AngenWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug(Angen.Account.DefaultsPlug)
-    # plug(Angen.Plugs.CachePlug)
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :secure_api do
+    plug(:accepts, ["json"])
+    plug(Angen.Account.DefaultsPlug)
   end
 
   scope "/", AngenWeb.General do
@@ -126,7 +130,27 @@ defmodule AngenWeb.Router do
     end
   end
 
-  scope "/api/enfys", AngenWeb.Api, as: :ts do
+  # API
+  scope "/api", AngenWeb.Api do
+    pipe_through([:api])
+    post "/request_token", TokenController, :request_token
+    post "/renew_token", TokenController, :renew_token
+  end
+
+  scope "/api", AngenWeb.Api do
+    pipe_through([:api, :secure_api])
+    post "/game/create_match", GameController, :create_match
+
+    post "/events/simple_match", EventController, :simple_match
+    post "/events/complex_match", EventController, :complex_match
+    post "/events/simple_clientapp", EventController, :simple_clientapp
+    post "/events/complex_clientapp", EventController, :complex_clientapp
+    post "/events/simple_anon", EventController, :simple_anon
+    post "/events/complex_anon", EventController, :complex_anon
+  end
+
+  # Enfys
+  scope "/api/enfys", AngenWeb.Api do
     pipe_through([:api])
     post("/start", EnfysController, :start)
   end

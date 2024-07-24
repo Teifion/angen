@@ -52,6 +52,15 @@ defmodule AngenWeb.ConnCase do
     |> log_in_user
   end
 
+  @spec get_api_token_code(nil | list()) :: String.t()
+  def get_api_token_code(opts \\ []) do
+    user = opts[:user] || Angen.ProtoCase.create_test_user()
+
+    {:ok, token} = Angen.Account.create_user_token(user.id, "web-api-unit-test", "UnitTest", "127.0.0.1")
+
+    token.identifier_code
+  end
+
   @spec admin_auth(map()) :: map()
   def admin_auth(data) do
     {:ok, user} =

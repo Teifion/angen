@@ -7,6 +7,7 @@ defmodule Angen.Settings.ServerSettings do
     data_retention()
     account_creation()
     security()
+    web_api_security()
     telemetry()
   end
 
@@ -32,6 +33,10 @@ defmodule Angen.Settings.ServerSettings do
       description:
         "When a token is created the IP used is tracked. If this option is enabled then the IP used to login via the token must match the token stored in the database. When enabled this can help prevent token theft but at the cost of needing users to re-acquire a token every time they change IP address."
     })
+  end
+
+  defp web_api_security() do
+
   end
 
   defp account_creation() do

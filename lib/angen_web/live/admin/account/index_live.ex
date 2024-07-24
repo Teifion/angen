@@ -27,7 +27,7 @@ defmodule AngenWeb.Admin.Account.IndexLive do
   end
 
   @spec get_users(Phoenix.Socket.t()) :: Phoenix.Socket.t()
-  defp get_users(%{assigns: assigns} = socket) do
+  defp get_users(%{assigns: _assigns} = socket) do
     users = Account.list_users(order_by: "Newest first")
 
     socket

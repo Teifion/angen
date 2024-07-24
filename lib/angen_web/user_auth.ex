@@ -1,4 +1,5 @@
 defmodule AngenWeb.UserAuth do
+  @moduledoc false
   use AngenWeb, :verified_routes
 
   import Plug.Conn
@@ -261,7 +262,7 @@ defmodule AngenWeb.UserAuth do
   defp signed_in_path(_conn), do: ~p"/"
 
   @spec convert_from_x_real_ip(String.t()) :: Tuple.t()
-  defp convert_from_x_real_ip(ip) do
+  def convert_from_x_real_ip(ip) do
     if String.contains?(ip, ":") do
       ip
       |> String.split(":")
@@ -275,7 +276,7 @@ defmodule AngenWeb.UserAuth do
   end
 
   @spec get_ip_from_conn(Conn.t()) :: tuple() | nil
-  defp get_ip_from_conn(conn) do
+  def get_ip_from_conn(conn) do
     case List.keyfind(conn.req_headers, "x-real-ip", 0) do
       {_, ip} -> convert_from_x_real_ip(ip)
       nil -> conn.remote_ip
