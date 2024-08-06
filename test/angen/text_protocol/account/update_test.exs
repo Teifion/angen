@@ -41,7 +41,7 @@ defmodule Angen.TextProtocol.Account.UpdateTest do
     msg = listen(socket)
     assert_success(msg, "account/update")
 
-    unchanged_user = Api.get_user_by_id(user.id)
+    unchanged_user = Teiserver.get_user_by_id(user.id)
     assert user == unchanged_user
 
     # Make changes
@@ -57,7 +57,7 @@ defmodule Angen.TextProtocol.Account.UpdateTest do
     msg = listen(socket)
     assert_success(msg, "account/update")
 
-    changed_user = Api.get_user_by_id(user.id)
+    changed_user = Teiserver.get_user_by_id(user.id)
     assert user != changed_user
 
     assert changed_user.name == "update-test-name"

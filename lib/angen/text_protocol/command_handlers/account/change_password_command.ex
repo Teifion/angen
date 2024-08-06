@@ -15,7 +15,7 @@ defmodule Angen.TextProtocol.Account.ChangePasswordCommand do
   end
 
   def handle(%{"current_password" => current_password, "new_password" => new_password}, state) do
-    user = Teiserver.Api.get_user_by_id(state.user_id)
+    user = Teiserver.get_user_by_id(state.user_id)
 
     params = %{
       "existing" => current_password,

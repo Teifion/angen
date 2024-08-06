@@ -90,7 +90,7 @@ defmodule Mix.Tasks.Angen.Fakedata do
     {:ok, _code} =
       Angen.Account.create_user_token(%{
         user_id: root_user.id,
-        id: Teiserver.deterministic_uuid("root@localhost"),
+        id: UUID.uuid5(nil, "root@localhost"),
         identifier_code: Angen.Account.UserTokenLib.generate_code(),
         renewal_code: Angen.Account.UserTokenLib.generate_code(),
         context: "fake-data",

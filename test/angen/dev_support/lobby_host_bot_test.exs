@@ -12,7 +12,7 @@ defmodule Angen.DevSupport.LobbyHostBotTest do
       send(p, :startup)
       :timer.sleep(1000)
 
-      assert Enum.count(Api.list_lobby_ids()) == 1
+      assert Enum.count(Teiserver.list_lobby_ids()) == 1
 
       # Stop the bot manually to prevent it doing something while we tear down the test
       ManagerServer.stop_bot(p)

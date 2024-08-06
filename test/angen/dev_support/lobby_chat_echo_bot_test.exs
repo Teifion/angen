@@ -17,16 +17,16 @@ defmodule Angen.DevSupport.LobbyChatEchoBotTest do
       send(p, :startup)
       :timer.sleep(500)
 
-      bot_user = Api.get_user_by_name("LobbyChatEchoBot")
+      bot_user = Teiserver.get_user_by_name("LobbyChatEchoBot")
       assert bot_user
 
       # Test it has indeed joined the lobby
-      lobby = Api.get_lobby(lobby_id)
+      lobby = Teiserver.get_lobby(lobby_id)
       assert Enum.member?(lobby.members, bot_user.id)
 
       # Have the host "send" a message
       flush_socket(hsocket)
-      Api.send_lobby_message(host_user.id, lobby_id, "Test message")
+      Teiserver.send_lobby_message(host_user.id, lobby_id, "Test message")
 
       # We should now hear our own message posted
       self_msg = listen(hsocket)

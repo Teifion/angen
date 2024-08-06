@@ -44,7 +44,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeCommand do
         {key, changes_raw[to_string(key)]}
       end)
 
-    Teiserver.Api.update_lobby(state.lobby_id, changes)
+    Teiserver.update_lobby(state.lobby_id, changes)
     SuccessResponse.generate(name(), state)
   end
 end

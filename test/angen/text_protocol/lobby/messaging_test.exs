@@ -43,7 +43,7 @@ defmodule Angen.TextProtocol.Lobby.MessagingTest do
     end
 
     test "good command", %{socket: socket, user_id: user_id, lobby_id: lobby_id} do
-      match_id = Api.get_lobby(lobby_id) |> Map.get(:match_id)
+      match_id = Teiserver.get_lobby(lobby_id) |> Map.get(:match_id)
 
       speak(socket, %{name: "lobby/send_message", command: %{content: "Test content"}})
       # First, success

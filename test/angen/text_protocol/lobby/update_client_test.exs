@@ -24,7 +24,7 @@ defmodule Angen.TextProtocol.Lobby.UpdateClientTest do
       %{socket: _hsocket, lobby_id: lobby_id} = lobby_host_connection()
       %{socket: socket, user_id: user_id} = auth_connection()
 
-      Api.add_client_to_lobby(user_id, lobby_id)
+      Teiserver.add_client_to_lobby(user_id, lobby_id)
       flush_socket(socket)
 
       speak(socket, %{name: "lobby/update_client", command: %{player?: true}})

@@ -14,8 +14,8 @@ defmodule Angen.TextProtocol.CommandHandlers.Connections.Whoami do
   end
 
   def handle(_, state) do
-    user = Api.get_user_by_id(state.user_id)
-    client = Api.get_client(state.user_id)
+    user = Teiserver.get_user_by_id(state.user_id)
+    client = Teiserver.get_client(state.user_id)
     TextProtocol.Connections.YouareResponse.generate({user, client}, state)
   end
 end

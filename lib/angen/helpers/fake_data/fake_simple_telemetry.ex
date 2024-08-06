@@ -55,7 +55,7 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
         |> Enum.map(fn _ ->
           %{
             event_type_id: type_id,
-            hash_id: Teiserver.deterministic_uuid(user_id),
+            hash_id: UUID.uuid5(nil, user_id),
             inserted_at: random_time_in_day(date)
           }
         end)

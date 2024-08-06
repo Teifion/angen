@@ -16,7 +16,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       %{lobby: lobby} = lobby_host_connection()
       %{socket: socket, user: user} = auth_connection()
 
-      Api.add_client_to_lobby(user.id, lobby.id)
+      Teiserver.add_client_to_lobby(user.id, lobby.id)
       flush_socket(socket)
 
       speak(socket, %{name: "lobby/open", command: %{name: "OpenLobbyTest"}})
@@ -38,7 +38,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       msg = listen(socket)
 
       lobby =
-        Teiserver.Api.stream_lobby_summaries()
+        Teiserver.stream_lobby_summaries()
         |> Enum.filter(fn l -> l.host_id == user.id end)
         |> hd
 
@@ -75,7 +75,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       %{lobby: lobby} = lobby_host_connection()
       %{socket: socket, user: user} = auth_connection()
 
-      Api.add_client_to_lobby(user.id, lobby.id)
+      Teiserver.add_client_to_lobby(user.id, lobby.id)
       flush_socket(socket)
 
       speak(socket, %{name: "lobby/close", command: %{}})
@@ -92,7 +92,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
 
       # Ensure we appear in the list
       lobby_list =
-        Teiserver.Api.stream_lobby_summaries()
+        Teiserver.stream_lobby_summaries()
         |> Enum.filter(fn l -> l.host_id == user.id end)
 
       refute Enum.empty?(lobby_list)
@@ -110,11 +110,11 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
 
       # We should not appear in the list
       lobby_list =
-        Teiserver.Api.stream_lobby_summaries()
+        Teiserver.stream_lobby_summaries()
         |> Enum.filter(fn l -> l.host_id == user.id end)
 
       # Check the client
-      client = Api.get_client(user.id)
+      client = Teiserver.get_client(user.id)
       refute client.lobby_host?
 
       # Check the success message
@@ -156,7 +156,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCloseTest do
       %{socket: hsocket, user: _host, lobby_id: lobby_id} = lobby_host_connection()
       %{socket: usocket, user: user} = auth_connection()
 
-      Teiserver.Api.add_client_to_lobby(user.id, lobby_id)
+      Teiserver.add_client_to_lobby(user.id, lobby_id)
 
       # Clear the messages
       flush_socket(hsocket)

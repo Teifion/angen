@@ -22,7 +22,7 @@ defmodule Angen.TextProtocol.Lobby.QueryCommand do
     limit = String.to_integer(Map.get(msg, "limit", "50"))
 
     lobbies =
-      Teiserver.Api.stream_lobby_summaries(filters)
+      Teiserver.stream_lobby_summaries(filters)
       |> Stream.take(limit)
       |> Enum.to_list()
 

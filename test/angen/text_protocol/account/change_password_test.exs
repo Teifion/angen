@@ -81,7 +81,7 @@ defmodule Angen.TextProtocol.Account.ChangePasswordTest do
     speak(socket, %{
       name: "auth/get_token",
       command: %{
-        name: user.name,
+        id: user.id,
         password: "password1",
         user_agent: "UnitTest"
       }
@@ -94,7 +94,7 @@ defmodule Angen.TextProtocol.Account.ChangePasswordTest do
     speak(socket, %{
       name: "auth/get_token",
       command: %{
-        name: user.name,
+        id: user.id,
         password: "password123",
         user_agent: "UnitTest"
       }

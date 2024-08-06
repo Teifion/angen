@@ -18,7 +18,7 @@ defmodule Angen.TextProtocol.Lobby.SendMessageCommand do
   end
 
   def handle(%{"content" => content}, state) do
-    case Api.send_lobby_message(state.user_id, state.lobby_id, content) do
+    case Teiserver.send_lobby_message(state.user_id, state.lobby_id, content) do
       {:ok, _match_message} ->
         SuccessResponse.generate(name(), state)
 

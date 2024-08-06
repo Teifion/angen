@@ -14,7 +14,7 @@ defmodule Angen.TextProtocol.Account.UpdateCommand do
   end
 
   def handle(attrs, state) do
-    user = Teiserver.Api.get_user_by_id(state.user_id)
+    user = Teiserver.get_user_by_id(state.user_id)
 
     case Teiserver.Account.update_limited_user(user, attrs) do
       {:ok, _user} ->

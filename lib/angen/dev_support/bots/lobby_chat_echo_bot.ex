@@ -11,7 +11,7 @@ defmodule Angen.DevSupport.LobbyChatEchoBot do
 
   def handle_info(:startup, state) do
     user = BotLib.get_or_create_bot_account("LobbyChatEchoBot")
-    client = Api.connect_user(user.id)
+    client = Teiserver.connect_user(user.id)
 
     if client do
       send(self(), :tick)
@@ -30,8 +30,8 @@ defmodule Angen.DevSupport.LobbyChatEchoBot do
         {:noreply, state}
 
       lobby_id ->
-        Api.add_client_to_lobby(state.user.id, lobby_id)
-        Api.subscribe_to_lobby(lobby_id)
+        Teiserver.add_client_to_lobby(state.user.id, lobby_id)
+        Teiserver.subscribe_to_lobby(lobby_id)
         {:noreply, %{state | lobby_id: lobby_id}}
     end
   end
@@ -66,10 +66,10 @@ defmodule Angen.DevSupport.LobbyChatEchoBot do
 
       name =
         msg.match_message.sender_id
-        |> Api.get_user_by_id()
+        |> Teiserver.get_user_by_id()
         |> Map.get(:name)
 
-      Api.send_lobby_message(state.user.id, state.lobby_id, "#{name}: #{content}")
+      Teiserver.send_lobby_message(state.user.id, state.lobby_id, "#{name}: #{content}")
     end
 
     {:noreply, state}
@@ -87,12 +87,12 @@ defmodule Angen.DevSupport.LobbyChatEchoBot do
   end
 
   defp get_lobby_id() do
-    case Api.get_user_by_name("LobbyHostBot") do
+    case Teiserver.get_user_by_name("LobbyHostBot") do
       nil ->
         nil
 
       user ->
-        case Api.get_client(user.id) do
+        case Teiserver.get_client(user.id) do
           nil ->
             nil
 

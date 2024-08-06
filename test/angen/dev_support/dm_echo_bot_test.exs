@@ -12,12 +12,12 @@ defmodule Angen.DevSupport.DMEchoBotTest do
       send(p, :startup)
       :timer.sleep(100)
 
-      bot_user = Api.get_user_by_name("DMEchoBot")
+      bot_user = Teiserver.get_user_by_name("DMEchoBot")
       %{socket: socket, user: user} = auth_connection()
 
       flush_socket(socket)
 
-      Api.send_direct_message(user.id, bot_user.id, "Test message")
+      Teiserver.send_direct_message(user.id, bot_user.id, "Test message")
 
       msg = listen(socket)
       assert msg["name"] == "communication/received_direct_message"

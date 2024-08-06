@@ -6,7 +6,7 @@ defmodule Angen.TextProtocol.InfoHandlers.ClientJoinedLobby do
   @spec handle(map, Angen.ConnState.t()) :: Angen.handler_response()
   def handle(msg, state) do
     if msg.user_id == state.user_id do
-      Teiserver.Api.subscribe_to_lobby(msg.lobby_id)
+      Teiserver.subscribe_to_lobby(msg.lobby_id)
     end
 
     nil_response(state)

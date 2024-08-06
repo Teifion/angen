@@ -10,7 +10,7 @@ defmodule Angen.TextProtocol.Auth.LoginResponse do
   @impl true
   @spec do_generate(any(), Angen.ConnState.t()) :: Angen.handler_response()
   def do_generate(%Teiserver.Account.User{} = user, state) do
-    client = Teiserver.Api.get_client(user.id)
+    client = Teiserver.get_client(user.id)
 
     result = %{
       "user" => TypeConvertors.convert(user)

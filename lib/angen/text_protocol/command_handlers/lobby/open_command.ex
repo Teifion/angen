@@ -19,7 +19,7 @@ defmodule Angen.TextProtocol.Lobby.OpenCommand do
         FailureResponse.generate({name(), "Already in a lobby"}, state)
 
       true ->
-        case Teiserver.Api.open_lobby(state.user_id, name) do
+        case Teiserver.open_lobby(state.user_id, name) do
           {:ok, lobby_id} ->
             TextProtocol.Lobby.OpenedResponse.generate(lobby_id, state)
 

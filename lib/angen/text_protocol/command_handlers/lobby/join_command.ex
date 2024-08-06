@@ -15,9 +15,9 @@ defmodule Angen.TextProtocol.Lobby.JoinCommand do
   end
 
   def handle(%{"id" => lobby_id} = msg, state) do
-    case Api.can_add_client_to_lobby(state.user_id, lobby_id, msg["password"]) do
+    case Teiserver.can_add_client_to_lobby(state.user_id, lobby_id, msg["password"]) do
       {true, _} ->
-        case Api.add_client_to_lobby(state.user_id, lobby_id) do
+        case Teiserver.add_client_to_lobby(state.user_id, lobby_id) do
           {:ok, shared_secret, lobby} ->
             JoinedResponse.generate({shared_secret, lobby}, state)
 

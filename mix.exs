@@ -81,16 +81,17 @@ defmodule Angen.MixProject do
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:progress_bar, "~> 3.0", only: [:dev, :test]},
       {:db_cluster, "~> 0.0.3"},
+      {:uuid, "~> 1.1"},
 
       # We're pointing it at a specific git branch most of the time but
       # when developing locally we'll want to use a relative
       # reference or a specific git commit
       # {:teiserver, "~> 0.0.5"}
-      {:teiserver,
-       git: "https://github.com/teifion/teiserver.git",
-       ref: "e5a49e6557cec813e88848eec509c78228f84090"
-      }
-      # {:teiserver, path: "../teiserver"}
+      # {:teiserver,
+      #  git: "https://github.com/teifion/teiserver.git",
+      #  ref: "e5a49e6557cec813e88848eec509c78228f84090"
+      # }
+      {:teiserver, path: "../teiserver"}
     ]
   end
 

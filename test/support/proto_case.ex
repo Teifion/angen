@@ -109,7 +109,7 @@ defmodule Angen.ProtoCase do
     msgs = listen_all(socket)
 
     try do
-      Teiserver.Api.stream_lobby_summaries()
+      Teiserver.stream_lobby_summaries()
       |> Enum.filter(fn l -> l.host_id == user.id end)
       |> hd
     rescue
@@ -117,7 +117,7 @@ defmodule Angen.ProtoCase do
         # Bug where we get a failure saying "Client is disconnected"
         # because there are no connections for the client (despite us sending stuff....)
         IO.puts("#{__MODULE__}:#{__ENV__.line}")
-        IO.inspect(Teiserver.Api.get_client(user.id))
+        IO.inspect(Teiserver.get_client(user.id))
         IO.inspect(msgs)
         IO.puts("")
         reraise e, __STACKTRACE__
@@ -136,10 +136,10 @@ defmodule Angen.ProtoCase do
 
     # # For some reason the login can happen fast enough the client isn't registered
     # # so we call this just to ensure it is
-    # if Teiserver.Api.get_client(user.id) == nil do
+    # if Teiserver.get_client(user.id) == nil do
     #   # If it doesn't exist we wait a moment and try again, just in case
     #   :timer.sleep(500)
-    #   if Teiserver.Api.get_client(user.id) == nil do
+    #   if Teiserver.get_client(user.id) == nil do
     #     raise "Client doesn't exist, cannot create lobby"
     #   end
     # end
@@ -147,7 +147,7 @@ defmodule Angen.ProtoCase do
     lobby_name = Teiserver.uuid()
     lobby = try_to_host_lobby(socket, user, lobby_name)
 
-    client = Teiserver.Api.get_client(user.id)
+    client = Teiserver.get_client(user.id)
     assert client.lobby_host?
 
     # Clear the socket
@@ -324,7 +324,7 @@ defmodule Angen.ProtoCase do
   def close_all_lobbies do
     Teiserver.Game.list_lobby_ids()
     |> Enum.each(fn id ->
-      Teiserver.Api.close_lobby(id)
+      Teiserver.close_lobby(id)
     end)
 
     # Sleep to ensure they're closed before we do anything else

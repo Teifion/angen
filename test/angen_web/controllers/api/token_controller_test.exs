@@ -40,6 +40,33 @@ defmodule AngenWeb.TokenControllerTest do
       assert Map.has_key?(response["token"], "identifier_code")
       assert Map.has_key?(response["token"], "renewal_code")
       assert Map.has_key?(response["token"], "expires_at")
+
+      token = Angen.Account.get_user_token_by_identifier(response["token"]["identifier_code"])
+      assert token.user_id == user.id
+    end
+  end
+
+  describe "using" do
+    test "no token", %{conn: conn} do
+      conn = post(conn, ~p"/api/events/simple_clientapp", %{"name" => "no-token"})
+      response = response(conn, 401)
+      assert response == "Unauthorised"
+    end
+
+    test "bad token", %{conn: conn} do
+      conn = put_req_header(conn, "token", "123")
+      conn = post(conn, ~p"/api/events/simple_clientapp", %{"name" => "bad-token"})
+      response = response(conn, 401)
+      assert response == "Unauthorised"
+    end
+
+    test "good token", %{conn: conn} do
+      token = get_api_token_code()
+      conn = put_req_header(conn, "token", token)
+
+      conn = post(conn, ~p"/api/events/simple_clientapp", %{"name" => "good-token"})
+      response = json_response(conn, 201)
+      assert response == %{"result" => "Event created"}
     end
   end
 end

@@ -37,7 +37,7 @@ defmodule Angen.TextProtocol.Lobby.UpdateClientCommand do
     if Enum.empty?(changes) do
       FailureResponse.generate({name(), "No changes"}, state)
     else
-      Teiserver.Api.update_client_in_lobby(state.user_id, changes, "self_update")
+      Teiserver.update_client_in_lobby(state.user_id, changes, "self_update")
       SuccessResponse.generate(name(), state)
     end
   end

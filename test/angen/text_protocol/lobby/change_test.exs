@@ -28,7 +28,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       %{lobby: lobby} = lobby_host_connection()
       %{socket: socket, user: user} = auth_connection()
 
-      Teiserver.Api.add_client_to_lobby(user.id, lobby.id)
+      Teiserver.add_client_to_lobby(user.id, lobby.id)
       flush_socket(socket)
 
       speak(socket, %{name: "lobby/change", command: %{}})
@@ -53,7 +53,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
     end
 
     test "change 1 thing", %{socket: socket, lobby_id: lobby_id, user: _user} do
-      lobby = Teiserver.Api.get_lobby(lobby_id)
+      lobby = Teiserver.get_lobby(lobby_id)
       refute lobby.name == "New lobby name (1)"
 
       speak(socket, %{name: "lobby/change", command: %{name: "New lobby name (1)"}})
@@ -78,12 +78,12 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       assert JsonSchemaHelper.valid?("lobby/updated_message.json", msg["message"])
 
       # Check the lobby did indeed update
-      lobby = Teiserver.Api.get_lobby(lobby_id)
+      lobby = Teiserver.get_lobby(lobby_id)
       assert lobby.name == "New lobby name (1)"
     end
 
     test "change 3 things", %{socket: socket, lobby_id: lobby_id, user: _user} do
-      lobby = Teiserver.Api.get_lobby(lobby_id)
+      lobby = Teiserver.get_lobby(lobby_id)
       refute lobby.name == "New lobby name (3)"
 
       speak(socket, %{
@@ -119,7 +119,7 @@ defmodule Angen.TextProtocol.Lobby.ChangeTest do
       assert JsonSchemaHelper.valid?("lobby/updated_message.json", msg["message"])
 
       # Check the lobby did indeed update
-      lobby = Teiserver.Api.get_lobby(lobby_id)
+      lobby = Teiserver.get_lobby(lobby_id)
       assert lobby.name == "New lobby name (3)"
 
       # Verify the changes in the summary too

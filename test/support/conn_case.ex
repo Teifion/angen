@@ -16,6 +16,7 @@ defmodule AngenWeb.ConnCase do
   """
 
   use ExUnit.CaseTemplate
+  import Angen.ProtoCase, only: [create_test_user: 0]
 
   using do
     quote do
@@ -28,6 +29,7 @@ defmodule AngenWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import AngenWeb.ConnCase
+      import Angen.ProtoCase, only: [create_test_user: 0]
     end
   end
 
@@ -54,7 +56,7 @@ defmodule AngenWeb.ConnCase do
 
   @spec get_api_token_code(nil | list()) :: String.t()
   def get_api_token_code(opts \\ []) do
-    user = opts[:user] || Angen.ProtoCase.create_test_user()
+    user = opts[:user] || create_test_user()
 
     {:ok, token} = Angen.Account.create_user_token(user.id, "web-api-unit-test", "UnitTest", "127.0.0.1")
 

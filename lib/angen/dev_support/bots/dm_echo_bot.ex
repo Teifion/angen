@@ -9,7 +9,7 @@ defmodule Angen.DevSupport.DMEchoBot do
 
   def handle_info(:startup, state) do
     user = BotLib.get_or_create_bot_account("DMEchoBot")
-    client = Api.connect_user(user.id)
+    client = Teiserver.connect_user(user.id)
 
     if client do
       {:noreply, %{state | user: user, connected: true}}
@@ -27,7 +27,7 @@ defmodule Angen.DevSupport.DMEchoBot do
 
     echo_content = msg.direct_message.content |> String.reverse()
 
-    Api.send_direct_message(state.user.id, dm.sender_id, echo_content)
+    Teiserver.send_direct_message(state.user.id, dm.sender_id, echo_content)
 
     {:noreply, state}
   end

@@ -18,7 +18,7 @@ defmodule Angen.TextProtocol.Lobby.LeaveCommand do
   end
 
   def handle(_, state) do
-    Api.remove_client_from_lobby(state.user_id, state.lobby_id)
+    Teiserver.remove_client_from_lobby(state.user_id, state.lobby_id)
     SuccessResponse.generate(name(), state)
   end
 end

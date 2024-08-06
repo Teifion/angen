@@ -9,7 +9,7 @@ defmodule Angen.DevSupport.LobbyHostBot do
 
   def handle_info(:startup, state) do
     user = BotLib.get_or_create_bot_account("LobbyHostBot")
-    client = Api.connect_user(user.id)
+    client = Teiserver.connect_user(user.id)
 
     if client do
       send(self(), :tick)
@@ -22,11 +22,11 @@ defmodule Angen.DevSupport.LobbyHostBot do
   end
 
   def handle_info(:tick, %{lobby_id: nil} = state) do
-    lobby_id = case Api.open_lobby(state.user.id, "Integration test lobby") do
+    lobby_id = case Teiserver.open_lobby(state.user.id, "Integration test lobby") do
       {:ok, lobby_id} -> lobby_id
 
       {:error, "Already in a lobby"} ->
-        client = Api.get_client(state.user.id)
+        client = Teiserver.get_client(state.user.id)
         client.lobby_id
 
       {:error, _} ->

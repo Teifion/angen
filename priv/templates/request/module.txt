@@ -16,7 +16,7 @@ defmodule Angen.TextProtocol.<%= @cap_section %>.<%= @cap_name %>Command do
   def handle(%{}, state) do
     case true do
       {:ok, result} ->
-        Teiserver.Api.do_something()
+        Teiserver.do_something()
         TextProtocol.<%= @cap_section %>.<%= @cap_name %>Response.generate(result, state)
         SuccessResponse.generate(name(), state)
 

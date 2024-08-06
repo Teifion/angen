@@ -29,13 +29,13 @@ defmodule AngenWeb.Api.TokenController do
   end
 
   defp auth_user(conn, %{"id" => id, "password" => password, "user_agent" => user_agent}) do
-    case Teiserver.Api.maybe_authenticate_user_by_id(id, password) do
+    case Teiserver.maybe_authenticate_user_by_id(id, password) do
       {:ok, user} ->
         get_token_from_user(conn, user, user_agent)
 
       {:error, :no_user} ->
         ip = UserAuth.get_ip_from_conn(conn) |> Tuple.to_list() |> Enum.join(".")
-        Teiserver.Api.create_anonymous_audit_log(ip, "/api/request_token", %{
+        Teiserver.create_anonymous_audit_log(ip, "/api/request_token", %{
           reason: "no_user",
           id: id,
           user_agent: user_agent

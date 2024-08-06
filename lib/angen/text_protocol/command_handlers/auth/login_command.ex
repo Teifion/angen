@@ -16,7 +16,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.Login do
 
       token ->
         bad_ip =
-          if Application.get_env(:angen, :require_tokens_to_persist_ip) do
+          if Teiserver.get_server_setting_value("require_tokens_to_persist_ip") do
             # If the IP must match, it's a bad ip if they are different
             state.ip != token.ip
           else
@@ -32,7 +32,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.Login do
   end
 
   defp perform_connection(token, cmd, state) do
-    case Teiserver.Api.connect_user(token.user_id, bot?: Map.get(cmd, "bot?", false)) do
+    case Teiserver.connect_user(token.user_id, bot?: Map.get(cmd, "bot?", false)) do
       nil ->
         FailureResponse.generate({name(), "No clint created, please retry"}, state)
 

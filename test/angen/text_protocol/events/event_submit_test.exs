@@ -119,7 +119,7 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "auth - in lobby" do
       %{socket: socket, user_id: user_id} = auth_connection()
       %{lobby_id: lobby_id} = lobby_host_connection()
-      Api.add_client_to_lobby(user_id, lobby_id)
+      Teiserver.add_client_to_lobby(user_id, lobby_id)
       flush_socket(socket)
 
       speak(socket, %{
@@ -135,8 +135,8 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "simple" do
       %{socket: socket, user_id: user_id} = auth_connection()
       %{lobby_id: lobby_id} = lobby_host_connection()
-      Api.add_client_to_lobby(user_id, lobby_id)
-      Api.start_match(lobby_id)
+      Teiserver.add_client_to_lobby(user_id, lobby_id)
+      Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       assert Enum.empty?(Telemetry.list_simple_match_events(where: [user_id: user_id]))
@@ -156,8 +156,8 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "complex" do
       %{socket: socket, user_id: user_id} = auth_connection()
       %{lobby_id: lobby_id} = lobby_host_connection()
-      Api.add_client_to_lobby(user_id, lobby_id)
-      Api.start_match(lobby_id)
+      Teiserver.add_client_to_lobby(user_id, lobby_id)
+      Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       assert Enum.empty?(Telemetry.list_complex_match_events(where: [user_id: user_id]))
@@ -207,7 +207,7 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "auth - in lobby" do
       %{socket: socket, user_id: user_id} = auth_connection()
       %{lobby_id: lobby_id} = lobby_host_connection()
-      Api.add_client_to_lobby(user_id, lobby_id)
+      Teiserver.add_client_to_lobby(user_id, lobby_id)
       flush_socket(socket)
 
       speak(socket, %{
@@ -223,8 +223,8 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "auth - not the host" do
       %{socket: socket, user_id: user_id} = auth_connection()
       %{lobby_id: lobby_id} = lobby_host_connection()
-      Api.add_client_to_lobby(user_id, lobby_id)
-      Api.start_match(lobby_id)
+      Teiserver.add_client_to_lobby(user_id, lobby_id)
+      Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       speak(socket, %{
@@ -240,8 +240,8 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "simple" do
       %{user_id: user_id} = auth_connection()
       %{socket: socket, lobby_id: lobby_id} = lobby_host_connection()
-      Api.add_client_to_lobby(user_id, lobby_id)
-      Api.start_match(lobby_id)
+      Teiserver.add_client_to_lobby(user_id, lobby_id)
+      Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       assert Enum.empty?(Telemetry.list_simple_match_events(where: [user_id: user_id]))
@@ -261,8 +261,8 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
     test "complex" do
       %{user_id: user_id} = auth_connection()
       %{socket: socket, lobby_id: lobby_id} = lobby_host_connection()
-      Api.add_client_to_lobby(user_id, lobby_id)
-      Api.start_match(lobby_id)
+      Teiserver.add_client_to_lobby(user_id, lobby_id)
+      Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       assert Enum.empty?(Telemetry.list_complex_match_events(where: [user_id: user_id]))

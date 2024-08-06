@@ -109,9 +109,9 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
     test "basic match_ongoing?", args do
       %{lobby1_id: lobby1_id, lobby2_id: lobby2_id, lobby3_id: lobby3_id, socket: socket} = args
 
-      Api.update_lobby(lobby1_id, %{match_ongoing?: false})
-      Api.update_lobby(lobby2_id, %{match_ongoing?: false})
-      Api.update_lobby(lobby3_id, %{match_ongoing?: true})
+      Teiserver.update_lobby(lobby1_id, %{match_ongoing?: false})
+      Teiserver.update_lobby(lobby2_id, %{match_ongoing?: false})
+      Teiserver.update_lobby(lobby3_id, %{match_ongoing?: true})
 
       speak(socket, %{
         name: "lobby/query",
@@ -141,9 +141,9 @@ defmodule Angen.TextProtocol.Lobby.QueryTest do
     test "basic tags", args do
       %{lobby1_id: lobby1_id, lobby2_id: lobby2_id, lobby3_id: lobby3_id, socket: socket} = args
 
-      Api.update_lobby(lobby1_id, %{tags: ["tag1", "tag2"]})
-      Api.update_lobby(lobby2_id, %{tags: ["tag2", "tag3"]})
-      Api.update_lobby(lobby3_id, %{tags: ["tag3", "tag4"]})
+      Teiserver.update_lobby(lobby1_id, %{tags: ["tag1", "tag2"]})
+      Teiserver.update_lobby(lobby2_id, %{tags: ["tag2", "tag3"]})
+      Teiserver.update_lobby(lobby3_id, %{tags: ["tag3", "tag4"]})
 
       # Require all (positive)
       speak(socket, %{

@@ -6,7 +6,7 @@ defmodule AngenWeb.Api.EventJSON do
   @doc """
   Renders a list of models.
   """
-  def create_event(%{event: event}) do
-    %{result: "Event created", event: event}
+  def success(_) do
+    %{result: "Event created"}
   end
 end

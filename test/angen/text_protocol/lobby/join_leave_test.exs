@@ -28,7 +28,7 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       %{socket: _hsocket, lobby_id: lobby_id} = lobby_host_connection()
       %{socket: socket} = auth_connection()
 
-      Api.update_lobby(lobby_id, %{locked?: true})
+      Teiserver.update_lobby(lobby_id, %{locked?: true})
 
       speak(socket, %{name: "lobby/join", command: %{id: lobby_id}})
       msg = listen(socket)
@@ -48,7 +48,7 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       shared_secret = msg["message"]["shared_secret"]
       assert Map.has_key?(msg["message"], "lobby")
 
-      lobby = Api.get_lobby(lobby_id)
+      lobby = Teiserver.get_lobby(lobby_id)
       assert Enum.member?(lobby.members, user.id)
 
       [msg] = messages["connections/client_updated"]
@@ -84,7 +84,7 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
 
       [msg] = messages["lobby/joined"]
       assert Map.has_key?(msg["message"], "shared_secret")
-      lobby = Api.get_lobby(lobby_id)
+      lobby = Teiserver.get_lobby(lobby_id)
       assert Enum.member?(lobby.members, user.id)
 
       [msg] = messages["connections/client_updated"]
@@ -106,7 +106,7 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       %{lobby_id: lobby_id} = lobby_host_connection()
       %{socket: socket, user: user} = auth_connection()
 
-      Api.update_lobby(lobby_id, %{password: "password1"})
+      Teiserver.update_lobby(lobby_id, %{password: "password1"})
 
       # No password given
       speak(socket, %{name: "lobby/join", command: %{id: lobby_id}})
@@ -125,7 +125,7 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
 
       [msg] = messages["lobby/joined"]
       assert Map.has_key?(msg["message"], "shared_secret")
-      lobby = Api.get_lobby(lobby_id)
+      lobby = Teiserver.get_lobby(lobby_id)
       assert Enum.member?(lobby.members, user.id)
 
       [msg] = messages["connections/client_updated"]
@@ -201,13 +201,13 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
       %{socket: usocket1, user_id: user1_id} = auth_connection()
       %{socket: usocket2, user_id: user2_id} = auth_connection()
 
-      Api.add_client_to_lobby(user1_id, lobby_id)
+      Teiserver.add_client_to_lobby(user1_id, lobby_id)
 
       flush_socket(hsocket)
       flush_socket(usocket1)
 
       # Now add the 2nd user and ensure the host and member both get updates
-      Api.add_client_to_lobby(user2_id, lobby_id)
+      Teiserver.add_client_to_lobby(user2_id, lobby_id)
 
       messages = hsocket |> listen_all |> group_responses()
       [host_msg] = messages["lobby/user_joined"]

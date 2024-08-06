@@ -35,7 +35,7 @@ defmodule Angen.TextProtocol.AuthTest do
       })
 
       response = listen(socket)
-      user = Api.get_user_by_name("registerTest")
+      user = Teiserver.get_user_by_name("registerTest")
 
       assert response == %{
                "name" => "account/registered",
@@ -51,7 +51,7 @@ defmodule Angen.TextProtocol.AuthTest do
       speak(socket, %{
         name: "auth/get_token",
         command: %{
-          name: "no-user",
+          id: "5383b1f8-393e-4dc5-8798-dcce8fa67a00",
           password: "bad-password1",
           user_agent: "UnitTest"
         }
@@ -64,7 +64,7 @@ defmodule Angen.TextProtocol.AuthTest do
       speak(socket, %{
         name: "auth/get_token",
         command: %{
-          name: "registerTest",
+          email: "registerTest@registerTest",
           password: "bad-password1",
           user_agent: "UnitTest"
         }
@@ -77,7 +77,7 @@ defmodule Angen.TextProtocol.AuthTest do
       speak(socket, %{
         name: "auth/get_token",
         command: %{
-          name: "registerTest",
+          email: "registerTest@registerTest",
           password: "password1",
           user_agent: "UnitTest"
         }
