@@ -37,7 +37,7 @@ jobs:
         env:
           POSTGRES_DB: angen_test
           POSTGRES_USER: angen_test
-          POSTGRES_PASSWORD: 123456789
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s

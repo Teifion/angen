@@ -48,7 +48,7 @@ defmodule Angen.ProtoCase do
 
   @spec raw_connection() :: %{socket: any()}
   def raw_connection() do
-    host = ~c"127.0.0.1"
+    host = Application.get_env(:angen, :tls_host)
     port = Application.get_env(:angen, :tls_port)
 
     {:ok, socket} =
@@ -66,7 +66,7 @@ defmodule Angen.ProtoCase do
         }
   def auth_connection(opts \\ []) do
     user = opts[:user] || create_test_user()
-    host = ~c"127.0.0.1"
+    host = Application.get_env(:angen, :tls_host)
     port = Application.get_env(:angen, :tls_port)
 
     {:ok, socket} =
