@@ -37,7 +37,10 @@ defmodule AngenWeb.Admin.Account.ShowLive do
   end
 
   @impl true
-  def handle_info(%{topic: "Teiserver.Connections.Client:" <> _, event: :client_updated} = msg, socket) do
+  def handle_info(
+        %{topic: "Teiserver.Connections.Client:" <> _, event: :client_updated} = msg,
+        socket
+      ) do
     new_client = socket.assigns.client |> Map.merge(msg.changes)
 
     socket

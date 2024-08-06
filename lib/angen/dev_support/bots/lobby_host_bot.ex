@@ -22,17 +22,18 @@ defmodule Angen.DevSupport.LobbyHostBot do
   end
 
   def handle_info(:tick, %{lobby_id: nil} = state) do
-    lobby_id = case Teiserver.open_lobby(state.user.id, "Integration test lobby") do
-      {:ok, lobby_id} -> lobby_id
+    lobby_id =
+      case Teiserver.open_lobby(state.user.id, "Integration test lobby") do
+        {:ok, lobby_id} ->
+          lobby_id
 
-      {:error, "Already in a lobby"} ->
-        client = Teiserver.get_client(state.user.id)
-        client.lobby_id
+        {:error, "Already in a lobby"} ->
+          client = Teiserver.get_client(state.user.id)
+          client.lobby_id
 
-      {:error, _} ->
-        nil
-    end
-
+        {:error, _} ->
+          nil
+      end
 
     {:noreply, %{state | lobby_id: lobby_id}}
   end
@@ -45,7 +46,10 @@ defmodule Angen.DevSupport.LobbyHostBot do
     {:noreply, state}
   end
 
-  def handle_info(%{event: :joined_lobby, topic: "Teiserver.Connections.Client:" <> _, lobby_id: lobby_id}, state) do
+  def handle_info(
+        %{event: :joined_lobby, topic: "Teiserver.Connections.Client:" <> _, lobby_id: lobby_id},
+        state
+      ) do
     {:noreply, %{state | lobby_id: lobby_id}}
   end
 

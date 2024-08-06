@@ -36,7 +36,6 @@ defmodule Angen.Settings.ServerSettings do
   end
 
   defp web_api_security() do
-
   end
 
   defp account_creation() do
@@ -46,7 +45,8 @@ defmodule Angen.Settings.ServerSettings do
       section: "Registration",
       type: "boolean",
       default: false,
-      description: "Allows creation of accounts via the website for anybody. This setting has no effect on the admin UI; you will still be able to create users there."
+      description:
+        "Allows creation of accounts via the website for anybody. This setting has no effect on the admin UI; you will still be able to create users there."
     })
 
     add_server_setting_type(%{

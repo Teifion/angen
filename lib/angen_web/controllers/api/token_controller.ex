@@ -25,10 +25,11 @@ defmodule AngenWeb.Api.TokenController do
 
   @spec renew_token(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def renew_token(conn, %{"renewal" => renewal_code}) do
-    identifier_code = case get_req_header(conn, "token") do
-      [c | _] -> c
-      _ -> nil
-    end
+    identifier_code =
+      case get_req_header(conn, "token") do
+        [c | _] -> c
+        _ -> nil
+      end
 
     case Angen.Account.get_user_token_by_identifier_renewal(identifier_code, renewal_code) do
       nil ->
@@ -57,6 +58,7 @@ defmodule AngenWeb.Api.TokenController do
 
       {:error, :no_user} ->
         ip = UserAuth.get_ip_from_conn(conn) |> Tuple.to_list() |> Enum.join(".")
+
         Teiserver.create_anonymous_audit_log(ip, "/api/request_token", %{
           reason: "no_user",
           id: id,

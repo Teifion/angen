@@ -14,13 +14,26 @@ defmodule AngenWeb.TokenControllerTest do
     end
 
     test "bad id", %{conn: conn} do
-      conn = post(conn, ~p"/api/request_token", %{"id" => "2b4a1c1e-67dc-4e03-bc4a-393d82a722c5", "password" => "bad-pass", "user_agent" => "agent"})
+      conn =
+        post(conn, ~p"/api/request_token", %{
+          "id" => "2b4a1c1e-67dc-4e03-bc4a-393d82a722c5",
+          "password" => "bad-pass",
+          "user_agent" => "agent"
+        })
+
       assert json_response(conn, 500) == %{"result" => "Error", "reason" => "Bad authentication"}
     end
 
     test "bad password", %{conn: conn} do
       user = user_fixture()
-      conn = post(conn, ~p"/api/request_token", %{"id" => user.id, "password" => "bad-pass", "user_agent" => "agent"})
+
+      conn =
+        post(conn, ~p"/api/request_token", %{
+          "id" => user.id,
+          "password" => "bad-pass",
+          "user_agent" => "agent"
+        })
+
       assert json_response(conn, 500) == %{"result" => "Error", "reason" => "Bad authentication"}
     end
 
@@ -32,7 +45,14 @@ defmodule AngenWeb.TokenControllerTest do
 
     test "good auth", %{conn: conn} do
       user = user_fixture()
-      conn = post(conn, ~p"/api/request_token", %{"id" => user.id, "password" => "password", "user_agent" => "agent"})
+
+      conn =
+        post(conn, ~p"/api/request_token", %{
+          "id" => user.id,
+          "password" => "password",
+          "user_agent" => "agent"
+        })
+
       response = json_response(conn, 201)
 
       assert response["result"] == "Token"
@@ -124,14 +144,19 @@ defmodule AngenWeb.TokenControllerTest do
 
   describe "using" do
     test "no token", %{conn: conn} do
-      conn = post(conn, ~p"/api/events/simple_clientapp", %{"events" => [%{"name" => "no-token"}]})
+      conn =
+        post(conn, ~p"/api/events/simple_clientapp", %{"events" => [%{"name" => "no-token"}]})
+
       response = response(conn, 401)
       assert response == "Unauthorised"
     end
 
     test "bad token", %{conn: conn} do
       conn = put_req_header(conn, "token", "123")
-      conn = post(conn, ~p"/api/events/simple_clientapp", %{"events" => [%{"name" => "bad-token"}]})
+
+      conn =
+        post(conn, ~p"/api/events/simple_clientapp", %{"events" => [%{"name" => "bad-token"}]})
+
       response = response(conn, 401)
       assert response == "Unauthorised"
     end
@@ -140,7 +165,9 @@ defmodule AngenWeb.TokenControllerTest do
       token = get_api_token_code()
       conn = put_req_header(conn, "token", token)
 
-      conn = post(conn, ~p"/api/events/simple_clientapp", %{"events" => [%{"name" => "good-token"}]})
+      conn =
+        post(conn, ~p"/api/events/simple_clientapp", %{"events" => [%{"name" => "good-token"}]})
+
       response = json_response(conn, 201)
       assert response == %{"result" => "Event(s) created", "count" => 1}
     end

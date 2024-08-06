@@ -1,18 +1,16 @@
-<%
-  selected = cond do
+<% selected =
+  cond do
     assigns[:edit_mode] != true -> "show"
     assigns[:edit_mode] == true and @user != nil and @user.id != nil -> "edit"
     true -> "new"
-  end
-%>
+  end %>
 <AngenWeb.Account.UserComponents.filter_bar selected={selected} />
 
-<div class="row mt-4" :if={assigns[:edit_mode] != true}>
+<div :if={assigns[:edit_mode] != true} class="row mt-4">
   <div class="col">
     <.card :if={@user}>
       <a class="float-end btn btn-info" href={~p"/admin/accounts/user/edit/#{@user.id}"}>
-        <Fontawesome.icon icon={StylingHelper.icon(:edit)} style="solid" />
-        Edit
+        <Fontawesome.icon icon={StylingHelper.icon(:edit)} style="solid" /> Edit
       </a>
       <h4>
         <%= @user.name %>
@@ -64,7 +62,7 @@
             <td>Social score</td>
             <td><%= format_number(@user.social_score) %></td>
           </tr>
-          
+
           <tr>
             <td>Last login</td>
             <td><%= date_to_str(@user.last_login_at, :hms_or_ymd) %></td>
@@ -83,7 +81,7 @@
   </div>
 </div>
 
-<div class="row mt-4" :if={assigns[:edit_mode] == true and @user != nil}>
+<div :if={assigns[:edit_mode] == true and @user != nil} class="row mt-4">
   <.live_component
     module={AngenWeb.Account.UserFormComponent}
     id={:edit}

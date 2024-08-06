@@ -35,13 +35,15 @@ defmodule AngenWeb.Admin.Account.IndexLive do
 
   @spec get_users(Phoenix.Socket.t()) :: Phoenix.Socket.t()
   defp get_users(%{assigns: assigns} = socket) do
-    order_by = if assigns.search_term != "" do
-      "Name (A-Z)"
-    else
-      "Newest first"
-    end
+    order_by =
+      if assigns.search_term != "" do
+        "Name (A-Z)"
+      else
+        "Newest first"
+      end
 
-    users = Account.list_users(where: [name_like: assigns.search_term], order_by: order_by, limit: 50)
+    users =
+      Account.list_users(where: [name_like: assigns.search_term], order_by: order_by, limit: 50)
 
     socket
     |> assign(:users, users)

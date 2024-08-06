@@ -31,15 +31,17 @@ defmodule AngenWeb.Account.UserFormComponent do
               <br />
             </div>
 
-            <label for="groups" class="control-label">Groups:</label> (separate with spaces)
-            <.input field={@form[:groups]} type="text" phx-debounce="100" />
+            <label for="groups" class="control-label">Groups:</label>
+            (separate with spaces) <.input field={@form[:groups]} type="text" phx-debounce="100" />
             <br />
 
-            <label for="groups" class="control-label">Restrictions:</label> (separate with spaces)
+            <label for="groups" class="control-label">Restrictions:</label>
+            (separate with spaces)
             <.input field={@form[:restrictions]} type="text" phx-debounce="100" />
             <br />
 
-            <label for="groups" class="control-label">Restricted until:</label> (format: YYYY-MM-DDThh:mm:ssZ)
+            <label for="groups" class="control-label">Restricted until:</label>
+            (format: YYYY-MM-DDThh:mm:ssZ)
             <.input field={@form[:restricted_until]} type="datetime-local" phx-debounce="100" />
             <br />
           </div>
@@ -171,9 +173,9 @@ defmodule AngenWeb.Account.UserFormComponent do
 
   defp convert_params(params) do
     params
-      |> Map.merge(%{
-        "groups" => String.split(params["groups"]),
-        "restrictions" => String.split(params["restrictions"])
-      })
+    |> Map.merge(%{
+      "groups" => String.split(params["groups"]),
+      "restrictions" => String.split(params["restrictions"])
+    })
   end
 end

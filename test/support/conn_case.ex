@@ -58,7 +58,8 @@ defmodule AngenWeb.ConnCase do
   def get_api_token_code(opts \\ []) do
     user = opts[:user] || create_test_user()
 
-    {:ok, token} = Angen.Account.create_user_token(user.id, "web-api-unit-test", "UnitTest", "127.0.0.1")
+    {:ok, token} =
+      Angen.Account.create_user_token(user.id, "web-api-unit-test", "UnitTest", "127.0.0.1")
 
     token.identifier_code
   end

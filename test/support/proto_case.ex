@@ -180,16 +180,16 @@ defmodule Angen.ProtoCase do
       {:ok, reply} ->
         reply |> to_string |> Jason.decode!()
 
-        # reply
-        # |> to_string
-        # |> String.split("}\n{")
-        # |> Enum.map(fn
-        #   "" ->
-        #     nil
-        #   s ->
-        #     Jason.decode!(s)
-        # end)
-        # |> Enum.reject(&(&1 == nil))
+      # reply
+      # |> to_string
+      # |> String.split("}\n{")
+      # |> Enum.map(fn
+      #   "" ->
+      #     nil
+      #   s ->
+      #     Jason.decode!(s)
+      # end)
+      # |> Enum.reject(&(&1 == nil))
 
       {:error, :timeout} ->
         :timeout
