@@ -12,6 +12,7 @@ defmodule AngenWeb.Admin.Account.ShowLive do
       |> assign(:user_id, user_id)
       |> assign(:client, Teiserver.get_client(user_id))
       |> get_user
+      |> get_other_data
 
     if socket.assigns.user do
       :ok = Teiserver.subscribe(Teiserver.Connections.ClientLib.client_topic(user_id))
@@ -36,6 +37,16 @@ defmodule AngenWeb.Admin.Account.ShowLive do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  defp apply_action(socket, :edit, _params) do
+    socket
+    |> assign(:edit_mode, true)
+  end
+
+  defp apply_action(socket, _, _params) do
+    socket
+    |> assign(:edit_mode, false)
+  end
+
   @impl true
   def handle_info(
         %{topic: "Teiserver.Connections.Client:" <> _, event: :client_updated} = msg,
@@ -53,21 +64,20 @@ defmodule AngenWeb.Admin.Account.ShowLive do
     |> noreply()
   end
 
-  defp apply_action(socket, :edit, _params) do
-    socket
-    |> assign(:edit_mode, true)
-  end
-
-  defp apply_action(socket, _, _params) do
-    socket
-    |> assign(:edit_mode, false)
+  def handle_info(
+        {AngenWeb.Account.UserFormComponent, {:updated_changeset, %{changes: _changes}}},
+        socket
+      ) do
+    {:noreply,
+     socket
+    }
   end
 
   @spec get_user(Phoenix.Socket.t()) :: Phoenix.Socket.t()
   defp get_user(%{assigns: %{user_id: user_id}} = socket) do
     user =
       try do
-        Account.get_user_by_id(user_id)
+        Teiserver.Account.get_user(user_id, preload: [:smurf_of])
       rescue
         _ in Ecto.Query.CastError ->
           nil
@@ -75,5 +85,16 @@ defmodule AngenWeb.Admin.Account.ShowLive do
 
     socket
     |> assign(:user, user)
+  end
+
+  @spec get_other_data(Phoenix.Socket.t()) :: Phoenix.Socket.t()
+  defp get_other_data(%{assigns: %{user: nil}} = socket) do
+    socket
+    |> assign(:smurfs, [])
+  end
+
+  defp get_other_data(%{assigns: %{user: user}} = socket) do
+    socket
+    |> assign(:smurfs, Teiserver.Account.list_users(where: [smurf_of: user.id], order_by: ["Last logged in"]))
   end
 end

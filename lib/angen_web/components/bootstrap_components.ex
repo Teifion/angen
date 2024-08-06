@@ -71,10 +71,18 @@ defmodule AngenWeb.BootstrapComponents do
   </AngenWeb.BootstrapComponents.card>
   """
   slot :inner_block, required: true
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(disabled form name value)
 
   def card(assigns) do
     ~H"""
-    <div class="card">
+    <div
+      class={[
+        "card",
+        @class
+      ]}
+      {@rest}
+    >
       <div class="card-body">
         <%= render_slot(@inner_block) %>
       </div>

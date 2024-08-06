@@ -41,7 +41,6 @@ defmodule AngenWeb.Account.UserFormComponent do
             <br />
 
             <label for="groups" class="control-label">Restricted until:</label>
-            (format: YYYY-MM-DDThh:mm:ssZ)
             <.input field={@form[:restricted_until]} type="datetime-local" phx-debounce="100" />
             <br />
           </div>
@@ -131,8 +130,16 @@ defmodule AngenWeb.Account.UserFormComponent do
   end
 
   defp save_user(socket, :edit, user_params) do
+    IO.puts "#{__MODULE__}:#{__ENV__.line}"
+    IO.inspect user_params
+    IO.puts ""
+
     case Account.update_user(socket.assigns.user, user_params) do
       {:ok, user} ->
+        IO.puts "#{__MODULE__}:#{__ENV__.line}"
+        IO.inspect user
+        IO.puts ""
+
         notify_parent({:saved, user})
 
         {:noreply,

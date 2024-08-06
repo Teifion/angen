@@ -9,16 +9,20 @@
 <div :if={assigns[:edit_mode] != true} class="row mt-4">
   <div class="col">
     <.card :if={@user}>
-      <a class="float-end btn btn-info" href={~p"/admin/accounts/user/edit/#{@user.id}"}>
-        <Fontawesome.icon icon={StylingHelper.icon(:edit)} style="solid" /> Edit
-      </a>
-      <h4>
+      <div class="float-end">
+        <a class="btn btn-info" href={~p"/admin/accounts/user/edit/#{@user.id}"}>
+          <Fontawesome.icon icon={StylingHelper.icon(:edit)} style="solid" /> Edit
+        </a>
+      </div>
+      
+      <h4 class="d-inline-block">
         <%= @user.name %>
-
-        <div :if={@client && @client.is_connected?}>
-          <Fontawesome.icon icon="circle" style="solid" class="text-success" />
-        </div>
       </h4>
+
+      <div class="badge sm rounded-pill text-bg-success" :if={@client != nil and @client.connected?} style="margin-left: 20px;">
+        Online
+      </div>
+
       <table class="table table-sm">
         <tbody>
           <tr>
@@ -41,8 +45,28 @@
             <td>Restricted until</td>
             <td><%= date_to_str(@user.restricted_until) %></td>
           </tr>
+          <tr :if={@user.smurf_of_id}>
+            <td>Smurf of</td>
+            <td>
+              <%= @user.smurf_of.name %>
+              <a class="btn btn-warning btn-sm float-end" href={~p"/admin/accounts/user/#{@user.smurf_of_id}"} :if={@user.smurf_of_id}>
+                <Fontawesome.icon icon={StylingHelper.icon(:show)} style="solid" />
+                Show
+              </a>
+            </td>
+          </tr>
         </tbody>
       </table>
+    </.card>
+
+    <.card :if={@user != nil and not Enum.empty?(@smurfs)} class="mt-4">
+      <h5>Smurfs (<%= Enum.count(@smurfs) %>)</h5>
+      <.table id="smurfs" rows={@smurfs} table_class="table-sm table-hover">
+        <:col :let={smurf} label="Username"><%= smurf.name %></:col>
+        <:action :let={smurf}>
+          <.link navigate={~p"/admin/accounts/user/#{smurf}"} class="btn btn-warning btn-sm">Show</.link>
+        </:action>
+      </.table>
     </.card>
   </div>
 
