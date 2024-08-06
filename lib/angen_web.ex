@@ -67,6 +67,8 @@ defmodule AngenWeb do
       import Angen.Helper.StringHelper, only: [format_number: 1]
 
       defguard is_connected?(socket) when socket.transport_pid != nil
+      def ok(socket), do: {:ok, socket}
+      def noreply(socket), do: {:noreply, socket}
       unquote(html_helpers())
     end
   end

@@ -55,6 +55,8 @@ defmodule AngenWeb.Router do
         {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
       ] do
       live "/", IndexLive
+      live "/user/new", NewLive
+      live "/user/edit/:user_id", ShowLive, :edit
       live "/user/:user_id", ShowLive
     end
   end

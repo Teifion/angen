@@ -46,7 +46,7 @@ defmodule Angen.Settings.ServerSettings do
       section: "Registration",
       type: "boolean",
       default: false,
-      description: "Allows creation of accounts via the website."
+      description: "Allows creation of accounts via the website for anybody. This setting has no effect on the admin UI; you will still be able to create users there."
     })
 
     add_server_setting_type(%{
@@ -56,6 +56,23 @@ defmodule Angen.Settings.ServerSettings do
       type: "boolean",
       default: false,
       description: "Allows creation of temporary (guest) accounts."
+    })
+
+    add_server_setting_type(%{
+      key: "user_verification_mode",
+      label: "User verification mode",
+      section: "Registration",
+      type: "string",
+      default: "None",
+      choices: ["None", "Email", "Manual"],
+      description: """
+        The verification process used for non-guest accounts.
+        <ul>
+          <li>None - No verification takes place</li>
+          <li>Email - An email is sent to users when they register, they will need to click a link in the email to verify their account</li>
+          <li>Manual - All accounts must be manually verified by an authorised person</li>
+        </ul>
+      """
     })
   end
 

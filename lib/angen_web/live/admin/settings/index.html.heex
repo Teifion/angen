@@ -36,21 +36,39 @@
               </td>
 
               <td :if={setting_key == @selected_key} style="width:700px; text-align: right;">
-                <%= case the_setting.type do %>
-                  <% "integer" -> %>
+                <%= case the_setting do %>
+                  <% %{type: "integer"} -> %>
                     <.form
                       for={to_form(%{}, as: :temp_form)}
                       id="setting-temp-form"
                       phx-submit="set-to"
                     >
-                      <.input
-                        id="setting-input"
-                        type="number"
-                        name="setting[value]"
-                        value={@setting_values[setting_key] || the_setting.default}
-                      />
+                      <div class="row">
+                        <div class="col">
+                          <.input
+                            id="setting-input"
+                            type="number"
+                            name="setting[value]"
+                            value={@setting_values[setting_key] || the_setting.default}
+                          />
+                        </div>
+
+                        <div class="col">
+                          <button type="submit" class="btn btn-success">
+                            <Fontawesome.icon icon="check" style="solid" />
+                            &nbsp;
+                            Save
+                          </button>
+
+                          <span class="btn btn-secondary" phx-click="reset-value">
+                            <Fontawesome.icon icon="arrow-rotate-left" style="solid" />
+                            &nbsp;
+                            Default
+                          </span>
+                        </div>
+                      </div>
                     </.form>
-                  <% "select" -> %>
+                  <% %{type: "string", choices: _} -> %>
                     <.form
                       for={to_form(%{}, as: :temp_form)}
                       phx-change="set-to"
@@ -61,10 +79,10 @@
                         type="select"
                         name="setting[value]"
                         value={@setting_values[setting_key] || the_setting.default}
-                        options={the_setting.opts}
+                        options={the_setting.choices}
                       />
                     </.form>
-                  <% "boolean" -> %>
+                  <% %{type: "boolean"} -> %>
                     <span
                       id="setting-input"
                       class="btn btn-secondary"

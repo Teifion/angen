@@ -1,9 +1,26 @@
-<AngenWeb.Account.UserComponents.filter_bar selected="show" />
+<%
+  selected = cond do
+    assigns[:edit_mode] != true -> "show"
+    assigns[:edit_mode] == true and @user != nil and @user.id != nil -> "edit"
+    true -> "new"
+  end
+%>
+<AngenWeb.Account.UserComponents.filter_bar selected={selected} />
 
-<div class="row mt-4">
+<div class="row mt-4" :if={assigns[:edit_mode] != true}>
   <div class="col">
     <.card :if={@user}>
-      <h4><%= @user.name %></h4>
+      <a class="float-end btn btn-info" href={~p"/admin/accounts/user/edit/#{@user.id}"}>
+        <Fontawesome.icon icon={StylingHelper.icon(:edit)} style="solid" />
+        Edit
+      </a>
+      <h4>
+        <%= @user.name %>
+
+        <div :if={@client && @client.is_connected?}>
+          <Fontawesome.icon icon="circle" style="solid" class="text-success" />
+        </div>
+      </h4>
       <table class="table table-sm">
         <tbody>
           <tr>
@@ -22,6 +39,10 @@
             <td>Restrictions</td>
             <td><%= Enum.join(@user.restrictions, ", ") %></td>
           </tr>
+          <tr :if={not Enum.empty?(@user.restrictions)}>
+            <td>Restricted until</td>
+            <td><%= date_to_str(@user.restricted_until) %></td>
+          </tr>
         </tbody>
       </table>
     </.card>
@@ -31,6 +52,19 @@
     <.card :if={@user}>
       <table class="table table-sm">
         <tbody>
+          <tr>
+            <td>Behaviour score</td>
+            <td><%= format_number(@user.behaviour_score) %></td>
+          </tr>
+          <tr>
+            <td>Trust score</td>
+            <td><%= format_number(@user.trust_score) %></td>
+          </tr>
+          <tr>
+            <td>Social score</td>
+            <td><%= format_number(@user.social_score) %></td>
+          </tr>
+          
           <tr>
             <td>Last login</td>
             <td><%= date_to_str(@user.last_login_at, :hms_or_ymd) %></td>
@@ -47,4 +81,16 @@
       </table>
     </.card>
   </div>
+</div>
+
+<div class="row mt-4" :if={assigns[:edit_mode] == true and @user != nil}>
+  <.live_component
+    module={AngenWeb.Account.UserFormComponent}
+    id={:edit}
+    action={:edit}
+    user={@user}
+    patch={~p"/admin/accounts/user/#{@user.id}"}
+    title="Edit user form"
+    current_user={@current_user}
+  />
 </div>

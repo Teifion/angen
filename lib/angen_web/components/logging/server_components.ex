@@ -37,7 +37,7 @@ defmodule AngenWeb.Logging.ServerComponents do
 
         <.section_menu_button_url
           colour="info"
-          icon="list"
+          icon={StylingHelper.icon(:list)}
           active={@selected == "history"}
           url={~p"/admin/logging/server"}
         >

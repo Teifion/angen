@@ -73,7 +73,7 @@ defmodule Angen.MixProject do
       {:dart_sass, "~> 0.6"},
       {:tzdata, "~> 1.1"},
       {:etop, "~> 0.7.0"},
-      {:fontawesome_icons, "~> 0.0.4"},
+      {:fontawesome_icons, "~> 0.0.6"},
       {:thousand_island, "~> 1.3"},
       {:cachex, "~> 3.6"},
       {:ex_json_schema, "~> 0.10.2"},

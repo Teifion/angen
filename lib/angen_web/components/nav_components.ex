@@ -87,8 +87,8 @@ defmodule AngenWeb.NavComponents do
         <!-- Right elements -->
         <div class="d-flex align-items-center">
           <%= if @current_user do %>
-            <AngenWeb.UserComponents.recents_dropdown current_user={@current_user} />
-            <AngenWeb.UserComponents.account_dropdown current_user={@current_user} />
+            <AngenWeb.NavComponents.recents_dropdown current_user={@current_user} />
+            <AngenWeb.NavComponents.account_dropdown current_user={@current_user} />
           <% else %>
             <a class="nav-link" href={~p"/login"}>
               Sign in
@@ -347,6 +347,109 @@ defmodule AngenWeb.NavComponents do
         <% end %>
       </div>
     </nav>
+    """
+  end
+
+  @doc """
+  <AngenWeb.NavComponents.recents_dropdown current_user={@current_user} />
+  """
+  attr :current_user, :map, required: true
+
+  def recents_dropdown(assigns) do
+    # recents =
+    #   assigns[:current_user]
+    #   |> Angen.Account.RecentlyUsedCache.get_recently()
+    #   |> Enum.take(15)
+
+    recents = []
+
+    assigns =
+      assigns
+      |> assign(recents: recents)
+
+    ~H"""
+    <div :if={not Enum.empty?(@recents)} class="nav-item dropdown mx-2">
+      <a
+        class="dropdown-toggle dropdown-toggle-icon-only"
+        href="#"
+        data-bs-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        id="user-recents-link"
+      >
+        <i class="fa-solid fa-clock fa-fw fa-lg"></i>
+      </a>
+      <div
+        class="dropdown-menu dropdown-menu-end"
+        aria-labelledby="user-recents-link"
+        style="min-width: 300px; max-width: 500px;"
+      >
+        <span class="dropdown-header" style="font-weight: bold;">
+          Recent items
+        </span>
+
+        <a :for={r <- @recents} class="dropdown-item" href={r.url}>
+          <Fontawesome.icon icon={r.type_icon} style="regular" css={"color: #{r.type_colour}"} />
+
+          <%= if r.item_icon do %>
+            <Fontawesome.icon icon={r.item_icon} style="regular" css={"color: #{r.item_colour}"} />
+          <% else %>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <% end %>
+          &nbsp; <%= r.item_label %>
+        </a>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  <AngenWeb.NavComponents.account_dropdown current_user={@current_user} />
+  """
+  attr :current_user, :map, required: true
+
+  def account_dropdown(assigns) do
+    ~H"""
+    <div class="nav-item dropdown mx-2">
+      <a
+        class="dropdown-toggle dropdown-toggle-icon-only"
+        href="#"
+        data-bs-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        id="user-dropdown-link"
+      >
+        <i class="fa-solid fa-user fa-fw fa-lg"></i>
+      </a>
+      <div
+        class="dropdown-menu dropdown-menu-end"
+        aria-labelledby="user-dropdown-link"
+        style="min-width: 300px; max-width: 500px;"
+      >
+        <a class="dropdown-item" href={~p"/"}>
+          <i class="fa-fw fa-user fa-solid"></i> &nbsp;
+          Account
+        </a>
+
+        <hr style="margin: 0;" />
+
+        <form action={~p"/logout"} method="post" class="link" id="signout-form" style="margin: 0;">
+          <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+
+          <a
+            class="dropdown-item"
+            data-submit="parent"
+            href="#"
+            rel="nofollow"
+            onclick="$('#signout-form').submit();"
+            id="signout-link"
+          >
+            <i class="fa-regular fa-sign-out fa-fw"></i> &nbsp;
+            Sign out <%= @current_user.name %>
+          </a>
+        </form>
+      </div>
+    </div>
     """
   end
 end

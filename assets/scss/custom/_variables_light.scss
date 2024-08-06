@@ -46,6 +46,7 @@ $green: #108c1a;
 $teal: #008987;
 $cyan: #00b8d8;
 $white: #fff;
+$offwhite: #fafafa;
 $gray: #868e96;
 $gray-dark: #343a40;
 $primary: #274aAf;
@@ -167,6 +168,9 @@ $table-border-color: $gray-500 !default;
 
 $table-bg: $light !default;
 $table-bg-scale: 0 !default;
+
+$input-bg: $offwhite !default;
+
 /*
 // Forms
 
