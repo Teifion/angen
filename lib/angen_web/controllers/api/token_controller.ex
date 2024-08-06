@@ -24,8 +24,30 @@ defmodule AngenWeb.Api.TokenController do
   end
 
   @spec renew_token(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def renew_token(conn, params) do
-    raise "Not implemented"
+  def renew_token(conn, %{"renewal" => renewal_code}) do
+    identifier_code = case get_req_header(conn, "token") do
+      [c | _] -> c
+      _ -> nil
+    end
+
+    case Angen.Account.get_user_token_by_identifier_renewal(identifier_code, renewal_code) do
+      nil ->
+        conn
+        |> put_status(500)
+        |> assign(:reason, "No token")
+        |> render(:simple_error)
+
+      old_token ->
+        user = Angen.Account.get_user_by_id(conn.assigns.user_id)
+
+        {:ok, new_token} = get_token_from_user(conn, user, old_token.user_agent)
+        Angen.Account.delete_user_token(old_token)
+
+        conn
+        |> put_status(201)
+        |> assign(:token, TypeConvertors.convert(new_token))
+        |> render(:request_token)
+    end
   end
 
   defp auth_user(conn, %{"id" => id, "password" => password, "user_agent" => user_agent}) do

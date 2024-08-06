@@ -39,13 +39,6 @@ This is the preferred way to submit events. Events are submitted one at a time v
 - [events/match](/documentation/protocol/events.md#match)
 - [events/host_match](/documentation/protocol/events.md#host-match)
 
-## HTTP Interface
-A slower interface but the expected one if using collector mode as outlined below.
-
-- `api/events/anonymous`
-- `api/events/client`
-- `api/events/match`
-
 # Extracting data
 Angen provides some web interfaces for exploring collected data but for professional data analysts there are tools to export the data for use in tools better suited to the role.
 

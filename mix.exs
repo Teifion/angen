@@ -87,11 +87,11 @@ defmodule Angen.MixProject do
       # when developing locally we'll want to use a relative
       # reference or a specific git commit
       # {:teiserver, "~> 0.0.5"}
-      # {:teiserver,
-      #  git: "https://github.com/teifion/teiserver.git",
-      #  ref: "e5a49e6557cec813e88848eec509c78228f84090"
-      # }
-      {:teiserver, path: "../teiserver"}
+      {:teiserver,
+       git: "https://github.com/teifion/teiserver.git",
+       ref: "aea428415127e9b50f7042aa56f7181f8ad87c8d"
+      }
+      # {:teiserver, path: "../teiserver"}
     ]
   end
 

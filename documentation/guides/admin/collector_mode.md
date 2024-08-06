@@ -6,6 +6,9 @@ This is done by enabling the [server setting](settings.md) "Pure collector mode"
 
 **Note:** If you are using Angen as a middleware server you should not enable this setting. If you have any questions please contact the Angen developers.
 
+# Administrative HTTP endpoints
+Please see [client/http_api](../client/http_api.md) for the non-administrative endpoints related to the http api including authentication.
+
 # User accounts
 ## Creating users
 

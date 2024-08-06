@@ -1,7 +1,6 @@
 # TODO for Teiserver 0.0.5
-- Rest API for creating telemetry events
-- Rest API for creating game matches
-- Rest API for renewing tokens
+- HTTP API for creating telemetry events
+- HTTP API for creating game matches
 - Telemetry event export
 - Match data export
 - Admin UI for accounts

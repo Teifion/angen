@@ -166,28 +166,30 @@ defmodule Angen.ProtoCase do
   end
 
   @doc """
-  Grabs a message from the socket, if there are multiple messages it will only
-  grab the first one
+  Grabs a message from the socket, if there are multiple messages it should only
+  grab the first one.
+
+  Currently there is a bug where sometimes it will grab multiple messages.
   """
   @spec listen(any()) :: map() | :timeout | :closed
   @spec listen(any(), non_neg_integer()) :: map() | :timeout | :closed
   def listen(socket, timeout \\ 100) do
     case :ssl.recv(socket, 0, timeout) do
-      # This sometimes borks because there are two messages in the queue and it gets both
+      # TODO: This sometimes borks because there are two messages in the queue and it gets both
       # will need to refactor this to return a list and update all tests accordingly
       {:ok, reply} ->
         reply |> to_string |> Jason.decode!()
 
-      # reply
-      # |> to_string
-      # |> String.split("\n")
-      # |> Enum.map(fn
-      #   "" ->
-      #     nil
-      #   s ->
-      #     Jason.decode!(s)
-      # end)
-      # |> Enum.reject(&(&1 == nil))
+        # reply
+        # |> to_string
+        # |> String.split("}\n{")
+        # |> Enum.map(fn
+        #   "" ->
+        #     nil
+        #   s ->
+        #     Jason.decode!(s)
+        # end)
+        # |> Enum.reject(&(&1 == nil))
 
       {:error, :timeout} ->
         :timeout

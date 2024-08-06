@@ -134,7 +134,6 @@ defmodule AngenWeb.Router do
   scope "/api", AngenWeb.Api do
     pipe_through([:api])
     post "/request_token", TokenController, :request_token
-    post "/renew_token", TokenController, :renew_token
   end
 
   # Anon events
@@ -147,6 +146,9 @@ defmodule AngenWeb.Router do
   # Auth'd events
   scope "/api", AngenWeb.Api do
     pipe_through([:api, :secure_api])
+
+    post "/renew_token", TokenController, :renew_token
+
     post "/game/create_match", GameController, :create_match
 
     post "/events/simple_match", EventController, :simple_match
