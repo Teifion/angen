@@ -7,14 +7,14 @@ meta {
 post {
   url: http://localhost:4000/api/renew_token?renewal={{token_renew}}
   body: none
-  auth: none
+  auth: bearer
 }
 
 params:query {
   renewal: {{token_renew}}
 }
 
-headers {
+auth:bearer {
   token: {{token}}
 }
 

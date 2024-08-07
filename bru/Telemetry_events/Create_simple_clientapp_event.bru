@@ -7,10 +7,10 @@ meta {
 post {
   url: http://localhost:4000/api/events/simple_clientapp
   body: json
-  auth: none
+  auth: bearer
 }
 
-headers {
+auth:bearer {
   token: {{token}}
 }
 

@@ -5,6 +5,7 @@ There is also a [Bruno](https://www.usebruno.com/) collection placed in [/bru](/
 
 # Authentication
 ### Request token
+[Example bru](/bru/Auth/Request_token.bru)
 - Method: `POST`
 - URL: `api/request_token?id=SOME_UUID&password=PASSWORD&user_agent=AGENT_NAME`
 - URL: `api/request_token?email=SOME@EMAIL&password=PASSWORD&user_agent=AGENT_NAME`
@@ -14,7 +15,7 @@ There is also a [Bruno](https://www.usebruno.com/) collection placed in [/bru](/
   - `password`: The password to authenticate the user
   - `user_agent`: The user agent which should be tracked for the token
 
-An `identifier_code` will be returned in the response, it is then placed in future request headers under the `token` key.
+An `identifier_code` will be returned in the response, it is then placed in future request auth headers bearer token.
 
 Example request params
 ```json
@@ -45,7 +46,8 @@ Example success response
 ```
 
 ### Ping
-Mostly used to test authentication.
+[Example bru](/bru/Auth/ping.bru)
+Useful to test authentication without changing any data.
 
 - Method: `GET`
 - URL: `api/ping`
@@ -59,6 +61,7 @@ Example response
 
 
 ### Renew token
+[Example bru](/bru/Auth/Renew_token.bru)
 - Method: `POST`
 - URL: `api/renew_token`
 - Params:

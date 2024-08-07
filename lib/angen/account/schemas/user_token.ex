@@ -12,6 +12,7 @@ defmodule Angen.Account.UserToken do
   import Ecto.Changeset
 
   @derive {Jason.Encoder, only: ~w(user_id identifier_code renewal_code expires_at)a}
+  @primary_key {:id, Ecto.UUID, autogenerate: true}
   schema "account_user_tokens" do
     belongs_to(:user, Teiserver.Account.User, type: Ecto.UUID)
 
@@ -53,7 +54,7 @@ defmodule Angen.Account.UserToken do
     struct
     |> cast(
       attrs,
-      ~w(user_id identifier_code renewal_code context user_agent ip expires_at last_used_at)a
+      ~w(id user_id identifier_code renewal_code context user_agent ip expires_at last_used_at)a
     )
     |> validate_required(
       ~w(user_id identifier_code context renewal_code user_agent ip expires_at)a

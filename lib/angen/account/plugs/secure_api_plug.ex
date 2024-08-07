@@ -11,8 +11,8 @@ defmodule Angen.Account.SecureApiPlug do
   @spec call(Plug.Conn.t(), list()) :: Plug.Conn.t()
   def call(conn, _opts) do
     token_code =
-      case get_req_header(conn, "token") do
-        [c | _] -> c
+      case get_req_header(conn, "authorization") do
+        [c | _] -> String.replace(c, "Bearer ", "")
         _ -> nil
       end
 

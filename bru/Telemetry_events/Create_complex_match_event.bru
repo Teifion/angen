@@ -7,14 +7,14 @@ meta {
 post {
   url: http://localhost:4000/api/events/complex_match
   body: json
-  auth: none
+  auth: bearer
 }
 
 params:query {
   match_id: 0d011c85-2097-441c-bedf-062718e4f1b6
 }
 
-headers {
+auth:bearer {
   token: {{token}}
 }
 

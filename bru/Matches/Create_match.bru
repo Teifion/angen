@@ -1,0 +1,33 @@
+meta {
+  name: Create match
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:4000/api/game/create_match
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "id": "0d011c85-2097-441c-bedf-062718e4f1b6",
+    "name": "2v2 all welcome",
+    "tags": ["match-made", "lang-en", "lang-de"],
+    "public?": false,
+    "rated?": true,
+    "type": "team",
+    
+    "game_name": "game-app-name",
+    "game_version": "1.3.12",
+    
+    "team_count": 2,
+    "team_size": 2,
+    "player_count": 4
+  }
+}

@@ -7,7 +7,7 @@ defmodule AngenWeb.UserSessionController do
   @spec login_from_code(Plug.Conn.t(), map) :: Plug.Conn.t()
   def login_from_code(conn, %{"code" => "fakedata_code"}) do
     # If the token exists, delete it so it no longer exists and make a new one
-    token = Account.get_user_token(1)
+    token = Account.get_user_token(UUID.uuid5(nil, "root@localhost"))
 
     agent =
       case List.keyfind(conn.req_headers, "user-agent", 0) do

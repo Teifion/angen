@@ -130,4 +130,19 @@ defmodule Angen.Account do
     token = get_user_token_by_identifier(identifier_code)
     token && get_user_by_id(token.user_id)
   end
+
+  def get_or_create_anonymous_user() do
+    case get_user_by_email("anonymous@angen") do
+      nil ->
+        {:ok, user} = create_user(%{
+          name: "anonymous",
+          email: "anonymous@angen",
+          password: generate_password()
+        })
+        user
+
+      user ->
+        user
+    end
+  end
 end
