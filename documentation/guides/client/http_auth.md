@@ -6,7 +6,8 @@ There is also a [Bruno](https://www.usebruno.com/) collection placed in [/bru](/
 # Authentication
 ### Request token
 - Method: `POST`
-- URL: `api/request_token`
+- URL: `api/request_token?id=SOME_UUID&password=PASSWORD&user_agent=AGENT_NAME`
+- URL: `api/request_token?email=SOME@EMAIL&password=PASSWORD&user_agent=AGENT_NAME`
 - Params:
   - `id`: The UUID of the user you want a token for, this is the preferred method but you can use the email if needed
   - `email`: The email of the user you want a token for, you can use this instead of the ID
@@ -15,7 +16,7 @@ There is also a [Bruno](https://www.usebruno.com/) collection placed in [/bru](/
 
 An `identifier_code` will be returned in the response, it is then placed in future request headers under the `token` key.
 
-Example request
+Example request params
 ```json
 {
   "id": "c52bf5c1-1120-4e38-b807-f274db281ebc",
@@ -30,7 +31,7 @@ Example request
 }
 ```
 
-Example success
+Example success response
 ```json
 {
   "result": "success",
@@ -85,60 +86,4 @@ Example success
 }
 ```
 
-
-# Telemetry events
-### Simple clientapp event
-- Method: `POST`
-- URL: `api/events/simple_clientapp`
-- Params:
-  - `events`: A list of events being created:
-    - `name`: The name of the event taking place
-    - Optional: `user_id`: The user this is taken place for if not the token bearer
-
-Example request
-```json
-{
-  "events": [
-    %{"name": "event type 1"},
-    %{"name": "event type 2"},
-    %{"name": "event type 1", "user_id": "d9b39e1a-00fe-4b9e-9e99-4dc4e964ceaa"}
-  ]
-}
-```
-
-Example success
-```json
-{
-  "result": "Event(s) created",
-  "count": 3
-}
-```
-
-### Complex clientapp event
-- Method: `POST`
-- URL: `api/events/complex_clientapp`
-- Params:
-  - `events`: A list of events being created:
-    - `name`: The name of the event taking place
-    - `details`: A json object of the data to store for the event
-    - Optional: `user_id`: The user this is taken place for if not the token bearer
-
-Example request
-```json
-{
-  "events": [
-    %{"name": "event type 1", "details": {"count": 12}},
-    %{"name": "event type 2", "details": {"count": 14}},
-    %{"name": "event type 1", "user_id": "56dabb7f-0c4a-43d3-9d66-6474aa761fc9", "details": {"count": 9}}
-  ]
-}
-```
-
-Example success
-```json
-{
-  "result": "Event(s) created",
-  "count": 3
-}
-```
 

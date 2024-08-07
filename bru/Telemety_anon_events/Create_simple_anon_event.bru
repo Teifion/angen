@@ -1,0 +1,22 @@
+meta {
+  name: Simple anon event
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:4000/api/events/simple_anon?hash=fea24478-9a1a-4e5e-9173-5954e53e7155
+  body: json
+  auth: none
+}
+
+params:query {
+  hash: fea24478-9a1a-4e5e-9173-5954e53e7155
+}
+
+body:json {
+  [
+    {"name": "clicked-matchmaking"},
+    {"name": "found-match"}
+  ]
+}

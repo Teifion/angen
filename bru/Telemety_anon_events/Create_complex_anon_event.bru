@@ -1,0 +1,22 @@
+meta {
+  name: Complex anon event
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:4000/api/events/complex_anon
+  body: json
+  auth: none
+}
+
+params:query {
+  hash: 30148b94-f103-45ba-8580-c8c79bb9b372
+}
+
+body:json {
+  [
+    {"name": "daily-feedback", "details": {"gameplay": 5, "community": 4}},
+    {"name": "completed-tutorial", "details": {"time_taken_seconds": 601}}
+  ]
+}

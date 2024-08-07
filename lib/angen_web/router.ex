@@ -153,6 +153,7 @@ defmodule AngenWeb.Router do
     post "/renew_token", TokenController, :renew_token
 
     post "/game/create_match", GameController, :create_match
+    post "/game/update_match", GameController, :update_match
 
     post "/events/simple_match", EventController, :simple_match
     post "/events/complex_match", EventController, :complex_match

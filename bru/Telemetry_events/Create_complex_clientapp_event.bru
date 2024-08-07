@@ -1,0 +1,22 @@
+meta {
+  name: Complex clientapp event
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:4000/api/events/complex_clientapp
+  body: json
+  auth: none
+}
+
+headers {
+  token: {{token}}
+}
+
+body:json {
+  [
+    {"name": "daily-feedback", "details": {"gameplay": 5, "community": 4}},
+    {"name": "completed-tutorial", "details": {"time_taken_seconds": 601}}
+  ]
+}

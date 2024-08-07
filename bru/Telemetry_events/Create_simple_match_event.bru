@@ -1,0 +1,26 @@
+meta {
+  name: Simple match event
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:4000/api/events/simple_match?match_id=123
+  body: json
+  auth: none
+}
+
+params:query {
+  match_id: 0d011c85-2097-441c-bedf-062718e4f1b6
+}
+
+headers {
+  token: {{token}}
+}
+
+body:json {
+  [
+    {"name": "produced-first-worker", "seconds": 45},
+    {"name": "used-auto-scout", "seconds": 254}
+  ]
+}
