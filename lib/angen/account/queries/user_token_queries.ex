@@ -79,16 +79,6 @@ defmodule Angen.Account.UserTokenQueries do
   end
 
   @spec _order_by(Ecto.Query.t(), any()) :: Ecto.Query.t()
-  def _order_by(query, "Name (A-Z)") do
-    from user_tokens in query,
-      order_by: [asc: user_tokens.name]
-  end
-
-  def _order_by(query, "Name (Z-A)") do
-    from user_tokens in query,
-      order_by: [desc: user_tokens.name]
-  end
-
   def _order_by(query, "Newest first") do
     from user_tokens in query,
       order_by: [desc: user_tokens.inserted_at]
@@ -97,6 +87,16 @@ defmodule Angen.Account.UserTokenQueries do
   def _order_by(query, "Oldest first") do
     from user_tokens in query,
       order_by: [asc: user_tokens.inserted_at]
+  end
+
+  def _order_by(query, "Most recently used") do
+    from user_tokens in query,
+      order_by: [desc: user_tokens.last_used_at]
+  end
+
+  def _order_by(query, "Last recently used") do
+    from user_tokens in query,
+      order_by: [asc: user_tokens.last_used_at]
   end
 
   @spec do_preload(Ecto.Query.t(), List.t() | nil) :: Ecto.Query.t()

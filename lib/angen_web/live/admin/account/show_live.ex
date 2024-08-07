@@ -73,6 +73,17 @@ defmodule AngenWeb.Admin.Account.ShowLive do
     }
   end
 
+  @impl true
+  @spec handle_event(String.t(), map(), Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  def handle_event("delete-user-token", %{"token_id" => token_id}, socket) do
+    token = Angen.Account.get_user_token(token_id)
+    Angen.Account.delete_user_token(token)
+
+    socket
+    |> get_other_data
+    |> noreply
+  end
+
   @spec get_user(Phoenix.Socket.t()) :: Phoenix.Socket.t()
   defp get_user(%{assigns: %{user_id: user_id}} = socket) do
     user =
@@ -91,10 +102,12 @@ defmodule AngenWeb.Admin.Account.ShowLive do
   defp get_other_data(%{assigns: %{user: nil}} = socket) do
     socket
     |> assign(:smurfs, [])
+    |> assign(:tokens, [])
   end
 
   defp get_other_data(%{assigns: %{user: user}} = socket) do
     socket
     |> assign(:smurfs, Teiserver.Account.list_users(where: [smurf_of: user.id], order_by: ["Last logged in"]))
+    |> assign(:tokens, Angen.Account.list_user_tokens(where: [user_id: user.id], order_by: ["Most recently used"]))
   end
 end

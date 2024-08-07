@@ -6,6 +6,12 @@ defmodule AngenWeb.Api.TokenController do
 
   action_fallback AngenWeb.FallbackController
 
+  def ping(conn, _params) do
+    conn
+    |> put_status(200)
+    |> render(:pong)
+  end
+
   @spec request_token(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def request_token(conn, params) do
     case auth_user(conn, params) do
@@ -69,6 +75,22 @@ defmodule AngenWeb.Api.TokenController do
 
       {:error, _} ->
         {:error, "Bad authentication"}
+    end
+  end
+
+  defp auth_user(conn, %{"email" => email, "user_agent" => user_agent} = params) do
+    case Teiserver.Account.get_user_by_email(email) do
+      nil ->
+        ip = UserAuth.get_ip_from_conn(conn) |> Tuple.to_list() |> Enum.join(".")
+        Teiserver.create_anonymous_audit_log(ip, "/api/request_token", %{
+          reason: "no_user",
+          email: email,
+          user_agent: user_agent
+        })
+
+        {:error, "Bad authentication"}
+      user ->
+        auth_user(conn, Map.put(params, "id", user.id))
     end
   end
 

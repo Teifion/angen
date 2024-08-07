@@ -149,6 +149,7 @@ defmodule AngenWeb.Router do
   scope "/api", AngenWeb.Api do
     pipe_through([:api, :secure_api])
 
+    get "/ping", TokenController, :ping
     post "/renew_token", TokenController, :renew_token
 
     post "/game/create_match", GameController, :create_match

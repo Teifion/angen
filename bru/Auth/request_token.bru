@@ -1,0 +1,31 @@
+meta {
+  name: request_token
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:4000/api/request_token?email={{email}}&password={{password}}&user_agent=bruno
+  body: none
+  auth: none
+}
+
+params:query {
+  email: {{email}}
+  password: {{password}}
+  user_agent: bruno
+}
+
+vars:pre-request {
+  email: root@localhost
+  password: password
+}
+
+docs {
+  Use the resultant values from this request to populate the .env file in the directory.
+  
+  identifier_code -> TOKEN  
+  renewal_code -> TOKEN_RENEW  
+  user_id -> USER_ID  
+  
+}

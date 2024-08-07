@@ -21,6 +21,8 @@ defmodule Angen.Account.SecureApiPlug do
         fail_auth(conn)
 
       %Angen.Account.UserToken{} = token ->
+        Angen.Account.update_user_token(token, %{last_used_at: Timex.now()})
+
         conn
         |> assign(:user_id, token.user_id)
         |> test_ip(token.ip)

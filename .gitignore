@@ -28,6 +28,10 @@ priv/plts
 # Ignore package tarball (built via "mix hex.build").
 angen-*.tar
 
+
+bru/.env
+
+
 # Ignore assets that are produced by build tools.
 /assets/static
 /assets/node_modules/

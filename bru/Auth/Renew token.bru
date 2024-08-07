@@ -1,0 +1,28 @@
+meta {
+  name: Renew token
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:4000/api/renew_token?renewal={{token_renew}}
+  body: none
+  auth: none
+}
+
+params:query {
+  renewal: {{token_renew}}
+}
+
+headers {
+  token: {{token}}
+}
+
+docs {
+  Use the resultant values from this request to populate the .env file in the directory.
+  
+  identifier_code -> TOKEN  
+  renewal_code -> TOKEN_RENEW  
+  user_id -> USER_ID  
+  
+}

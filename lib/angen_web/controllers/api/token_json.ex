@@ -16,4 +16,11 @@ defmodule AngenWeb.Api.TokenJSON do
   def simple_error(%{reason: reason}) do
     %{reason: reason, result: "Error"}
   end
+
+  @doc """
+  Renders a pong
+  """
+  def pong(_) do
+    %{result: "Pong"}
+  end
 end

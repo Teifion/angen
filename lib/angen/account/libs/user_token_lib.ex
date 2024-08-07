@@ -237,8 +237,12 @@ defmodule Angen.Account.UserTokenLib do
   @spec generate_code() :: String.t()
   @spec generate_code(non_neg_integer()) :: String.t()
   def generate_code(length \\ 255) do
-    :crypto.strong_rand_bytes(length)
+    # We remove + signs because it can cause problems if not encoded properly
+    # and thus can cause issues for people trying to onboard, it has minimal impact on
+    # the security of the code
+    :crypto.strong_rand_bytes(round(length * 1.2))
     |> Base.encode64(padding: false)
+    |> String.replace("+", "")
     |> binary_part(0, length)
   end
 

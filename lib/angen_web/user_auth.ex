@@ -49,6 +49,8 @@ defmodule AngenWeb.UserAuth do
   def log_in_with_token(conn, %Angen.Account.UserToken{} = token, params \\ %{}) do
     user_return_to = get_session(conn, :user_return_to)
 
+    Angen.Account.update_user_token(token, %{last_used_at: Timex.now()})
+
     conn
     |> renew_session()
     |> put_token_in_session(token)
