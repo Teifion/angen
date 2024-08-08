@@ -36,6 +36,7 @@ defmodule AngenWeb.UserAuth do
       end
 
     {:ok, token} = Angen.Account.create_user_token(user.id, "web", user_agent, ip)
+    Angen.Account.update_user_token(token, %{last_used_at: Timex.now()})
 
     user_return_to = get_session(conn, :user_return_to)
 

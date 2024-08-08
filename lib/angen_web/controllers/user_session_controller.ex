@@ -50,7 +50,7 @@ defmodule AngenWeb.UserSessionController do
 
       token ->
         conn
-        |> put_flash(:info, "You are now logged in with a guest account.")
+        |> put_flash(:info, "You are now logged in")
         |> UserAuth.log_in_with_token(token)
     end
   end
