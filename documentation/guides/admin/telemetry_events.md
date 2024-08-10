@@ -39,17 +39,28 @@ This is the preferred way to submit events. Events are submitted one at a time v
 - [events/match](/documentation/protocol/events.md#match)
 - [events/host_match](/documentation/protocol/events.md#host-match)
 
-# Extracting data
-Angen provides some web interfaces for exploring collected data but for professional data analysts there are tools to export the data for use in tools better suited to the role.
-
-Angen has an API allowing returning of a zip containing CSVs.
-
-# Telemetry collector and nothing else
+## Telemetry collector and nothing else
 The above mentioned telemetry events are intended to be used alongside the rest of the functionality in Angen. This means match events link to the match they are part of meaning you can cross-reference events with outcomes. Angen has options allowing you to skip some of these steps. This is documented in the [collector mode](collector_mode.md) guide.
 
-# Third party services
-I want to add the ability to forward all telemetry data straight to third party services making it easier to scales games in future but I've not had a chance to do this yet. If this is something you want please create a [github issue](https://github.com/Teifion/angen/issues) or [Pull Request](https://github.com/Teifion/angen/pulls) for it.
+# Outside of Angen
+It's your data, you do what you want with it.
 
+## Extracting data
+Angen provides some web interfaces for exploring collected data but for professional data analysts you can export the data for use in tools better suited to the role.
+
+Angen will have an API allowing returning of a zip containing CSVs.
+
+## External applications
+I want to add the ability to forward all telemetry data straight to third party services making it easier to scales games in future but I've not had a chance to do this yet. If this is something you want please create a [github issue](https://github.com/Teifion/angen/issues) or event better a [pull request](https://github.com/Teifion/angen/pulls) for it.
+
+# Telemetry ideas
+One of the more common questions I see is "why go to this effort?" so here are some basic ideas to get you started.
+
+- Once a day players are given a poll showing 3 faces for a mood poll, you can now track self-reported player enjoyment
+- The first time each player produces a unit producing structure each match, you now know what they opened with
+- The first time each player uses any ability each match, now you know if the ability is actually used
+- When a player performs a sub-optimal choice (e.g. reloading before the clip is empty) vs doing it optimally
+- When a player attempts to do something that makes no sense, if it happens a lot it might be a design issue
 
 
 <!-- 

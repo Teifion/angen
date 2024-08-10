@@ -120,7 +120,7 @@ defmodule AngenWeb do
       alias Phoenix.LiveView.JS
 
       import Angen.Helper.TimexHelper,
-        only: [represent_minutes: 1, date_to_str: 1, date_to_str: 2]
+        only: [represent_seconds: 1, represent_minutes: 1, date_to_str: 1, date_to_str: 2]
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())

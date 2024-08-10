@@ -1,0 +1,28 @@
+<div id="index-live-wrapper">
+  <AngenWeb.Account.GameComponents.filter_bar selected="list">
+    <div class="col">
+      <input
+        type="text"
+        name="search-term"
+        id="search-term-input"
+        value=""
+        placeholder="Search"
+        class="form-control"
+        phx-keyup="update-search"
+        phx-debounce="500"
+      />
+    </div>
+  </AngenWeb.Account.GameComponents.filter_bar>
+
+  <.table id="matches" rows={@matches} table_class="table-sm table-hover">
+    <:col :let={match} label="Name"><%= match.name %></:col>
+    <:col :let={match} label="Players"><%= match.player_count %></:col>
+    <:col :let={match} label="Type"><%= match.type && match.type.name %></:col>
+
+    <:action :let={match}>
+      <.link navigate={~p"/admin/game/match/#{match}"} class="btn btn-secondary btn-sm">
+        Show
+      </.link>
+    </:action>
+  </.table>
+</div>

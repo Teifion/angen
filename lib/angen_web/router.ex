@@ -61,6 +61,19 @@ defmodule AngenWeb.Router do
     end
   end
 
+  scope "/admin/game", AngenWeb.Admin.Game do
+    pipe_through [:browser]
+
+    live_session :admin_game,
+      on_mount: [
+        {AngenWeb.UserAuth, :ensure_authenticated},
+        {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
+      ] do
+      live "/", IndexLive
+      live "/match/:match_id", ShowLive
+    end
+  end
+
   scope "/admin/logging", AngenWeb.Admin.Logging do
     pipe_through [:browser]
 
@@ -102,6 +115,19 @@ defmodule AngenWeb.Router do
         {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
       ] do
       live "/", SettingsLive.Index, :index
+    end
+  end
+
+  scope "/admin/data", AngenWeb.Admin.Data do
+    pipe_through [:browser]
+
+    live_session :admin_data,
+      on_mount: [
+        {AngenWeb.UserAuth, :ensure_authenticated},
+        {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
+      ] do
+      live "/", IndexLive
+      live "/export", ExportLive
     end
   end
 
@@ -151,6 +177,8 @@ defmodule AngenWeb.Router do
 
     get "/ping", TokenController, :ping
     post "/renew_token", TokenController, :renew_token
+
+    post "/account/create_user", AccountController, :create_user
 
     post "/game/create_match", GameController, :create_match
     post "/game/update_match", GameController, :update_match

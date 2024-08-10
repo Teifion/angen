@@ -1,0 +1,134 @@
+<% selected =
+  cond do
+    assigns[:edit_mode] != true -> "show"
+    assigns[:edit_mode] == true and @user != nil and @user.id != nil -> "edit"
+    true -> "new"
+  end %>
+<AngenWeb.Account.UserComponents.filter_bar selected={selected} />
+
+<div :if={assigns[:edit_mode] != true} class="row mt-4">
+  <div class="col">
+    <.card :if={@user}>
+      <div class="float-end">
+        <a class="btn btn-info" href={~p"/admin/accounts/user/edit/#{@user.id}"}>
+          <Fontawesome.icon icon={StylingHelper.icon(:edit)} style="solid" /> Edit
+        </a>
+      </div>
+      
+      <h4 class="d-inline-block">
+        <%= @user.name %>
+      </h4>
+
+      <div class="badge sm rounded-pill text-bg-success" :if={@client != nil and @client.connected?} style="margin-left: 20px;">
+        Online
+      </div>
+
+      <table class="table table-sm">
+        <tbody>
+          <tr>
+            <td>Email</td>
+            <td><%= @user.email %></td>
+          </tr>
+          <tr>
+            <td>Groups</td>
+            <td><%= Enum.join(@user.groups, ", ") %></td>
+          </tr>
+          <tr>
+            <td>Permissions</td>
+            <td><%= Enum.join(@user.permissions, ", ") %></td>
+          </tr>
+          <tr>
+            <td>Restrictions</td>
+            <td><%= Enum.join(@user.restrictions, ", ") %></td>
+          </tr>
+          <tr :if={not Enum.empty?(@user.restrictions)}>
+            <td>Restricted until</td>
+            <td><%= date_to_str(@user.restricted_until) %></td>
+          </tr>
+          <tr :if={@user.smurf_of_id}>
+            <td>Smurf of</td>
+            <td>
+              <%= @user.smurf_of.name %>
+              <a class="btn btn-warning btn-sm float-end" href={~p"/admin/accounts/user/#{@user.smurf_of_id}"} :if={@user.smurf_of_id}>
+                <Fontawesome.icon icon={StylingHelper.icon(:show)} style="solid" />
+                Show
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </.card>
+
+    <.card :if={@user != nil and not Enum.empty?(@smurfs)} class="mt-4">
+      <h5>Smurfs (<%= Enum.count(@smurfs) %>)</h5>
+      <.table id="smurfs" rows={@smurfs} table_class="table-sm table-hover">
+        <:col :let={smurf} label="Username"><%= smurf.name %></:col>
+        <:action :let={smurf}>
+          <.link navigate={~p"/admin/accounts/user/#{smurf}"} class="btn btn-warning btn-sm">Show</.link>
+        </:action>
+      </.table>
+    </.card>
+  </div>
+
+  <div class="col">
+    <.card :if={@user}>
+      <table class="table table-sm">
+        <tbody>
+          <tr>
+            <td>Behaviour score</td>
+            <td><%= format_number(@user.behaviour_score) %></td>
+          </tr>
+          <tr>
+            <td>Trust score</td>
+            <td><%= format_number(@user.trust_score) %></td>
+          </tr>
+          <tr>
+            <td>Social score</td>
+            <td><%= format_number(@user.social_score) %></td>
+          </tr>
+
+          <tr>
+            <td>Last login</td>
+            <td><%= date_to_str(@user.last_login_at, :hms_or_ymd) %></td>
+          </tr>
+          <tr>
+            <td>Last played</td>
+            <td><%= date_to_str(@user.last_played_at, :hms_or_ymd) %></td>
+          </tr>
+          <tr>
+            <td>Last logout</td>
+            <td><%= date_to_str(@user.last_logout_at, :hms_or_ymd) %></td>
+          </tr>
+        </tbody>
+      </table>
+    </.card>
+
+    <.card :if={allow?(@current_user, "admin") and @user != nil and not Enum.empty?(@tokens)} class="mt-4">
+      <h5>Tokens (<%= Enum.count(@tokens) %>)</h5>
+      <.table id="tokens" rows={@tokens} table_class="table-sm table-hover">
+        <:col :let={token} label="Identifier"><%= String.slice(token.identifier_code, 0..4) %></:col>
+        <:col :let={token} label="Renew"><%= String.slice(token.renewal_code, 0..4) %></:col>
+        <:col :let={token} label="Context"><%= token.context %></:col>
+        <:col :let={token} label="Agent"><%= String.split(token.user_agent) |> hd %></:col>
+        <:col :let={token} label="IP"><%= token.ip %></:col>
+        <:col :let={token} label="Last used"><%= date_to_str(token.last_used_at) %></:col>
+        
+        <:action :let={token}>
+          <span phx-click="delete-user-token" phx-value-token_id={token.id} class="btn btn-danger btn-sm">Delete</span>
+        </:action>
+      </.table>
+    </.card>
+  </div>
+</div>
+
+<div :if={assigns[:edit_mode] == true and @user != nil} class="row mt-4">
+  <.live_component
+    module={AngenWeb.Account.UserFormComponent}
+    id={:edit}
+    action={:edit}
+    user={@user}
+    patch={~p"/admin/accounts/user/#{@user.id}"}
+    title="Edit user form"
+    current_user={@current_user}
+  />
+</div>

@@ -12,6 +12,7 @@ defmodule Angen.Telemetry.ComplexMatchEventQueries do
     |> do_where(id: args[:id])
     |> do_where(args[:where])
     |> do_where(args[:search])
+    |> do_preload(args[:preload])
     |> do_order_by(args[:order_by])
     |> QueryHelper.query_select(args[:select])
     |> QueryHelper.limit_query(args[:limit] || 50)
@@ -86,6 +87,53 @@ defmodule Angen.Telemetry.ComplexMatchEventQueries do
   def _order_by(query, "Oldest first") do
     from(complex_match_events in query,
       order_by: [asc: complex_match_events.inserted_at]
+    )
+  end
+
+  def _order_by(query, "Game times seconds (low to high)") do
+    from(complex_match_events in query,
+      order_by: [asc: complex_match_events.game_time_seconds]
+    )
+  end
+
+  def _order_by(query, "Game times seconds (high to low)") do
+    from(complex_match_events in query,
+      order_by: [desc: complex_match_events.game_time_seconds]
+    )
+  end
+
+  @spec do_preload(Ecto.Query.t(), List.t() | nil) :: Ecto.Query.t()
+  defp do_preload(query, nil), do: query
+
+  defp do_preload(query, preloads) do
+    preloads
+    |> List.wrap()
+    |> Enum.reduce(query, fn key, query_acc ->
+      _preload(query_acc, key)
+    end)
+  end
+
+  @spec _preload(Ecto.Query.t(), any) :: Ecto.Query.t()
+  def _preload(query, :event_type) do
+    from(events in query,
+      left_join: event_types in assoc(events, :event_type),
+      preload: [event_type: event_types]
+    )
+  end
+
+  @spec _preload(Ecto.Query.t(), any) :: Ecto.Query.t()
+  def _preload(query, :user) do
+    from(events in query,
+      left_join: users in assoc(events, :user),
+      preload: [user: users]
+    )
+  end
+
+  @spec _preload(Ecto.Query.t(), any) :: Ecto.Query.t()
+  def _preload(query, :match) do
+    from(events in query,
+      left_join: matches in assoc(events, :match),
+      preload: [match: matches]
     )
   end
 
