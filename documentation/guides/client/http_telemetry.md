@@ -13,13 +13,13 @@ Required:
   
 Optional
 - user_id: The ID of the user this is for (by default it will attribute the event to the user making the request)
-  
+
 Example request
 ```json
 [
-  %{"name": "event type 1"},
-  %{"name": "event type 2"},
-  %{"name": "event type 1", "user_id": "d9b39e1a-00fe-4b9e-9e99-4dc4e964ceaa"}
+  {"name": "clicked-matchmaking"},
+  {"name": "found-match"},
+  {"name": "clicked-matchmaking", "user_id": "d9b39e1a-00fe-4b9e-9e99-4dc4e964ceaa"}
 ]
 ```
 
@@ -49,9 +49,9 @@ Example request
 ```json
 {
   "events": [
-    %{"name": "event type 1", "details": {"count": 12}},
-    %{"name": "event type 2", "details": {"count": 14}},
-    %{"name": "event type 1", "user_id": "56dabb7f-0c4a-43d3-9d66-6474aa761fc9", "details": {"count": 9}}
+    {"name": "daily-feedback", "details": {"gameplay": 5, "community": 4}},
+    {"name": "completed-tutorial", "details": {"time_taken_seconds": 601}},
+    {"name": "daily-feedback", "user_id": "56dabb7f-0c4a-43d3-9d66-6474aa761fc9", "details": {"gameplay": 3, "community": 5}}
   ]
 }
 ```
@@ -60,7 +60,7 @@ Example success
 ```json
 {
   "result": "Event(s) created",
-  "count": 3
+  "count": 4
 }
 ```
 
@@ -83,9 +83,10 @@ Optional
 Example request
 ```json
 [
-  %{"name": "event type 1", "seconds": 123},
-  %{"name": "event type 2", "seconds": 456},
-  %{"name": "event type 1", "seconds": 111, "user_id": "d9b39e1a-00fe-4b9e-9e99-4dc4e964ceaa"}
+  {"name": "produced-first-worker", "seconds": 123},
+  {"name": "used-auto-scout", "seconds": 456},
+  {"name": "ultimate-ability", "seconds": 199},
+  {"name": "produced-first-worker", "seconds": 111, "user_id": "d9b39e1a-00fe-4b9e-9e99-4dc4e964ceaa"}
 ]
 ```
 
@@ -93,7 +94,7 @@ Example success
 ```json
 {
   "result": "Event(s) created",
-  "count": 3
+  "count": 4
 }
 ```
 
@@ -118,9 +119,9 @@ Example request
 ```json
 {
   "events": [
-    %{"name": "event type 1", "details": {"count": 12}, "seconds": 111},
-    %{"name": "event type 2", "details": {"count": 14}, "seconds": 555},
-    %{"name": "event type 1", "user_id": "56dabb7f-0c4a-43d3-9d66-6474aa761fc9", "seconds": 444, "details": {"count": 9}}
+    {"name": "first-completion", "details": {"unit": "tank-factory"}, "seconds": 98},
+    {"name": "initial-tech-choice", "details": {"tech": "writing"}, "seconds": 6},
+    {"name": "died", "details": {"source": "falling"}, "user_id": "56dabb7f-0c4a-43d3-9d66-6474aa761fc9", "seconds": 188}
   ]
 }
 ```
@@ -152,9 +153,9 @@ Optional:
 Example request
 ```json
 [
-  %{"name": "event type 1", "hash": "283218f3-958a-400e-a7a3-6cb0aff0b489"},
-  %{"name": "event type 2", "hash": "283218f3-958a-400e-a7a3-6cb0aff0b489"},
-  %{"name": "event type 1"}
+  {"name": "started campaign", "hash": "283218f3-958a-400e-a7a3-6cb0aff0b489"},
+  {"name": "started skirmish", "hash": "283218f3-958a-400e-a7a3-6cb0aff0b489"},
+  {"name": "started multiplayer"}
 ]
 ```
 
@@ -184,9 +185,9 @@ Example request
 ```json
 {
   "events": [
-    %{"name": "event type 1", "details": {"count": 12}, "hash": "283218f3-958a-400e-a7a3-6cb0aff0b489"},
-    %{"name": "event type 2", "details": {"count": 14}, "hash": "283218f3-958a-400e-a7a3-6cb0aff0b489"},
-    %{"name": "event type 1", "details": {"count": 9}}
+    {"name": "daily-feedback", "details": {"gameplay": 5, "community": 4}},
+    {"name": "completed-tutorial", "details": {"time_taken_seconds": 601}, "hash": "30148b94-f103-45ba-8580-c8c79bb9b372"},
+    {"name": "system-specs", "details": {"vram": 6, "ram": 32}}
   ]
 }
 ```

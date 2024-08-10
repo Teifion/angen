@@ -82,6 +82,7 @@ defmodule Angen.MixProject do
       {:progress_bar, "~> 3.0", only: [:dev, :test]},
       {:db_cluster, "~> 0.0.3"},
       {:uuid, "~> 1.1"},
+      {:csv, "~> 3.2"},
 
       # We're pointing it at a specific git branch most of the time but
       # when developing locally we'll want to use a relative

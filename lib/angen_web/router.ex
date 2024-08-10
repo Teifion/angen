@@ -127,8 +127,16 @@ defmodule AngenWeb.Router do
         {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
       ] do
       live "/", IndexLive
-      live "/export", ExportLive
+      live "/match", MatchLive
+      live "/event", EventLive
     end
+  end
+
+  # Auth'd events
+  scope "/admin/data", AngenWeb.Admin.Data do
+    pipe_through([:browser])
+
+    get "/export/:id", ExportController, :download
   end
 
   scope "/", AngenWeb do

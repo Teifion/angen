@@ -7,7 +7,6 @@ defmodule AngenWeb.UserAuth do
 
   alias Angen.Account
 
-
   @spec init(list()) :: list()
   def init(opts) do
     opts

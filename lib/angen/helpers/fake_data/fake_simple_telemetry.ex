@@ -70,8 +70,8 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
 
     events =
       [
-        create_simple_client("connected", user_ids, [0, 1, 2, 3], date),
-        create_simple_client("disconnected", user_ids, [0, 1, 2, 3], date)
+        create_simple_client("clicked-matchmaking", user_ids, [0, 1, 2, 3], date),
+        create_simple_client("found-match", user_ids, [0, 1, 2, 3], date)
       ]
       |> List.flatten()
 
@@ -146,6 +146,7 @@ defmodule Angen.FakeData.FakeSimpleTelemetry do
 
     events =
       [
+        create_simple_match("produced-first-worker", match_ids, user_ids, 1, date),
         create_simple_match("auto-scout", match_ids, user_ids, [0, 0, 1], date),
         create_simple_match("ultimate-ability", match_ids, user_ids, [0, 0, 0, 1, 2, 3], date)
       ]

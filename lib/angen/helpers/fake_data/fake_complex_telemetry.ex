@@ -29,10 +29,13 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
 
     events =
       [
-        create_complex_anon("rated game", user_ids, [0, 0, 1, 2], date, fn ->
-          %{"rating" => :rand.uniform(5)}
+        create_complex_anon("daily-feedback", user_ids, [0, 0, 0, 1], date, fn ->
+          %{"gameplay" => :rand.uniform(5), "community" => :rand.uniform(5)}
         end),
-        create_complex_anon("specs", user_ids, [0, 1, 2, 3], date, fn ->
+        create_complex_anon("completed-tutorial", user_ids, [0, 0, 0, 1], date, fn ->
+          %{"time_taken_seconds" => :rand.uniform(900) + 150}
+        end),
+        create_complex_anon("system-specs", user_ids, [0, 0, 1], date, fn ->
           %{"VRAM" => Enum.random([1, 2, 4]), "RAM" => Enum.random([4, 8, 16, 32])}
         end)
       ]
@@ -71,8 +74,11 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
 
     events =
       [
-        create_complex_client("client-event", user_ids, [0, 0, 0, 1], date, fn ->
-          %{"key1" => Enum.random([1, 2, 4]), "key2" => Enum.random([4, 8, 16, 32])}
+        create_complex_client("daily-feedback", user_ids, [0, 0, 0, 1], date, fn ->
+          %{"gameplay" => :rand.uniform(5), "community" => :rand.uniform(5)}
+        end),
+        create_complex_client("completed-tutorial", user_ids, [0, 0, 0, 1], date, fn ->
+          %{"time_taken_seconds" => :rand.uniform(900) + 150}
         end)
       ]
       |> List.flatten()
@@ -153,7 +159,13 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
     events =
       [
         create_complex_match("died", match_ids, user_ids, [0, 0, 1], date, fn ->
-          %{"from" => Enum.random(~w(Bug Robot Gravity FriendlyFire))}
+          %{"source" => Enum.random(~w(Bug Robot Gravity FriendlyFire))}
+        end),
+        create_complex_match("first-completion", match_ids, user_ids, 1, date, fn ->
+          %{"unit" => Enum.random(~w(tank-factory infantry-factory silo farm))}
+        end),
+        create_complex_match("initial-tech-choice", match_ids, user_ids, 1, date, fn ->
+          %{"unit" => Enum.random(~w(writing astronomy construction wheelbarrow))}
         end)
       ]
       |> List.flatten()

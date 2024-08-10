@@ -21,6 +21,15 @@
 
   <.menu_card
     :if={allow?(@current_user, ~w(admin))}
+    icon="play"
+    icon_class="fa-duotone"
+    url={~p"/admin/game"}
+  >
+    Games
+  </.menu_card>
+
+  <.menu_card
+    :if={allow?(@current_user, ~w(admin))}
     icon={StylingHelper.icon(:logging)}
     icon_class="fa-duotone"
     url={~p"/admin/logging"}
@@ -35,6 +44,15 @@
     url={~p"/admin/settings"}
   >
     Settings
+  </.menu_card>
+
+  <.menu_card
+    :if={allow?(@current_user, ~w(admin))}
+    icon="database"
+    icon_class="fa-solid"
+    url={~p"/admin/data"}
+  >
+    Data
   </.menu_card>
 </div>
 

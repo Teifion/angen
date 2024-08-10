@@ -1,0 +1,67 @@
+<div style="height: 15px;">&nbsp;</div>
+
+<.form
+  :if={assigns[:form]}
+  for={@form}
+  phx-change="validate"
+  phx-submit="save"
+  id="export-settings-form"
+>
+  <div class="row">
+    <div class="col-md-12 col-lg-6">
+      <label for="start_date" class="control-label">Start date:</label>
+      <.input field={@form[:start_date]} type="datetime-local" phx-debounce="100" />
+    </div>
+
+    <div class="col-md-12 col-lg-6">
+      <label for="end_date" class="control-label">End date:</label>
+      <.input field={@form[:end_date]} type="datetime-local" phx-debounce="100" />
+    </div>
+  </div>
+
+  <div :if={assigns[:export_error]} class="row mt-4">
+    <div class="col">
+      <div class="alert alert-warning">
+        <h4>Something went wrong</h4>
+        There was an error generating the export
+      </div>
+    </div>
+  </div>
+
+  <div :if={@export_id} class="row mt-4">
+    <div class="col">
+      <div class="alert alert-success">
+        <h4>Your export is complete</h4>
+        Files exported, id: <%= @export_id %>
+      </div>
+      <a href={~p"/admin/data"} class="btn btn-secondary btn-block">
+        Back
+      </a>
+    </div>
+  </div>
+
+  <div
+    :if={@submitted == true and assigns[:export_error] == nil and @export_id == nil}
+    class="row mt-4"
+  >
+    <div class="col" style="text-align: center;">
+      <h2>
+        Generating export
+        &nbsp;&nbsp;&nbsp;&nbsp; <i class="fa-duotone fa-solid fa-spinner-third fa-spin"></i>
+      </h2>
+    </div>
+  </div>
+
+  <div :if={@submitted == false} class="row mt-4">
+    <div class="col">
+      <a href={~p"/admin/data"} class="btn btn-secondary btn-block">
+        Cancel
+      </a>
+    </div>
+    <div class="col">
+      <button class="btn btn-primary btn-block" type="submit">
+        <Fontawesome.icon icon="download" style="solid" /> Export data
+      </button>
+    </div>
+  </div>
+</.form>
