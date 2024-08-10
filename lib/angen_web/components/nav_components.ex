@@ -71,11 +71,7 @@ defmodule AngenWeb.NavComponents do
                 route={~p"/admin/accounts"}
               />
 
-              <.top_nav_item
-                text="Games"
-                active={@active == "game"}
-                route={~p"/admin/game"}
-              />
+              <.top_nav_item text="Games" active={@active == "game"} route={~p"/admin/game"} />
 
               <.top_nav_item text="Logging" active={@active == "logging"} route={~p"/admin/logging"} />
 

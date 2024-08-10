@@ -82,6 +82,7 @@ defmodule AngenWeb.Api.TokenController do
     case Teiserver.Account.get_user_by_email(email) do
       nil ->
         ip = UserAuth.get_ip_from_conn(conn) |> Tuple.to_list() |> Enum.join(".")
+
         Teiserver.create_anonymous_audit_log(ip, "/api/request_token", %{
           reason: "no_user",
           email: email,
@@ -89,6 +90,7 @@ defmodule AngenWeb.Api.TokenController do
         })
 
         {:error, "Bad authentication"}
+
       user ->
         auth_user(conn, Map.put(params, "id", user.id))
     end

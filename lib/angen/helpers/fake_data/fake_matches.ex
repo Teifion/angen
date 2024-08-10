@@ -26,7 +26,8 @@ defmodule Angen.FakeData.FakeMatches do
       |> List.flatten()
 
     {matches, remaining_data} = Enum.unzip(combined_data)
-    {memberships, settings} = Enum.unzip(List.flatten(remaining_data))
+    {memberships, remaining_data2} = Enum.unzip(List.flatten(remaining_data))
+    {settings, choices} = Enum.unzip(List.flatten(remaining_data2))
 
     ProgressBar.render_spinner([text: "Inserting matches", done: :remove], fn ->
       matches
@@ -57,6 +58,17 @@ defmodule Angen.FakeData.FakeMatches do
       |> Enum.each(fn m_chunk ->
         Ecto.Multi.new()
         |> Ecto.Multi.insert_all(:insert_all, Game.MatchSetting, List.flatten(m_chunk))
+        |> Angen.Repo.transaction()
+      end)
+    end)
+
+    ProgressBar.render_spinner([text: "Inserting choices", done: :remove], fn ->
+      choices
+      |> List.flatten()
+      |> Enum.chunk_every(8_000)
+      |> Enum.each(fn m_chunk ->
+        Ecto.Multi.new()
+        |> Ecto.Multi.insert_all(:insert_all, Game.UserChoice, List.flatten(m_chunk))
         |> Angen.Repo.transaction()
       end)
     end)
@@ -146,7 +158,32 @@ defmodule Angen.FakeData.FakeMatches do
       }
     ]
 
-    {match, {memberships, settings}}
+    choices =
+      memberships
+      |> Enum.map(fn membership ->
+        [
+          %{
+            type_id: Game.get_or_create_user_choice_type_id("start-x"),
+            user_id: membership.user_id,
+            match_id: match.id,
+            value: to_string(:rand.uniform(100))
+          },
+          %{
+            type_id: Game.get_or_create_user_choice_type_id("start-y"),
+            user_id: membership.user_id,
+            match_id: match.id,
+            value: to_string(:rand.uniform(100))
+          },
+          %{
+            type_id: Game.get_or_create_user_choice_type_id("start-bonus"),
+            user_id: membership.user_id,
+            match_id: match.id,
+            value: Enum.random(~w(Food Stone Wood Iron Gold Scout Worker))
+          }
+        ]
+      end)
+
+    {match, {memberships, {settings, choices}}}
   end
 
   defp generate_type(%{team_count: 1, team_size: 1} = data) do

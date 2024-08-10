@@ -14,12 +14,16 @@
           <Fontawesome.icon icon={StylingHelper.icon(:edit)} style="solid" /> Edit
         </a>
       </div>
-      
+
       <h4 class="d-inline-block">
         <%= @user.name %>
       </h4>
 
-      <div class="badge sm rounded-pill text-bg-success" :if={@client != nil and @client.connected?} style="margin-left: 20px;">
+      <div
+        :if={@client != nil and @client.connected?}
+        class="badge sm rounded-pill text-bg-success"
+        style="margin-left: 20px;"
+      >
         Online
       </div>
 
@@ -49,9 +53,12 @@
             <td>Smurf of</td>
             <td>
               <%= @user.smurf_of.name %>
-              <a class="btn btn-warning btn-sm float-end" href={~p"/admin/accounts/user/#{@user.smurf_of_id}"} :if={@user.smurf_of_id}>
-                <Fontawesome.icon icon={StylingHelper.icon(:show)} style="solid" />
-                Show
+              <a
+                :if={@user.smurf_of_id}
+                class="btn btn-warning btn-sm float-end"
+                href={~p"/admin/accounts/user/#{@user.smurf_of_id}"}
+              >
+                <Fontawesome.icon icon={StylingHelper.icon(:show)} style="solid" /> Show
               </a>
             </td>
           </tr>
@@ -64,7 +71,9 @@
       <.table id="smurfs" rows={@smurfs} table_class="table-sm table-hover">
         <:col :let={smurf} label="Username"><%= smurf.name %></:col>
         <:action :let={smurf}>
-          <.link navigate={~p"/admin/accounts/user/#{smurf}"} class="btn btn-warning btn-sm">Show</.link>
+          <.link navigate={~p"/admin/accounts/user/#{smurf}"} class="btn btn-warning btn-sm">
+            Show
+          </.link>
         </:action>
       </.table>
     </.card>
@@ -103,18 +112,29 @@
       </table>
     </.card>
 
-    <.card :if={allow?(@current_user, "admin") and @user != nil and not Enum.empty?(@tokens)} class="mt-4">
+    <.card
+      :if={allow?(@current_user, "admin") and @user != nil and not Enum.empty?(@tokens)}
+      class="mt-4"
+    >
       <h5>Tokens (<%= Enum.count(@tokens) %>)</h5>
       <.table id="tokens" rows={@tokens} table_class="table-sm table-hover">
-        <:col :let={token} label="Identifier"><%= String.slice(token.identifier_code, 0..4) %></:col>
+        <:col :let={token} label="Identifier">
+          <%= String.slice(token.identifier_code, 0..4) %>
+        </:col>
         <:col :let={token} label="Renew"><%= String.slice(token.renewal_code, 0..4) %></:col>
         <:col :let={token} label="Context"><%= token.context %></:col>
         <:col :let={token} label="Agent"><%= String.split(token.user_agent) |> hd %></:col>
         <:col :let={token} label="IP"><%= token.ip %></:col>
         <:col :let={token} label="Last used"><%= date_to_str(token.last_used_at) %></:col>
-        
+
         <:action :let={token}>
-          <span phx-click="delete-user-token" phx-value-token_id={token.id} class="btn btn-danger btn-sm">Delete</span>
+          <span
+            phx-click="delete-user-token"
+            phx-value-token_id={token.id}
+            class="btn btn-danger btn-sm"
+          >
+            Delete
+          </span>
         </:action>
       </.table>
     </.card>

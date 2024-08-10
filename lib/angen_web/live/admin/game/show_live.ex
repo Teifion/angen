@@ -45,7 +45,15 @@ defmodule AngenWeb.Admin.Game.ShowLive do
   defp get_match(%{assigns: %{match_id: match_id}} = socket) do
     match =
       try do
-        Teiserver.Game.get_match(match_id, preload: [:host, :members_with_users, :type, :settings, :choices])
+        Teiserver.Game.get_match(match_id,
+          preload: [
+            :host,
+            :members_with_users,
+            :type,
+            :settings_with_types,
+            :choices_with_users_and_types
+          ]
+        )
       rescue
         _ in Ecto.Query.CastError ->
           nil
@@ -63,19 +71,22 @@ defmodule AngenWeb.Admin.Game.ShowLive do
   end
 
   defp get_other_data(%{assigns: %{match: match}} = socket) do
-    simple_events = Angen.Telemetry.list_simple_match_events(
-      where: [match_id: match.id],
-      preload: [:event_type, :user],
-      order_by: "Game times seconds (low to high)"
-    )
+    simple_events =
+      Angen.Telemetry.list_simple_match_events(
+        where: [match_id: match.id],
+        preload: [:event_type, :user],
+        order_by: "Game times seconds (low to high)"
+      )
 
-    complex_events = Angen.Telemetry.list_complex_match_events(
-      where: [match_id: match.id],
-      preload: [:event_type, :user],
-      order_by: "Game times seconds (low to high)"
-    )
+    complex_events =
+      Angen.Telemetry.list_complex_match_events(
+        where: [match_id: match.id],
+        preload: [:event_type, :user],
+        order_by: "Game times seconds (low to high)"
+      )
 
-    members = match.members
+    members =
+      match.members
       |> Enum.sort_by(fn m -> m.team_number end, &<=/2)
 
     socket

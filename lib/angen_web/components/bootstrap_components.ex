@@ -89,4 +89,29 @@ defmodule AngenWeb.BootstrapComponents do
     </div>
     """
   end
+
+  @doc """
+  https://getbootstrap.com/docs/5.3/components/badge/#pill-badges
+
+  <AngenWeb.BootstrapComponents.pill>
+    CONTENT
+  </AngenWeb.BootstrapComponents.pill>
+  """
+  slot :inner_block, required: true
+  attr :class, :string, default: "text-bg-primary"
+  attr :rest, :global, include: ~w(disabled)
+
+  def pill(assigns) do
+    ~H"""
+    <div
+      class={[
+        "badge rounded-pill",
+        @class
+      ]}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </div>
+    """
+  end
 end

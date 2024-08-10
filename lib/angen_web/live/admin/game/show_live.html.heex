@@ -1,14 +1,10 @@
 <AngenWeb.Account.GameComponents.filter_bar selected="show" />
 
 <div class="row mt-4">
-  <div class="col" :if={@match}>
+  <div :if={@match} class="col">
     <.card>
       <h4 class="d-inline-block">
-        <%= @match.name %>
-
-        &nbsp;&nbsp;&nbsp;
-
-        <%= @match.type.name %>
+        <%= @match.name %> &nbsp;&nbsp;&nbsp; <%= @match.type.name %>
       </h4>
 
       <table class="table table-sm">
@@ -18,14 +14,24 @@
             <td>
               <%= @match.host.name %>
 
-              <a href={~p"/admin/accounts/user/#{@match.host_id}"} class="float-end btn btn-sm btn-info">
+              <a
+                href={~p"/admin/accounts/user/#{@match.host_id}"}
+                class="float-end btn btn-sm btn-info"
+              >
                 <Fontawesome.icon icon="eye" style="solid" />
               </a>
             </td>
           </tr>
           <tr>
             <td>Tags</td>
-            <td><%= @match.tags |> Enum.join(", ") %></td>
+            <td>
+              <AngenWeb.BootstrapComponents.pill
+                :for={tag <- @match.tags}
+                class="text-bg-primary me-1"
+              >
+                <%= tag %>
+              </AngenWeb.BootstrapComponents.pill>
+            </td>
           </tr>
           <tr>
             <td>Public?</td>
@@ -42,14 +48,14 @@
           </tr>
           <tr>
             <td>Duration</td>
-            <td><%= represent_seconds @match.match_duration_seconds %></td>
+            <td><%= represent_seconds(@match.match_duration_seconds) %></td>
           </tr>
-
         </tbody>
       </table>
     </.card>
-    
+
     <.card class="mt-4">
+      <h4>Members</h4>
       <.table id="users" rows={@members} table_class="table-sm table-hover">
         <:col :let={member} label="Name"><%= member.user.name %></:col>
         <:col :let={member} label="Team"><%= member.team_number %></:col>
@@ -57,15 +63,27 @@
         <:col :let={member} label="Left"><%= member.left_after_seconds %></:col>
 
         <:action :let={user}>
-          <.link navigate={~p"/admin/accounts/user/#{user.user_id}"} class="btn btn-secondary btn-sm">
+          <.link
+            navigate={~p"/admin/accounts/user/#{user.user_id}"}
+            class="btn btn-secondary btn-sm"
+          >
             Show
           </.link>
         </:action>
       </.table>
     </.card>
+
+    <.card class="mt-4">
+      <h4>Choices</h4>
+      <.table id="match-choices" rows={@match.choices} table_class="table-sm table-hover">
+        <:col :let={choice} label="Choice"><%= choice.type.name %></:col>
+        <:col :let={choice} label="User"><%= choice.user.name %></:col>
+        <:col :let={choice} label="Value"><%= choice.value %></:col>
+      </.table>
+    </.card>
   </div>
 
-  <div class="col" :if={@match}>
+  <div :if={@match} class="col">
     <.card>
       <table class="table table-sm">
         <tbody>
@@ -73,7 +91,7 @@
             <td>Ended normally?</td>
             <td><%= if @match.ended_normally?, do: "Yes", else: "Match not ended normally" %></td>
           </tr>
-          
+
           <tr>
             <td>Game name</td>
             <td><%= @match.game_name %></td>
@@ -94,7 +112,7 @@
             <td>Player count</td>
             <td><%= @match.player_count %></td>
           </tr>
-          
+
           <tr>
             <td>Lobby opened</td>
             <td><%= date_to_str(@match.lobby_opened_at, :hms) %></td>
@@ -112,19 +130,29 @@
     </.card>
 
     <.card class="mt-4">
+      <h4>Settings</h4>
+      <.table id="match-settings" rows={@match.settings} table_class="table-sm table-hover">
+        <:col :let={setting} label="Setting"><%= setting.type.name %></:col>
+        <:col :let={setting} label="Value"><%= setting.value %></:col>
+      </.table>
+    </.card>
+
+    <.card class="mt-4">
+      <h4>Simple events</h4>
       <.table id="simple-events" rows={@simple_events} table_class="table-sm table-hover">
         <:col :let={event} label="Event"><%= event.event_type.name %></:col>
         <:col :let={event} label="User"><%= event.user.name %></:col>
         <:col :let={event} label="Time (s)"><%= event.game_time_seconds %></:col>
       </.table>
     </.card>
-    
+
     <.card class="mt-4">
+      <h4>Complex events</h4>
       <.table id="complex-events" rows={@complex_events} table_class="table-sm table-hover">
         <:col :let={event} label="Event"><%= event.event_type.name %></:col>
         <:col :let={event} label="User"><%= event.user.name %></:col>
         <:col :let={event} label="Time (s)"><%= event.game_time_seconds %></:col>
-        <:col :let={event} label="Details"><%= inspect event.details %></:col>
+        <:col :let={event} label="Details"><%= inspect(event.details) %></:col>
       </.table>
     </.card>
   </div>

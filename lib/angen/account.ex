@@ -134,11 +134,13 @@ defmodule Angen.Account do
   def get_or_create_anonymous_user() do
     case get_user_by_email("anonymous@angen") do
       nil ->
-        {:ok, user} = create_user(%{
-          name: "anonymous",
-          email: "anonymous@angen",
-          password: generate_password()
-        })
+        {:ok, user} =
+          create_user(%{
+            name: "anonymous",
+            email: "anonymous@angen",
+            password: generate_password()
+          })
+
         user
 
       user ->

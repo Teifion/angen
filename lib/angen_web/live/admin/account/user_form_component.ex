@@ -130,15 +130,15 @@ defmodule AngenWeb.Account.UserFormComponent do
   end
 
   defp save_user(socket, :edit, user_params) do
-    IO.puts "#{__MODULE__}:#{__ENV__.line}"
-    IO.inspect user_params
-    IO.puts ""
+    IO.puts("#{__MODULE__}:#{__ENV__.line}")
+    IO.inspect(user_params)
+    IO.puts("")
 
     case Account.update_user(socket.assigns.user, user_params) do
       {:ok, user} ->
-        IO.puts "#{__MODULE__}:#{__ENV__.line}"
-        IO.inspect user
-        IO.puts ""
+        IO.puts("#{__MODULE__}:#{__ENV__.line}")
+        IO.inspect(user)
+        IO.puts("")
 
         notify_parent({:saved, user})
 

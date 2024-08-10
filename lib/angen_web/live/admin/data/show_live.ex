@@ -68,9 +68,7 @@ defmodule AngenWeb.Admin.Data.ShowLive do
         {AngenWeb.Data.UserFormComponent, {:updated_changeset, %{changes: _changes}}},
         socket
       ) do
-    {:noreply,
-     socket
-    }
+    {:noreply, socket}
   end
 
   @impl true
@@ -107,7 +105,13 @@ defmodule AngenWeb.Admin.Data.ShowLive do
 
   defp get_other_data(%{assigns: %{user: user}} = socket) do
     socket
-    |> assign(:smurfs, Teiserver.Data.list_users(where: [smurf_of: user.id], order_by: ["Last logged in"]))
-    |> assign(:tokens, Angen.Data.list_user_tokens(where: [user_id: user.id], order_by: ["Most recently used"]))
+    |> assign(
+      :smurfs,
+      Teiserver.Data.list_users(where: [smurf_of: user.id], order_by: ["Last logged in"])
+    )
+    |> assign(
+      :tokens,
+      Angen.Data.list_user_tokens(where: [user_id: user.id], order_by: ["Most recently used"])
+    )
   end
 end

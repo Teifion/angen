@@ -10,7 +10,8 @@ defmodule AngenWeb.Api.GameController do
 
   @spec create_match(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create_match(conn, params) do
-    attrs = params
+    attrs =
+      params
       |> Map.take(@create_keys)
       |> Map.put("host_id", Angen.Account.get_or_create_anonymous_user().id)
       |> get_type
@@ -33,7 +34,8 @@ defmodule AngenWeb.Api.GameController do
   def update_match(conn, %{"id" => id} = params) do
     match = Teiserver.Game.get_match!(id)
 
-    attrs = params
+    attrs =
+      params
       |> Map.take(@create_keys ++ @update_keys)
 
     case Teiserver.Game.update_match(match, attrs) do

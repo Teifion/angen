@@ -68,9 +68,7 @@ defmodule AngenWeb.Admin.Account.ShowLive do
         {AngenWeb.Account.UserFormComponent, {:updated_changeset, %{changes: _changes}}},
         socket
       ) do
-    {:noreply,
-     socket
-    }
+    {:noreply, socket}
   end
 
   @impl true
@@ -107,7 +105,13 @@ defmodule AngenWeb.Admin.Account.ShowLive do
 
   defp get_other_data(%{assigns: %{user: user}} = socket) do
     socket
-    |> assign(:smurfs, Teiserver.Account.list_users(where: [smurf_of: user.id], order_by: ["Last logged in"]))
-    |> assign(:tokens, Angen.Account.list_user_tokens(where: [user_id: user.id], order_by: ["Most recently used"]))
+    |> assign(
+      :smurfs,
+      Teiserver.Account.list_users(where: [smurf_of: user.id], order_by: ["Last logged in"])
+    )
+    |> assign(
+      :tokens,
+      Angen.Account.list_user_tokens(where: [user_id: user.id], order_by: ["Most recently used"])
+    )
   end
 end
