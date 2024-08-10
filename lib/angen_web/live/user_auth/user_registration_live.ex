@@ -12,7 +12,7 @@ defmodule AngenWeb.UserRegistrationLive do
           <div class="card-body">
             <.header class="text-center">
               <img
-                src={~p"/images/favicon.png"}
+                src={~p"/favicon.png"}
                 height="42"
                 style="margin-right: 5px;"
                 class="d-inline align-top"
