@@ -91,4 +91,21 @@ defmodule AngenWeb.ConnCase do
 
     %{data | conn: conn}
   end
+
+  @spec auth_conn(Plug.Conn.t()) :: map()
+  def auth_conn(conn) do
+    user = create_test_user()
+    token_code = get_api_token_code(user: user)
+
+    conn =
+      conn
+      |> Plug.Conn.put_req_header("accept", "application/json")
+      |> Plug.Conn.put_req_header("authorization", "Bearer #{token_code}")
+
+    %{
+      conn: conn,
+      user: user,
+      token_code: token_code
+    }
+  end
 end

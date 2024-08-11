@@ -37,19 +37,6 @@ defmodule AngenWeb.UserAuth do
     end
   end
 
-  def on_mount({:authorise, permissions}, _params, _session, socket) do
-    if Account.AuthLib.allow?(socket.assigns.current_user, permissions) do
-      {:cont, socket}
-    else
-      socket =
-        socket
-        |> Phoenix.LiveView.put_flash(:error, "You do not have permission to view that page.")
-        |> Phoenix.LiveView.redirect(to: ~p"/")
-
-      {:halt, socket}
-    end
-  end
-
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
   # the token expiry itself in UserToken.

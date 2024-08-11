@@ -9,9 +9,10 @@ defmodule AngenWeb.Api.GameController do
   @update_keys ~w(winning_team ended_normally? lobby_opened_at match_started_at match_ended_at match_duration_seconds)
 
   @spec create_match(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def create_match(conn, params) do
+  def create_match(conn, _params) do
     attrs =
-      params
+      conn
+      |> get_json_from_body
       |> Map.take(@create_keys)
       |> Map.put("host_id", Angen.Account.get_or_create_anonymous_user().id)
       |> get_type
@@ -31,12 +32,14 @@ defmodule AngenWeb.Api.GameController do
   end
 
   @spec update_match(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def update_match(conn, %{"id" => id} = params) do
-    match = Teiserver.Game.get_match!(id)
-
+  def update_match(conn, _params) do
     attrs =
-      params
+      conn
+      |> get_json_from_body
       |> Map.take(@create_keys ++ @update_keys)
+      |> get_type
+
+    match = Teiserver.Game.get_match!(attrs["id"])
 
     case Teiserver.Game.update_match(match, attrs) do
       {:ok, _match} ->
@@ -57,4 +60,11 @@ defmodule AngenWeb.Api.GameController do
   end
 
   defp get_type(params), do: params
+
+  # Bruno sends a request such that it appears in conn.body_params["_json"] but
+  # tests put it straight into body_params. While we have changed it to manually
+  # be in _json in the tests it is important to note other sources might do things
+  # differently and thus we want to use this
+  defp get_json_from_body(%{body_params: %{"_json" => json}} = _conn), do: json
+  defp get_json_from_body(%{body_params: json} = _conn), do: json
 end

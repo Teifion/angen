@@ -2,8 +2,6 @@ defmodule AngenWeb.Admin.Game.ShowLive do
   @moduledoc false
   use AngenWeb, :live_view
 
-  alias Angen.Game
-
   @impl true
   def mount(%{"match_id" => match_id}, _session, socket) when is_connected?(socket) do
     socket =
@@ -17,7 +15,7 @@ defmodule AngenWeb.Admin.Game.ShowLive do
     if socket.assigns.match do
       {:ok, socket}
     else
-      {:ok, redirect(socket, to: ~p"/admin/games")}
+      {:ok, redirect(socket, to: ~p"/admin/game")}
     end
   end
 

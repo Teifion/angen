@@ -12,14 +12,10 @@ The body of the message should be a JSON object with the following:
 
 Required:
 - name: String
-
-Optional
-- id: The UUID of the user, if not included a random one will be generated
   
 Example request
 ```json
 {
-  "id": "4dd6e24d-08a5-4a05-88dd-6bbfffd8c325",
   "name": "My first user"
 }
 ```

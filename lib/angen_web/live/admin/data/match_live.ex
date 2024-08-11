@@ -45,12 +45,14 @@ defmodule AngenWeb.Admin.Data.MatchLive do
     |> noreply
   end
 
+  @impl true
   def handle_info(:export_complete, socket) do
     socket
     |> redirect(to: ~p"/admin/data/export/#{socket.assigns.export_id}")
     |> noreply
   end
 
+  @impl true
   def handle_async(:generate_export, {:ok, export_id}, socket) do
     # We send ourselves the export complete to change page content
     # prior to redirecting ourselves

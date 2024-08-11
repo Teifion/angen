@@ -76,7 +76,7 @@ defmodule AngenWeb.TokenControllerTest do
       assert token_list == [token]
 
       # Now attempt renewal
-      conn = put_req_header(conn, "token", token_code)
+      conn = put_req_header(conn, "authorization", "Bearer #{token_code}")
       conn = post(conn, ~p"/api/renew_token", %{"renewal" => "123"})
 
       response = json_response(conn, 500)
@@ -107,7 +107,7 @@ defmodule AngenWeb.TokenControllerTest do
       assert token_list == [token]
 
       # Now attempt renewal
-      conn = put_req_header(conn, "token", "123")
+      conn = put_req_header(conn, "authorization", "Bearer 123")
       conn = post(conn, ~p"/api/renew_token", %{"renewal" => token.renewal_code})
 
       response = response(conn, 401)
@@ -123,7 +123,7 @@ defmodule AngenWeb.TokenControllerTest do
       assert token_list == [token]
 
       # Now attempt renewal
-      conn = put_req_header(conn, "token", token_code)
+      conn = put_req_header(conn, "authorization", "Bearer #{token_code}")
       conn = post(conn, ~p"/api/renew_token", %{"renewal" => token.renewal_code})
 
       response = json_response(conn, 201)
@@ -144,18 +144,22 @@ defmodule AngenWeb.TokenControllerTest do
 
   describe "using" do
     test "no token", %{conn: conn} do
+      payload = %{"name" => "no-token"}
+
       conn =
-        post(conn, ~p"/api/events/simple_clientapp", %{"events" => [%{"name" => "no-token"}]})
+        post(conn, ~p"/api/events/simple_clientapp", %{"_json" => payload})
 
       response = response(conn, 401)
       assert response == "Unauthorised"
     end
 
     test "bad token", %{conn: conn} do
-      conn = put_req_header(conn, "token", "123")
+      conn = put_req_header(conn, "authorization", "Bearer 123")
+
+      payload = %{"name" => "bad-token"}
 
       conn =
-        post(conn, ~p"/api/events/simple_clientapp", %{"events" => [%{"name" => "bad-token"}]})
+        post(conn, ~p"/api/events/simple_clientapp", %{"_json" => payload})
 
       response = response(conn, 401)
       assert response == "Unauthorised"
@@ -163,10 +167,12 @@ defmodule AngenWeb.TokenControllerTest do
 
     test "good token", %{conn: conn} do
       token = get_api_token_code()
-      conn = put_req_header(conn, "token", token)
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+      payload = %{"name" => "good-token"}
 
       conn =
-        post(conn, ~p"/api/events/simple_clientapp", %{"events" => [%{"name" => "good-token"}]})
+        post(conn, ~p"/api/events/simple_clientapp", %{"_json" => payload})
 
       response = json_response(conn, 201)
       assert response == %{"result" => "Event(s) created", "count" => 1}

@@ -2,8 +2,6 @@ defmodule AngenWeb.Admin.Account.ShowLive do
   @moduledoc false
   use AngenWeb, :live_view
 
-  alias Angen.Account
-
   @impl true
   def mount(%{"user_id" => user_id}, _session, socket) when is_connected?(socket) do
     socket =

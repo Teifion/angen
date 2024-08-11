@@ -13,7 +13,6 @@ Required:
 - rated?: Boolean saying if the game was rated (and thus implied to be more competitive)
 
 Optional
-- id: The UUID of the match, if not included a random one will be generated
 - name: The name of the match
 - tags: A list of strings
 - type: A string categorising the game type (e.g. team, duel, ffa or any of your choosing)
@@ -26,7 +25,6 @@ Optional
 Example request
 ```json
 {
-  "id": "0d011c85-2097-441c-bedf-062718e4f1b6",
   "name": "2v2 all welcome",
   "tags": ["match-made", "lang-en", "lang-de"],
   "public?": false,
