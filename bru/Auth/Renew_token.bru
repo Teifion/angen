@@ -18,11 +18,8 @@ auth:bearer {
   token: {{token}}
 }
 
-docs {
-  Use the resultant values from this request to populate the .env file in the directory.
-  
-  identifier_code -> TOKEN  
-  renewal_code -> TOKEN_RENEW  
-  user_id -> USER_ID  
-  
+vars:post-response {
+  user_id: res.body.token.user_id
+  token: res.body.token.identifier_code
+  token_renew: res.body.token.renewal_code
 }
