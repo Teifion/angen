@@ -1,14 +1,14 @@
-defmodule AngenWeb.Admin.Data.MatchLive do
+defmodule AngenWeb.Admin.Data.EventLive do
   @moduledoc false
   use AngenWeb, :live_view
-  alias AngenWeb.Admin.Data.MatchLiveStruct
+  alias AngenWeb.Admin.Data.EventLiveStruct
   alias Angen.ExportLib
   require Logger
 
   @impl true
   def mount(_params, _session, socket) when is_connected?(socket) do
     changeset =
-      MatchLiveStruct.changeset(%{
+      EventLiveStruct.changeset(%{
         start_date: Timex.today() |> Timex.to_datetime(),
         end_date: Timex.today() |> Timex.to_datetime() |> Timex.shift(days: 1)
       })
@@ -28,9 +28,9 @@ defmodule AngenWeb.Admin.Data.MatchLive do
   end
 
   @impl true
-  def handle_event("validate", %{"match_live_struct" => params}, socket) do
+  def handle_event("validate", %{"event_live_struct" => params}, socket) do
     changeset =
-      MatchLiveStruct.changeset(params)
+      EventLiveStruct.changeset(params)
       |> Map.put(:action, :validate)
 
     {:noreply,
@@ -38,17 +38,17 @@ defmodule AngenWeb.Admin.Data.MatchLive do
      |> assign_form(changeset)}
   end
 
-  def handle_event("save", %{"match_live_struct" => params}, socket) do
+  def handle_event("save", %{"event_live_struct" => params}, socket) do
     socket
     |> assign(:submitted, true)
-    |> start_async(:generate_export, fn -> ExportLib.new_export(:matches, params) end)
+    |> start_async(:generate_export, fn -> ExportLib.new_export(:events, params) end)
     |> noreply
   end
 
   @impl true
   def handle_info(:export_complete, socket) do
     socket
-    |> redirect(to: ~p"/admin/data/export/#{socket.assigns.export_id}/match")
+    |> redirect(to: ~p"/admin/data/export/#{socket.assigns.export_id}/event")
     |> noreply
   end
 
@@ -76,7 +76,7 @@ defmodule AngenWeb.Admin.Data.MatchLive do
   end
 end
 
-defmodule AngenWeb.Admin.Data.MatchLiveStruct do
+defmodule AngenWeb.Admin.Data.EventLiveStruct do
   import Ecto.Changeset
   @types %{start_date: :naive_datetime, end_date: :naive_datetime}
   defstruct Map.keys(@types)

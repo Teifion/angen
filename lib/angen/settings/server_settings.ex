@@ -64,12 +64,12 @@ defmodule Angen.Settings.ServerSettings do
       section: "Registration",
       type: "string",
       default: "None",
-      choices: ["None", "Email", "Manual"],
+      choices: ["None", "Manual"],
       description: """
         The verification process used for non-guest accounts.
         <ul>
           <li>None - No verification takes place</li>
-          <li>Email - An email is sent to users when they register, they will need to click a link in the email to verify their account</li>
+          <li>Email (Not implemented yet) - An email is sent to users when they register, they will need to click a link in the email to verify their account</li>
           <li>Manual - All accounts must be manually verified by an authorised person</li>
         </ul>
       """

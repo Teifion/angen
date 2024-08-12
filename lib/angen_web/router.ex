@@ -137,6 +137,7 @@ defmodule AngenWeb.Router do
     pipe_through([:browser])
 
     get "/export/:id", ExportController, :download
+    get "/export/:id/:type", ExportController, :download
   end
 
   scope "/", AngenWeb do

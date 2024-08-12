@@ -6,6 +6,10 @@ defmodule Angen.ExportLib do
   import Ecto.Query, warn: false
 
   @spec new_export(atom, map()) :: Ecto.UUID.t()
+  def new_export(:events, params) do
+    Angen.Telemetry.TelemetryExportLib.new_export(params)
+  end
+
   def new_export(:matches, params) do
     id = Teiserver.uuid()
 

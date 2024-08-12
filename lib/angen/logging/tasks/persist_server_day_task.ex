@@ -317,21 +317,22 @@ defmodule Angen.Logging.PersistServerDayTask do
   end
 
   def add_telemetry(data, date) do
-    end_of_day = Timex.shift(date, days: 1)
+    datetime = Timex.to_datetime(date)
+    end_of_day = Timex.shift(datetime, days: 1)
 
     Map.put(data, :telemetry_events, %{
-      simple_anon: Telemetry.simple_anon_events_summary(after: date, before: end_of_day),
+      simple_anon: Telemetry.simple_anon_events_summary(after: datetime, before: end_of_day),
       simple_clientapp:
-        Telemetry.simple_clientapp_events_summary(after: date, before: end_of_day),
-      simple_lobby: Telemetry.simple_lobby_events_summary(after: date, before: end_of_day),
-      simple_match: Telemetry.simple_match_events_summary(after: date, before: end_of_day),
-      simple_server: Telemetry.simple_server_events_summary(after: date, before: end_of_day),
-      complex_anon: Telemetry.complex_anon_events_summary(after: date, before: end_of_day),
+        Telemetry.simple_clientapp_events_summary(after: datetime, before: end_of_day),
+      simple_lobby: Telemetry.simple_lobby_events_summary(after: datetime, before: end_of_day),
+      simple_match: Telemetry.simple_match_events_summary(after: datetime, before: end_of_day),
+      simple_server: Telemetry.simple_server_events_summary(after: datetime, before: end_of_day),
+      complex_anon: Telemetry.complex_anon_events_summary(after: datetime, before: end_of_day),
       complex_clientapp:
-        Telemetry.complex_clientapp_events_summary(after: date, before: end_of_day),
-      complex_lobby: Telemetry.complex_lobby_events_summary(after: date, before: end_of_day),
-      complex_match: Telemetry.complex_match_events_summary(after: date, before: end_of_day),
-      complex_server: Telemetry.complex_server_events_summary(after: date, before: end_of_day)
+        Telemetry.complex_clientapp_events_summary(after: datetime, before: end_of_day),
+      complex_lobby: Telemetry.complex_lobby_events_summary(after: datetime, before: end_of_day),
+      complex_match: Telemetry.complex_match_events_summary(after: datetime, before: end_of_day),
+      complex_server: Telemetry.complex_server_events_summary(after: datetime, before: end_of_day)
     })
   end
 

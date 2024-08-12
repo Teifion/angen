@@ -12,6 +12,7 @@ defmodule Angen.Telemetry.ComplexAnonEventQueries do
     |> do_where(id: args[:id])
     |> do_where(args[:where])
     |> do_where(args[:search])
+    |> do_preload(args[:preload])
     |> do_order_by(args[:order_by])
     |> QueryHelper.query_select(args[:select])
     |> QueryHelper.limit_query(args[:limit] || 50)
@@ -51,12 +52,12 @@ defmodule Angen.Telemetry.ComplexAnonEventQueries do
 
   def _where(query, :after, timestamp) do
     from complex_anon_events in query,
-      where: complex_anon_events.inserted_at > ^Timex.to_datetime(timestamp)
+      where: complex_anon_events.inserted_at > ^timestamp
   end
 
   def _where(query, :before, timestamp) do
     from complex_anon_events in query,
-      where: complex_anon_events.inserted_at < ^Timex.to_datetime(timestamp)
+      where: complex_anon_events.inserted_at < ^timestamp
   end
 
   @spec do_order_by(Ecto.Query.t(), list | nil) :: Ecto.Query.t()
@@ -80,6 +81,25 @@ defmodule Angen.Telemetry.ComplexAnonEventQueries do
   def _order_by(query, "Oldest first") do
     from(complex_anon_events in query,
       order_by: [asc: complex_anon_events.inserted_at]
+    )
+  end
+
+  @spec do_preload(Ecto.Query.t(), List.t() | nil) :: Ecto.Query.t()
+  defp do_preload(query, nil), do: query
+
+  defp do_preload(query, preloads) do
+    preloads
+    |> List.wrap()
+    |> Enum.reduce(query, fn key, query_acc ->
+      _preload(query_acc, key)
+    end)
+  end
+
+  @spec _preload(Ecto.Query.t(), any) :: Ecto.Query.t()
+  def _preload(query, :event_type) do
+    from(complex_anon_events in query,
+      left_join: event_types in assoc(complex_anon_events, :event_type),
+      preload: [event_type: event_types]
     )
   end
 
