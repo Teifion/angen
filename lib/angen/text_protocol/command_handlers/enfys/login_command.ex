@@ -14,7 +14,7 @@ defmodule Angen.TextProtocol.Enfys.LoginCommand do
       case Teiserver.get_user_by_name(name) do
         nil ->
           {:ok, user} =
-            Teiserver.Account.register_user(%{
+            Angen.Account.register_user(%{
               "name" => name,
               "password" => Teiserver.Account.generate_password(),
               "email" => "#{Teiserver.uuid()}@enfys"

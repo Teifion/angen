@@ -103,19 +103,23 @@ defmodule AngenWeb.Api.TokenController do
   defp get_token_from_user(conn, user, user_agent) do
     ip = UserAuth.get_ip_from_conn(conn) |> Tuple.to_list() |> Enum.join(".")
 
-    case Angen.Account.create_user_token(user.id, "http", user_agent, ip) do
-      {:ok, token} ->
-        {:ok, token}
+    if Angen.Account.allow_login?(user) do
+      case Angen.Account.create_user_token(user.id, "http", user_agent, ip) do
+        {:ok, token} ->
+          {:ok, token}
 
-      {:error, _changeset} ->
-        # errors =
-        #   changeset.errors
-        #   |> Enum.map_join(", ", fn {key, {message, _}} ->
-        #     "#{key}: #{message}"
-        #   end)
-        # {:error, "There was an error generating the token: #{errors}"}
+        {:error, _changeset} ->
+          # errors =
+          #   changeset.errors
+          #   |> Enum.map_join(", ", fn {key, {message, _}} ->
+          #     "#{key}: #{message}"
+          #   end)
+          # {:error, "There was an error generating the token: #{errors}"}
 
-        {:error, "There was an error generating the token"}
+          {:error, "There was an error generating the token"}
+      end
+    else
+      {:error, "Unable to generate token"}
     end
   end
 end

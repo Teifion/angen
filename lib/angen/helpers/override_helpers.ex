@@ -12,4 +12,34 @@ defmodule Angen.Helpers.OverrideHelper do
   def user_name_acceptor(_name) do
     true
   end
+
+  @roles %{
+    # Server authority
+    "admin" => ~w(moderator),
+    "moderator" => ~w()
+  }
+
+  @spec calculate_user_permissions(Ecto.Changeset.t()) :: Ecto.Changeset.t()
+  def calculate_user_permissions(changeset) do
+    groups = Ecto.Changeset.get_field(changeset, :groups, [])
+
+    permissions =
+      groups
+      |> Enum.map(&expand_group/1)
+      |> List.flatten()
+      |> Enum.uniq()
+
+    changeset
+    |> Ecto.Changeset.put_change(:permissions, permissions)
+  end
+
+  defp expand_group(group_name) do
+    sub_groups =
+      Map.get(@roles, group_name, [])
+      |> Enum.map(fn sub_group ->
+        expand_group(sub_group)
+      end)
+
+    [group_name | sub_groups]
+  end
 end

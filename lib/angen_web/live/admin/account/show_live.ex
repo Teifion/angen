@@ -80,6 +80,14 @@ defmodule AngenWeb.Admin.Account.ShowLive do
     |> noreply
   end
 
+  def handle_event("verify-user", _, %{assigns: %{user: user}} = socket) do
+    Angen.Account.verify_user(user)
+
+    socket
+    |> get_user
+    |> noreply
+  end
+
   @spec get_user(Phoenix.Socket.t()) :: Phoenix.Socket.t()
   defp get_user(%{assigns: %{user_id: user_id}} = socket) do
     user =
@@ -92,6 +100,7 @@ defmodule AngenWeb.Admin.Account.ShowLive do
 
     socket
     |> assign(:user, user)
+    |> assign(:verified?, Angen.Account.verified?(user))
   end
 
   @spec get_other_data(Phoenix.Socket.t()) :: Phoenix.Socket.t()

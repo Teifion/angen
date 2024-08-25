@@ -16,7 +16,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Account.Register do
       "email" => email
     }
 
-    case Teiserver.Account.register_user(params) do
+    case Angen.Account.register_user(params) do
       {:ok, user} ->
         TextProtocol.Account.RegisteredResponse.generate(user, state)
 

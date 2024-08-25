@@ -90,13 +90,12 @@ defmodule Mix.Tasks.Angen.Fakedata do
     {:ok, _code} =
       Angen.Account.create_user_token(%{
         user_id: root_user.id,
-        id: UUID.uuid5(nil, "root@localhost"),
         identifier_code: Angen.Account.UserTokenLib.generate_code(),
         renewal_code: Angen.Account.UserTokenLib.generate_code(),
-        context: "fake-data",
+        context: "fake-data-create",
         user_agent: "fake-data",
         ip: "127.0.0.1",
-        expires_at: Timex.now() |> Timex.shift(days: 31)
+        expires_at: Timex.now() |> Timex.shift(hours: 1)
       })
   end
 

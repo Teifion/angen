@@ -4,7 +4,7 @@ defmodule AngenWeb.Api.GameController do
 
   action_fallback AngenWeb.FallbackController
 
-  @create_keys ~w(id name tags public? rated? type game_name game_version team_count team_size player_count)
+  @create_keys ~w(name tags public? rated? type game_name game_version team_count team_size player_count)
 
   @update_keys ~w(winning_team ended_normally? lobby_opened_at match_started_at match_ended_at match_duration_seconds)
 

@@ -48,21 +48,25 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.GetToken do
   end
 
   defp do_handle(user, user_agent, state) do
-    case Angen.Account.create_user_token(user.id, "text-protocol", user_agent, state.ip) do
-      {:ok, token} ->
-        TextProtocol.Auth.TokenResponse.generate(token, state)
+    if Angen.Account.allow_login?(user) do
+      case Angen.Account.create_user_token(user.id, "text-protocol", user_agent, state.ip) do
+        {:ok, token} ->
+          TextProtocol.Auth.TokenResponse.generate(token, state)
 
-      {:error, changeset} ->
-        errors =
-          changeset.errors
-          |> Enum.map_join(", ", fn {key, {message, _}} ->
-            "#{key}: #{message}"
-          end)
+        {:error, changeset} ->
+          errors =
+            changeset.errors
+            |> Enum.map_join(", ", fn {key, {message, _}} ->
+              "#{key}: #{message}"
+            end)
 
-        FailureResponse.generate(
-          {name(), "There was an error generating the token: #{errors}"},
-          state
-        )
+          FailureResponse.generate(
+            {name(), "There was an error generating the token: #{errors}"},
+            state
+          )
+      end
+    else
+      FailureResponse.generate({name(), "Unable to generate token"}, state)
     end
   end
 end

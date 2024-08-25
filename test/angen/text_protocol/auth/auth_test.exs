@@ -2,50 +2,9 @@ defmodule Angen.TextProtocol.AuthTest do
   @moduledoc false
   use Angen.ProtoCase, async: false
 
-  describe "register and auth" do
-    test "register and auth" do
+  describe "auth" do
+    test "no user" do
       %{socket: socket} = raw_connection()
-
-      # Bad Register command
-      speak(socket, %{
-        name: "account/register",
-        command: %{
-          name: "",
-          password: "",
-          email: ""
-        }
-      })
-
-      response = listen(socket)
-
-      assert_failure(
-        response,
-        "account/register",
-        "There was an error registering: name: can't be blank, email: can't be blank, password: can't be blank"
-      )
-
-      # Register command
-      speak(socket, %{
-        name: "account/register",
-        command: %{
-          name: "registerTest",
-          password: "password1",
-          email: "registerTest@registerTest"
-        }
-      })
-
-      response = listen(socket)
-      user = Teiserver.get_user_by_name("registerTest")
-
-      assert response == %{
-               "name" => "account/registered",
-               "message" => %{
-                 "user" => %{
-                   "id" => user.id,
-                   "name" => user.name
-                 }
-               }
-             }
 
       # No user
       speak(socket, %{
@@ -59,12 +18,16 @@ defmodule Angen.TextProtocol.AuthTest do
 
       response = listen(socket)
       assert_failure(response, "auth/get_token", "Bad authentication")
+    end
 
-      # Bad password
+    test "bad password" do
+      %{socket: socket} = raw_connection()
+      user = create_test_user()
+
       speak(socket, %{
         name: "auth/get_token",
         command: %{
-          email: "registerTest@registerTest",
+          id: user.id,
           password: "bad-password1",
           user_agent: "UnitTest"
         }
@@ -72,12 +35,34 @@ defmodule Angen.TextProtocol.AuthTest do
 
       response = listen(socket)
       assert_failure(response, "auth/get_token", "Bad authentication")
+    end
 
-      # Good password
+    test "unverified user" do
+      %{socket: socket} = raw_connection()
+      user = create_test_user()
+      Teiserver.Account.UserLib.restrict_user(user, "unverified")
+
       speak(socket, %{
         name: "auth/get_token",
         command: %{
-          email: "registerTest@registerTest",
+          id: user.id,
+          password: "password1",
+          user_agent: "UnitTest"
+        }
+      })
+
+      response = listen(socket)
+      assert_failure(response, "auth/get_token", "Unable to generate token")
+    end
+
+    test "good auth" do
+      %{socket: socket} = raw_connection()
+      user = create_test_user()
+
+      speak(socket, %{
+        name: "auth/get_token",
+        command: %{
+          id: user.id,
           password: "password1",
           user_agent: "UnitTest"
         }
@@ -85,6 +70,8 @@ defmodule Angen.TextProtocol.AuthTest do
 
       response = listen(socket)
       token = Angen.Account.get_user_token(nil, where: [user_id: user.id])
+
+      assert token
 
       assert response == %{
                "name" => "auth/token",
@@ -127,7 +114,7 @@ defmodule Angen.TextProtocol.AuthTest do
                "message" => %{
                  "user" => %{
                    "id" => user.id,
-                   "name" => "registerTest"
+                   "name" => user.name
                  }
                }
              }

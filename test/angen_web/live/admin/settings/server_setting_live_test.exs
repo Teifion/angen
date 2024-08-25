@@ -48,7 +48,7 @@ defmodule AngenWeb.Admin.Settings.ServerSettingLiveTest do
 
     test "Change value", %{conn: conn} do
       the_type = Teiserver.Settings.get_server_setting_type("max_age_server_events")
-      existing_value = Teiserver.Settings.get_server_setting_value(the_type.key)
+      existing_value = Teiserver.get_server_setting_value(the_type.key)
       assert existing_value != 123
 
       {:ok, index_live, html} = live(conn, ~p"/admin/settings")
@@ -65,7 +65,7 @@ defmodule AngenWeb.Admin.Settings.ServerSettingLiveTest do
       # Give it time to invalidate the cache
       :timer.sleep(20)
 
-      new_value = Teiserver.Settings.get_server_setting_value(the_type.key)
+      new_value = Teiserver.get_server_setting_value(the_type.key)
       assert new_value == 123
 
       # Now we do it again since this time it will be updating a row in the DB
@@ -83,7 +83,7 @@ defmodule AngenWeb.Admin.Settings.ServerSettingLiveTest do
       # Give it time to invalidate the cache
       :timer.sleep(20)
 
-      new_value = Teiserver.Settings.get_server_setting_value(the_type.key)
+      new_value = Teiserver.get_server_setting_value(the_type.key)
       assert new_value == 444
 
       # And finally, we delete it
@@ -101,7 +101,7 @@ defmodule AngenWeb.Admin.Settings.ServerSettingLiveTest do
       # Give it time to invalidate the cache
       :timer.sleep(20)
 
-      new_value = Teiserver.Settings.get_server_setting_value(the_type.key)
+      new_value = Teiserver.get_server_setting_value(the_type.key)
       assert new_value == the_type.default
     end
   end

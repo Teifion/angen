@@ -55,7 +55,8 @@ defmodule Angen.Settings.ServerSettings do
       section: "Registration",
       type: "boolean",
       default: false,
-      description: "Allows creation of temporary (guest) accounts."
+      description:
+        "Allows creation of temporary (guest) accounts. Note, guest accounts do not need verification."
     })
 
     add_server_setting_type(%{

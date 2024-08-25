@@ -8,6 +8,14 @@
 
 <div :if={assigns[:edit_mode] != true} class="row mt-4">
   <div class="col">
+    <div :if={@user != nil and @verified? == false} class="alert alert-warning m-0">
+      <div class="float-end">
+        <span class="btn btn-warning btn-sm" phx-click="verify-user">
+          <Fontawesome.icon icon="circle-check" style="solid" /> Verify
+        </span>
+      </div>
+      Unveried
+    </div>
     <.card :if={@user}>
       <div class="float-end">
         <a class="btn btn-info" href={~p"/admin/accounts/user/edit/#{@user.id}"}>

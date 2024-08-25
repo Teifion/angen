@@ -28,7 +28,7 @@ defmodule Angen.Account.UserToken do
     timestamps(type: :utc_datetime)
   end
 
-  @type id :: non_neg_integer()
+  @type id :: Ecto.UUID.t()
   @type identifier_code :: String.t()
   @type renewal_code :: String.t()
 
@@ -54,7 +54,7 @@ defmodule Angen.Account.UserToken do
     struct
     |> cast(
       attrs,
-      ~w(id user_id identifier_code renewal_code context user_agent ip expires_at last_used_at)a
+      ~w(user_id identifier_code renewal_code context user_agent ip expires_at last_used_at)a
     )
     |> validate_required(
       ~w(user_id identifier_code context renewal_code user_agent ip expires_at)a

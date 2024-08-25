@@ -158,6 +158,7 @@ defmodule AngenWeb.Router do
   scope "/", AngenWeb do
     pipe_through [:browser]
 
+    post "/logout", UserSessionController, :delete
     delete "/logout", UserSessionController, :delete
 
     live_session :current_user,

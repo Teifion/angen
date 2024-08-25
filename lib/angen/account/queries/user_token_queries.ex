@@ -42,6 +42,11 @@ defmodule Angen.Account.UserTokenQueries do
       where: user_tokens.user_id == ^user_id
   end
 
+  def _where(query, :context, context) do
+    from user_tokens in query,
+      where: user_tokens.context in ^List.wrap(context)
+  end
+
   def _where(query, :identifier_code, identifier_code) do
     from user_tokens in query,
       where: user_tokens.identifier_code == ^identifier_code

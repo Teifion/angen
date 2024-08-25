@@ -36,7 +36,8 @@ config :angen, Angen.Mailer, adapter: Swoosh.Adapters.Local
 config :teiserver,
   repo: Angen.Repo,
   fn_lobby_name_acceptor: &Angen.Helpers.OverrideHelper.lobby_name_acceptor/1,
-  fn_user_name_acceptor: &Angen.Helpers.OverrideHelper.user_name_acceptor/1
+  fn_user_name_acceptor: &Angen.Helpers.OverrideHelper.user_name_acceptor/1,
+  fn_calculate_user_permissions: &Angen.Helpers.OverrideHelper.calculate_user_permissions/1
 
 config :db_cluster,
   repo: Angen.Repo

@@ -43,6 +43,23 @@ defmodule AngenWeb.TokenControllerTest do
       assert json_response(conn, 500) == %{"result" => "Error", "reason" => "Bad parameters"}
     end
 
+    test "unverified account", %{conn: conn} do
+      user = user_fixture()
+      Teiserver.Account.UserLib.restrict_user(user, "unverified")
+
+      conn =
+        post(conn, ~p"/api/request_token", %{
+          "id" => user.id,
+          "password" => "password",
+          "user_agent" => "agent"
+        })
+
+      assert json_response(conn, 500) == %{
+               "result" => "Error",
+               "reason" => "Unable to generate token"
+             }
+    end
+
     test "good auth", %{conn: conn} do
       user = user_fixture()
 

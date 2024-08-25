@@ -29,7 +29,19 @@ defmodule Angen.Account do
 
   @doc section: :user
   @spec register_user(map) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  defdelegate register_user(attrs \\ %{}), to: UserLib
+  def register_user(attrs \\ %{}) do
+    attrs =
+      case Teiserver.get_server_setting_value("user_verification_mode") do
+        "None" ->
+          attrs
+
+        _ ->
+          restrictions = ["unverified" | Map.get(attrs, "restrictions", [])]
+          Map.put(attrs, "restrictions", restrictions)
+      end
+
+    UserLib.register_user(attrs)
+  end
 
   @doc section: :user
   @spec create_user(map) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
@@ -62,6 +74,27 @@ defmodule Angen.Account do
   @doc section: :user
   @spec restricted?(Teiserver.user_id() | User.t(), [String.t()] | String.t()) :: boolean
   defdelegate restricted?(user_or_user_id, permission_or_permissions), to: UserLib
+
+  @doc section: :user
+  @spec verified?(Teiserver.user_id() | User.t()) :: boolean
+  def verified?(user_or_user_id) do
+    not restricted?(user_or_user_id, "unverified")
+  end
+
+  @doc section: :user
+  @spec verify_user(Teiserver.user_id() | User.t()) :: boolean
+  def verify_user(user_or_user_id) do
+    UserLib.unrestrict_user(user_or_user_id, ["unverified"])
+  end
+
+  @doc section: :user
+  @spec allow_login?(Teiserver.user_id() | User.t()) :: boolean
+  def allow_login?(user_or_user_id) do
+    cond do
+      not Angen.Account.verified?(user_or_user_id) -> false
+      true -> true
+    end
+  end
 
   @spec deliver_user_confirmation_instructions(User.t(), function()) ::
           {:ok, map()}

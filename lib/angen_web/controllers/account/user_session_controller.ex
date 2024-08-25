@@ -6,26 +6,46 @@ defmodule AngenWeb.UserSessionController do
 
   @spec login_from_code(Plug.Conn.t(), map) :: Plug.Conn.t()
   def login_from_code(conn, %{"code" => "fakedata_code"}) do
-    # If the token exists, delete it so it no longer exists and make a new one
-    token = Account.get_user_token(UUID.uuid5(nil, "root@localhost"))
+    ip = conn.remote_ip |> Tuple.to_list() |> Enum.join(".")
 
-    agent =
-      case List.keyfind(conn.req_headers, "user-agent", 0) do
-        {_, agent} -> agent
-        _ -> "fake-data"
-      end
+    # They must be local and we must have enabled enfys mode
+    # otherwise we'd have a massive security hole!
+    allowed? =
+      Enum.all?([
+        ip == "127.0.0.1",
+        Application.get_env(:angen, :enfys_mode, false)
+      ])
 
-    {:ok, new_token} =
-      Account.create_user_token(
-        token.user_id,
-        token.context,
-        agent,
-        conn.remote_ip |> Tuple.to_list() |> Enum.join(".")
-      )
+    if allowed? do
+      # We only create a token with this context from enfys
+      token =
+        Account.get_user_token(nil,
+          where: [
+            context: "fake-data-create"
+          ]
+        )
 
-    Account.delete_user_token(token)
+      agent =
+        case List.keyfind(conn.req_headers, "user-agent", 0) do
+          {_, agent} -> agent
+          _ -> "fake-data"
+        end
 
-    maybe_login_with_token(conn, new_token.id)
+      {:ok, new_token} =
+        Account.create_user_token(
+          token.user_id,
+          "fake-data",
+          agent,
+          conn.remote_ip |> Tuple.to_list() |> Enum.join(".")
+        )
+
+      # Delete old token
+      Account.delete_user_token(token)
+
+      maybe_login_with_token(conn, new_token.id)
+    else
+      redirect(conn, to: ~p"/guest")
+    end
   end
 
   def login_from_code(conn, %{"code" => code}) do
