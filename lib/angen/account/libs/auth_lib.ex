@@ -2,52 +2,14 @@ defmodule Angen.Account.AuthLib do
   @moduledoc false
   require Logger
 
-  @spec get_all_permission_sets() :: Map.t()
-  def get_all_permission_sets do
-    Cachex.get!(:auth_group_store, :all)
-    |> Enum.map(fn key -> {key, get_permission_set(key)} end)
-  end
+  @roles %{
+    # Server authority
+    "admin" => ~w(moderator),
+    "moderator" => ~w()
+  }
 
-  @spec split_permissions([String.t()]) :: [String.t()]
-  def split_permissions(permission_list) do
-    sections =
-      permission_list
-      |> Enum.map(fn p ->
-        p
-        |> String.split(".")
-        |> Enum.take(2)
-        |> Enum.join(".")
-      end)
-      |> Enum.uniq()
-
-    modules =
-      permission_list
-      |> Enum.map(fn p -> p |> String.split(".") |> hd end)
-      |> Enum.uniq()
-
-    permission_list ++ sections ++ modules
-  end
-
-  @spec get_permission_set({String.t(), String.t()}) :: [String.t()]
-  def get_permission_set(key) do
-    Cachex.get!(:auth_group_store, key)
-  end
-
-  @spec add_permission_set(String.t(), String.t(), [String.t()]) :: :ok
-  def add_permission_set(module, section, auths) do
-    permissions =
-      auths
-      |> Enum.map(fn a ->
-        "#{module}.#{section}.#{a}"
-      end)
-
-    key = {module, section}
-    all_auth_keys = [key | Cachex.get!(:auth_group_store, :all) || []]
-
-    Cachex.put(:auth_group_store, key, permissions)
-    Cachex.put(:auth_group_store, :all, all_auth_keys)
-    :ok
-  end
+  @spec get_roles() :: %{String.t() => [String.t()]}
+  def get_roles(), do: @roles
 
   @doc """
   Tests if the user or user in the connection is allowed to access any the required permissions.
@@ -61,7 +23,7 @@ defmodule Angen.Account.AuthLib do
   end
 
   @doc """
-  Overload of `allow?/2` to mirror `allow_any?/2`
+  Overload of `allow?/2`
   """
   @spec allow_all?(Map.t() | Plug.Conn.t() | [String.t()], String.t() | [String.t()]) :: boolean
   def allow_all?(conn, perms) do

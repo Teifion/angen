@@ -1,6 +1,7 @@
 {
   "skip_files": [
     "^test/.*",
+    "lib/angen.ex",
     "lib/angen/dev_support/.*",
     "lib/angen/helpers/fake_data/.*",
     "lib/angen/release.ex",

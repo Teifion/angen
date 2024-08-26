@@ -13,12 +13,6 @@ defmodule Angen.Helpers.OverrideHelper do
     true
   end
 
-  @roles %{
-    # Server authority
-    "admin" => ~w(moderator),
-    "moderator" => ~w()
-  }
-
   @spec calculate_user_permissions(Ecto.Changeset.t()) :: Ecto.Changeset.t()
   def calculate_user_permissions(changeset) do
     groups = Ecto.Changeset.get_field(changeset, :groups, [])
@@ -34,8 +28,10 @@ defmodule Angen.Helpers.OverrideHelper do
   end
 
   defp expand_group(group_name) do
+    roles = Angen.Account.AuthLib.get_roles()
+
     sub_groups =
-      Map.get(@roles, group_name, [])
+      Map.get(roles, group_name, [])
       |> Enum.map(fn sub_group ->
         expand_group(sub_group)
       end)

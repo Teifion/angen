@@ -90,7 +90,7 @@ defmodule Angen.MixProject do
       # {:teiserver, "~> 0.0.5"}
       {:teiserver,
        git: "https://github.com/teifion/teiserver.git",
-       ref: "fdad6252c403323839b0cb76676cb58fc9368443"}
+       ref: "a5c4f7b59c273a55cd20c253d499ff85f72f2b84"}
       # {:teiserver, path: "../teiserver"}
     ]
   end
