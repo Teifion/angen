@@ -69,10 +69,6 @@ defmodule Angen.Account.AuthLib do
     )
   end
 
-  def allow?(_, "account") do
-    true
-  end
-
   def allow?(_, permission_required) when is_atom(permission_required) do
     raise "permission_required must be a string, it was given as an atom (#{inspect(permission_required)})"
   end
@@ -165,8 +161,8 @@ defmodule Angen.Account.AuthLib do
   end
 
   # This is used as part of the permission system getting the current user
-  @spec current_user(Plug.Conn.t()) :: User.t() | nil
-  def current_user(conn) do
-    conn.assigns[:current_user]
-  end
+  # @spec current_user(Plug.Conn.t()) :: User.t() | nil
+  # def current_user(conn) do
+  #   conn.assigns[:current_user]
+  # end
 end
