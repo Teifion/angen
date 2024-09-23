@@ -9,9 +9,21 @@ defmodule Angen.DevSupport.ManagerServer do
   @startup_delay 500
 
   @bots [
-    {DevSupport.LobbyHostBot, %{}},
+    # Generic bots
+    {DevSupport.LobbyHostIdleBot, %{behaviour: :idle}},
+    {DevSupport.LobbyHostIdleBot, %{behaviour: :deny}},
+    {DevSupport.LobbyHostIdleBot, %{behaviour: :kick}},
     {DevSupport.LobbyChatEchoBot, %{}},
-    {DevSupport.DMEchoBot, %{}}
+    {DevSupport.DMEchoBot, %{}},
+
+    # e2e test bots for games
+    {DevSupport.LobbyHostPlayBot, %{}},
+    # {DevSupport.LobbyPlayerBot, %{idx: 1}},
+    # {DevSupport.LobbyPlayerBot, %{idx: 2}},
+    # {DevSupport.LobbyPlayerBot, %{idx: 3}},
+    # {DevSupport.LobbyPlayerBot, %{idx: 4}},
+    # {DevSupport.LobbySpectatorBot, %{idx: 1}},
+    # {DevSupport.LobbySpectatorBot, %{idx: 2}},
   ]
 
   def start_link(params, _opts \\ []) do

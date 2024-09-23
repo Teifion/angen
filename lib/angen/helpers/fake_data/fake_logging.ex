@@ -2,6 +2,7 @@ defmodule Angen.FakeData.FakeLogging do
   @moduledoc false
 
   alias Angen.Logging
+  alias Angen.Helper.DateTimeHelper
   import Logging.PersistServerMinuteTask, only: [add_total_key: 1, add_total_key: 3]
 
   import Angen.Helpers.FakeDataHelper,
@@ -40,7 +41,7 @@ defmodule Angen.FakeData.FakeLogging do
     0..range_max
     |> Enum.each(fn day ->
       ProgressBar.render(day, range_max, @bar_detail_format)
-      date = Timex.today() |> Timex.shift(days: -day)
+      date = DateTimeHelper.today() |> Date.shift(day: -day)
 
       make_server_minutes(Map.put(config, :node, "node1"), date)
       make_server_minutes(Map.put(config, :node, "node2"), date)
@@ -93,9 +94,9 @@ defmodule Angen.FakeData.FakeLogging do
       |> Enum.map_reduce(%{}, fn m, last_data ->
         timestamp =
           date
-          |> Timex.to_datetime()
-          |> Timex.shift(minutes: m)
-          |> Timex.set(microsecond: 0, second: 0)
+          |> DateTimeHelper.to_datetime()
+          |> DateTime.shift(minute: m)
+          |> DateTime.truncate(:second)
 
         data = make_minute_data(Map.put(config, :max_users, max_users), last_data)
 
@@ -196,8 +197,8 @@ defmodule Angen.FakeData.FakeLogging do
     {new_logs, _} =
       config.days..config.detail_days
       |> Enum.map_reduce(%{}, fn day, last_data ->
-        date = Timex.today() |> Timex.shift(days: -day)
-        max_users = Enum.count(valid_user_ids(date))
+        date = DateTimeHelper.today() |> Date.shift(day: -day)
+        max_users = Enum.count(valid_user_ids(DateTimeHelper.to_datetime(date)))
 
         data = make_day_data(Map.merge(config, %{max_users: max_users, date: date}), last_data)
 
@@ -214,7 +215,7 @@ defmodule Angen.FakeData.FakeLogging do
 
   defp make_day_data(config, last_day) do
     accounts_created =
-      Enum.count(valid_user_ids(config.date, config.date |> Timex.shift(days: 1)))
+      Enum.count(valid_user_ids(config.date |> DateTimeHelper.to_datetime(), config.date |> Date.shift(day: 1) |> DateTimeHelper.to_datetime()))
 
     minutes =
       %{
@@ -317,7 +318,7 @@ defmodule Angen.FakeData.FakeLogging do
       0..(config.days - 1)
       |> Enum.map(fn day ->
         ProgressBar.render(day, config.days - 1, @bar_audit_format)
-        date = Timex.today() |> Timex.shift(days: -day)
+        date = DateTimeHelper.today() |> Date.shift(day: -day)
         user_ids = valid_user_ids(date)
 
         0..3

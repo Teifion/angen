@@ -58,12 +58,12 @@ defmodule Angen.Telemetry.SimpleMatchEventQueries do
 
   def _where(query, :after, timestamp) do
     from simple_match_events in query,
-      where: simple_match_events.inserted_at > ^Timex.to_datetime(timestamp)
+      where: simple_match_events.inserted_at > ^timestamp
   end
 
   def _where(query, :before, timestamp) do
     from simple_match_events in query,
-      where: simple_match_events.inserted_at < ^Timex.to_datetime(timestamp)
+      where: simple_match_events.inserted_at < ^timestamp
   end
 
   @spec do_order_by(Ecto.Query.t(), list | nil) :: Ecto.Query.t()

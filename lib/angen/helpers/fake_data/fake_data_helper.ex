@@ -1,11 +1,12 @@
 defmodule Angen.Helpers.FakeDataHelper do
   @moduledoc false
+  alias Angen.Helper.DateTimeHelper
 
-  @spec valid_user_ids(Date.t() | DateTime.t()) :: [Teiserver.user_id()]
+  @spec valid_user_ids(DateTime.t()) :: [Teiserver.user_id()]
   def valid_user_ids(before_datetime) do
     Teiserver.Account.list_users(
       where: [
-        inserted_before: Timex.to_datetime(before_datetime)
+        inserted_before: before_datetime
       ],
       limit: :infinity,
       select: [:id]
@@ -13,12 +14,12 @@ defmodule Angen.Helpers.FakeDataHelper do
     |> Enum.map(fn %{id: id} -> id end)
   end
 
-  @spec valid_user_ids(Date.t() | DateTime.t(), Date.t() | DateTime.t()) :: [Teiserver.user_id()]
+  @spec valid_user_ids(DateTime.t(), DateTime.t()) :: [Teiserver.user_id()]
   def valid_user_ids(before_datetime, after_datetime) do
     Teiserver.Account.list_users(
       where: [
-        inserted_after: Timex.to_datetime(after_datetime),
-        inserted_before: Timex.to_datetime(before_datetime)
+        inserted_after: after_datetime,
+        inserted_before: before_datetime
       ],
       limit: :infinity,
       select: [:id]
@@ -26,15 +27,15 @@ defmodule Angen.Helpers.FakeDataHelper do
     |> Enum.map(fn %{id: id} -> id end)
   end
 
-  @spec matches_this_day(Date.t() | DateTime.t()) :: [Teiserver.match_id()]
+  @spec matches_this_day(DateTime.t()) :: [Teiserver.match_id()]
   def matches_this_day(date) do
-    start_date = Timex.beginning_of_day(date)
-    end_date = Timex.shift(start_date, days: 1)
+    start_date = DateTimeHelper.beginning_of_day(date)
+    end_date = DateTime.shift(start_date, day: 1)
 
     Teiserver.Game.list_matches(
       where: [
-        started_after: Timex.to_datetime(start_date),
-        started_before: Timex.to_datetime(end_date)
+        started_after: start_date,
+        started_before: end_date
       ],
       limit: :infinity,
       select: [:id]
@@ -76,14 +77,15 @@ defmodule Angen.Helpers.FakeDataHelper do
   end
 
   @spec random_time_in_day(Date.t() | DateTime.t()) :: DateTime.t()
-  def random_time_in_day(date) do
-    date
-    |> Timex.to_datetime()
-    |> Timex.set(
-      hour: :rand.uniform(24) - 1,
-      minute: :rand.uniform(60) - 1,
-      second: :rand.uniform(60) - 1
-    )
-    |> DateTime.truncate(:second)
+  def random_time_in_day(%DateTime{} = day_datetime) do
+    random_time_in_day(DateTime.to_date(day_datetime))
+  end
+
+  def random_time_in_day(day) do
+    DateTime.new!(day, Time.new!(
+      :rand.uniform(24) - 1,
+      :rand.uniform(60) - 1,
+      :rand.uniform(60) - 1
+    ))
   end
 end

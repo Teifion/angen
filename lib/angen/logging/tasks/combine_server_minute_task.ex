@@ -11,7 +11,7 @@ defmodule Angen.Logging.CombineServerMinuteTask do
   @spec perform(any()) :: :ok
   def perform(args) do
     # For fake data and other similar things we want to define when "now" is
-    now = args[:now] || Timex.now() |> Timex.set(microsecond: 0, second: 0)
+    now = args[:now] || DateTime.utc_now() |> DateTime.truncate(:second)
 
     logs = Logging.list_server_minute_logs(where: [timestamp: now])
 

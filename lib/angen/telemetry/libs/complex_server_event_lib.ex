@@ -17,7 +17,7 @@ defmodule Angen.Telemetry.ComplexServerEventLib do
     attrs = %{
       event_type_id: type_id,
       user_id: user_id,
-      inserted_at: Timex.now(),
+      inserted_at: DateTime.utc_now(),
       details: details
     }
 

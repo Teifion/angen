@@ -28,6 +28,8 @@ defmodule Angen.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Angen.DataCase
+
+      alias Angen.Helper.DateTimeHelper
     end
   end
 

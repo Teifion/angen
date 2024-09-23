@@ -4,6 +4,7 @@ defmodule Angen.Logging.ServerDayLogLib do
   """
   use TeiserverMacros, :library
   alias Angen.Logging.{ServerDayLog, ServerDayLogQueries}
+  alias Angen.Helper.DateTimeHelper
 
   @doc """
   Returns the list of server_day_logs.
@@ -219,8 +220,8 @@ defmodule Angen.Logging.ServerDayLogLib do
   defp get_accounts_created(start_date, end_date) do
     Teiserver.Account.user_query(
       where: [
-        inserted_after: start_date |> Timex.to_datetime(),
-        inserted_before: end_date |> Timex.to_datetime(),
+        inserted_after: start_date |> DateTimeHelper.to_datetime(),
+        inserted_before: end_date |> DateTimeHelper.to_datetime(),
         smurf_of: false,
         not_has_group: "guest",
         not_has_restriction: "login"
@@ -249,8 +250,8 @@ defmodule Angen.Logging.ServerDayLogLib do
 
     case Ecto.Adapters.SQL.query(Angen.Repo, query, [
            event_type_id,
-           Timex.to_datetime(start_date),
-           Timex.to_datetime(end_date)
+           DateTimeHelper.to_datetime(start_date),
+           DateTimeHelper.to_datetime(end_date)
          ]) do
       {:ok, %{rows: [[result]]}} ->
         result - 1000

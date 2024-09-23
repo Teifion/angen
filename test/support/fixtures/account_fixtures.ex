@@ -37,7 +37,7 @@ defmodule Angen.Fixtures.AccountFixtures do
         user_agent: data[:user_agent] || "agent",
         ip: data[:ip] || "127.0.0.1",
 
-        expires_at: data[:expires_at] || Timex.now |> Timex.shift(days: 1),
+        expires_at: data[:expires_at] || DateTime.utc_now() |> DateTime.shift(day: 1),
         last_used_at: data[:last_used_at] || nil
       }
     )

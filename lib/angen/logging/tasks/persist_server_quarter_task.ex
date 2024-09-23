@@ -3,6 +3,7 @@ defmodule Angen.Logging.PersistServerQuarterTask do
   use Oban.Worker, queue: :logging
   alias Angen.Logging
   alias Angen.Logging.ServerDayLogLib
+  alias Angen.Helper.DateTimeHelper
 
   @impl Oban.Worker
   @spec perform(any) :: :ok
@@ -38,14 +39,15 @@ defmodule Angen.Logging.PersistServerQuarterTask do
         limit: 1
       )
 
+
     case first_logs do
       [log] ->
-        today_quarter = Timex.today() |> Timex.quarter()
-        log_quarter = log.date |> Timex.quarter()
+        today_quarter = DateTimeHelper.today() |> Date.quarter_of_year()
+        log_quarter = log.date |> Date.quarter_of_year()
 
-        if log.date.year < Timex.today().year or log_quarter < today_quarter do
-          start_date = Timex.beginning_of_quarter(log.date)
-          end_date = Timex.end_of_quarter(log.date) |> Timex.shift(days: 1)
+        if log.date.year < DateTimeHelper.today().year or log_quarter < today_quarter do
+          start_date = DateTimeHelper.beginning_of_quarter(log.date)
+          end_date = Date.shift(start_date, month: 3)
 
           generate_log(start_date, end_date)
         end
@@ -57,14 +59,14 @@ defmodule Angen.Logging.PersistServerQuarterTask do
 
   # For when we have an existing log
   defp perform_standard(log_date) do
-    new_date = Timex.shift(log_date, months: 3)
+    new_date = Date.shift(log_date, month: 3)
 
-    new_quarter = new_date |> Timex.quarter()
-    today_quarter = Timex.today() |> Timex.quarter()
+    new_quarter = new_date |> Date.quarter_of_year()
+    today_quarter = DateTimeHelper.today() |> Date.quarter_of_year()
 
-    if new_date.year < Timex.today().year or new_quarter < today_quarter do
-      start_date = Timex.beginning_of_quarter(new_date)
-      end_date = Timex.end_of_quarter(new_date) |> Timex.shift(days: 1)
+    if new_date.year < DateTimeHelper.today().year or new_quarter < today_quarter do
+      start_date = DateTimeHelper.beginning_of_quarter(new_date)
+      end_date = Date.shift(start_date, month: 3)
 
       generate_log(start_date, end_date)
     else
@@ -85,24 +87,24 @@ defmodule Angen.Logging.PersistServerQuarterTask do
       |> ServerDayLogLib.aggregate_day_logs()
       |> Map.put(:stats, stats)
 
-    quarter = Timex.quarter(start_date)
+    quarter = Date.quarter_of_year(start_date)
 
     {:ok, _} =
       Logging.create_server_quarter_log(%{
         year: start_date.year,
         quarter: quarter,
-        date: Timex.beginning_of_quarter(start_date),
+        date: DateTimeHelper.beginning_of_quarter(start_date),
         data: data
       })
   end
 
   @spec quarter_so_far() :: map()
   def quarter_so_far() do
-    start_date = Timex.beginning_of_quarter(Timex.now())
-    end_date = Timex.shift(start_date, days: 7)
+    start_date = Date.quarter_of_year(DateTime.utc_now())
+    end_date = DateTime.shift(start_date, day: 7)
 
     stats =
-      ServerDayLogLib.calculate_period_statistics(start_date, Timex.shift(end_date, days: 1))
+      ServerDayLogLib.calculate_period_statistics(start_date, DateTime.shift(end_date, day: 1))
 
     Logging.list_server_day_logs(
       where: [

@@ -3,6 +3,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
   alias Angen.Logging
   alias Teiserver.Logging.AuditLog
   import Angen.Fixtures.AccountFixtures, only: [user_fixture: 0]
+  alias Angen.Helper.DateTimeHelper
 
   # Copied straight from Teiserver repo
   @spec audit_log_fixture(map) :: AuditLog.t()
@@ -44,7 +45,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.GameDayLog.changeset(
       %Logging.GameDayLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         data: data[:data] || %{}
       }
     )
@@ -57,7 +58,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.GameWeekLog.changeset(
       %Logging.GameWeekLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         year: data[:year] || 1,
         week: data[:week] || 1,
         data: data[:data] || %{}
@@ -72,7 +73,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.GameMonthLog.changeset(
       %Logging.GameMonthLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         year: data[:year] || 1,
         month: data[:month] || 1,
         data: data[:data] || %{}
@@ -87,7 +88,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.GameQuarterLog.changeset(
       %Logging.GameQuarterLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         year: data[:year] || 1,
         quarter: data[:quarter] || 1,
         data: data[:data] || %{}
@@ -102,7 +103,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.GameYearLog.changeset(
       %Logging.GameYearLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         year: data[:year] || 1,
         data: data[:data] || %{}
       }
@@ -117,7 +118,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.ServerMinuteLog.changeset(
       %Logging.ServerMinuteLog{},
       %{
-        timestamp: data[:timestamp] || Timex.now(),
+        timestamp: data[:timestamp] || DateTime.utc_now(),
         node: data[:node] || "test-node",
         data: data[:data] || %{}
       }
@@ -131,7 +132,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.ServerDayLog.changeset(
       %Logging.ServerDayLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         data: data[:data] || %{}
       }
     )
@@ -144,7 +145,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.ServerWeekLog.changeset(
       %Logging.ServerWeekLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         year: data[:year] || 1,
         week: data[:week] || 1,
         data: data[:data] || %{}
@@ -159,7 +160,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.ServerMonthLog.changeset(
       %Logging.ServerMonthLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         year: data[:year] || 1,
         month: data[:month] || 1,
         data: data[:data] || %{}
@@ -174,7 +175,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.ServerQuarterLog.changeset(
       %Logging.ServerQuarterLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         year: data[:year] || 1,
         quarter: data[:quarter] || 1,
         data: data[:data] || %{}
@@ -189,7 +190,7 @@ defmodule Angen.Fixtures.LoggingFixtures do
     Logging.ServerYearLog.changeset(
       %Logging.ServerYearLog{},
       %{
-        date: data[:date] || Timex.today(),
+        date: data[:date] || DateTimeHelper.today(),
         year: data[:year] || 1,
         data: data[:data] || %{}
       }

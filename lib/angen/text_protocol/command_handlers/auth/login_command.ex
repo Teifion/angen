@@ -37,7 +37,7 @@ defmodule Angen.TextProtocol.CommandHandlers.Auth.Login do
         FailureResponse.generate({name(), "No clint created, please retry"}, state)
 
       _ ->
-        Angen.Account.update_user_token(token, %{last_used_at: Timex.now()})
+        Angen.Account.update_user_token(token, %{last_used_at: DateTime.utc_now()})
         TextProtocol.Auth.LoginResponse.generate(token.user_id, state)
     end
   end

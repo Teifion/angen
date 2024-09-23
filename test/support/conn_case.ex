@@ -30,6 +30,8 @@ defmodule AngenWeb.ConnCase do
       import Phoenix.ConnTest
       import AngenWeb.ConnCase
       import Angen.ProtoCase, only: [create_test_user: 0]
+
+      alias Angen.Helper.DateTimeHelper
     end
   end
 

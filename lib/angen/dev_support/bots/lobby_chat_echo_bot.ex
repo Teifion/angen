@@ -87,7 +87,7 @@ defmodule Angen.DevSupport.LobbyChatEchoBot do
   end
 
   defp get_lobby_id() do
-    case Teiserver.get_user_by_name("LobbyHostBot") do
+    case Teiserver.get_user_by_name("LobbyHostIdleBot") do
       nil ->
         nil
 

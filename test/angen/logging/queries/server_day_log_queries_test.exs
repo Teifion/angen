@@ -29,9 +29,9 @@ defmodule Angen.ServerDayLogQueriesTest do
       all_values =
         ServerDayLogQueries.server_day_log_query(
           where: [
-            date: Timex.today(),
-            after: Timex.today(),
-            before: Timex.today()
+            date: DateTimeHelper.today(),
+            after: DateTimeHelper.today(),
+            before: DateTimeHelper.today()
           ],
           order_by: [
             "Newest first",

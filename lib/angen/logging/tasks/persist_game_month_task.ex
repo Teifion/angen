@@ -3,6 +3,7 @@ defmodule Angen.Logging.PersistGameMonthTask do
   use Oban.Worker, queue: :logging
   alias Angen.Logging
   import Angen.Logging.PersistGameDayTask, only: [generate_game_summary_data: 2]
+  alias Angen.Helper.DateTimeHelper
 
   @impl Oban.Worker
   @spec perform(any) :: :ok
@@ -41,11 +42,11 @@ defmodule Angen.Logging.PersistGameMonthTask do
 
     case first_logs do
       [log] ->
-        today = Timex.today()
+        today = DateTimeHelper.today()
 
         if log.date.year < today.year or log.date.month < today.month do
-          start_date = Timex.beginning_of_month(log.date)
-          end_date = Timex.end_of_month(log.date) |> Timex.shift(days: 1)
+          start_date = Date.beginning_of_month(log.date)
+          end_date = DateTime.shift(start_date, month: 1)
 
           generate_log(start_date, end_date)
         end
@@ -57,11 +58,11 @@ defmodule Angen.Logging.PersistGameMonthTask do
 
   # For when we have an existing log
   defp perform_standard(year, month) do
-    today = Timex.today()
+    today = DateTimeHelper.today()
 
     if year < today.year or month < today.month do
-      start_date = Timex.Date.new!(year, month, 1)
-      end_date = Timex.end_of_month(start_date) |> Timex.shift(days: 1)
+      start_date = Date.new!(year, month, 1)
+      end_date = DateTime.shift(start_date, month: 1)
 
       generate_log(start_date, end_date)
     else
@@ -76,15 +77,15 @@ defmodule Angen.Logging.PersistGameMonthTask do
       Logging.create_game_month_log(%{
         year: start_date.year,
         month: start_date.month,
-        date: Timex.beginning_of_month(start_date),
+        date: Date.beginning_of_month(start_date),
         data: data
       })
   end
 
   @spec month_so_far() :: map()
   def month_so_far() do
-    start_date = Timex.beginning_of_month(Timex.now())
-    end_date = Timex.shift(start_date, days: 7)
+    start_date = Date.beginning_of_month(DateTime.utc_now())
+    end_date = DateTime.shift(start_date, month: 1)
 
     generate_game_summary_data(start_date, end_date)
     |> Jason.encode!()

@@ -3,6 +3,7 @@ defmodule Angen.Logging.PersistGameWeekTask do
   use Oban.Worker, queue: :logging
   alias Angen.Logging
   import Angen.Logging.PersistGameDayTask, only: [generate_game_summary_data: 2]
+  alias Angen.Helper.DateTimeHelper
 
   @impl Oban.Worker
   @spec perform(any) :: :ok
@@ -40,12 +41,12 @@ defmodule Angen.Logging.PersistGameWeekTask do
 
     case first_logs do
       [log] ->
-        {today_year, today_week} = Timex.today() |> Timex.iso_week()
-        {log_year, log_week} = log.date |> Timex.iso_week()
+        {today_year, today_week} = DateTimeHelper.today() |> DateTimeHelper.iso_week()
+        {log_year, log_week} = log.date |> DateTimeHelper.iso_week()
 
         if log_year < today_year or log_week < today_week do
-          start_date = Timex.beginning_of_week(log.date)
-          end_date = Timex.end_of_week(log.date) |> Timex.shift(days: 1)
+          start_date = Date.beginning_of_week(log.date)
+          end_date = DateTime.shift(start_date, week: 1)
 
           generate_log(start_date, end_date)
         end
@@ -57,14 +58,14 @@ defmodule Angen.Logging.PersistGameWeekTask do
 
   # For when we have an existing log
   defp perform_standard(log_date) do
-    new_date = Timex.shift(log_date, days: 7)
+    new_date = DateTime.shift(log_date, day: 7)
 
-    {new_year, new_week} = new_date |> Timex.iso_week()
-    {today_year, today_week} = Timex.today() |> Timex.iso_week()
+    {new_year, new_week} = new_date |> DateTimeHelper.iso_week()
+    {today_year, today_week} = DateTimeHelper.today() |> DateTimeHelper.iso_week()
 
     if new_year < today_year or new_week < today_week do
-      start_date = Timex.beginning_of_week(new_date)
-      end_date = Timex.end_of_week(new_date) |> Timex.shift(days: 1)
+      start_date = Date.beginning_of_week(new_date)
+      end_date = DateTime.shift(start_date, week: 1)
 
       generate_log(start_date, end_date)
     else
@@ -75,21 +76,21 @@ defmodule Angen.Logging.PersistGameWeekTask do
   defp generate_log(start_date, end_date) do
     data = generate_game_summary_data(start_date, end_date)
 
-    {year, week} = Timex.iso_week(start_date)
+    {year, week} = DateTimeHelper.iso_week(start_date)
 
     {:ok, _} =
       Logging.create_game_week_log(%{
         year: year,
         week: week,
-        date: Timex.beginning_of_week(start_date),
+        date: Date.beginning_of_week(start_date),
         data: data
       })
   end
 
   @spec week_so_far() :: map()
   def week_so_far() do
-    start_date = Timex.beginning_of_week(Timex.now())
-    end_date = Timex.shift(start_date, days: 7)
+    start_date = Date.beginning_of_week(DateTime.utc_now())
+    end_date = DateTime.shift(start_date, day: 7)
 
     generate_game_summary_data(start_date, end_date)
     |> Jason.encode!()

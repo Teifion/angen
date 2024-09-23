@@ -8,7 +8,7 @@ defmodule Angen.ServerQuarterLogLibTest do
 
   defp valid_attrs do
     %{
-      date: Timex.today(),
+      date: Angen.Helper.DateTimeHelper.today(),
       year: 1,
       quarter: 1,
       data: %{"key" => 1}
@@ -17,7 +17,7 @@ defmodule Angen.ServerQuarterLogLibTest do
 
   defp update_attrs do
     %{
-      date: Timex.today() |> Timex.shift(months: 3),
+      date: Angen.Helper.DateTimeHelper.today() |> Date.shift(month: 3),
       year: 2,
       quarter: 2,
       data: %{"other-key" => 2}

@@ -20,7 +20,7 @@ defmodule Angen.PersistServerMinuteTaskTest do
     query = "DELETE FROM logging_server_minute_logs"
     Ecto.Adapters.SQL.query(Repo, query, [])
 
-    now = Timex.now() |> Timex.set(microsecond: 0, second: 0)
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
     {:ok, _returned_log} = PersistServerMinuteTask.perform(now: now)
 
     # Now ensure it ran
@@ -31,7 +31,7 @@ defmodule Angen.PersistServerMinuteTaskTest do
     assert Map.has_key?(log.data, "lobby")
 
     # Now we set that to a minute ago and run it again
-    last_minute = Timex.shift(now, minutes: -1)
+    last_minute = DateTime.shift(now, minute: -1)
     Logging.update_server_minute_log(log, %{timestamp: last_minute})
 
     log = Logging.get_server_minute_log(now, node)

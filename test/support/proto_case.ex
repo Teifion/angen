@@ -23,6 +23,8 @@ defmodule Angen.ProtoCase do
       alias Angen.Helpers.JsonSchemaHelper
       alias Angen.TestSupport.TestConn
       import Angen.ProtoCase
+
+      alias Angen.Helper.DateTimeHelper
     end
   end
 

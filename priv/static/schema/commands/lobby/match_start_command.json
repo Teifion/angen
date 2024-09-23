@@ -1,0 +1,13 @@
+{
+  "$id": "lobby/match_start_command.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lobby - Match Start command",
+  "description": "",
+  "type": "object",
+  "required": [
+    
+  ],
+  "properties": {
+    
+  }
+}

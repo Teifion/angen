@@ -24,7 +24,7 @@ defmodule Angen.Telemetry.ComplexMatchEventLib do
       event_type_id: type_id,
       match_id: match_id,
       user_id: user_id,
-      inserted_at: Timex.now(),
+      inserted_at: DateTime.utc_now(),
       game_time_seconds: game_time_seconds,
       details: details
     }

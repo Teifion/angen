@@ -29,11 +29,11 @@ defmodule Angen.ServerWeekLogQueriesTest do
       all_values =
         ServerWeekLogQueries.server_week_log_query(
           where: [
-            date: Timex.today(),
+            date: DateTimeHelper.today(),
             year: 123,
             week: 123,
-            after: Timex.now(),
-            before: Timex.now()
+            after: DateTime.utc_now(),
+            before: DateTime.utc_now()
           ],
           order_by: [
             "Newest first",

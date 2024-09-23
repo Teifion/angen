@@ -29,8 +29,8 @@ defmodule Angen.ServerMinuteLogQueriesTest do
       all_values =
         ServerMinuteLogQueries.server_minute_log_query(
           where: [
-            after: Timex.now(),
-            before: Timex.now()
+            after: DateTime.utc_now(),
+            before: DateTime.utc_now()
           ],
           order_by: [
             "Newest first",

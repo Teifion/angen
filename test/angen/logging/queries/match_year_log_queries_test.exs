@@ -29,10 +29,10 @@ defmodule Angen.GameYearLogQueriesTest do
       all_values =
         GameYearLogQueries.game_year_log_query(
           where: [
-            date: Timex.today(),
+            date: DateTimeHelper.today(),
             year: 123,
-            after: Timex.now(),
-            before: Timex.now()
+            after: DateTime.utc_now(),
+            before: DateTime.utc_now()
           ],
           order_by: [
             "Newest first",

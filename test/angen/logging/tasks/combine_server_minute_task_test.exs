@@ -12,7 +12,7 @@ defmodule Angen.CombineServerMinuteTaskTest do
     query = "DELETE FROM logging_server_minute_logs"
     Ecto.Adapters.SQL.query(Repo, query, [])
 
-    now = Timex.now() |> Timex.set(microsecond: 0, second: 0)
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
 
     # Create our logs
     {:ok, _returned_log} = PersistServerMinuteTask.perform(now: now)

@@ -14,8 +14,8 @@ defmodule Angen.UserTokenLibTest do
       context: "context",
       user_agent: "agent",
       ip: "127.0.0.1",
-      expires_at: Timex.now(),
-      last_used_at: Timex.now()
+      expires_at: DateTime.utc_now(),
+      last_used_at: DateTime.utc_now()
     }
   end
 
@@ -27,8 +27,8 @@ defmodule Angen.UserTokenLibTest do
       context: "context-updated",
       user_agent: "agent-updated",
       ip: "192.168.0.1",
-      expires_at: Timex.now(),
-      last_used_at: Timex.now()
+      expires_at: DateTime.utc_now(),
+      last_used_at: DateTime.utc_now()
     }
   end
 

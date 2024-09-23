@@ -8,7 +8,7 @@ defmodule Angen.ServerWeekLogLibTest do
 
   defp valid_attrs do
     %{
-      date: Timex.today(),
+      date: Angen.Helper.DateTimeHelper.today(),
       year: 1,
       week: 1,
       data: %{"key" => 1}
@@ -17,7 +17,7 @@ defmodule Angen.ServerWeekLogLibTest do
 
   defp update_attrs do
     %{
-      date: Timex.today() |> Timex.shift(weeks: 1),
+      date: Angen.Helper.DateTimeHelper.today() |> Date.shift(week: 1),
       year: 2,
       week: 2,
       data: %{"other-key" => 2}

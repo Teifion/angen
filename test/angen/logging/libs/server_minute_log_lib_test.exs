@@ -11,7 +11,7 @@ defmodule Angen.ServerMinuteLogLibTest do
 
   defp valid_attrs do
     %{
-      timestamp: Timex.now(),
+      timestamp: DateTime.utc_now(),
       node: @node,
       data: %{"key" => 1}
     }
@@ -19,7 +19,7 @@ defmodule Angen.ServerMinuteLogLibTest do
 
   defp update_attrs do
     %{
-      timestamp: Timex.now() |> Timex.shift(minutes: 1),
+      timestamp: DateTime.utc_now() |> DateTime.shift(minute: 1),
       node: @updated_node,
       data: %{"other-key" => 2}
     }

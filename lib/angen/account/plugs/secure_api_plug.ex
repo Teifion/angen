@@ -21,7 +21,7 @@ defmodule Angen.Account.SecureApiPlug do
         fail_auth(conn)
 
       %Angen.Account.UserToken{} = token ->
-        Angen.Account.update_user_token(token, %{last_used_at: Timex.now()})
+        Angen.Account.update_user_token(token, %{last_used_at: DateTime.utc_now()})
 
         conn
         |> assign(:user_id, token.user_id)

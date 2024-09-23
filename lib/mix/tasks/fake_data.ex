@@ -95,7 +95,7 @@ defmodule Mix.Tasks.Angen.Fakedata do
         context: "fake-data-create",
         user_agent: "fake-data",
         ip: "127.0.0.1",
-        expires_at: Timex.now() |> Timex.shift(hours: 1)
+        expires_at: DateTime.utc_now() |> DateTime.shift(hours: 1)
       })
   end
 

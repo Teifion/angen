@@ -1,14 +1,14 @@
-defmodule Angen.DevSupport.LobbyHostBotTest do
+defmodule Angen.DevSupport.LobbyHostIdleBotTest do
   @moduledoc false
   use Angen.ProtoCase, async: false
 
-  alias Angen.DevSupport.{LobbyHostBot, ManagerServer}
+  alias Angen.DevSupport.{LobbyHostIdleBot, ManagerServer}
 
   describe "echo bot" do
     test "back and forth" do
       close_all_lobbies()
 
-      {:ok, p} = ManagerServer.start_bot(LobbyHostBot, %{})
+      {:ok, p} = ManagerServer.start_bot(LobbyHostIdleBot, %{})
       send(p, :startup)
       :timer.sleep(1000)
 

@@ -98,7 +98,7 @@ defmodule Angen.Account.UserTokenLib do
     UserTokenQueries.user_token_query(
       where: [
         identifier_code: identifier_code,
-        expires_after: Timex.now()
+        expires_after: DateTime.utc_now()
       ]
     )
     |> Repo.one()
@@ -174,7 +174,7 @@ defmodule Angen.Account.UserTokenLib do
       context: context,
       user_agent: user_agent,
       ip: ip,
-      expires_at: Timex.now() |> Timex.shift(days: 31)
+      expires_at: DateTime.utc_now() |> DateTime.shift(day: 31)
     })
     |> Repo.insert()
   end

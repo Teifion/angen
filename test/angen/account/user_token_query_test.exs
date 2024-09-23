@@ -35,9 +35,9 @@ defmodule Angen.UserTokenQueryTest do
             context: "Some name",
             identifier_code: "Some code",
             renewal_code: "Some code",
-            expires_after: Timex.now(),
-            inserted_after: Timex.now(),
-            inserted_before: Timex.now()
+            expires_after: DateTime.utc_now(),
+            inserted_after: DateTime.utc_now(),
+            inserted_before: DateTime.utc_now()
           ],
           order_by: [
             "Newest first",

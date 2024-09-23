@@ -8,14 +8,14 @@ defmodule Angen.ServerDayLogLibTest do
 
   defp valid_attrs do
     %{
-      date: Timex.today(),
+      date: Angen.Helper.DateTimeHelper.today(),
       data: %{"key" => 1}
     }
   end
 
   defp update_attrs do
     %{
-      date: Timex.today() |> Timex.shift(days: 1),
+      date: Angen.Helper.DateTimeHelper.today() |> Date.shift(day: 1),
       data: %{"other-key" => 2}
     }
   end

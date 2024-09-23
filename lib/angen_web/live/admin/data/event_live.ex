@@ -4,13 +4,14 @@ defmodule AngenWeb.Admin.Data.EventLive do
   alias AngenWeb.Admin.Data.EventLiveStruct
   alias Angen.ExportLib
   require Logger
+  alias Angen.Helper.DateTimeHelper
 
   @impl true
   def mount(_params, _session, socket) when is_connected?(socket) do
     changeset =
       EventLiveStruct.changeset(%{
-        start_date: Timex.today() |> Timex.to_datetime(),
-        end_date: Timex.today() |> Timex.to_datetime() |> Timex.shift(days: 1)
+        start_date: DateTimeHelper.today() |> DateTimeHelper.to_datetime(),
+        end_date: DateTimeHelper.today() |> DateTimeHelper.to_datetime() |> DateTime.shift(day: 1)
       })
 
     socket

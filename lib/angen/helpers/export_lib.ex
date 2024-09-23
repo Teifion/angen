@@ -2,7 +2,7 @@ defmodule Angen.ExportLib do
   @moduledoc false
   # TODO: Some duplication, should probably be refactored
 
-  import Angen.Helper.TimexHelper, only: [date_to_str: 1]
+  import Angen.Helper.DateTimeHelper, only: [date_to_str: 1]
   import Ecto.Query, warn: false
 
   @spec new_export(atom, map()) :: Ecto.UUID.t()

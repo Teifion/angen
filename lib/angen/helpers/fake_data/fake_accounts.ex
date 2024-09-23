@@ -4,7 +4,7 @@ defmodule Angen.FakeData.FakeAccounts do
   alias Teiserver.Account
   alias Angen.Repo
   import Angen.Helpers.FakeDataHelper, only: [random_time_in_day: 1]
-  import Angen.Helper.TimexHelper, only: [date_to_str: 2]
+  alias Angen.Helper.DateTimeHelper
 
   @bar_format [
     left: [IO.ANSI.green(), String.pad_trailing("Accounts: ", 20), IO.ANSI.reset(), " |"]
@@ -29,7 +29,8 @@ defmodule Angen.FakeData.FakeAccounts do
             users_per_day()
           end
 
-        date = Timex.today() |> Timex.shift(days: -day)
+        date = DateTimeHelper.today()
+          |> DateTime.shift(day: -day)
 
         0..users_to_make
         |> Enum.map(fn _ ->
@@ -71,13 +72,13 @@ defmodule Angen.FakeData.FakeAccounts do
 
     rows
     |> Enum.each(fn [user_id, lobby_opened_at, match_ended_at] ->
-      logout = Timex.shift(match_ended_at, minutes: 3 + :rand.uniform(120))
+      logout = DateTime.shift(match_ended_at, minute: 3 + :rand.uniform(120))
 
       query = """
         UPDATE account_users
-        SET last_login_at = '#{date_to_str(lobby_opened_at, :ymd_hms)}',
-          last_played_at = '#{date_to_str(match_ended_at, :ymd_hms)}',
-          last_logout_at = '#{date_to_str(logout, :ymd_hms)}'
+        SET last_login_at = '#{DateTimeHelper.strftime(lobby_opened_at, :ymd_hms)}',
+          last_played_at = '#{DateTimeHelper.strftime(match_ended_at, :ymd_hms)}',
+          last_logout_at = '#{DateTimeHelper.strftime(logout, :ymd_hms)}'
         WHERE id = $1
       """
 

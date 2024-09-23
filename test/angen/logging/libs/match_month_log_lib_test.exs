@@ -8,7 +8,7 @@ defmodule Angen.GameMonthLogLibTest do
 
   defp valid_attrs do
     %{
-      date: Timex.today(),
+      date: Angen.Helper.DateTimeHelper.today(),
       year: 1,
       month: 1,
       data: %{"key" => 1}
@@ -17,7 +17,7 @@ defmodule Angen.GameMonthLogLibTest do
 
   defp update_attrs do
     %{
-      date: Timex.today() |> Timex.shift(months: 1),
+      date: Angen.Helper.DateTimeHelper.today() |> Date.shift(month: 1),
       year: 2,
       month: 2,
       data: %{"other-key" => 2}

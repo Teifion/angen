@@ -5,6 +5,7 @@ defmodule Angen.FakeData.FakeMatches do
   import Angen.Helpers.FakeDataHelper, only: [valid_user_ids: 1, random_time_in_day: 1]
   alias Teiserver.Game
   alias Teiserver.Game.MatchTypeLib
+  alias Angen.Helper.DateTimeHelper
 
   @bar_format [
     left: [IO.ANSI.green(), String.pad_trailing("Matches: ", 20), IO.ANSI.reset(), " |"]
@@ -19,7 +20,7 @@ defmodule Angen.FakeData.FakeMatches do
       0..config.days
       |> Enum.map(fn day ->
         ProgressBar.render(day, config.days, @bar_format)
-        date = Timex.today() |> Timex.shift(days: -day)
+        date = DateTimeHelper.today() |> Date.shift(day: -day)
 
         make_daily_matches(config, date)
       end)
@@ -87,9 +88,9 @@ defmodule Angen.FakeData.FakeMatches do
 
   defp make_match(date, _config, user_ids) do
     t1 = random_time_in_day(date)
-    t2 = Timex.shift(t1, seconds: :rand.uniform(600)) |> Timex.set(microsecond: 0)
-    t3 = Timex.shift(t2, seconds: :rand.uniform(3900)) |> Timex.set(microsecond: 0)
-    match_duration = Timex.diff(t3, t2, :second)
+    t2 = DateTime.shift(t1, second: :rand.uniform(600))
+    t3 = DateTime.shift(t2, second: :rand.uniform(3900))
+    match_duration = DateTime.diff(t3, t2, :second)
 
     team_count = Enum.random([1, 1, 2, 2, 2, 2, 3, 4])
     team_size = Enum.random([1, 1, 1, 1, 2, 3, 4, 5, 8])

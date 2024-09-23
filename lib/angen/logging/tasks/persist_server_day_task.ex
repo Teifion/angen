@@ -3,6 +3,7 @@ defmodule Angen.Logging.PersistServerDayTask do
   use Oban.Worker, queue: :logging
   alias Angen.{Repo, Logging, Telemetry}
   alias Angen.Logging.ServerDayLogLib
+  alias Angen.Helper.DateTimeHelper
 
   # Minutes
   @segment_length 60
@@ -111,18 +112,19 @@ defmodule Angen.Logging.PersistServerDayTask do
     date =
       if last_date == nil do
         Angen.Logging.get_first_server_minute_datetime()
-        |> Timex.to_date()
+        |> DateTime.to_date()
       else
         last_date
-        |> Timex.shift(days: 1)
+        |> Date.shift(day: 1)
       end
 
-    if Timex.compare(date, Timex.today()) == -1 do
+    if Date.compare(date, DateTimeHelper.today()) == :lt do
       do_perform(date, cleanup: true)
 
-      new_date = Timex.shift(date, days: 1)
+      new_date = date
+        |> Date.shift(day: 1)
 
-      if Timex.compare(new_date, Timex.today()) == -1 do
+      if Date.compare(new_date, DateTimeHelper.today()) == :lt do
         %{}
         |> Angen.Logging.PersistServerDayTask.new()
         |> Oban.insert()
@@ -134,8 +136,6 @@ defmodule Angen.Logging.PersistServerDayTask do
 
   @spec do_perform(Date.t(), boolean()) :: :ok
   def do_perform(date, cleanup) do
-    date = Timex.to_date(date)
-
     data =
       0..@segment_count
       |> Enum.reduce(@empty_log, fn segment_number, segment ->
@@ -167,7 +167,7 @@ defmodule Angen.Logging.PersistServerDayTask do
 
   # Angen.Logging.PersistServerDayTask.today_so_far()
   def today_so_far(node \\ "all") do
-    date = Timex.today()
+    date = DateTimeHelper.today()
 
     0..@segment_count
     |> Enum.reduce(@empty_log, fn segment_number, segment ->
@@ -185,10 +185,10 @@ defmodule Angen.Logging.PersistServerDayTask do
   @spec get_logs(Date.t(), non_neg_integer(), String.t()) :: list()
   defp get_logs(date, segment_number, node) do
     start_time =
-      Timex.shift(date |> Timex.to_datetime(), minutes: segment_number * @segment_length)
+      DateTime.shift(date |> DateTimeHelper.to_datetime(), minute: segment_number * @segment_length)
 
     end_time =
-      Timex.shift(date |> Timex.to_datetime(), minutes: (segment_number + 1) * @segment_length)
+      DateTime.shift(date |> DateTimeHelper.to_datetime(), minute: (segment_number + 1) * @segment_length)
 
     Logging.list_server_minute_logs(
       search: [
@@ -317,8 +317,8 @@ defmodule Angen.Logging.PersistServerDayTask do
   end
 
   def add_telemetry(data, date) do
-    datetime = Timex.to_datetime(date)
-    end_of_day = Timex.shift(datetime, days: 1)
+    datetime = DateTimeHelper.to_datetime(date)
+    end_of_day = DateTime.shift(datetime, day: 1)
 
     Map.put(data, :telemetry_events, %{
       simple_anon: Telemetry.simple_anon_events_summary(after: datetime, before: end_of_day),
@@ -338,7 +338,7 @@ defmodule Angen.Logging.PersistServerDayTask do
 
   # Given a day log, calculate the end of day stats
   defp calculate_day_statistics(data, date, _node) do
-    tomorrow = Timex.shift(date, days: 1)
+    tomorrow = Date.shift(date, day: 1)
 
     # Calculate peak users across the day
     peak_user_counts =
@@ -357,8 +357,8 @@ defmodule Angen.Logging.PersistServerDayTask do
   defp clean_up_logs(date) do
     # Clean up all minute logs older than X days
     before_timestamp =
-      Timex.shift(date, days: -@log_keep_days)
-      |> Timex.to_datetime()
+      Date.shift(date, day: -@log_keep_days)
+      |> DateTimeHelper.to_datetime()
 
     query = """
       DELETE FROM #{Angen.Logging.ServerMinuteLog.__schema__(:source)} WHERE timestamp < $1
@@ -382,8 +382,8 @@ defmodule Angen.Logging.PersistServerDayTask do
   end
 
   def get_unique_users(date) do
-    tomorrow = Timex.shift(date, days: 1) |> Timex.to_datetime()
-    date = date |> Timex.to_datetime()
+    tomorrow = DateTime.shift(date, day: 1) |> DateTimeHelper.to_datetime()
+    date = date |> DateTimeHelper.to_datetime()
     event_type_id = Telemetry.get_or_add_event_type_id("connected", "simple_clientapp")
 
     # We add 1000 because otherwise it comes back as a charlist and borks a bunch of stuff

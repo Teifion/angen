@@ -8,7 +8,7 @@ defmodule Angen.ServerYearLogLibTest do
 
   defp valid_attrs do
     %{
-      date: Timex.today(),
+      date: Angen.Helper.DateTimeHelper.today(),
       year: 1,
       data: %{"key" => 1}
     }
@@ -16,7 +16,7 @@ defmodule Angen.ServerYearLogLibTest do
 
   defp update_attrs do
     %{
-      date: Timex.today() |> Timex.shift(years: 1),
+      date: Angen.Helper.DateTimeHelper.today() |> Date.shift(year: 1),
       year: 2,
       data: %{"other-key" => 2}
     }

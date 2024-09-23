@@ -119,7 +119,7 @@ defmodule AngenWeb do
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 
-      import Angen.Helper.TimexHelper,
+      import Angen.Helper.DateTimeHelper,
         only: [represent_seconds: 1, represent_minutes: 1, date_to_str: 1, date_to_str: 2]
 
       # Routes generation with the ~p sigil

@@ -67,7 +67,6 @@ defmodule Angen.MixProject do
       {:horde, "~> 0.9"},
       {:telemetry, "~> 1.2.1"},
       {:ecto_psql_extras, "~> 0.7"},
-      {:timex, "~> 3.7.5"},
       {:oban, "~> 2.17"},
       {:phoenix_pubsub, "~> 2.0"},
       {:dart_sass, "~> 0.6"},
@@ -90,7 +89,7 @@ defmodule Angen.MixProject do
       # {:teiserver, "~> 0.0.5"}
       {:teiserver,
        git: "https://github.com/teifion/teiserver.git",
-       ref: "a5c4f7b59c273a55cd20c253d499ff85f72f2b84"}
+       ref: "db1c3fca00c2ac7f9abd316dc5ed758af9a51a4a"}
       # {:teiserver, path: "../teiserver"}
     ]
   end

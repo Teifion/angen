@@ -2,7 +2,7 @@ defmodule Angen.Telemetry.TelemetryExportLib do
   @moduledoc false
 
   alias Angen.Telemetry
-  import Angen.Helper.TimexHelper, only: [date_to_str: 1]
+  import Angen.Helper.DateTimeHelper, only: [date_to_str: 1]
   import Ecto.Query, warn: false
 
   @spec new_export(map()) :: Ecto.UUID.t()

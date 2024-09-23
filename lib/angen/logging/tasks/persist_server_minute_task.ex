@@ -9,7 +9,7 @@ defmodule Angen.Logging.PersistServerMinuteTask do
   @impl Oban.Worker
   @spec perform(any()) :: :ok
   def perform(args) do
-    now = args[:now] || Timex.now() |> Timex.set(microsecond: 0, second: 0)
+    now = args[:now] || DateTime.utc_now() |> DateTime.truncate(:second)
 
     case Logging.get_server_minute_log(now, Teiserver.get_node_name()) do
       nil ->

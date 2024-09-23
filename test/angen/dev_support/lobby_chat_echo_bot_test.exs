@@ -9,7 +9,7 @@ defmodule Angen.DevSupport.LobbyChatEchoBotTest do
     test "back and forth" do
       close_all_lobbies()
 
-      host_user = BotLib.get_or_create_bot_account("LobbyHostBot")
+      host_user = BotLib.get_or_create_bot_account("LobbyHostIdleBot")
       %{socket: hsocket, lobby_id: lobby_id} = lobby_host_connection(user: host_user)
 
       # Create it, give it time to join the lobby
@@ -39,7 +39,7 @@ defmodule Angen.DevSupport.LobbyChatEchoBotTest do
       reply_msg = listen(hsocket)
 
       assert reply_msg["name"] == "lobby/message_received"
-      assert reply_msg["message"]["message"]["content"] == "LobbyHostBot: egassem tseT"
+      assert reply_msg["message"]["message"]["content"] == "LobbyHostIdleBot: egassem tseT"
       assert reply_msg["message"]["message"]["sender_id"] == bot_user.id
 
       assert reply_msg["message"]["message"]["match_id"] ==

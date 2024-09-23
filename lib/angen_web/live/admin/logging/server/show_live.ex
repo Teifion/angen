@@ -1,7 +1,7 @@
 defmodule AngenWeb.Admin.Logging.Server.ShowLive do
   @moduledoc false
   use AngenWeb, :live_view
-  alias Angen.Helper.TimexHelper
+  alias Angen.Helper.DateTimeHelper
   alias Angen.Logging
 
   @impl true
@@ -9,10 +9,10 @@ defmodule AngenWeb.Admin.Logging.Server.ShowLive do
     date =
       case params["date"] do
         "today" ->
-          Timex.today()
+          DateTimeHelper.today()
 
         date_str ->
-          TimexHelper.parse_ymd(date_str)
+          Date.from_iso8601!(date_str)
       end
 
     socket =

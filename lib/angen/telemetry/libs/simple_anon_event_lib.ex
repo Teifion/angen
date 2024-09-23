@@ -16,7 +16,7 @@ defmodule Angen.Telemetry.SimpleAnonEventLib do
     attrs = %{
       event_type_id: type_id,
       hash_id: hash_id,
-      inserted_at: Timex.now()
+      inserted_at: DateTime.utc_now()
     }
 
     case create_simple_anon_event(attrs) do

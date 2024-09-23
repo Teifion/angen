@@ -3,6 +3,7 @@ defmodule Angen.Logging.PersistGameYearTask do
   use Oban.Worker, queue: :logging
   alias Angen.Logging
   import Angen.Logging.PersistGameDayTask, only: [generate_game_summary_data: 2]
+  alias Angen.Helper.DateTimeHelper
 
   @impl Oban.Worker
   @spec perform(any) :: :ok
@@ -40,11 +41,11 @@ defmodule Angen.Logging.PersistGameYearTask do
 
     case first_logs do
       [log] ->
-        today = Timex.today()
+        today = DateTimeHelper.today()
 
         if log.date.year < today.year do
-          start_date = Timex.beginning_of_year(log.date)
-          end_date = Timex.end_of_year(log.date)
+          start_date = DateTimeHelper.beginning_of_year(log.date)
+          end_date = Date.shift(start_date, year: 1)
 
           generate_log(start_date, end_date)
         end
@@ -56,13 +57,13 @@ defmodule Angen.Logging.PersistGameYearTask do
 
   # For when we have an existing log
   defp perform_standard(log_date) do
-    new_date = Timex.shift(log_date, years: 1)
+    new_date = DateTime.shift(log_date, year: 1)
 
-    today_year = Timex.today().year
+    today_year = DateTimeHelper.today().year
 
     if new_date.year < today_year do
-      start_date = Timex.beginning_of_year(new_date)
-      end_date = Timex.end_of_year(new_date) |> Timex.shift(days: 1)
+      start_date = DateTimeHelper.beginning_of_year(new_date)
+      end_date = DateTime.shift(start_date, year: 1)
 
       generate_log(start_date, end_date)
     else
@@ -76,15 +77,15 @@ defmodule Angen.Logging.PersistGameYearTask do
     {:ok, _} =
       Logging.create_game_year_log(%{
         year: start_date.year,
-        date: Timex.beginning_of_year(start_date),
+        date: DateTimeHelper.beginning_of_year(start_date),
         data: data
       })
   end
 
   @spec year_so_far() :: map()
   def year_so_far() do
-    start_date = Timex.beginning_of_year(Timex.now())
-    end_date = Timex.shift(start_date, days: 7)
+    start_date = DateTimeHelper.beginning_of_year(DateTime.utc_now())
+    end_date = DateTime.shift(start_date, day: 7)
 
     generate_game_summary_data(start_date, end_date)
     |> Jason.encode!()

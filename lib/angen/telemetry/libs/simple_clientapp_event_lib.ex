@@ -16,7 +16,7 @@ defmodule Angen.Telemetry.SimpleClientappEventLib do
     attrs = %{
       event_type_id: type_id,
       user_id: user_id,
-      inserted_at: Timex.now()
+      inserted_at: DateTime.utc_now()
     }
 
     case create_simple_clientapp_event(attrs) do

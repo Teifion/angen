@@ -3,6 +3,7 @@ defmodule Angen.Logging.PersistGameDayTask do
   use Oban.Worker, queue: :logging
   alias Angen.{Repo, Logging}
   alias Teiserver.Game
+  alias Angen.Helper.DateTimeHelper
 
   @match_table Teiserver.Game.Match.__schema__(:source)
   @match_setting_table Teiserver.Game.MatchSetting.__schema__(:source)
@@ -15,17 +16,18 @@ defmodule Angen.Logging.PersistGameDayTask do
     date =
       if last_date == nil do
         get_timestamp_of_first_game()
+        |> DateTime.to_date()
       else
         last_date
-        |> Timex.shift(days: 1)
+        |> Date.shift(day: 1)
       end
 
-    if Timex.compare(date, Timex.today()) == -1 do
+    if DateTime.compare(date, DateTimeHelper.today()) == :gt do
       do_perform(date)
 
-      new_date = Timex.shift(date, days: 1)
+      new_date = DateTime.shift(date, day: 1)
 
-      if Timex.compare(new_date, Timex.today()) == -1 do
+      if DateTime.compare(new_date, DateTimeHelper.today()) == :gt do
         %{}
         |> Angen.Logging.PersistGameDayTask.new()
         |> Oban.insert()
@@ -49,17 +51,17 @@ defmodule Angen.Logging.PersistGameDayTask do
     case result do
       nil ->
         # We return a date in the future so it doesn't run
-        Timex.today() |> Timex.shift(days: 2)
+        DateTimeHelper.today() |> Date.shift(day: 2)
 
       %{match_started_at: timestamp} ->
-        timestamp |> Timex.to_date()
+        timestamp
     end
   end
 
   @spec do_perform(Date.t()) :: :ok
   def do_perform(date) do
-    start_date = Timex.to_date(date)
-    end_date = Timex.shift(start_date, days: 1)
+    start_date = date
+    end_date = DateTime.shift(start_date, day: 1)
 
     data = generate_game_summary_data(start_date, end_date)
 
@@ -80,8 +82,8 @@ defmodule Angen.Logging.PersistGameDayTask do
 
   @spec today_so_far() :: map()
   def today_so_far() do
-    start_date = Timex.today()
-    end_date = Timex.shift(start_date, days: 1)
+    start_date = DateTimeHelper.today()
+    end_date = DateTime.shift(start_date, day: 1)
 
     generate_game_summary_data(start_date, end_date)
     |> Jason.encode!()
@@ -92,8 +94,8 @@ defmodule Angen.Logging.PersistGameDayTask do
 
   @spec generate_game_summary_data(Date.t(), Date.t()) :: map
   def generate_game_summary_data(start_date, end_date) do
-    start_date = Timex.to_datetime(start_date)
-    end_date = Timex.to_datetime(end_date)
+    start_date = DateTimeHelper.to_datetime(start_date)
+    end_date = DateTimeHelper.to_datetime(end_date)
 
     %{
       totals: %{

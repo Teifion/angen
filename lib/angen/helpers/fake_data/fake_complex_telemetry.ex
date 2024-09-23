@@ -2,6 +2,7 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
   @moduledoc false
 
   alias Angen.Telemetry
+  alias Angen.Helper.DateTimeHelper
 
   import Angen.Helpers.FakeDataHelper,
     only: [valid_user_ids: 1, random_time_in_day: 1, matches_this_day: 1]
@@ -14,7 +15,7 @@ defmodule Angen.FakeData.FakeComplexTelemetry do
     0..min(config.days, 90)
     |> Enum.each(fn day ->
       ProgressBar.render(day, config.days, @bar_format)
-      date = Timex.today() |> Timex.shift(days: -day)
+      date = DateTimeHelper.today() |> Date.shift(day: -day)
 
       make_complex_anon(config, date)
       make_complex_client(config, date)
