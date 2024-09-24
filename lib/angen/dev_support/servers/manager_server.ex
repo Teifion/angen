@@ -18,7 +18,7 @@ defmodule Angen.DevSupport.ManagerServer do
 
     # e2e test bots for games
     {DevSupport.LobbyHostPlayBot, %{}},
-    # {DevSupport.LobbyPlayerBot, %{idx: 1}},
+    {DevSupport.LobbyPlayerBot, %{idx: 1}}
     # {DevSupport.LobbyPlayerBot, %{idx: 2}},
     # {DevSupport.LobbyPlayerBot, %{idx: 3}},
     # {DevSupport.LobbyPlayerBot, %{idx: 4}},

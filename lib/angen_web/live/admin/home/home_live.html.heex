@@ -21,11 +21,20 @@
 
   <.menu_card
     :if={allow?(@current_user, ~w(admin))}
+    icon="swords"
+    icon_class="fa-duotone"
+    url={~p"/admin/lobby"}
+  >
+    Lobbies
+  </.menu_card>
+
+  <.menu_card
+    :if={allow?(@current_user, ~w(admin))}
     icon="play"
     icon_class="fa-duotone"
     url={~p"/admin/game"}
   >
-    Games
+    Matches
   </.menu_card>
 
   <.menu_card

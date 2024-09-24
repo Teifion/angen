@@ -8,11 +8,12 @@ defmodule Angen.DevSupport.LobbyHostIdleBot do
   @interval 5_000
 
   def handle_info(:startup, state) do
-    name = if state.params[:behaviour] do
-      "LobbyHostIdleBot#{state.params[:behaviour]}"
-    else
-      "LobbyHostIdleBot"
-    end
+    name =
+      if state.params[:behaviour] do
+        "LobbyHostIdleBot#{state.params[:behaviour]}"
+      else
+        "LobbyHostIdleBot"
+      end
 
     user = BotLib.get_or_create_bot_account(name)
     client = Teiserver.connect_user(user.id)
@@ -29,11 +30,14 @@ defmodule Angen.DevSupport.LobbyHostIdleBot do
 
   def handle_info(:tick, %{lobby_id: nil} = state) do
     lobby_id =
-      case Teiserver.open_lobby(state.user.id, "Integration test lobby (idle)") do
+      case Teiserver.open_lobby(
+             state.user.id,
+             "Integration test lobby (#{state.params[:behaviour]})"
+           ) do
         {:ok, lobby_id} ->
           lobby_id
 
-        {:error, "Already in a lobby"} ->
+        {:error, :already_in_lobby} ->
           client = Teiserver.get_client(state.user.id)
           client.lobby_id
 

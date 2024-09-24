@@ -136,7 +136,9 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       %{socket: socket, user_id: user_id} = auth_connection()
       %{lobby_id: lobby_id} = lobby_host_connection()
       Teiserver.add_client_to_lobby(user_id, lobby_id)
-      Teiserver.start_match(lobby_id)
+      Teiserver.update_client_in_lobby(user_id, %{player?: true}, "self_update")
+      :timer.sleep(100)
+      {:ok, _} = Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       assert Enum.empty?(Telemetry.list_simple_match_events(where: [user_id: user_id]))
@@ -157,7 +159,9 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       %{socket: socket, user_id: user_id} = auth_connection()
       %{lobby_id: lobby_id} = lobby_host_connection()
       Teiserver.add_client_to_lobby(user_id, lobby_id)
-      Teiserver.start_match(lobby_id)
+      Teiserver.update_client_in_lobby(user_id, %{player?: true}, "self_update")
+      :timer.sleep(100)
+      {:ok, _} = Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       assert Enum.empty?(Telemetry.list_complex_match_events(where: [user_id: user_id]))
@@ -224,7 +228,9 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       %{socket: socket, user_id: user_id} = auth_connection()
       %{lobby_id: lobby_id} = lobby_host_connection()
       Teiserver.add_client_to_lobby(user_id, lobby_id)
-      Teiserver.start_match(lobby_id)
+      Teiserver.update_client_in_lobby(user_id, %{player?: true}, "self_update")
+      :timer.sleep(100)
+      {:ok, _} = Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       speak(socket, %{
@@ -241,7 +247,9 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       %{user_id: user_id} = auth_connection()
       %{socket: socket, lobby_id: lobby_id} = lobby_host_connection()
       Teiserver.add_client_to_lobby(user_id, lobby_id)
-      Teiserver.start_match(lobby_id)
+      Teiserver.update_client_in_lobby(user_id, %{player?: true}, "self_update")
+      :timer.sleep(100)
+      {:ok, _} = Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       assert Enum.empty?(Telemetry.list_simple_match_events(where: [user_id: user_id]))
@@ -262,7 +270,9 @@ defmodule Angen.TextProtocol.Events.EventSubmitTest do
       %{user_id: user_id} = auth_connection()
       %{socket: socket, lobby_id: lobby_id} = lobby_host_connection()
       Teiserver.add_client_to_lobby(user_id, lobby_id)
-      Teiserver.start_match(lobby_id)
+      Teiserver.update_client_in_lobby(user_id, %{player?: true}, "self_update")
+      :timer.sleep(100)
+      {:ok, _} = Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       assert Enum.empty?(Telemetry.list_complex_match_events(where: [user_id: user_id]))

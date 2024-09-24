@@ -32,6 +32,7 @@ defmodule Angen.Account.AuthLibTest do
       assert_raise(RuntimeError, fn ->
         AuthLib.allow?(@perm_list, [:perm2])
       end)
+
       assert_raise(RuntimeError, fn ->
         AuthLib.allow?(@perm_list, :perm2)
       end)

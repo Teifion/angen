@@ -15,18 +15,27 @@ defmodule Angen.TextProtocol.Lobby.JoinCommand do
   end
 
   def handle(%{"id" => lobby_id} = msg, state) do
-    case Teiserver.can_add_client_to_lobby(state.user_id, lobby_id, msg["password"]) do
-      {true, _} ->
-        case Teiserver.add_client_to_lobby(state.user_id, lobby_id) do
-          {:ok, shared_secret, lobby} ->
-            JoinedResponse.generate({shared_secret, lobby}, state)
+    with true <- Teiserver.can_add_client_to_lobby(state.user_id, lobby_id, msg["password"]),
+         {:ok, shared_secret, lobby} <- Teiserver.add_client_to_lobby(state.user_id, lobby_id) do
+      JoinedResponse.generate({shared_secret, lobby}, state)
+    else
+      {false, :no_lobby} ->
+        FailureResponse.generate({name(), "No lobby"}, state)
 
-          {:error, reason} ->
-            FailureResponse.generate({name(), reason}, state)
-        end
+      {false, :existing_member} ->
+        FailureResponse.generate({name(), "Already an existing member"}, state)
 
-      {false, reason} ->
-        FailureResponse.generate({name(), reason}, state)
+      {false, :client_disconnected} ->
+        FailureResponse.generate({name(), "Client is disconnected"}, state)
+
+      {false, :already_in_a_lobby} ->
+        FailureResponse.generate({name(), "Already in a lobby"}, state)
+
+      {false, :incorrect_password} ->
+        FailureResponse.generate({name(), "Incorrect password"}, state)
+
+      {false, :lobby_is_locked} ->
+        FailureResponse.generate({name(), "Lobby is locked"}, state)
     end
   end
 end

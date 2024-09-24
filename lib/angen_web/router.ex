@@ -74,6 +74,19 @@ defmodule AngenWeb.Router do
     end
   end
 
+  scope "/admin/lobby", AngenWeb.Admin.Lobby do
+    pipe_through [:browser]
+
+    live_session :admin_lobby,
+      on_mount: [
+        {AngenWeb.UserAuth, :ensure_authenticated},
+        {AngenWeb.UserAuth, {:authorise, ~w(admin)}}
+      ] do
+      live "/", IndexLive
+      live "/:lobby_id", ShowLive
+    end
+  end
+
   scope "/admin/logging", AngenWeb.Admin.Logging do
     pipe_through [:browser]
 
@@ -94,7 +107,7 @@ defmodule AngenWeb.Router do
       live "/server/show/:unit/:date", Server.ShowLive, :index
       live "/server/show/:unit/:date/:mode", Server.ShowLive, :index
 
-      # Generic log views
+      # Matches
       live "/game", Game.IndexLive
       live "/game/:unit", Game.IndexLive
       live "/game/show/:unit/:date", Game.ShowLive, :index

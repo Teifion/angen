@@ -30,13 +30,11 @@ defmodule Angen.Fixtures.AccountFixtures do
       %UserToken{},
       %{
         user_id: data[:user_id] || user_fixture().id,
-
         identifier_code: data[:identifier_code] || "id-code-#{Teiserver.uuid()}",
         renewal_code: data[:renewal_code] || "ren-code-#{Teiserver.uuid()}",
         context: data[:context] || "context",
         user_agent: data[:user_agent] || "agent",
         ip: data[:ip] || "127.0.0.1",
-
         expires_at: data[:expires_at] || DateTime.utc_now() |> DateTime.shift(day: 1),
         last_used_at: data[:last_used_at] || nil
       }

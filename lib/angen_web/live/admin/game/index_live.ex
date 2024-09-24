@@ -44,7 +44,10 @@ defmodule AngenWeb.Admin.Game.IndexLive do
 
     matches =
       Game.list_matches(
-        where: [name_like: assigns.search_term],
+        where: [
+          started?: true,
+          name_like: assigns.search_term
+        ],
         preload: [:type],
         order_by: order_by,
         limit: 50

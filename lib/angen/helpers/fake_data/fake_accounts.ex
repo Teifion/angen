@@ -29,7 +29,8 @@ defmodule Angen.FakeData.FakeAccounts do
             users_per_day()
           end
 
-        date = DateTimeHelper.today()
+        date =
+          DateTimeHelper.today()
           |> DateTime.shift(day: -day)
 
         0..users_to_make

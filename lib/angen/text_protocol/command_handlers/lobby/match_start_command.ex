@@ -42,8 +42,11 @@ defmodule Angen.TextProtocol.Lobby.MatchStartCommand do
           {:ok, _match} ->
             SuccessResponse.generate(name(), state)
 
-          {:error, error_atom} ->
-            FailureResponse.generate({name(), to_string(error_atom)}, state)
+          {:error, :no_players} ->
+            FailureResponse.generate({name(), "No players"}, state)
+
+          {:error, :match_already_started} ->
+            FailureResponse.generate({name(), "Match has already started"}, state)
         end
     end
   end

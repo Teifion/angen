@@ -39,7 +39,6 @@ defmodule Angen.Logging.PersistServerQuarterTask do
         limit: 1
       )
 
-
     case first_logs do
       [log] ->
         today_quarter = DateTimeHelper.today() |> Date.quarter_of_year()

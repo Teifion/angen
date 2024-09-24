@@ -121,7 +121,8 @@ defmodule Angen.Logging.PersistServerDayTask do
     if Date.compare(date, DateTimeHelper.today()) == :lt do
       do_perform(date, cleanup: true)
 
-      new_date = date
+      new_date =
+        date
         |> Date.shift(day: 1)
 
       if Date.compare(new_date, DateTimeHelper.today()) == :lt do
@@ -185,10 +186,14 @@ defmodule Angen.Logging.PersistServerDayTask do
   @spec get_logs(Date.t(), non_neg_integer(), String.t()) :: list()
   defp get_logs(date, segment_number, node) do
     start_time =
-      DateTime.shift(date |> DateTimeHelper.to_datetime(), minute: segment_number * @segment_length)
+      DateTime.shift(date |> DateTimeHelper.to_datetime(),
+        minute: segment_number * @segment_length
+      )
 
     end_time =
-      DateTime.shift(date |> DateTimeHelper.to_datetime(), minute: (segment_number + 1) * @segment_length)
+      DateTime.shift(date |> DateTimeHelper.to_datetime(),
+        minute: (segment_number + 1) * @segment_length
+      )
 
     Logging.list_server_minute_logs(
       search: [

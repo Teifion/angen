@@ -8,11 +8,12 @@ defmodule Angen.DevSupport.LobbyHostPlayBot do
   @interval 5_000
 
   def handle_info(:startup, state) do
-    name = if state.params[:behaviour] do
-      "LobbyHostPlayBot#{state.params[:behaviour]}"
-    else
-      "LobbyHostPlayBot"
-    end
+    name =
+      if state.params[:behaviour] do
+        "LobbyHostPlayBot#{state.params[:behaviour]}"
+      else
+        "LobbyHostPlayBot"
+      end
 
     user = BotLib.get_or_create_bot_account(name)
     client = Teiserver.connect_user(user.id)
@@ -31,9 +32,10 @@ defmodule Angen.DevSupport.LobbyHostPlayBot do
     lobby_id =
       case Teiserver.open_lobby(state.user.id, "Integration test lobby (play)") do
         {:ok, lobby_id} ->
+          Logger.error("Play lobby opened - #{lobby_id}")
           lobby_id
 
-        {:error, "Already in a lobby"} ->
+        {:error, :already_in_lobby} ->
           client = Teiserver.get_client(state.user.id)
           client.lobby_id
 
@@ -48,19 +50,20 @@ defmodule Angen.DevSupport.LobbyHostPlayBot do
     client = Teiserver.get_client(state.user.id)
     lobby = Teiserver.get_lobby(state.lobby_id)
 
-    state = cond do
-      client.in_game? == false and Enum.count(lobby.players) > 1 ->
-        # We have the players, lets go
-        start_game(state)
+    state =
+      cond do
+        client.in_game? == false and Enum.count(lobby.players) > 1 ->
+          # We have the players, lets go
+          start_game(state)
 
-      client.in_game? ->
-        # We are in game
-        state
+        client.in_game? ->
+          # We are in game
+          state
 
-      true ->
-        # Waiting for more players
-        state
-    end
+        true ->
+          # Waiting for more players
+          state
+      end
 
     {:noreply, state}
   end
@@ -84,7 +87,7 @@ defmodule Angen.DevSupport.LobbyHostPlayBot do
     state
   end
 
-  defp end_game(state) do
-    state
-  end
+  # defp end_game(state) do
+  #   state
+  # end
 end

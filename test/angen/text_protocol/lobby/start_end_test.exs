@@ -37,9 +37,9 @@ defmodule Angen.TextProtocol.Lobby.StartEndTest do
       %{socket: socket, user: _host_user, lobby_id: lobby_id} = lobby_host_connection()
 
       Teiserver.add_client_to_lobby(p1_user.id, lobby_id)
-      Teiserver.update_client_in_lobby(p1_user.id, %{player: true}, "self_update")
-
-      Teiserver.start_match(lobby_id)
+      :ok = Teiserver.update_client_in_lobby(p1_user.id, %{player?: true}, "self_update")
+      :timer.sleep(100)
+      {:ok, _match} = Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       speak(socket, %{name: "lobby/match_start", command: %{}})
@@ -59,7 +59,7 @@ defmodule Angen.TextProtocol.Lobby.StartEndTest do
 
       speak(socket, %{name: "lobby/match_start", command: %{}})
       msg = listen(socket)
-      assert_failure(msg, "lobby/match_start", "no_players")
+      assert_failure(msg, "lobby/match_start", "No players")
 
       lobby = Teiserver.get_lobby(lobby_id)
       refute lobby.match_ongoing?
@@ -73,7 +73,7 @@ defmodule Angen.TextProtocol.Lobby.StartEndTest do
       refute lobby.match_ongoing?
 
       Teiserver.add_client_to_lobby(p1_user.id, lobby_id)
-      Teiserver.update_client_in_lobby(p1_user.id, %{player: true}, "self_update")
+      Teiserver.update_client_in_lobby(p1_user.id, %{player?: true}, "self_update")
       flush_socket(socket)
 
       speak(socket, %{name: "lobby/match_start", command: %{}})
@@ -90,11 +90,13 @@ defmodule Angen.TextProtocol.Lobby.StartEndTest do
       %{
         "winning_team" => 1,
         "ended_normally?" => true,
-        "players" => Map.new(user_ids, fn user_id ->
-          {user_id, %{
-            "left_after_seconds" => 100
-          }}
-        end)
+        "players" =>
+          Map.new(user_ids, fn user_id ->
+            {user_id,
+             %{
+               "left_after_seconds" => 100
+             }}
+          end)
       }
     end
 
@@ -132,7 +134,7 @@ defmodule Angen.TextProtocol.Lobby.StartEndTest do
       %{socket: socket, user: _host_user, lobby_id: lobby_id} = lobby_host_connection()
 
       Teiserver.add_client_to_lobby(p1_user.id, lobby_id)
-      Teiserver.update_client_in_lobby(p1_user.id, %{player: true}, "self_update")
+      Teiserver.update_client_in_lobby(p1_user.id, %{player?: true}, "self_update")
       flush_socket(socket)
 
       speak(socket, %{name: "lobby/match_end", command: end_match_properties([])})
@@ -145,8 +147,9 @@ defmodule Angen.TextProtocol.Lobby.StartEndTest do
       %{socket: socket, user: _host_user, lobby_id: lobby_id} = lobby_host_connection()
 
       Teiserver.add_client_to_lobby(p1_user.id, lobby_id)
-      Teiserver.update_client_in_lobby(p1_user.id, %{player: true}, "self_update")
-      Teiserver.start_match(lobby_id)
+      Teiserver.update_client_in_lobby(p1_user.id, %{player?: true}, "self_update")
+      :timer.sleep(100)
+      {:ok, _match} = Teiserver.start_match(lobby_id)
       flush_socket(socket)
 
       lobby = Teiserver.get_lobby(lobby_id)

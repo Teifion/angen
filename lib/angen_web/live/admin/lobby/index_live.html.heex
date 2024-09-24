@@ -1,0 +1,31 @@
+<div id="index-live-wrapper">
+  <AngenWeb.Account.GameComponents.filter_bar selected="list">
+    <div class="col">
+      <input
+        type="text"
+        name="search-term"
+        id="search-term-input"
+        value=""
+        placeholder="Search"
+        class="form-control"
+        phx-keyup="update-search"
+        phx-debounce="500"
+      />
+    </div>
+  </AngenWeb.Account.GameComponents.filter_bar>
+
+  <.table id="lobbies" rows={@lobbies} table_class="table-sm table-hover">
+    <:col :let={lobby} label="Name"><%= lobby.name %></:col>
+    <:col :let={lobby} label="Players"><%= lobby.player_count %></:col>
+    <:col :let={lobby} label="Spectators"><%= lobby.spectator_count %></:col>
+    <:col :let={lobby} label="Rated?"><%= if lobby.rated?, do: "Rated" %></:col>
+    <:col :let={lobby} label="Locked?"><%= if lobby.locked?, do: "Locked" %></:col>
+    <:col :let={lobby} label="Passworded?"><%= if lobby.passworded?, do: "Passworded" %></:col>
+
+    <:action :let={lobby}>
+      <.link navigate={~p"/admin/lobby/#{lobby}"} class="btn btn-secondary btn-sm">
+        Show
+      </.link>
+    </:action>
+  </.table>
+</div>

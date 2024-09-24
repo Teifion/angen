@@ -82,10 +82,13 @@ defmodule Angen.Helpers.FakeDataHelper do
   end
 
   def random_time_in_day(day) do
-    DateTime.new!(day, Time.new!(
-      :rand.uniform(24) - 1,
-      :rand.uniform(60) - 1,
-      :rand.uniform(60) - 1
-    ))
+    DateTime.new!(
+      day,
+      Time.new!(
+        :rand.uniform(24) - 1,
+        :rand.uniform(60) - 1,
+        :rand.uniform(60) - 1
+      )
+    )
   end
 end

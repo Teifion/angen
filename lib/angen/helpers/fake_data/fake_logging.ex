@@ -215,7 +215,12 @@ defmodule Angen.FakeData.FakeLogging do
 
   defp make_day_data(config, last_day) do
     accounts_created =
-      Enum.count(valid_user_ids(config.date |> DateTimeHelper.to_datetime(), config.date |> Date.shift(day: 1) |> DateTimeHelper.to_datetime()))
+      Enum.count(
+        valid_user_ids(
+          config.date |> DateTimeHelper.to_datetime(),
+          config.date |> Date.shift(day: 1) |> DateTimeHelper.to_datetime()
+        )
+      )
 
     minutes =
       %{

@@ -1,0 +1,76 @@
+<AngenWeb.Account.GameComponents.filter_bar selected="show" />
+
+<div class="row mt-4">
+  <div :if={@lobby} class="col">
+    <.card>
+      <h4 class="d-inline-block">
+        <%= @lobby.name %>
+      </h4>
+
+      <table class="table table-sm">
+        <tbody>
+          <tr>
+            <td>Host</td>
+            <td>
+              <%= @user_cache[@host.id].name %>
+
+              <a
+                href={~p"/admin/accounts/user/#{@lobby.host_id}"}
+                class="float-end btn btn-sm btn-info"
+              >
+                <Fontawesome.icon icon="eye" style="solid" />
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>Tags</td>
+            <td>
+              <AngenWeb.BootstrapComponents.pill
+                :for={tag <- @lobby.tags}
+                class="text-bg-primary me-1"
+              >
+                <%= tag %>
+              </AngenWeb.BootstrapComponents.pill>
+            </td>
+          </tr>
+          <tr>
+            <td>Public?</td>
+            <td><%= if @lobby.public?, do: "Public", else: "Private" %></td>
+          </tr>
+          <tr>
+            <td>Rated?</td>
+            <td><%= if @lobby.rated?, do: "Rated", else: "Unrated" %></td>
+          </tr>
+        </tbody>
+      </table>
+    </.card>
+
+    <.card class="mt-4">
+      <h4>Members</h4>
+      <.table id="users" rows={@members} table_class="table-sm table-hover">
+        <:col :let={member} label="Name"><%= @user_cache[member.id].name %></:col>
+        <:col :let={member} label="Player?">
+          <%= String.capitalize(to_string(member.player?)) %>
+        </:col>
+        <:col :let={member} label="Team"><%= member.team_number %></:col>
+        <:col :let={member} label="Party"><%= member.party_id %></:col>
+
+        <:action :let={member}>
+          <.link navigate={~p"/admin/accounts/user/#{member.id}"} class="btn btn-secondary btn-sm">
+            Show
+          </.link>
+        </:action>
+
+        <:action :let={member}>
+          <span
+            class="btn btn-secondary btn-sm"
+            phx-value-user_id={member.id}
+            phx-click="kick-user"
+          >
+            <Fontawesome.icon icon="boot" style="solid" /> Kick
+          </span>
+        </:action>
+      </.table>
+    </.card>
+  </div>
+</div>

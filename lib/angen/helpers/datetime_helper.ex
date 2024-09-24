@@ -30,8 +30,6 @@ defmodule Angen.Helper.DateTimeHelper do
   def date_to_str(the_time), do: strftime(the_time, :hms_or_ymd)
   def date_to_str(the_time, :hms_or_ymd), do: strftime(the_time, :hms_or_ymd)
 
-
-
   def represent_minutes(nil), do: nil
 
   def represent_minutes(s) do
@@ -54,12 +52,13 @@ defmodule Angen.Helper.DateTimeHelper do
 
   def time_until(time1, time2) do
     days = DateTime.diff(time1, time2, :day)
-    hours = DateTime.diff(time1, time2, :hour) - (days * 24)
-    minutes = DateTime.diff(time1, time2, :minute) - (days * 1440)
+    hours = DateTime.diff(time1, time2, :hour) - days * 24
+    minutes = DateTime.diff(time1, time2, :minute) - days * 1440
 
     cond do
       # 2 or more days
-      days >= 2 -> "#{days} days"
+      days >= 2 ->
+        "#{days} days"
 
       # At least 24 hours
       days == 1 ->
@@ -75,10 +74,11 @@ defmodule Angen.Helper.DateTimeHelper do
 
       # Minutes
       minutes > 3 ->
-        "#{(hours * 60) + minutes} minutes"
+        "#{hours * 60 + minutes} minutes"
 
       true ->
         seconds = DateTime.diff(time1, time2, :second)
+
         if seconds == 1 do
           "1 seconds"
         else
@@ -97,7 +97,7 @@ defmodule Angen.Helper.DateTimeHelper do
   @spec beginning_of_quarter(Date.t()) :: Date.t()
   def beginning_of_quarter(date) do
     quarter = Date.quarter_of_year(date)
-    Date.new!(date.year, ((quarter - 1) * 3) + 1, 1)
+    Date.new!(date.year, (quarter - 1) * 3 + 1, 1)
   end
 
   @spec beginning_of_year(Date.t()) :: Date.t()
@@ -107,6 +107,6 @@ defmodule Angen.Helper.DateTimeHelper do
 
   @spec iso_week(Date.t()) :: any
   def iso_week(date) do
-     :calendar.iso_week_number({date.year, date.month, date.day})
+    :calendar.iso_week_number({date.year, date.month, date.day})
   end
 end

@@ -23,8 +23,8 @@ defmodule Angen.TextProtocol.Lobby.OpenCommand do
           {:ok, lobby_id} ->
             TextProtocol.Lobby.OpenedResponse.generate(lobby_id, state)
 
-          {:error, reason} ->
-            FailureResponse.generate({name(), reason}, state)
+          {:error, :no_name} ->
+            FailureResponse.generate({name(), "No name supplied"}, state)
         end
     end
   end
