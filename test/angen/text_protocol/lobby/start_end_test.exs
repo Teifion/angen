@@ -47,8 +47,22 @@ defmodule Angen.TextProtocol.Lobby.StartEndTest do
       assert_failure(msg, "lobby/match_start", "Match has already started")
     end
 
-    test "invalid lobby config" do
-      flunk "No players"
+    test "invalid lobby config - no players" do
+      %{socket: _p1_socket, user: p1_user} = auth_connection()
+      %{socket: socket, user: _host_user, lobby_id: lobby_id} = lobby_host_connection()
+
+      lobby = Teiserver.get_lobby(lobby_id)
+      refute lobby.match_ongoing?
+
+      Teiserver.add_client_to_lobby(p1_user.id, lobby_id)
+      flush_socket(socket)
+
+      speak(socket, %{name: "lobby/match_start", command: %{}})
+      msg = listen(socket)
+      assert_failure(msg, "lobby/match_start", "no_players")
+
+      lobby = Teiserver.get_lobby(lobby_id)
+      refute lobby.match_ongoing?
     end
 
     test "correctly" do

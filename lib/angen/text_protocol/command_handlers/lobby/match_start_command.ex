@@ -38,8 +38,13 @@ defmodule Angen.TextProtocol.Lobby.MatchStartCommand do
         FailureResponse.generate({name(), "Match has already started"}, state)
 
       true ->
-        Teiserver.start_match(lobby.id)
-        SuccessResponse.generate(name(), state)
+        case Teiserver.start_match(lobby.id) do
+          {:ok, _match} ->
+            SuccessResponse.generate(name(), state)
+
+          {:error, error_atom} ->
+            FailureResponse.generate({name(), to_string(error_atom)}, state)
+        end
     end
   end
 end

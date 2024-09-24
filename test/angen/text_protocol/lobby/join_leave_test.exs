@@ -144,7 +144,7 @@ defmodule Angen.TextProtocol.Lobby.JoinLeaveTest do
     end
   end
 
-  # These cannot be done until we have server_settings implemented
+  # TODO: These cannot be done until we have the relevant server_settings implemented
   # describe "joining - complex" do
   #   test "unauth" do
   #     Application.put_env(:teiserver, :lobby_join_method, :host_approval)
